@@ -7,13 +7,11 @@ angular.module('app.routes', [])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-    
-  
 
-      .state('tabsController.start_screen', {
-    url: '/start_screen',
+    .state('tabsController.start-screen', {
+    url: '/start-screen',
     views: {
-      'tab1': {
+      'start-screen': {
         templateUrl: 'templates/start_screen.html',
         controller: 'start_screenCtrl'
       }
@@ -21,9 +19,9 @@ angular.module('app.routes', [])
   })
 
   .state('tabsController.products', {
-    url: '/product_areas',
+    url: '/product-areas',
     views: {
-      'tab1': {
+      'product-areas': {
         templateUrl: 'templates/products.html',
         controller: 'productsCtrl'
       }
@@ -31,7 +29,7 @@ angular.module('app.routes', [])
   })
 
   .state('tabsController', {
-    url: '/page1',
+    url: '/tab',
     templateUrl: 'templates/tabsController.html',
     abstract:true
   })
@@ -72,10 +70,10 @@ angular.module('app.routes', [])
         controller: 'bookmarkCtrl'
       }
     }
-  })
+  });
 
-$urlRouterProvider.otherwise('')
+$urlRouterProvider.otherwise('/country_select')
 
-  
+
 
 });
