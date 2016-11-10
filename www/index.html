@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    
+    
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    
+
+    <style type="text/css">
+      .platform-ios .manual-ios-statusbar-padding{
+        padding-top:20px;
+      }
+      .manual-remove-top-padding{
+        padding-top:0px; 
+      }
+      .manual-remove-top-padding .scroll{
+        padding-top:0px !important;
+      }
+      ion-list.manual-list-fullwidth div.list, .list.card.manual-card-fullwidth {
+        margin-left:-10px;
+        margin-right:-10px;
+      }
+      ion-list.manual-list-fullwidth div.list > .item, .list.card.manual-card-fullwidth > .item {
+        border-radius:0px;
+        border-left:0px;
+        border-right: 0px;
+      }
+      .show-list-numbers-and-dots ul{
+        list-style-type: disc;
+        padding-left:40px;
+      }
+      .show-list-numbers-and-dots ol{
+        list-style-type: decimal;
+        padding-left:40px;
+      }
+    </style>
+
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/routes.js"></script>
+    
+     
+    <script src="js/directives.js"></script>
+     
+    <script src="js/services.js"></script>
+    
+
+    <!-- Only required for Tab projects w/ pages in multiple tabs 
+    <script src="lib/ionicuirouter/ionicUIRouter.js"></script>
+    -->
+
+  </head>
+  <body ng-app="app" animation="slide-left-right-ios7">
+  <div>
+  <ion-side-menus enable-menu-with-back-views="true" data-componentid="side-menu21">
+    <ion-side-menu-content>
+      <ion-nav-bar class="bar-stable">
+        <ion-nav-back-button></ion-nav-back-button>
+        <ion-nav-buttons side="left">
+          <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+        </ion-nav-buttons>
+      </ion-nav-bar>
+      <ion-nav-view></ion-nav-view>
+    </ion-side-menu-content>
+    <ion-side-menu side="left" id="side-menu21" style="background-color:#740505;">
+      <ion-header-bar class="bar-stable">
+        <div class="title">Menu</div>
+      </ion-header-bar>
+      <ion-content ng-controller="menuCtrl" padding="false" class="side-menu-left has-header ">
+        <form id="menu-form9" class="list" data-componentid="form9">
+          <label class="item item-select" id="menu-select2" data-componentid="select2">
+            <span class="input-label">Funktion</span>
+            <select>
+              <option>Thermostat</option>
+              <option>Mischwasser</option>
+              <option>Kaltwasser</option>
+              <option>Mischwasser vorgemischt</option>
+              <option>Sensor</option>
+            </select>
+          </label>
+          <label class="item item-select" id="menu-select3" data-componentid="select3">
+            <span class="input-label">Temperatur</span>
+            <select>
+              <option>Thermostat</option>
+              <option>Mischwasser</option>
+              <option>Kaltwasser</option>
+              <option>Mischwasser vorgemischt</option>
+              <option>Sensor</option>
+            </select>
+          </label>
+          <label class="item item-select" id="menu-select4" data-componentid="select4">
+            <span class="input-label">Hygiene</span>
+            <select>
+              <option>Thermostat</option>
+              <option>Mischwasser</option>
+              <option>Kaltwasser</option>
+              <option>Mischwasser vorgemischt</option>
+              <option>Sensor</option>
+            </select>
+          </label>
+          <label class="item item-select" id="menu-select5" data-componentid="select5">
+            <span class="input-label">Energieversorgun</span>
+            <select>
+              <option>Thermostat</option>
+              <option>Mischwasser</option>
+              <option>Kaltwasser</option>
+              <option>Mischwasser vorgemischt</option>
+              <option>Sensor</option>
+            </select>
+          </label>
+          <label class="item item-select" id="menu-select6" data-componentid="select6">
+            <span class="input-label">Oberfläche</span>
+            <select>
+              <option>Thermostat</option>
+              <option>Mischwasser</option>
+              <option>Kaltwasser</option>
+              <option>Mischwasser vorgemischt</option>
+              <option>Sensor</option>
+            </select>
+          </label>
+          <label class="item item-select" id="menu-select7" data-componentid="select7">
+            <span class="input-label">Zertifizierung</span>
+            <select>
+              <option>Thermostat</option>
+              <option>Mischwasser</option>
+              <option>Kaltwasser</option>
+              <option>Mischwasser vorgemischt</option>
+              <option>Sensor</option>
+            </select>
+          </label>
+        </form>
+      </ion-content>
+    </ion-side-menu>
+  </ion-side-menus>
+</div>
+  </body>
+</html>

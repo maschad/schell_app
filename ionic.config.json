@@ -1,0 +1,5 @@
+{
+  "name": "schell-app",
+  "app_id": "",
+  "gulpStartupTasks": ["sass", "watch"]
+}
