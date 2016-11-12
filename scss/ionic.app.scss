@@ -28,3 +28,43 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   max-width: 100%;
   height: auto;
 }
+
+#custom-overlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  background-color: #750017;
+}
+
+#custom-overlay img {
+  display: block;
+  margin: 0 auto;
+  width: 50%;
+  height: auto;
+}
+
+h1.slogan {
+  color: #ffffff;
+  font-size: 36px;
+  text-align: center;
+  margin-top: 28px;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-delay: 1s;
+
+}
+@media (max-width: 767px) {
+  h1.slogan {
+    font-size: 20px;
+  }
+  .splashscreen-container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
