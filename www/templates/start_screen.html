@@ -1,6 +1,6 @@
 <ion-view title="Hauptmenü" id="start-screen" style="background-color:#9e0a22;">
   <ion-nav-buttons side="right" class="has-header">
-    <a class="button icon ion-android-settings" ng-href="#/settings"></a>
+    <button class="button icon ion-android-settings" ng-click="openPopover($event)"></button>
   </ion-nav-buttons>
   <ion-content padding="true" class="has-header">
     <ks-swiper-container initial-slide="3" speed="2000" loop="true" show-nav-buttons="true" slides-per-view="1" pagination-clickable="false" override-parameters="{effect: 'coverflow',coverflow: {rotate: 50,stretch: 0,depth: 100,modifier: 1,slideShadows : false}}">
