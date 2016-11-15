@@ -98,7 +98,7 @@
         <div class="title">PRODUKTFILTER</div>
       </ion-header-bar>
       <ion-content ng-controller="menuCtrl" padding="false" class="side-menu-left has-header">
-        <form id="menu-form9" class="list" data-componentid="form9">
+        <form id="menu-form" class="list" data-componentid="form9">
           <ion-list>
             <div ng-repeat="group in groups">
               <ion-item class="menu-item" ng-click="toggleGroup(group)" ng-class="{active: isGroupShown(group)}">
@@ -107,7 +107,7 @@
               </ion-item>
               <ion-item class="item-accordion" ng-show="isGroupShown(group)">
                 <div ng-repeat="item in group.items">
-                  {{item}}
+                  <ion-checkbox ng-model="item.checked">{{item.name}}</ion-checkbox>
                 </div>
               </ion-item>
             </div>

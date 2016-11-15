@@ -100,15 +100,69 @@ function ($scope, $stateParams) {
         {
           name: 'Funktion',
           items: [
-            'Thermostat',
-            'Mischwasser',
-            'Kaltwasser',
-            'Mischwasser vorgemischt',
-            'Sensor'
+            {name: 'Thermostat', checked: true},
+            {name: 'Mischwasser', checked: false},
+            {name: 'Kaltwasser', checked: false},
+            {name: 'Mischwasser vorgemischt', checked: false},
+            {name: 'Sensor', checked: false}
           ],
           show: false
-        }
-      ];
+        },
+        {
+          name: 'Temperatur',
+          items: [
+            {name: 'Thermostat', checked: true},
+            {name: 'Mischwasser', checked: false},
+            {name: 'Kaltwasser', checked: false},
+            {name: 'Mischwasser vorgemischt', checked: false},
+            {name: 'Sensor', checked: false}
+          ],
+          show: false
+        },
+        {
+          name: 'Hygiene',
+          items: [
+            {name: 'Thermostat', checked: true},
+            {name: 'Mischwasser', checked: false},
+            {name: 'Kaltwasser', checked: false},
+            {name: 'Mischwasser vorgemischt', checked: false},
+            {name: 'Sensor', checked: false}
+          ],
+          show: false
+        },
+        {
+          name: 'Energieversorgun',
+          items: [
+            {name: 'Thermostat', checked: true},
+            {name: 'Mischwasser', checked: false},
+            {name: 'Kaltwasser', checked: false},
+            {name: 'Mischwasser vorgemischt', checked: false},
+            {name: 'Sensor', checked: false}
+          ],
+          show: false
+        },
+        {
+          name: 'Oberfläche',
+          items: [
+            {name: 'Thermostat', checked: true},
+            {name: 'Mischwasser', checked: false},
+            {name: 'Kaltwasser', checked: false},
+            {name: 'Mischwasser vorgemischt', checked: false},
+            {name: 'Sensor', checked: false}
+          ],
+          show: false
+        },
+        {
+          name: 'Zertifizierung',
+          items: [
+            {name: 'Thermostat', checked: true},
+            {name: 'Mischwasser', checked: false},
+            {name: 'Kaltwasser', checked: false},
+            {name: 'Mischwasser vorgemischt', checked: false},
+            {name: 'Sensor', checked: false}
+          ],
+          show: false
+        }];
       $scope.toggleGroup = function (group) {
         group.show = !group.show;
       };
