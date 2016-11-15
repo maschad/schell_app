@@ -7,13 +7,14 @@ For example, you might change some of the default colors:
 $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
 $positive:                        #387ef5 !default;
-$calm:                            #11c1f3 !default;
 $balanced:                        #33cd5f !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #750017 !default;
 $dark:                            #2c2a2b !default;
-$opace: transparentize($dark, 0.5);
+$opace: transparentize($dark, 0.1);
+$calm: transparentize($dark, 0.3) !default;
+
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
@@ -67,6 +68,11 @@ h1.slogan {
     margin-left: auto;
     margin-right: auto;
   }
+}
+
+.item .menu-item {
+  background-color: $opace;
+  padding-left: 20px;
 }
 
 .list .item.item-accordion {

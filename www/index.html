@@ -94,74 +94,24 @@
       <ion-nav-view></ion-nav-view>
     </ion-side-menu-content>
     <ion-side-menu side="left" id="side-menu21" style="background-color:#740505;">
-      <ion-header-bar class="bar-opace">
-        <div class="title">Menu</div>
+      <ion-header-bar class="bar-calm">
+        <div class="title">PRODUKTFILTER</div>
       </ion-header-bar>
       <ion-content ng-controller="menuCtrl" padding="false" class="side-menu-left has-header">
         <form id="menu-form9" class="list" data-componentid="form9">
           <ion-list>
-            <ion-item class="item" ng-click="toggleGroup()" ng-class="{active: isGroupShown()}">
-              Funktion
-              <i class="icon" ng-class="isGroupShown() ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
-            </ion-item>
-            <ion-item class="item-accordion" ng-show="isGroupShown(group)">
-              <p>Thermostat</p>
-              <p>Mischwasser</p>
-              <p>Kaltwasser</p>
-              <p>Mischwasser vorgemischt</p>
-              <p>Sensor</p>
-            </ion-item>
+            <div ng-repeat="group in groups">
+              <ion-item class="menu-item" ng-click="toggleGroup(group)" ng-class="{active: isGroupShown(group)}">
+                {{group.name}}
+                <i class="icon" ng-class="isGroupShown(group) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+              </ion-item>
+              <ion-item class="item-accordion" ng-show="isGroupShown(group)">
+                <div ng-repeat="item in group.items">
+                  {{item}}
+                </div>
+              </ion-item>
+            </div>
           </ion-list>
-          <label class="item item-select" id="menu-select3" data-componentid="select3">
-            <span class="input-label">Temperatur</span>
-            <select>
-              <option>Thermostat</option>
-              <option>Mischwasser</option>
-              <option>Kaltwasser</option>
-              <option>Mischwasser vorgemischt</option>
-              <option>Sensor</option>
-            </select>
-          </label>
-          <label class="item item-select" id="menu-select4" data-componentid="select4">
-            <span class="input-label">Hygiene</span>
-            <select>
-              <option>Thermostat</option>
-              <option>Mischwasser</option>
-              <option>Kaltwasser</option>
-              <option>Mischwasser vorgemischt</option>
-              <option>Sensor</option>
-            </select>
-          </label>
-          <label class="item item-select" id="menu-select5" data-componentid="select5">
-            <span class="input-label">Energieversorgun</span>
-            <select>
-              <option>Thermostat</option>
-              <option>Mischwasser</option>
-              <option>Kaltwasser</option>
-              <option>Mischwasser vorgemischt</option>
-              <option>Sensor</option>
-            </select>
-          </label>
-          <label class="item item-select" id="menu-select6" data-componentid="select6">
-            <span class="input-label">Oberfläche</span>
-            <select>
-              <option>Thermostat</option>
-              <option>Mischwasser</option>
-              <option>Kaltwasser</option>
-              <option>Mischwasser vorgemischt</option>
-              <option>Sensor</option>
-            </select>
-          </label>
-          <label class="item item-select" id="menu-select7" data-componentid="select7">
-            <span class="input-label">Zertifizierung</span>
-            <select>
-              <option>Thermostat</option>
-              <option>Mischwasser</option>
-              <option>Kaltwasser</option>
-              <option>Mischwasser vorgemischt</option>
-              <option>Sensor</option>
-            </select>
-          </label>
         </form>
       </ion-content>
     </ion-side-menu>

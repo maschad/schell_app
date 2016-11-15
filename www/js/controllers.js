@@ -96,12 +96,23 @@ function ($scope, $stateParams) {
 
   .controller('MenuCtrl', ['$scope',
     function ($scope) {
-
-      $scope.show = false;
+      $scope.groups = [
+        {
+          name: 'Funktion',
+          items: [
+            'Thermostat',
+            'Mischwasser',
+            'Kaltwasser',
+            'Mischwasser vorgemischt',
+            'Sensor'
+          ],
+          show: false
+        }
+      ];
       $scope.toggleGroup = function (group) {
-        $scope.show = !$scope.show;
+        group.show = !group.show;
       };
       $scope.isGroupShown = function (group) {
-        return $scope.show;
+        return group.show;
       };
 }]);
