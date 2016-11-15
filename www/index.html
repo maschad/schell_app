@@ -83,7 +83,7 @@
 
   <body ng-app="app" animation="slide-left-right-ios7">
   <div>
-  <ion-side-menus enable-menu-with-back-views="true" data-componentid="side-menu21">
+    <ion-side-menus enable-menu-with-back-views="true" data-componentid="side-menu21" ng-controller="MenuCtrl">
     <ion-side-menu-content>
       <ion-nav-bar class="bar-royal">
         <ion-nav-back-button></ion-nav-back-button>
@@ -94,21 +94,24 @@
       <ion-nav-view></ion-nav-view>
     </ion-side-menu-content>
     <ion-side-menu side="left" id="side-menu21" style="background-color:#740505;">
-      <ion-header-bar class="bar-stable">
+      <ion-header-bar class="bar-opace">
         <div class="title">Menu</div>
       </ion-header-bar>
       <ion-content ng-controller="menuCtrl" padding="false" class="side-menu-left has-header">
         <form id="menu-form9" class="list" data-componentid="form9">
-          <label class="item item-select" id="menu-select2" data-componentid="select2">
-            <span class="input-label">Funktion</span>
-            <select>
-              <option>Thermostat</option>
-              <option>Mischwasser</option>
-              <option>Kaltwasser</option>
-              <option>Mischwasser vorgemischt</option>
-              <option>Sensor</option>
-            </select>
-          </label>
+          <ion-list>
+            <ion-item class="item" ng-click="toggleGroup()" ng-class="{active: isGroupShown()}">
+              Funktion
+              <i class="icon" ng-class="isGroupShown() ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+            </ion-item>
+            <ion-item class="item-accordion" ng-show="isGroupShown(group)">
+              <p>Thermostat</p>
+              <p>Mischwasser</p>
+              <p>Kaltwasser</p>
+              <p>Mischwasser vorgemischt</p>
+              <p>Sensor</p>
+            </ion-item>
+          </ion-list>
           <label class="item item-select" id="menu-select3" data-componentid="select3">
             <span class="input-label">Temperatur</span>
             <select>

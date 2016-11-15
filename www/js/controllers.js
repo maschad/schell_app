@@ -92,5 +92,16 @@ function ($scope, $stateParams) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams) {
 
+}])
 
+  .controller('MenuCtrl', ['$scope',
+    function ($scope) {
+
+      $scope.show = false;
+      $scope.toggleGroup = function (group) {
+        $scope.show = !$scope.show;
+      };
+      $scope.isGroupShown = function (group) {
+        return $scope.show;
+      };
 }]);

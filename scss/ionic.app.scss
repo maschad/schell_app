@@ -13,7 +13,7 @@ $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #750017 !default;
 $dark:                            #2c2a2b !default;
-
+$opace: transparentize($dark, 0.5);
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
@@ -28,6 +28,7 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   max-width: 100%;
   height: auto;
 }
+
 
 #custom-overlay {
   display: flex;
@@ -66,5 +67,22 @@ h1.slogan {
     margin-left: auto;
     margin-right: auto;
   }
+}
+
+.list .item.item-accordion {
+  background-color: $opace;
+  line-height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: 0.09s all linear;
+}
+
+.list .item.item-accordion.ng-hide {
+  line-height: 0px;
+}
+
+.list .item.item-accordion.ng-hide-add,
+.list .item.item-accordion.ng-hide-remove {
+  display: block !important;
 }
 
