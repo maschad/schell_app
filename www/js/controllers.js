@@ -1,9 +1,9 @@
 angular.module('app.controllers', [])
 
-.controller('start_screenCtrl', ['$scope','$ionicPopover', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('start_screenCtrl', ['$scope','$state','$ionicPopover', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $ionicPopover,$stateParams) {
+function ($scope, $state, $ionicPopover,$stateParams) {
 
   $scope.swiper = {};
 
@@ -27,15 +27,12 @@ function ($scope, $ionicPopover,$stateParams) {
   $scope.openPopover = function ($event) {
     $scope.popover.show($event);
   };
-  //Close it
-  $scope.closePopover = function() {
+
+
+  $scope.goSettings = function () {
+    $state.go('settings');
     $scope.popover.hide();
   };
-  //Cleanup the popover when we're done with it!
-  $scope.$on('$destroy', function() {
-    $scope.popover.remove();
-  });
-
 }])
 
 .controller('productsCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
