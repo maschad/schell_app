@@ -8,30 +8,16 @@ angular.module('app.routes', [])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-    .state('tabsController.start-screen', {
+    .state('start-screen', {
     url: '/start-screen',
-    views: {
-      'start-screen': {
-        templateUrl: 'templates/start_screen.html',
-        controller: 'start_screenCtrl'
-      }
-    }
+      templateUrl: 'templates/start_screen.html',
+      controller: 'start_screenCtrl'
   })
 
-  .state('tabsController.products', {
+    .state('products', {
     url: '/product-areas',
-    views: {
-      'product-areas': {
-        templateUrl: 'templates/products.html',
-        controller: 'productsCtrl'
-      }
-    }
-  })
-
-  .state('tabsController', {
-    url: '/tab',
-    templateUrl: 'templates/tabsController.html',
-    abstract:true
+      templateUrl: 'templates/products.html',
+      controller: 'productsCtrl'
   })
 
   .state('video', {
@@ -52,10 +38,16 @@ angular.module('app.routes', [])
     controller: 'countryselectCtrl'
   })
 
+    .state('tabsController', {
+      url: '/tab',
+      templateUrl: 'templates/tabsController.html',
+      abstract: true
+    })
+
   .state('tabsController.detailPage', {
     url: '/detail_page',
     views: {
-      'tab1': {
+      'detail': {
         templateUrl: 'templates/detailPage.html',
         controller: 'detailPageCtrl'
       }
@@ -65,7 +57,7 @@ angular.module('app.routes', [])
   .state('tabsController.bookmark', {
     url: '/bookmark_list_detail',
     views: {
-      'tab3': {
+      'bookmark': {
         templateUrl: 'templates/bookmark.html',
         controller: 'bookmarkCtrl'
       }
