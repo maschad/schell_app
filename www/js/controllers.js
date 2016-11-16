@@ -35,11 +35,31 @@ function ($scope, $state, $ionicPopover,$stateParams) {
   };
 }])
 
-.controller('productsCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productsCtrl', ['$scope', '$ionicFilterBar', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+    function ($scope, $stateParams, $ionicFilterBar) {
+      $scope.items = [];
 
+      for (var i = 1; i <= 1000; i++) {
+        var itemDate = moment().add(i, 'days');
+
+        var item = {
+          description: 'Description for item ' + i,
+          date: itemDate.toDate()
+        };
+        $scope.items.push(item);
+      }
+
+      $scope.showFilterBar = function () {
+        $scope.filterBarInstance = $ionicFilterBar.show({
+          items: $scope.items,
+          update: function (filteredItems) {
+            $scope.items = filteredItems;
+          },
+          filterProperties: 'description'
+        });
+      };
 
 }])
 
