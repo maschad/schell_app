@@ -3,19 +3,35 @@
     <button class="button icon ion-android-settings" ng-click="openPopover($event)"></button>
   </ion-nav-buttons>
   <ion-content padding="true" class="has-header">
-    <ks-swiper-container initial-slide="3" speed="2000" loop="true" show-nav-buttons="false" slides-per-view="1" pagination-clickable="false" override-parameters="{effect: 'coverflow',coverflow: {rotate: 50,stretch: 0,depth: 100,modifier: 1,slideShadows : false}}">
+    <ks-swiper-container initial-slide="3" autoplay="3000" loop="true" show-nav-buttons="false" slides-per-view="1"
+                         pagination-clickable="false"
+                         override-parameters="{effect: 'coverflow',coverflow: {rotate: 50,stretch: 0,depth: 100,modifier: 1,slideShadows : false}}">
       <ks-swiper-slide class="swiper-slide" ng-repeat="s in [1,2,3]">
         <img ng-src="../img/carousel-bild-{{s}}.png" width="100%">
       </ks-swiper-slide>
     </ks-swiper-container>
-    <a ui-sref="products" id="start_screen-button2" class="button button-stable  button-block">Produkte</a>
-    <button id="start_screen-button3" class="button button-stable  button-block">Video<img src="../img/icons/videos-icon.png" class="pull-right"></button>
-    <h3 id="start_screen-heading5" style="color:#FFFFFF;">Verantwortung für Gesundheit.</h3>
-    <div id="start_screen-markdown5" class="show-list-numbers-and-dots">
-      <p style="color:#FFFFFF;">Ob Sanitärräume in Krankenhäusern, Seniorenheimen oder Schulen – in diesen und vielen vergleichbaren Objekten stellt konsequente Hygiene eine besondere Herausforderung dar.Entweder weil die Sanitäranlagen nicht ununterbrochen genutzt werden oder
-        weil die Gefahr der Übertragung von Krankheitserregern bestmöglich vermieden werden soll.</p>
-
-      <p style="color:#FFFFFF;">Eine anspruchsvolle Aufgabe, der sich SCHELL seit vielen Jahren verpflichtet fühlt. Kein Wunder, dass wir inzwischen weltweit zu den Pionieren technischer Lösungen gehören, die vor allem ein Ziel haben: die Gesundheit der Nutzer zu schützen.</p>
+    <div class="row responsive-lg">
+      <div class="col">
+        <div class="row">
+          <a ui-sref="products" id="start_screen-button2" class="button button-large button-stable">Produkte</a>
+        </div>
+        <div class="row">
+          <button id="start_screen-button3" class="button button-large button-stable">Video<img
+            src="../img/icons/videos-icon.png" class="pull-right"></button>
+        </div>
+      </div>
+      <div class="col">
+        <h2 id="start_screen-heading5" style="color:#FFFFFF;">Verantwortung für Gesundheit.</h2>
+        <div id="start_screen-markdown5">
+          <p style="color:#FFFFFF;">Ob Sanitärräume in Krankenhäusern, Seniorenheimen oder Schulen – in diesen und
+            vielen vergleichbaren Objekten stellt konsequente Hygiene eine besondere Herausforderung dar.Entweder weil
+            die Sanitäranlagen nicht ununterbrochen genutzt werden oder
+            weil die Gefahr der Übertragung von Krankheitserregern bestmöglich vermieden werden soll.</p>
+          <p style="color:#FFFFFF;">Eine anspruchsvolle Aufgabe, der sich SCHELL seit vielen Jahren verpflichtet fühlt.
+            Kein Wunder, dass wir inzwischen weltweit zu den Pionieren technischer Lösungen gehören, die vor allem ein
+            Ziel haben: die Gesundheit der Nutzer zu schützen.</p>
+        </div>
+      </div>
     </div>
   </ion-content>
 </ion-view>
