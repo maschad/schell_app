@@ -39,6 +39,11 @@ function ($scope, $state, $ionicPopover,$stateParams) {
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $stateParams, $ionicFilterBar) {
+
+    }])
+
+  .controller('product_areasCtrl', ['$scope', '$ionicFilterBar', '$stateParams',
+    function ($scope, $stateParams, $ionicFilterBar) {
       $scope.items = [];
 
       for (var i = 1; i <= 1000; i++) {
