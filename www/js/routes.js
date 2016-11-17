@@ -49,24 +49,17 @@ angular.module('app.routes', [])
       abstract: true
     })
 
-  .state('tabsController.detailPage', {
+    .state('detailPage', {
     url: '/detail_page',
-    views: {
-      'detail': {
-        templateUrl: 'templates/detailPage.html',
-        controller: 'detailPageCtrl'
-      }
-    }
+      templateUrl: 'templates/detailPage.html',
+      controller: 'detailPageCtrl'
+
   })
 
-  .state('tabsController.bookmark', {
-    url: '/bookmark_list_detail',
-    views: {
-      'bookmark': {
-        templateUrl: 'templates/bookmark.html',
-        controller: 'bookmarkCtrl'
-      }
-    }
+    .state('bookmark', {
+      url: 'bookmark',
+      templateUrl: 'templates/bookmark.html',
+      controller: 'bookmarkCtrl'
   });
 
 $urlRouterProvider.otherwise('/country_select')
