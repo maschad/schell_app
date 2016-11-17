@@ -42,8 +42,8 @@ function ($scope, $state, $ionicPopover,$stateParams) {
 
     }])
 
-  .controller('product_areasCtrl', ['$scope', '$ionicFilterBar', '$stateParams',
-    function ($scope, $stateParams, $ionicFilterBar) {
+  .controller('product_areasCtrl', ['$scope', '$state', '$ionicFilterBar', '$stateParams',
+    function ($scope, $state, $stateParams, $ionicFilterBar) {
       $scope.items = [];
 
       for (var i = 1; i <= 1000; i++) {
@@ -64,6 +64,10 @@ function ($scope, $state, $ionicPopover,$stateParams) {
           },
           filterProperties: 'description'
         });
+      };
+
+      $scope.myEvent = function () {
+        $state.go('start-screen');
       };
 
 }])

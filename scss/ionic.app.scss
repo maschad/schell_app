@@ -30,6 +30,15 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   height: auto;
 }
 
+.side-nav-home {
+  background-image: url(../img/icons/home-icon.png);
+  height: 45px;
+  width: 63px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  margin-bottom: -2px;
+}
+
 .lcard {
   position: relative;
   min-height: 1px;
