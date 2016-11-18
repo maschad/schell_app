@@ -125,6 +125,14 @@ h1.slogan {
   }
 }
 
+.button.button-block, .button.button-full {
+  margin-top: 0px;
+}
+
+.button {
+  text-align: left;
+}
+
 .menu-item {
   background-color: $opace;
 }
