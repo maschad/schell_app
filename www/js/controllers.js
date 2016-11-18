@@ -115,7 +115,58 @@ function ($scope, $stateParams) {
   $scope.products = [
     {
       name: 'TECHNISCHE ZEICHNUNG',
-      description: 'img',
+      data: 'img',
+      show: false
+    },
+    {
+      name: 'LIEFERUMFANG',
+      data: ['Paneel mit vormontierter LINUS ' +
+      'Duscharmatur mit integrerter Selbstschlusskartusche SC' +
+      ' inklusive Verrohrung zwischen' +
+      ' Armatur und Duschkopfanschluss',
+        'Betätigungsknopf SC',
+        '2 Rückflussverhinderer (RV, DIN EN 1717: EB)',
+        'Duschkopf: Durchfluss 9 l/min druckunabhängig',
+        'Befestigungsmaterial',
+        'Anschlusszubehör'],
+      show: false
+    },
+    {
+      name: 'EINSATZBEREICH / TECHNISCHE DATEN:',
+      data: ['Durchfluss Armatur: ' +
+      '≤ 10,0 l/min bei 3bar Fließdruck',
+        'Fließdruck: 1,5 - 5,0 bar',
+        'Warmwassertemperatur max. 70 °C (Kurzzeitnutzung)',
+        'Laufzeiteinstellung: 5 - 30 s',
+        'Abmessung: 1200 mm x 226 mm x 115 mm'],
+      show: false
+    },
+    {
+      name: 'DETAILS',
+      data: ['Werkstoff: Paneel aus Alu / Wasserstrecke aus entzinkungsbeständigem ' +
+      'Messing konform TrinkwV /' +
+      ' Betätigung aus Messing verchromt',
+        'Oberfläche: Alu-eloxiert'],
+      show: false
+    },
+    {
+      name: 'DOWNLOADS',
+      data: ['download data'],
+      show: false
+    },
+    {
+      name: 'VARIANTEN',
+      data: ['item body'],
+      show: false
+    },
+    {
+      name: 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL',
+      data: '',
+      show: false
+    },
+    {
+      name: 'VIDEO',
+      data: 'https://www.youtube.com/watch?time_continue=1&v=yDvws-yl_Ew',
       show: false
     }
   ]
