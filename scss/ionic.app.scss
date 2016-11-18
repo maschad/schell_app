@@ -129,6 +129,9 @@ h1.slogan {
   background-color: $opace;
 }
 
+.description-item {
+  background-color: $stable;
+}
 .list .item.item-accordion {
   background-color: $opace;
   line-height: 38px;
@@ -137,12 +140,20 @@ h1.slogan {
   transition: 0.09s all linear;
 }
 
-.list .item.item-accordion.ng-hide {
+.list .item.description-accordion {
+  background-color: $stable;
+  line-height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: 0.09s all linear;
+}
+
+.list .item.description-accordion.ng-hide {
   line-height: 0px;
 }
 
-.list .item.item-accordion.ng-hide-add,
-.list .item.item-accordion.ng-hide-remove {
+.list .item.description-accordion.ng-hide-add,
+.list .item.description-accordion.ng-hide-remove {
   display: block !important;
 }
 

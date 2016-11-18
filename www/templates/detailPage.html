@@ -12,15 +12,16 @@
         bzw. für Vorwandanschlüsse von oben.</p>
       <p class="product-noted">LINUS DP-SC-M, Selbstschluss - Mischwasser, mit Duschkopf COMFORT</p>
     </div>
-    <ion-list id="detailPage-list2">
-      <ion-item class="dark" id="detailPage-list-item10">TECHNISCHE ZEICHNUNG</ion-item>
-      <ion-item id="detailPage-list-item11">LIEFERUMFANG:</ion-item>
-      <ion-item id="detailPage-list-item12">EINSATZBEREICH / TECHNISCHE DATEN:</ion-item>
-      <ion-item id="detailPage-list-item13">DETAILS:</ion-item>
-      <ion-item id="detailPage-list-item14">DOWNLOADS</ion-item>
-      <ion-item id="detailPage-list-item15">VARIANTEN</ion-item>
-      <ion-item id="detailPage-list-item16">EMPFOHLENE ZUGEHÖRIGE ARTIKEL</ion-item>
-      <ion-item id="detailPage-list-item17">VIDEO</ion-item>
+    <ion-list>
+      <div ng-repeat="product in products">
+        <ion-item class="description-item" ng-click="toggleGroup(product)" ng-class="{active: isGroupShown(product)}">
+          {{product.name}}
+          <i class="icon" ng-class="isGroupShown(product) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+        </ion-item>
+        <ion-item class="description-accordion" ng-show="isGroupShown(product)">
+          {{product.description}}
+        </ion-item>
+      </div>
     </ion-list>
   </ion-content>
 </ion-view>
