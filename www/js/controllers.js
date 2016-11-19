@@ -42,30 +42,21 @@ function ($scope, $state, $ionicPopover,$stateParams) {
 
     }])
 
-  .controller('product_areasCtrl', ['$scope', '$state', '$ionicFilterBar', '$stateParams',
-    function ($scope, $state, $stateParams, $ionicFilterBar) {
+  .controller('product_areasCtrl', ['$scope', '$state', '$stateParams',
+    function ($scope, $state, $stateParams) {
       $scope.items = [];
+      $scope.enabled = false;
+      /**
+       // search bar functionality
+       $scope.searchEl = angular.element(document.getElementById('input'));
+       $scope.labelEl = angular.element(document.getElementById('label'));
 
-      for (var i = 1; i <= 1000; i++) {
-        var itemDate = moment().add(i, 'days');
 
-        var item = {
-          description: 'Description for item ' + i,
-          date: itemDate.toDate()
-        };
-        $scope.items.push(item);
-      }
-
-      $scope.showFilterBar = function () {
-        $scope.filterBarInstance = $ionicFilterBar.show({
-          items: $scope.items,
-          update: function (filteredItems) {
-            $scope.items = filteredItems;
-          },
-          filterProperties: 'description'
-        });
+       $scope.open = function () {
+          $scope.searchEl.addClass("focus");
+          $scope.labelEl.addClass("active");
       };
-
+       **/
       $scope.myEvent = function () {
         $state.go('start-screen');
       };

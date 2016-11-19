@@ -53,10 +53,12 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   height: 17vw;
 }
 
-@media (max-width: 767px) {
-  .product-tile {
-    height: 46vw;
-  }
+.product-tile-overlay:active {
+  opacity: 0.7;
+}
+
+.product-tile-content {
+  color: #000000;
 }
 
 @media (max-width: 991px) {
@@ -64,6 +66,14 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     height: 20vw;
   }
 }
+
+@media (max-width: 767px) {
+  .product-tile {
+    height: 46vw;
+  }
+}
+
+
 
 .product-order-number {
   color: #999999;
@@ -118,6 +128,122 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   height: auto;
 }
 
+#search-bar-wrapper {
+  margin-top: 1px;
+  position: relative;
+  height: 45px;
+}
+
+#search {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 45px;
+}
+
+#label {
+  width: 62px;
+  height: 45px;
+  position: relative;
+  z-index: 20;
+}
+
+#label label {
+  display: block;
+  margin-bottom: 0;
+  width: 63px;
+  height: 45px;
+  background: url(../img/icons/suchen-icon.png) no-repeat 0 0;
+  font-size: 0;
+  color: rgba(0, 0, 0, 0);
+  text-indent: -9999px;
+  cursor: pointer;
+}
+
+#input {
+  position: absolute;
+  top: 0;
+  left: 58px;
+  width: 100%;
+  height: 45px;
+  z-index: 5;
+  overflow: hidden;
+}
+
+#input input {
+  display: block;
+  position: absolute;
+  top: 7px;
+  left: -64%;
+  width: 28%;
+  height: 68%;
+  margin: 0;
+  padding: 0 10px;
+  border: none;
+  background-color: #888888;
+  color: #fff;
+  font-size: 14px;
+  backface-visibility: none;
+  border-radius: 0;
+  transition: left 0;
+}
+
+#input input:focus {
+  outline: none
+}
+
+#input.focus {
+  z-index: 20;
+  background-color: #000000;
+}
+
+#input.focus input {
+  left: 14px;
+  transition: left 0.3s;
+}
+
+#input.focus:before {
+  content: 'Suchen';
+  position: absolute;
+  height: 40px;
+  width: 50px;
+  left: 31%;
+  top: 12px;
+  color: #888888;
+}
+
+#input.focus:after {
+  content: ' ';
+  background-size: inherit;
+  background: url(../img/icons/close-icon.png) no-repeat center;
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  right: 64px;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  #input input {
+    width: 64%;
+  }
+  #input.focus:before {
+    display: none;
+  }
+}
+
+@media (max-width: 991px) {
+  #input input {
+    width: 45%;
+  }
+  #input.focus input {
+    left: 8px;
+  }
+  #input.focus:before {
+    left: 48%;
+  }
+}
+
 h1.slogan {
   color: #ffffff;
   font-size: 36px;
@@ -147,6 +273,20 @@ h1.slogan {
 
 .menu-item {
   background-color: $opace;
+}
+
+p {
+  margin: 0 0 10px;
+}
+
+@media (max-width: 767px) {
+  p {
+    font-size: 11px;
+  }
+}
+
+.item-select select {
+  left: 0;
 }
 
 .description-item {
