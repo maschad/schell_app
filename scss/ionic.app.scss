@@ -53,6 +53,18 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   height: 17vw;
 }
 
+@media (max-width: 767px) {
+  .product-tile {
+    height: 46vw;
+  }
+}
+
+@media (max-width: 991px) {
+  .product-tile {
+    height: 20vw;
+  }
+}
+
 .product-order-number {
   color: #999999;
   margin-bottom: 0;
