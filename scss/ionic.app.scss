@@ -12,7 +12,8 @@ $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #750017 !default;
 $dark:                            #2c2a2b !default;
-$opace: transparentize($dark, 0.1);
+$black: #000000 !default;
+$opace: transparentize($black, 0.6);
 $calm: transparentize($dark, 0.3) !default;
 
 
@@ -97,6 +98,12 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 .product-type {
   text-transform: uppercase;
   font-size: 16px;
+}
+
+.product-filter-heading {
+  position: relative;
+  top: 10px;
+  margin-left: -60px;
 }
 
 .product-counter {
@@ -301,7 +308,7 @@ p {
 }
 
 .list .item.description-accordion {
-  background-color: $stable;
+  background-color: $opace;
   line-height: 38px;
   padding-top: 0;
   padding-bottom: 0;
