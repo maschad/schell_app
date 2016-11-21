@@ -37,6 +37,82 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   color: white;
 }
 
+@media (max-width: 767px) {
+  .bookmark-list-count {
+    top: 4px;
+    right: 18px;
+  }
+}
+
+/* Breadcrumb Dropdown Menu */
+.crumbs-container {
+  position: relative;
+  overflow: hidden;
+  height: 3.2em;
+  -webkit-transition: height 0.5s ease-out;
+  -moz-transition: height 0.5s ease-out;
+  -o-transition: height 0.5s ease-out;
+  transition: height 0.5s ease-out;
+}
+
+.crumbs-container.active {
+  height: 17.1em;
+  width: 100%;
+}
+
+.crumbs {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  padding-left: 0;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.crumbs .second {
+  text-indent: 22px;
+}
+
+.crumbs .third {
+  text-indent: 44px;
+}
+
+.crumbs .fourth {
+  text-indent: 66px;
+}
+
+.crumbs-level {
+  margin-top: 1.3em;
+  margin-left: 1em;
+  position: absolute;
+}
+
+.crumbs li a {
+  display: block;
+  padding: 1em;
+  padding-left: 2.5em;
+  color: #ffffff;
+}
+
+.crumbs li:last-child a {
+  border-bottom: 0;
+}
+
+#crumbs-trigger {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: block;
+  font-size: 2em;
+  padding: 0 0.5em 0.2em;
+  color: #ffffff;
+}
+
+#crumbs-trigger .glyphicon {
+  font-size: 0.7em;
+  margin-bottom: 8px;
+}
+
 
 .center {
   margin-left: auto;
@@ -535,6 +611,11 @@ body.has-active-menu {
   padding: 10px;
 }
 
+.visible-lg-block, .visible-lg-inline, .visible-lg-inline-block, .visible-md-block, .visible-md-inline, .visible-md-inline-block, .visible-sm-block, .visible-sm-inline, .visible-sm-inline-block, .visible-xs-block, .visible-xs-inline, .visible-xs-inline-block {
+  display: none !important;
+}
+
+
 @media (max-width: 767px) {
   .visible-xs-block {
     display: block !important;
@@ -542,27 +623,21 @@ body.has-active-menu {
 }
 
 .side-nav-home-sm {
-  background-image: url(../img/icons/home.png);
   height: 28px;
   width: 30px;
-  background-repeat: no-repeat;
-  background-position: 0 0;
+  background: url(../img/icons/home.png) no-repeat 0 0;
 }
 
 .side-nav-mail-sm {
-  background-image: url(../img/icons/mail.png);
   height: 22px;
   width: 29px;
-  background-repeat: no-repeat;
-  background-position: 0 0;
+  background: url(../img/icons/mail.png) no-repeat 0 0;
 }
 
 .side-nav-clip-sm {
-  background-image: url(../img/icons/clip.png);
   height: 22px;
   width: 21px;
-  background-repeat: no-repeat;
-  background-position: 0 0;
+  background: url(../img/icons/clip.png) no-repeat 0 0;
   cursor: pointer;
 }
 

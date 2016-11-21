@@ -174,6 +174,20 @@ function ($scope, $stateParams) {
     return group.show;
   };
 
+      //Breadcrumb container
+      //var crumbsContainer = angular.element('.crumbs-container');
+      // var crumbElement = angular.element('<a href="#" id="crumbs-trigger"><span class="indicator glyphicon glyphicon-menu-down pull-right" aria-hidden="true"></span></a>');
+
+      $scope.chevron = false;
+
+      $scope.toggleChevron = function () {
+        $scope.chevron = !$scope.chevron;
+      };
+
+      function buildCrumbs() {
+        //crumbsContainer.append(crumbElement);
+      }
+
 }])
 
   .controller('productLinesCtrl', ['$scope', function ($state) {
