@@ -23,6 +23,21 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
+.bookmark-list-count {
+  display: none;
+  position: absolute;
+  top: 6px;
+  right: 15px;
+  background-color: #9e0a22;
+  border-radius: 10px;
+  padding: 0px 3px;
+  width: auto;
+  height: auto;
+  font-size: 11px;
+  color: white;
+}
+
+
 .center {
   margin-left: auto;
   margin-right: auto;
@@ -45,6 +60,23 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   width: 63px;
   background: url(../img/icons/home-icon.png) no-repeat 0 0;
   margin-bottom: -2px;
+}
+
+.side-nav-mail {
+  background-image: url(../img/icons/mail-icon.png);
+  height: 45px;
+  width: 63px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+.side-nav-clip {
+  background-image: url(../img/icons/clip-icon.png);
+  height: 45px;
+  width: 63px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  cursor: pointer;
 }
 
 #product-lines-body .side-nav-filter {
@@ -415,6 +447,14 @@ body.has-active-menu {
   z-index: 1;
 }
 
+.side-nav-wrapper li {
+  margin-bottom: 1px;
+}
+
+.dropdown, .dropup {
+  position: relative;
+}
+
 .side-nav {
   position: fixed;
   bottom: 0;
@@ -422,6 +462,12 @@ body.has-active-menu {
   margin-left: -1px;
   margin-bottom: 0;
   list-style-type: none;
+}
+
+@media (max-width: 767px) {
+  .hidden-xs {
+    display: none !important;
+  }
 }
 
 .product-order-number {
@@ -473,6 +519,117 @@ body.has-active-menu {
 .side-nav-filter {
   margin-top: 1px;
   margin-left: -1px;
+}
+
+.side-nav-download {
+  height: 45px;
+  width: 63px;
+  background: url(../img/icons/download-icon.png) no-repeat 0 0;
+}
+
+.side-nav-dropdown {
+  top: -16px;
+  left: 128%;
+  background-color: #000000;
+  border-radius: 0;
+  padding: 10px;
+}
+
+@media (max-width: 767px) {
+  .visible-xs-block {
+    display: block !important;
+  }
+}
+
+.side-nav-home-sm {
+  background-image: url(../img/icons/home.png);
+  height: 28px;
+  width: 30px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+.side-nav-mail-sm {
+  background-image: url(../img/icons/mail.png);
+  height: 22px;
+  width: 29px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+.side-nav-clip-sm {
+  background-image: url(../img/icons/clip.png);
+  height: 22px;
+  width: 21px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  cursor: pointer;
+}
+
+.side-nav-download-sm {
+  height: 23px;
+  width: 29px;
+  background: url(../img/icons/download.png) no-repeat 0 0;
+}
+
+@media (max-width: 767px) {
+  .menu-wrapper {
+    position: fixed;
+    bottom: 0;
+    padding-left: 0;
+    margin-bottom: 0;
+    height: 50px;
+    text-align: justify;
+    min-width: 100%;
+    background-color: rgba(0, 0, 0, 0.65);
+  }
+  .menu-wrapper:after {
+    content: '';
+    display: inline-block;
+    width: 100%;
+  }
+  .menu-wrapper li {
+    display: inline-block;
+    padding: 0.6em 1em 0.5em;
+  }
+}
+
+.dropup .dropdown-menu, .navbar-fixed-bottom .dropdown .dropdown-menu {
+  top: auto;
+  bottom: 100%;
+  margin-bottom: 2px;
+}
+
+.side-nav-dropup {
+  width: 290px;
+  left: -338%;
+  background-color: #000000;
+  border-radius: 0;
+  padding: 10px;
+  margin-bottom: 20px !important;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 14px;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, .15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
 }
 
 .product-counter {
@@ -691,7 +848,6 @@ p {
 }
 
 .list .item.description-accordion {
-  background-color: $opace;
   line-height: 38px;
   padding-top: 0;
   padding-bottom: 0;

@@ -1,5 +1,58 @@
 <ion-view title="detail-page" id="detail">
   <ion-content padding="true" class="has-header">
+    <div class="side-nav-wrapper">
+      <ul class="side-nav hidden-xs">
+        <li>
+          <div class="side-nav-download">
+          </div>
+        </li>
+        <li class="dropdown">
+          <div class="dropdown-toggle side-nav-clip" data-toggle="dropdown">
+            <span class="bookmark-list-count">0</span>
+          </div>
+          <ul class="side-nav-dropdown dropdown-menu">
+            <li><a href="#">In Merkliste Aufnehmen</a></li>
+            <li><a ng-href="#/bookmark-list-detail">Merkliste anzeigen</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="side-nav-mail">
+          </div>
+        </li>
+        <li>
+          <a ng-href="#/start-screen">
+            <div class="side-nav-home">
+            </div>
+          </a>
+        </li>
+      </ul>
+
+      <ul class="menu-wrapper visible-xs-block">
+        <li>
+          <a ng-href="#/start-screen">
+            <div class="side-nav-home-sm">
+            </div>
+          </a>
+        </li>
+        <li>
+          <div class="side-nav-mail-sm">
+          </div>
+        </li>
+        <li class="dropup">
+          <div class="dropdown-toggle side-nav-clip-sm" data-toggle="dropdown">
+            <span class="bookmark-list-count">0</span>
+          </div>
+          <ul class="side-nav-dropup dropdown-menu">
+            <li><a href="#">In Merkliste Aufnehmen</a></li>
+            <li><a ng-href="#/detail_page">Merkliste anzeigen</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="side-nav-download-sm">
+          </div>
+        </li>
+      </ul>
+    </div>
 
     <div class="row responsive-lg">
       <div class="col-10">
@@ -24,6 +77,9 @@
             <ion-item class="description-accordion" ng-show="isGroupShown(product)">
               <div ng-if="product.data.includes('<img')">
                 <div ng-bind-html="product.data"></div>
+              </div>
+              <div ng-if="product.data.includes('https')">
+                <iframe width="600" height="400" src="{{trustSrc(product.data)}}" allowfullscreen></iframe>
               </div>
             </ion-item>
           </div>
