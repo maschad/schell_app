@@ -187,9 +187,28 @@ function ($scope, $stateParams) {
 
 }])
 
-  .controller('productLinesCtrl', ['$scope', function ($state) {
+.controller('productLinesCtrl', ['$scope', function ($scope) {
+   $scope.options = {
+    wrapper: '#o-wrapper',          // The content wrapper
+    type: 'slide-left',             // The menu type
+    menuOpenerClass: '.c-button',   // The menu opener class names (i.e. the buttons)
+    maskId: '#c-mask'               // The ID of the mask
+  };
+  $scope.body = angular.element(document.body);
+  $scope.wrapper = angular.element(document.querySelectorAll($scope.options.wrapper));
+  $scope.mask = angular.element(document.querySelectorAll($scope.options.maskId));
+  $scope.menu = angular.element(document.querySelectorAll('#c-menu--' + $scope.options.type));
+  $scope.closeBtn = angular.element(document.querySelectorAll('.c-menu__close'));
+  $scope.menuOpeners = document.querySelectorAll($scope.options.menuOpenerClass);
 
-  }])
+  $scope.open = function () {
+    $scope.body.addClass('has-active-menu');
+    $scope.wrapper.addClass('has-' + $scope.options.type);
+    $scope.menu.addClass('is-active');
+    $scope.mask.addClass('is-active');
+  };
+
+}])
 
 .controller('bookmarkCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
