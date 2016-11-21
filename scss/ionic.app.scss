@@ -418,7 +418,6 @@ body.has-active-menu {
   font-size: 14px;
   border: none;
   cursor: pointer;
-  position: absolute;
   z-index: 3;
 }
 
@@ -572,10 +571,15 @@ body.has-active-menu {
 
 .product-filter-heading {
   position: relative;
-  top: 10px;
-  margin-left: -60px;
+  top: -11px;
+  margin-left: 16px;
+  font-size: 16px;
 }
+.checkbox input, .checkbox-icon {
+  width: 22px;
+  height: 22px;
 
+}
 #product-overview-body .product-tile {
   height: 26vw;
 }
@@ -915,6 +919,10 @@ p {
   border-width: 0px;
 }
 
+.item-icon-left .icon:before, .item-icon-right .icon:before {
+  font-size: 10px;
+}
+
 .item.active{
   background-color: transparent;
 }
@@ -963,5 +971,19 @@ p {
 .pane, .view {
   background-color: #7E071C;
 }
+
+.checkbox input:after, .checkbox-icon:after{
+  height: 6px;
+  width: 12px;
+  border: 1px solid black;
+  border-top: 0px;
+  border-right: 0px;
+}
+
+.checkbox input:checked:before, .checkbox input:checked + .checkbox-icon:before {
+  background: white;
+  border-color: white;
+}
+
 
 
