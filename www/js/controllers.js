@@ -99,10 +99,10 @@ function ($scope, $stateParams) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$sce', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $sce) {
+    function ($scope, $ionicPopover, $sce) {
   $scope.products = [
     {
       name: 'TECHNISCHE ZEICHNUNG',
@@ -174,19 +174,16 @@ function ($scope, $stateParams) {
     return group.show;
   };
 
-      //Breadcrumb container
-      //var crumbsContainer = angular.element('.crumbs-container');
-      // var crumbElement = angular.element('<a href="#" id="crumbs-trigger"><span class="indicator glyphicon glyphicon-menu-down pull-right" aria-hidden="true"></span></a>');
+      $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
+        scope: $scope,
+      }).then(function (popover) {
+        $scope.popover = popover;
+        //Ensure popover is ios
+        document.body.classList.add('platform-ios');
+      });
 
-      $scope.chevron = false;
 
-      $scope.toggleChevron = function () {
-        $scope.chevron = !$scope.chevron;
-      };
 
-      function buildCrumbs() {
-        //crumbsContainer.append(crumbElement);
-      }
 
 }])
 
