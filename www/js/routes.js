@@ -43,6 +43,12 @@ angular.module('app.routes', [])
     controller: 'countryselectCtrl'
   })
 
+    .state('product_lines', {
+      url: '/product_lines',
+      templateUrl: 'templates/product_lines.html',
+      controller: 'productLinesCtrl'
+    })
+
     .state('tabsController', {
       url: '/tab',
       templateUrl: 'templates/tabsController.html',
@@ -50,11 +56,11 @@ angular.module('app.routes', [])
     })
 
     .state('detailPage', {
-    url: '/detail_page',
+      url: '/detail_page',
       templateUrl: 'templates/detailPage.html',
       controller: 'detailPageCtrl'
 
-  })
+    })
 
     .state('bookmark', {
       url: 'bookmark',

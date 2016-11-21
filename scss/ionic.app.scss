@@ -31,21 +31,351 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   height: auto;
 }
 
+.c-button {
+  display: inline-block;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  /* background-image: url(../img/icons/filter-icon.png); */
+  background-color: transparent;
+}
+
 .side-nav-home {
-  background-image: url(../img/icons/home-icon.png);
   height: 45px;
   width: 63px;
-  background-repeat: no-repeat;
-  background-position: 0 0;
+  background: url(../img/icons/home-icon.png) no-repeat 0 0;
   margin-bottom: -2px;
 }
 
-.lcard {
-  position: relative;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
+#product-lines-body .side-nav-filter {
+  position: fixed;
 }
+
+#product-lines-body .heading {
+  color: #ffffff;
+}
+
+.product-lines {
+  margin-top: 30px;
+}
+
+.side-nav-filter {
+  margin-top: 1px;
+  margin-left: -1px;
+}
+
+/**
+ * Menu overview.
+ */
+.c-menu {
+  position: fixed;
+  z-index: 200;
+  background-color: rgba(0, 0, 0, 0.72);
+  -webkit-transition: -webkit-transform 0.3s;
+  transition: transform 0.3s;
+}
+
+.c-menu:before {
+  content: '';
+  position: absolute;
+  top: 45px;
+  left: 0;
+  height: 47px;
+  width: 100%;
+  background-color: #000000;
+  z-index: 2;
+}
+
+/**
+ * Left and right menus
+ *
+ * Slide and push menus coming in from the left and right inherit a lot of
+ * common styles. We'll start each of them off by doing up the common styles
+ * for each version, followed by individual styles.
+ *
+ * The various versions are governed by modifier classes.
+ */
+/**
+ * Common modifiers for left/right menus.
+ */
+.c-menu--slide-left,
+.c-menu--slide-right,
+.c-menu--push-left,
+.c-menu--push-right {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+@media all and (min-width: 320px) {
+  .c-menu--slide-left,
+  .c-menu--slide-right,
+  .c-menu--push-left,
+  .c-menu--push-right {
+    width: 300px;
+  }
+}
+
+.c-menu--slide-left .c-menu__item,
+.c-menu--slide-right .c-menu__item,
+.c-menu--push-left .c-menu__item,
+.c-menu--push-right .c-menu__item {
+  display: block;
+  text-align: left;
+  border-top: solid 1px #b5dbe9;
+  border-bottom: solid 1px #3184a1;
+}
+
+.c-menu--slide-left .c-menu__item:first-child,
+.c-menu--slide-right .c-menu__item:first-child,
+.c-menu--push-left .c-menu__item:first-child,
+.c-menu--push-right .c-menu__item:first-child {
+  border-top: none;
+}
+
+.c-menu--slide-left .c-menu__item:last-child,
+.c-menu--slide-right .c-menu__item:last-child,
+.c-menu--push-left .c-menu__item:last-child,
+.c-menu--push-right .c-menu__item:last-child {
+  border-bottom: none;
+}
+
+.c-menu--slide-left .c-menu__link,
+.c-menu--slide-right .c-menu__link,
+.c-menu--push-left .c-menu__link,
+.c-menu--push-right .c-menu__link {
+  display: block;
+  padding: 12px 24px;
+  color: #fff;
+}
+
+.c-menu--slide-left .c-menu__close,
+.c-menu--slide-right .c-menu__close,
+.c-menu--push-left .c-menu__close,
+.c-menu--push-right .c-menu__close {
+  display: block;
+  padding: 6px 20px 6px 9px;
+  width: 100%;
+}
+
+/**
+ * Slide/Push Menu Left.
+ */
+.c-menu--slide-left,
+.c-menu--push-left {
+  top: 0;
+  left: 0;
+  -webkit-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
+  transform: translateX(-100%);
+}
+
+@media all and (min-width: 320px) {
+  .c-menu--slide-left,
+  .c-menu--push-left {
+    -webkit-transform: translateX(-300px);
+    -ms-transform: translateX(-300px);
+    transform: translateX(-300px);
+  }
+}
+
+.c-menu--slide-left.is-active,
+.c-menu--push-left.is-active {
+  -webkit-transform: translateX(0);
+  -ms-transform: translateX(0);
+  transform: translateX(0);
+}
+
+/**
+ * Top and bottom menus
+ *
+ * Slide and push menus coming in from the top and bottom inherit a lot of
+ * common styles. We'll start each of them off by doing up the common styles
+ * for each version, followed by individual styles.
+ *
+ * The various versions are governed by modifier classes.
+
+/**
+ * Common modifiers for top/bottom menus
+ */
+.c-menu--slide-top,
+.c-menu--slide-bottom,
+.c-menu--push-top,
+.c-menu--push-bottom {
+  vertical-align: middle;
+  width: 100%;
+  height: 60px;
+  text-align: center;
+  overflow-x: scroll;
+}
+
+.c-menu--slide-top .c-menu__items,
+.c-menu--slide-bottom .c-menu__items,
+.c-menu--push-top .c-menu__items,
+.c-menu--push-bottom .c-menu__items {
+  display: inline-block;
+  text-align: center;
+}
+
+.c-menu--slide-top .c-menu__item,
+.c-menu--slide-bottom .c-menu__item,
+.c-menu--push-top .c-menu__item,
+.c-menu--push-bottom .c-menu__item {
+  display: inline-block;
+  line-height: 60px;
+}
+
+.c-menu--slide-top .c-menu__link,
+.c-menu--slide-bottom .c-menu__link,
+.c-menu--push-top .c-menu__link,
+.c-menu--push-bottom .c-menu__link {
+  display: block;
+  padding: 0 4px;
+  color: #fff;
+}
+
+.c-menu--slide-top .c-menu__close,
+.c-menu--slide-bottom .c-menu__close,
+.c-menu--push-top .c-menu__close,
+.c-menu--push-bottom .c-menu__close {
+  display: inline-block;
+  margin-right: 12px;
+  padding: 0 24px;
+  height: 60px;
+  line-height: 60px;
+}
+
+/**
+ * Slide/Push Menu Bottom.
+ */
+.c-menu--slide-bottom,
+.c-menu--push-bottom {
+  bottom: 0;
+  left: 0;
+  -webkit-transform: translateY(60px);
+  -ms-transform: translateY(60px);
+  transform: translateY(60px);
+}
+
+.c-menu--slide-bottom.is-active,
+.c-menu--push-bottom.is-active {
+  -webkit-transform: translateY(0);
+  -ms-transform: translateY(0);
+  transform: translateY(0);
+}
+
+/**
+ * Wrapper states.
+ *
+ * Various wrapper states occur depending on if a menu is pushing into view, in
+ * which case, the wrapper has to be pushed by the respective distance.
+ */
+.o-wrapper.has-push-left {
+  -webkit-transform: translateX(100%);
+  -ms-transform: translateX(100%);
+  transform: translateX(100%);
+}
+
+@media all and (min-width: 320px) {
+  .o-wrapper.has-push-left {
+    -webkit-transform: translateX(300px);
+    -ms-transform: translateX(300px);
+    transform: translateX(300px);
+  }
+}
+
+.o-wrapper.has-push-bottom {
+  -webkit-transform: translateY(-60px);
+  -ms-transform: translateY(-60px);
+  transform: translateY(-60px);
+}
+
+/**
+ * Body states.
+ *
+ * When a menu is active, we want to hide the overflows on the body to prevent
+ * awkward document scrolling.
+ */
+body.has-active-menu {
+  overflow: hidden;
+}
+
+/**
+ * Close button resets.
+ */
+.c-menu__close {
+  margin-top: 42px;
+  color: #fff;
+  background: none;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  z-index: 3;
+}
+
+.c-menu__close:focus {
+  outline: none;
+}
+
+/* -----------------------------------------------------------------------------
+
+  MASK COMPONENT
+
+----------------------------------------------------------------------------- */
+.c-mask {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  /*background-color: #000;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s, width 0s 0.3s, height 0s 0.3s;
+          transition: opacity 0.3s, width 0s 0.3s, height 0s 0.3s;*/
+}
+
+.c-mask.is-active {
+  width: 100%;
+  height: 100%;
+  /*opacity: 0.7;
+  -webkit-transition: opacity 0.3s;
+          transition: opacity 0.3s;*/
+}
+
+/* -----------------------------------------------------------------------------
+
+  BUTTONS
+
+----------------------------------------------------------------------------- */
+
+.c-button {
+  display: inline-block;
+  padding: 0;
+  /*height: 23px;
+  width: 23px;*/
+  border: none;
+  cursor: pointer;
+  /*background-image: url(../img/icons/filter-icon.png);*/
+  background-color: transparent;
+  /*background-repeat: no-repeat;
+  background-position: center;*/
+}
+
+.c-button:focus,
+.c-button:target {
+  /*border: 0px solid white;
+  border-radius: 34px;
+  padding: 17px 17px;
+  background-color: white;
+  background-image: url(../img/icons/activate-filter.png);
+  background-repeat: no-repeat;
+  background-size: 96%;
+  background-position: center;*/
+}
+
 
 #product-overview-body .heading {
   color: #ffffff;
@@ -128,6 +458,10 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   }
 }
 
+.side-nav-filter {
+  margin-top: 1px;
+  margin-left: -1px;
+}
 
 .product-counter {
   background-color: #000000;
