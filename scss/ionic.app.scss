@@ -880,7 +880,7 @@ h1.slogan {
 }
 
 .menu-item {
-  background-color: $opace;
+  background-color: transparent;
 }
 
 p {
@@ -911,11 +911,19 @@ p {
   margin-bottom: 0;
 }
 
+.item{
+  border-width: 0px;
+}
+
+.item.active{
+  background-color: transparent;
+}
+
 .description-item {
   background-color: $stable;
 }
 .list .item.item-accordion {
-  background-color: $opace;
+  background-color: rgba(0,0,0,0.1);
   line-height: 38px;
   padding-top: 0;
   padding-bottom: 0;
@@ -952,5 +960,8 @@ p {
   }
 }
 
+.pane, .view {
+  background-color: #7E071C;
+}
 
 

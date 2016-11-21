@@ -101,18 +101,17 @@
       </ion-nav-bar>
       <ion-nav-view></ion-nav-view>
     </ion-side-menu-content>
-    <ion-side-menu side="left" id="side-menu21" style="background-color:#740505;">
-      <ion-header-bar style="background-color: rgba(0,0,0,0.6);">
-        <div class="title-left" style="color: #FFFFFF">PRODUKTFILTER</div>
-      </ion-header-bar>
-      <ion-content ng-controller="menuCtrl" padding="false" class="side-menu-left has-header"
-                   style="background-color: rgba(0,0,0,0.6);">
+    <ion-side-menu side="left" id="side-menu21" style="background-color: rgba(0,0,0,0.7);">
+      <ion-content ng-controller="menuCtrl" padding="false" class="side-menu-left has-header">
         <form id="menu-form" class="list" data-componentid="form9">
           <ion-list>
+            <span>PRODUKTFILTER</span>
             <div ng-repeat="group in groups">
               <ion-item class="menu-item" ng-click="toggleGroup(group)" ng-class="{active: isGroupShown(group)}">
-                {{group.name}}
-                <i class="icon" ng-class="isGroupShown(group) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+                <div style="color: white">
+                  {{group.name}}
+                  <i class="icon" ng-class="isGroupShown(group) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+                </div>
               </ion-item>
               <ion-item class="item-accordion" ng-show="isGroupShown(group)">
                 <div ng-repeat="item in group.items">
