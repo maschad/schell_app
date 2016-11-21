@@ -2,10 +2,10 @@
   <ion-content padding="true" class="has-header">
 
     <div class="row responsive-lg">
-      <div class="col">
+      <div class="col-10">
         <img src="../img/0xyJsJUhRaGGSgpTrLRa_product-1.png" class="responsive-lg">
       </div>
-      <div id="detailPage-markdown3" class="col">
+      <div id="detailPage-markdown3" class="col col-offset-20">
         <p id="detailPage-heading4" class="product-order-number">Bestellnummer: 00 803 08 99</p>
         <p id="detailPage-heading3" class="product-name">SCHELL Vorwand-Duschpaneel LINUS DP-SC</p>
         <p class="product-summary">Selbstschluss Duschpaneel aus stabilem Alu-Strangpressprofil mit hochwertiger
@@ -22,7 +22,9 @@
               <i class="icon" ng-class="isGroupShown(product) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
             </ion-item>
             <ion-item class="description-accordion" ng-show="isGroupShown(product)">
-              {{product.data}}
+              <div ng-if="product.data.includes('<img')">
+                <div ng-bind-html="product.data"></div>
+              </div>
             </ion-item>
           </div>
         </ion-list>
