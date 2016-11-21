@@ -160,7 +160,14 @@ function ($scope, $stateParams) {
       data: 'https://www.youtube.com/watch?time_continue=1&v=yDvws-yl_Ew',
       show: false
     }
-  ]
+  ];
+
+  $scope.toggleGroup = function (group) {
+    group.show = !group.show;
+  };
+  $scope.isGroupShown = function (group) {
+    return group.show;
+  };
 
 }])
 
