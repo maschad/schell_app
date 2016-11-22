@@ -78,8 +78,10 @@
           <div ng-repeat="product in products">
             <ion-item class="description-item" ng-click="toggleGroup(product)"
                       ng-class="{active: isGroupShown(product)}">
-              {{product.name}}
-              <i class="icon" ng-class="isGroupShown(product) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+              <div class="item-icon-right">
+                {{product.name}}
+                <i class="icon" ng-class="isGroupShown(product) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+              </div>
             </ion-item>
             <ion-item class="description-accordion" ng-show="isGroupShown(product)">
               <div ng-if="product.data.includes('<img')">
@@ -87,6 +89,39 @@
               </div>
               <div ng-if="product.data.includes('https')">
                 <iframe width="600" height="400" src="{{trustSrc(product.data)}}" allowfullscreen></iframe>
+              </div>
+              <div ng-if="product.name == 'DOWNLOADS'">
+                <div class="row">
+                  <div class="col">
+                    <img src="../img/download-thumbnail-1.png">
+                  </div>
+                  <div class="col-75">
+                    <p><strong>Montageanleitung</strong></p>
+                    <p> Duschpaneele, DP-SC-T, DP-SC-M, DP-SC-V</p>
+                    <button class="button button-calm">Download</button>
+                    <select>
+                      <option>Deutsch</option>
+                      <option>English</option>
+                      <option>Française</option>
+                      <option>Italiano</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <img src="../img/download-thumbnail-2.png">
+                  </div>
+                  <div class="col-75">
+                    <p><strong>Montageanleitung</strong></p>
+                    <button class="button button-calm">Download</button>
+                    <select>
+                      <option>Deutsch</option>
+                      <option>English</option>
+                      <option>Française</option>
+                      <option>Italiano</option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </ion-item>
           </div>
