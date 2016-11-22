@@ -111,7 +111,7 @@ function ($scope, $stateParams) {
   $scope.products = [
     {
       name: 'TECHNISCHE ZEICHNUNG',
-      data: '<img src="../img/technical-drawing.png">',
+      data: '<img src="img/technical-drawing.png">',
       show: false
     },
     {
