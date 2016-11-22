@@ -8,8 +8,7 @@
 angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ion-floating-menu', 'ksSwiper', 'app.controllers', 'app.routes', 'app.directives', 'app.services'])
 
 .config(function($ionicConfigProvider, $sceDelegateProvider,$ionicFilterBarConfigProvider){
-
-
+  $ionicConfigProvider.backButton.previousTitleText(false).text('');
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
 
 })
