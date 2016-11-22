@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ion-floating-menu', 'ksSwiper', 'app.controllers', 'app.routes', 'app.directives', 'app.services'])
 
-.config(function($ionicConfigProvider, $sceDelegateProvider){
+.config(function($ionicConfigProvider, $sceDelegateProvider,$ionicFilterBarConfigProvider){
 
 
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);

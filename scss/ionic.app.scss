@@ -21,7 +21,8 @@ $calm: transparentize($dark, 0.3) !default;
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 // Include all of Ionic
-@import "www/lib/ionic/scss/ionic";
+@import "www/lib/ionic/scss/ionic",
+"www/lib/ionic-filter-bar/scss/ionic.filter.bar";
 
 .bookmark-list-count {
   display: none;

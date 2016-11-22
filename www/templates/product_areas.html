@@ -1,8 +1,14 @@
 <ion-view title="products" id="page4" style="background-color:#9e0a22;">
+  <!-- Filter search bar -->
+  <ion-nav-buttons side="secondary">
+    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
+    </button>
+  </ion-nav-buttons>
+  <!-- FAB -->
   <ion-floating-button click="myEvent()" has-footer="false" button-color="#2c2a2b" icon="ion-home" icon-color="#fff">
   </ion-floating-button>
   <ion-content padding="true" class="has-header">
-    <!-- search bar -->
+    <!-- search bar
     <div id="search-bar-wrapper">
       <form id="search" action="#" method="post">
         <div id="label" ng-class="{'active' : enabled}">
@@ -12,7 +18,7 @@
           <input type="text" name="search-terms" id="search-terms">
         </div>
       </form>
-    </div>
+    </div>-->
 
 
     <h3 id="products-heading6" style="color:#FFFFFF; text-align: center;">Das SCHELL Produktsortiment</h3>

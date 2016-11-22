@@ -2,10 +2,10 @@
 <widget id="com.ionicframework.schellapp336515" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>schell-app</name>
   <description>
-        An Ionic Framework and Cordova project.
+        A Schell application.
     </description>
-  <author email="you@example.com" href="http://example.com.com/">
-      Your Name Here
+  <author email="chad@knightfoxapps.com" href="http://example.com.com/">
+      Chad Nehemiah
     </author>
   <content src="index.html"/>
   <access origin="*"/>
@@ -57,5 +57,6 @@
     <splash src="resources/ios/splash/Default-Portrait~ipad.png" height="1024" width="768"/>
     <splash src="resources/ios/splash/Default@2x~iphone.png" height="960" width="640"/>
     <splash src="resources/ios/splash/Default~iphone.png" height="480" width="320"/>
+    <preference name="KeyboardDisplayRequiresUserAction" value="false"/>
   </platform>
 </widget>

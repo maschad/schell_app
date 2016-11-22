@@ -42,21 +42,24 @@ function ($scope, $state, $ionicPopover,$stateParams) {
 
     }])
 
-  .controller('product_areasCtrl', ['$scope', '$state', '$stateParams',
-    function ($scope, $state, $stateParams) {
+  .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar',
+    function ($scope, $state,$ionicFilterBar) {
       $scope.items = [];
       $scope.enabled = false;
-      /**
-       // search bar functionality
-       $scope.searchEl = angular.element(document.getElementById('input'));
-       $scope.labelEl = angular.element(document.getElementById('label'));
+      $scope.items = null;
 
-
-       $scope.open = function () {
-          $scope.searchEl.addClass("focus");
-          $scope.labelEl.addClass("active");
+      $scope.showFilterBar = function () {
+        var filterBarInstance = $ionicFilterBar.show({
+          items: $scope.items,
+          update: function (filteredItems, filterText) {
+            $scope.items = filteredItems;
+            if (filterText) {
+              console.log(filterText);
+            }
+          }
+        });
       };
-       **/
+
       $scope.myEvent = function () {
         $state.go('start-screen');
       };
@@ -201,7 +204,7 @@ function ($scope, $stateParams) {
 
 }])
 
-  .controller('MenuCtrl', ['$scope',
+.controller('MenuCtrl', ['$scope',
     function ($scope) {
       $scope.groups = [
         {
