@@ -1,10 +1,11 @@
-<ion-view id="countryselect" style="background-color:#740505;">
+<ion-view id="countryselect" style="background-color:#9e0a22;" hide-nav-bar="true">
   <ion-content padding="true" class="has-header">
     <img class="center" src="img/logo.png">
     <div style="padding: 20px;"></div>
     <form id="countryselect-form8" class="list">
-      <span class="input-label" style="color: #FFFFFF">Wählen Sie Ihr Land:</span>
-      <label class="item item-select" id="countryselect-select1" name="country">
+      <span style="color: #FFFFFF; padding: 3px;">Wählen Sie Ihr Land:</span>
+      <div style="padding: 5px;"></div>
+      <label class="item item-select" id="countryselect-select1">
         <span class="input-label"></span>
         <select>
           <option>Deutschland</option>
@@ -14,7 +15,7 @@
         </select>
       </label>
     </form>
-    <a id="countryselect-button1" class="button button-dark  button-block" ng-href="#/start-screen">Angaben
-      speichern</a>
+    <button id="countryselect-button1" class="button button-black  button-block" ui-sref="start-screen" style="text-align: center;">Angaben
+      speichern</button>
   </ion-content>
 </ion-view>

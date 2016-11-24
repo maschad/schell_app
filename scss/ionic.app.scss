@@ -24,6 +24,15 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 @import "www/lib/ionic/scss/ionic",
 "www/lib/ionic-filter-bar/scss/ionic.filter.bar";
 
+.button.button-black {
+  border-color: transparent;
+  background-color: $black;
+  color: #fff;
+}
+.card .item:last-child, .list-inset .item:last-child, .padding > .list .item:last-child {
+  border-radius: 10px;
+}
+
 .bookmark-list-count {
   display: none;
   position: absolute;
@@ -912,7 +921,7 @@ p {
 
 @media (max-width: 767px) {
   p {
-    font-size: 11px;
+    font-size: 17px;
   }
 }
 
