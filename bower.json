@@ -6,6 +6,12 @@
   },
   "dependencies": {
     "moment": "^2.16.0",
-    "ion-floating-menu": "^1.0.5"
+    "ion-floating-menu": "^1.0.5",
+    "angular": "^1.5.9",
+    "angular-animate": "^1.5.9",
+    "angular-sanitize": "^1.5.9",
+    "angular-swiper": "^0.4.0",
+    "angular-ui-router": "^0.3.2",
+    "swiper": "^3.4.0"
   }
 }
