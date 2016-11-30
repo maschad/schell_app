@@ -293,6 +293,18 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 .button.button-block-start-screen {
   padding: 20px;
+  width: 250px;
+}
+
+
+
+@media (max-width: 490px) {
+  .button.button-block-start-screen {
+    width: 350px;
+  }
+  .start-text {
+    font-size: 0px;
+  }
 }
 
 .button.button-black {
