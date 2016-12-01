@@ -193,8 +193,13 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('productLinesCtrl', ['$scope', function ($scope) {
-
+.controller('productLinesCtrl', ['$scope' , '$state', function ($scope,$state) {
+      $scope.content = {
+        title: 'DUSCHE'
+      };
+      $scope.myEvent = function () {
+        $state.go('start-screen');
+      };
 }])
 
 .controller('bookmarkCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
