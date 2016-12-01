@@ -66,7 +66,19 @@ angular.module('app.routes', [])
       url: 'bookmark',
       templateUrl: 'templates/bookmark.html',
       controller: 'bookmarkCtrl'
-  });
+    })
+
+    .state('offline_storage', {
+      url: 'offline_storage',
+      templateUrl: 'templates/offline_storage.html',
+      controller: 'offlineStorageCtrl'
+     })
+
+    .state('region', {
+      url: 'region',
+      templateUrl: 'templates/region.html',
+      controller: 'regionCtrl'
+    });
 
 $urlRouterProvider.otherwise('/country_select')
 
