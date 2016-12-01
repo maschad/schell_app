@@ -1304,4 +1304,47 @@ p {
 }
 
 
+.platform-ios .popover-arrow:after {
+  content: ' ';
+  width: 20px;
+  height: 20px;
+  background: url(../img/curve.png) no-repeat;
+  position: absolute;
+  top: 4px;
+  right: 0;
+  left: 10px;
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.popover-arrow {
+  right: 0;
+}
+
+
+@media (min-width: 300px){
+  .popover {
+    height: 310px;
+    width: 220px;
+  }
+
+}
+
+.platform-ios .popover {
+  border-radius: 4px;
+}
+
+ion-popover-view.fit {
+  height: auto !important;
+}
+
+ion-popover-view.fit ion-content {
+  position: relative !important;
+}
+
+.platform-android ion-popover-view.fit {
+  margin-top: 10px !important;
+}
+
+
 
