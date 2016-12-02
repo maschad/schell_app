@@ -855,6 +855,7 @@ body.has-active-menu {
   color: #9e0a22;
   font-size: 28px;
   font-weight: bold;
+  line-height: 38px;
 }
 
 @media (max-width: 767px){
@@ -1346,5 +1347,25 @@ ion-popover-view.fit ion-content {
   margin-top: 10px !important;
 }
 
+#offline .checkbox input:before, .checkbox .checkbox-icon:before {
+  border-color: black;
+  box-shadow: inset 0px 0px 0px 2px white;
+}
 
+#offline .checkbox input:checked:before, .checkbox input:checked + .checkbox-icon:before {
+    background: gray;
+    border-color: gray;
+}
 
+#offline .checkbox input:after, .checkbox-icon:after {
+  display: none;
+}
+
+#offline .item-checkbox .checkbox {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  /* left: 8px; */
+  z-index: 3;
+  margin-top: -21px;
+}

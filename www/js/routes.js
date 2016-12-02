@@ -69,7 +69,7 @@ angular.module('app.routes', [])
     })
 
     .state('offline_storage', {
-      url: 'offline_storage',
+      url: 'offlineStorage',
       templateUrl: 'templates/offline_storage.html',
       controller: 'offlineStorageCtrl'
      })

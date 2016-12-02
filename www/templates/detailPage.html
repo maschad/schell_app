@@ -61,11 +61,11 @@
 
   <ion-content padding="false" class="has-header">
 
-    <div class="row">
-      <div class="col col-10">
+    <div class="row responsive-sm">
+      <div class="col col-40">
         <img src="img/product-1.png" class="product-img">
       </div>
-      <div id="detailPage-markdown3" class="col col-offset-20">
+      <div id="detailPage-markdown3" class="col">
         <p id="detailPage-heading4" class="product-order-number">Bestellnummer: 00 803 08 99</p>
         <p id="detailPage-heading3" class="product-name">SCHELL Vorwand-Duschpaneel LINUS DP-SC</p>
         <p class="product-summary">Selbstschluss Duschpaneel aus stabilem Alu-Strangpressprofil mit hochwertiger
@@ -75,58 +75,59 @@
           bzw. für Vorwandanschlüsse von oben.</p>
         <p class="product-noted">LINUS DP-SC-M, Selbstschluss - Mischwasser, mit Duschkopf COMFORT</p>
         <ion-list>
-          <div ng-repeat="product in products">
-            <ion-item class="description-item" ng-click="toggleGroup(product)"
-                      ng-class="{active: isGroupShown(product)}">
-              <div class="item-icon-right">
-                {{product.name}}
-                <i class="icon" ng-class="isGroupShown(product) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
-              </div>
-            </ion-item>
-            <ion-item class="description-accordion" ng-show="isGroupShown(product)">
-              <div ng-if="product.data.includes('<img')">
-                <div ng-bind-html="product.data"></div>
-              </div>
-              <div ng-if="product.data.includes('https')">
-                <iframe width="600" height="400" src="{{trustSrc(product.data)}}" allowfullscreen></iframe>
-              </div>
-              <div ng-if="product.name == 'DOWNLOADS'">
-                <div class="row">
-                  <div class="col">
-                    <img src="img/download-thumbnail-1.png">
+            <div ng-repeat="product in products">
+              <ion-item class="description-item" ng-click="toggleGroup(product)"
+                        ng-class="{active: isGroupShown(product)}">
+                <div class="item-icon-right">
+                  {{product.name}}
+                  <i class="icon" ng-class="isGroupShown(product) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+                </div>
+              </ion-item>
+              <ion-item class="description-accordion" ng-show="isGroupShown(product)">
+                <div ng-if="product.data.includes('<img')">
+                  <div ng-bind-html="product.data"></div>
+                </div>
+                <div ng-if="product.data.includes('https')">
+                  <iframe width="600" height="400" src="{{trustSrc(product.data)}}" allowfullscreen></iframe>
+                </div>
+                <div ng-if="product.name == 'DOWNLOADS'">
+                  <div class="row">
+                    <div class="col">
+                      <img src="img/download-thumbnail-1.png">
+                    </div>
+                    <div class="col-75">
+                      <p><strong>Montageanleitung</strong></p>
+                      <p> Duschpaneele, DP-SC-T, DP-SC-M, DP-SC-V</p>
+                      <button class="button button-calm">Download</button>
+                      <select>
+                        <option>Deutsch</option>
+                        <option>English</option>
+                        <option>Française</option>
+                        <option>Italiano</option>
+                      </select>
+                    </div>
                   </div>
-                  <div class="col-75">
-                    <p><strong>Montageanleitung</strong></p>
-                    <p> Duschpaneele, DP-SC-T, DP-SC-M, DP-SC-V</p>
-                    <button class="button button-calm">Download</button>
-                    <select>
-                      <option>Deutsch</option>
-                      <option>English</option>
-                      <option>Française</option>
-                      <option>Italiano</option>
-                    </select>
+                  <div class="row">
+                    <div class="col">
+                      <img src="img/download-thumbnail-2.png">
+                    </div>
+                    <div class="col-75">
+                      <p><strong>Montageanleitung</strong></p>
+                      <button class="button button-calm">Download</button>
+                      <select>
+                        <option>Deutsch</option>
+                        <option>English</option>
+                        <option>Française</option>
+                        <option>Italiano</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col">
-                    <img src="img/download-thumbnail-2.png">
-                  </div>
-                  <div class="col-75">
-                    <p><strong>Montageanleitung</strong></p>
-                    <button class="button button-calm">Download</button>
-                    <select>
-                      <option>Deutsch</option>
-                      <option>English</option>
-                      <option>Française</option>
-                      <option>Italiano</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </ion-item>
-          </div>
-        </ion-list>
-        <img src="img/design-awards.png">
+              </ion-item>
+            </div>
+          </ion-list>
+          <img src="img/design-awards.png">
+        </div>
       </div>
     </div>
 

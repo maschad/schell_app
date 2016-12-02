@@ -13,6 +13,13 @@
     "angular-swiper": "^0.4.0",
     "angular-ui-router": "^0.3.2",
     "swiper": "^3.4.0",
-    "ionic-filter-bar": "^1.1.1"
+    "ionic-filter-bar": "^1.1.1",
+    "ngstorage": "^0.3.11"
+  },
+  "resolutions": {
+    "angular": "^1.5.9",
+    "angular-animate": "^1.5.9",
+    "angular-sanitize": "^1.5.9",
+    "angular-ui-router": "^0.3.2"
   }
 }
