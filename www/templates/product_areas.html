@@ -1,12 +1,15 @@
 <ion-view title="products" id="page4" style="background-color:#9e0a22;">
-  <!-- Filter search bar -->
-  <ion-nav-buttons side="secondary">
+  <ion-nav-buttons side="right">
+    <!-- Filter search bar -->
     <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
     </button>
+    <!-- Breadcrumb ionic -->
+    <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
   <!-- FAB -->
   <ion-floating-button click="myEvent()" has-footer="false" button-color="#2c2a2b" icon="ion-home" icon-color="#fff">
   </ion-floating-button>
+
   <ion-content padding="true" class="has-header">
     <div class="row">
       <div class="col text-left">
@@ -19,85 +22,76 @@
     <div class="row responsive-sm">
 
       <div class="col">
-        <div class="col">
-          <div class="product-tile">
-            <div class="col-33">
-              <div class="product-counter">
-                <p>145 Artikel</p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-25">
-                <img src="img/waschtisch-basin.png" class="center" style="width: auto;">
-              </div>
-              <h3 class="product-type" style="text-align: right;">Waschtisch</h3>
+        <div class="product-tile">
+          <div class="col col-40">
+            <div class="product-counter">
+              <p>145 Artikel</p>
             </div>
           </div>
-          </div>
-        </div>
-
-      <div class="col">
-        <div class="col">
-          <div ui-sref="product_lines">
-            <div class="product-tile">
-              <div class="col-33">
-                <div class="product-counter">
-                  <p>1145 Artikel</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-25">
-                  <img src="img/dusche-shower.png" class="responsive-sm center">
-                </div>
-                <h3 class="product-type" style="text-align: right;">Dusche</h3>
-              </div>
+          <div class="row">
+            <div class="col-25">
+              <img src="img/waschtisch-basin.png" class="center" style="width: auto;">
             </div>
-          </div>
-          </div>
-        </div>
-
-
-      <div class="col">
-        <div class="col">
-          <div class="product-tile">
-            <div class="col-33">
-              <div class="product-counter">
-                <p>45 Artikel</p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-25">
-                <img src="img/wc.png" class="responsive-sm center">
-              </div>
-              <h3 class="product-type" style="text-align: right;">WC</h3>
-            </div>
-          </div>
-          </div>
-        </div>
-
-    </div>
-    <div class="row responsive-sm">
-
-      <div class="col">
-        <div class="col">
-          <div class="product-tile">
-            <div class="col-33">
-              <div class="product-counter">
-                <p>45 Artikel</p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-25">
-                <img src="img/urinal.png" class="responsive-sm center">
-              </div>
-              <h3 class="product-type" style="text-align: right;">urinal</h3>
-            </div>
+            <h3 class="product-type" style="text-align: right;">Waschtisch</h3>
           </div>
         </div>
       </div>
 
       <div class="col">
-        <div class="col">
+        <div ui-sref="product_lines">
+          <div class="product-tile">
+            <div class="col col-40">
+              <div class="product-counter">
+                <p>1145 Artikel</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-25">
+                <img src="img/dusche-shower.png" class="responsive-sm center">
+              </div>
+              <h3 class="product-type" style="text-align: right;">Dusche</h3>
+            </div>
+          </div>
+        </div>
+        </div>
+
+
+      <div class="col">
+        <div class="product-tile">
+          <div class="col col-40">
+            <div class="product-counter">
+              <p>45 Artikel</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-25">
+              <img src="img/wc.png" class="responsive-sm center">
+            </div>
+            <h3 class="product-type" style="text-align: right;">WC</h3>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="row responsive-sm">
+
+      <div class="col">
+        <div class="product-tile">
+          <div class="col-33">
+            <div class="product-counter">
+              <p>45 Artikel</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-25">
+              <img src="img/urinal.png" class="responsive-sm center">
+            </div>
+            <h3 class="product-type" style="text-align: right;">urinal</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
@@ -112,22 +106,19 @@
             </div>
           </div>
         </div>
-      </div>
 
       <div class="col">
-        <div class="col">
-          <div class="product-tile">
-            <div class="col-33">
-              <div class="product-counter">
-                <p>45 Artikel</p>
-              </div>
+        <div class="product-tile">
+          <div class="col-33">
+            <div class="product-counter">
+              <p>45 Artikel</p>
             </div>
-            <div class="row">
-              <div class="col-25">
-                <img src="img/cd-instrument.png" class="responsive-sm center">
-              </div>
-              <h3 class="product-type" style="text-align: right;">Gerateanschluss Armaturen</h3>
+          </div>
+          <div class="row">
+            <div class="col-25">
+              <img src="img/cd-instrument.png" class="responsive-sm center">
             </div>
+            <h3 class="product-type" style="text-align: right;">Gerateanschluss Armaturen</h3>
           </div>
         </div>
       </div>
@@ -135,8 +126,7 @@
     </div>
 
     <div class="row responsive-sm">
-      <div class="col">
-        <div class="col-33">
+        <div class="col col-33">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
