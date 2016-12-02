@@ -61,7 +61,7 @@ function ($scope, $state, $ionicPopover,$stateParams) {
       };
 
       $scope.myEvent = function () {
-        $state.go('start-screen');
+
       };
 
 }])

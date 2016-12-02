@@ -1369,3 +1369,14 @@ ion-popover-view.fit ion-content {
   z-index: 3;
   margin-top: -21px;
 }
+
+#floating-menu {
+  /*right: 20px; */
+  left: 20px;
+
+}
+
+#floating-menu li span.label-container {
+  text-align: left;
+  left: 75px;
+}
