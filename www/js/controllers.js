@@ -44,25 +44,36 @@ function ($scope, $state, $ionicPopover,$stateParams) {
 
   .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar',
     function ($scope, $state,$ionicFilterBar) {
-      $scope.items = [];
-      $scope.enabled = false;
-      $scope.items = null;
+
+      //#TODO: Load products from local storage
+      $scope.products = [{
+        name: 'waschtisch',
+        article: '114',
+        image: 'http://www.schell.eu/typo3temp/GB/17caba3208.png'
+      },
+      {
+        name: 'urinal',
+        article: '1114',
+        image: 'img/urinal.png'
+      }];
+
+
 
       $scope.showFilterBar = function () {
         var filterBarInstance = $ionicFilterBar.show({
-          items: $scope.items,
+          items: $scope.products,
           update: function (filteredItems, filterText) {
-            $scope.items = filteredItems;
+            $scope.products = filteredItems;
             if (filterText) {
               console.log(filterText);
+              console.log(filteredItems);
             }
           }
         });
       };
 
-      $scope.myEvent = function () {
+      //#TODO: add popover
 
-      };
 
 }])
 
