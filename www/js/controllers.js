@@ -46,13 +46,8 @@ function ($scope, $state, $ionicPopover,$stateParams) {
     function ($scope, $state,$ionicFilterBar,DataService) {
 
       $scope.products = [];
-      $scope.row1 = [];
-      $scope.row2 = [];
-      $scope.row3 = [];
-
 
       //#TODO: Load products from local storage
-
       function getProducts() {
         DataService.download().then(function (snapshot) {
           snapshot.forEach(function (product) {
@@ -61,9 +56,7 @@ function ($scope, $state, $ionicPopover,$stateParams) {
         });
 
       }
-
-
-
+      //Loading products
       getProducts();
 
 
