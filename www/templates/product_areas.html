@@ -30,13 +30,13 @@
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
-                <p><strong>{{product[$index].downloads}} Artikel</strong></p>
+                <p><strong>{{products[$index].downloads}} Artikel</strong></p>
               </div>
             </div>
             <div class="row">
               <div class="col-25">
-                <img src="{{product.bild}}" class="center" style="width: auto;"></div>
-              <h3 class="product-type" style="text-align: right;">{{product.title_de}}</h3>
+                <img src="{{products[$index].bild}}" class="center" style="width: auto;"></div>
+              <h3 class="product-type" style="text-align: right;">{{products[$index].title_de}}</h3>
             </div>
           </div>
         </div>
@@ -44,13 +44,13 @@
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
-                <p><strong>{{product[$index + 1].downloads}} Artikel</strong></p>
+                <p><strong>{{products[$index + 1].downloads}} Artikel</strong></p>
               </div>
             </div>
             <div class="row">
               <div class="col-25">
-                <img src="{{product.bild}}" class="center" style="width: auto;"></div>
-              <h3 class="product-type" style="text-align: right;">{{product.title_de}}</h3>
+                <img src="{{products[$index + 1].bild}}" class="center" style="width: auto;"></div>
+              <h3 class="product-type" style="text-align: right;">{{products[$index + 1].title_de}}</h3>
             </div>
           </div>
         </div>
@@ -58,13 +58,13 @@
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
-                <p><strong>{{product[$index + 2].downloads}} Artikel</strong></p>
+                <p><strong>{{products[$index + 2].downloads}} Artikel</strong></p>
               </div>
             </div>
             <div class="row">
               <div class="col-25">
-                <img src="{{product.bild}}" class="center" style="width: auto;"></div>
-              <h3 class="product-type" style="text-align: right;">{{product.title_de}}</h3>
+                <img src="{{products[$index + 2].bild}}" class="center" style="width: auto;"></div>
+              <h3 class="product-type" style="text-align: right;">{{products[$index + 2].title_de}}</h3>
             </div>
           </div>
         </div>
