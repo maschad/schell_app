@@ -58,9 +58,11 @@ function ($scope, $state, $ionicPopover,$stateParams) {
           snapshot.forEach(function (product) {
             $scope.products.push(product.val());
           });
-        })
+        });
 
       }
+
+
 
       getProducts();
 
