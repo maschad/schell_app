@@ -1,9 +1,12 @@
 angular.module('app.controllers', [])
 
-.controller('start_screenCtrl', ['$scope','$state','$ionicPopover', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('start_screenCtrl', ['$scope','$state','$ionicPopover','$rootScope', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $ionicPopover,$stateParams) {
+function ($scope, $state, $ionicPopover,$rootScope) {
+
+  //Whether to allow settings based on network connection
+  $scope.show = $rootScope.enableSettings;
 
   $scope.swiper = {};
 

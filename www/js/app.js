@@ -13,7 +13,10 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
 
 })
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform,$ionicPopup,$rootScope) {
+  //Enable settings
+  $rootScope.enableSettings = true;
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -24,6 +27,22 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
+    }
+
+
+    //Check for internet
+    if(window.Connection) {
+      if (navigator.connection.type == Connection.NONE) {
+        $ionicPopup.confirm({
+          title: "Internet Disconnected",
+          content: "The internet is disconnected on your device. Settings will be disabled"
+        })
+          .then(function (result) {
+            if (!result) {
+              $rootScope.enableSettings = false;
+            }
+          });
+      }
     }
   });
 });
