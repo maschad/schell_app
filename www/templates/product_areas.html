@@ -26,9 +26,26 @@
     </div>
     <!-- Products -->
     <div class="row responsive-sm">
-        <div class="col" ng-repeat="product in products">
+      <div ng-repeat="product in products" class="col" >
+        <div class="product-tile">
+          <div class="col-33">
+            <div class="product-counter">
+              <p><strong>{{product.downloads}} Artikel</strong></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-25">
+              <img src="{{product.bild}}" class="center" style="width: auto;">
+            </div>
+            <h3 class="product-type" style="text-align: right;">{{product.title_de}}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row responsive-sm">
+        <div ng-repeat="product in row2" class="col" >
           <div class="product-tile">
-            <div class="col-67">
+            <div class="col-33">
               <div class="product-counter">
                 <p><strong>{{product.downloads}} Artikel</strong></p>
               </div>
@@ -41,12 +58,30 @@
             </div>
           </div>
         </div>
-
-      <div ng-if="products !== undefined && !products.length" class="no-results">
-        <p>No Results</p>
-      </div>
-
     </div>
+    <div class="row responsive-sm">
+      <div ng-repeat="product in row3" class="col" >
+        <div class="product-tile">
+          <div class="col-33">
+            <div class="product-counter">
+              <p><strong>{{product.downloads}} Artikel</strong></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-25">
+              <img src="{{product.bild}}" class="center" style="width: auto;">
+            </div>
+            <h3 class="product-type" style="text-align: right;">{{product.title_de}}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div ng-if="products !== undefined && !products.length" class="no-results">
+      <p>No Results</p>
+    </div>
+
 
 
   </ion-content>
