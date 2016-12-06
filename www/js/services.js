@@ -1,6 +1,10 @@
 angular.module('app.services', [])
 
-.factory('StorageService', [function($localStorage){
+.factory('StorageService','$localStorage', [function($localStorage){
+
+  $localStorage = $localStorage.$default({
+    products: []
+  });
 
   var getAll = function () {
     return $localStorage.products;
@@ -29,7 +33,15 @@ angular.module('app.services', [])
   };
 
   var downloadData = function () {
-    return firebase.database().ref('/product_categories/').orderByKey().limitToFirst(10).once('value');
+    var products = [];
+    firebase.database().ref('/product_categories/').orderByKey().limitToFirst(10).once('value');
+    DataService.download().then(function (snapshot) {
+      snapshot.forEach(function (product) {
+        products.push(product.val());
+      });
+    });
+
+    return products;
   };
 
   return {
