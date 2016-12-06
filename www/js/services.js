@@ -29,7 +29,7 @@ angular.module('app.services', [])
   };
 
   var downloadData = function () {
-    return firebase.database().ref('/product_categories/1').once('value');
+    return firebase.database().ref('/product_categories/').orderByKey().once('value');
   };
 
   return {

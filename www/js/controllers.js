@@ -63,13 +63,13 @@ function ($scope, $state, $ionicPopover,$stateParams) {
 
       function getProducts() {
         DataService.download().then(function (snapshot) {
-          angular.forEach(snapshot.val(),function (value, key) {
-            this.push(key + ':' + value);
-          }, $scope.products)
+          snapshot.forEach(function (product) {
+            $scope.products.push(product.val());
+          });
         })
       }
-
       getProducts();
+
 
 
 
