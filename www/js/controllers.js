@@ -42,20 +42,34 @@ function ($scope, $state, $ionicPopover,$stateParams) {
 
     }])
 
-  .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar',
-    function ($scope, $state,$ionicFilterBar) {
+  .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','DataService',
+    function ($scope, $state,$ionicFilterBar,DataService) {
+
+      $scope.products = [];
+
 
       //#TODO: Load products from local storage
+      /**
       $scope.products = [{
         name: 'waschtisch',
         article: '114',
-        image: 'http://www.schell.eu/typo3temp/GB/17caba3208.png'
+        image: 'http://www.schell.eu/uploads/tx_dbprodukte/KAT_Waschtisch_Modus.jpg'
       },
       {
         name: 'urinal',
         article: '1114',
         image: 'img/urinal.png'
-      }];
+      }];**/
+
+      function getProducts() {
+        DataService.download().then(function (snapshot) {
+          angular.forEach(snapshot.val(),function (value, key) {
+            this.push(key + ':' + value);
+          }, $scope.products)
+        })
+      }
+
+      getProducts();
 
 
 
@@ -64,10 +78,6 @@ function ($scope, $state, $ionicPopover,$stateParams) {
           items: $scope.products,
           update: function (filteredItems, filterText) {
             $scope.products = filteredItems;
-            if (filterText) {
-              console.log(filterText);
-              console.log(filteredItems);
-            }
           }
         });
       };

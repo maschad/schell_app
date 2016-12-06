@@ -22,6 +22,19 @@ angular.module('app.services', [])
 
 }])
 
-.service('BlankService', [function(){
+.factory('DataService', [function(){
+
+  var goOffline = function () {
+    firebase.database().goOffline();
+  };
+
+  var downloadData = function () {
+    return firebase.database().ref('/product_categories/1').once('value');
+  };
+
+  return {
+    goOffline : goOffline,
+    download : downloadData
+  };
 
 }]);
