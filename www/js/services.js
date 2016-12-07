@@ -1,6 +1,6 @@
 angular.module('app.services', [])
 
-.factory('StorageService','$localStorage', [function($localStorage){
+.factory('StorageService', ['$localStorage', function($localStorage){
 
   $localStorage = $localStorage.$default({
     products: []
@@ -26,27 +26,30 @@ angular.module('app.services', [])
 
 }])
 
-.factory('DataService', [function(){
+.factory('DataService', ['$ionicPopup', function($ionicPopup){
 
   var goOffline = function () {
     firebase.database().goOffline();
   };
-
-  var downloadData = function () {
+  //Download Product Data
+  var downloadProductData = function () {
     var products = [];
-    firebase.database().ref('/product_categories/').orderByKey().limitToFirst(10).once('value');
-    DataService.download().then(function (snapshot) {
+    firebase.database().ref('/product_categories/').orderByKey().once('value').then(function (snapshot) {
       snapshot.forEach(function (product) {
         products.push(product.val());
       });
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
     });
-
     return products;
   };
 
   return {
     goOffline : goOffline,
-    download : downloadData
+    downloadProductData : downloadProductData
   };
 
 }]);

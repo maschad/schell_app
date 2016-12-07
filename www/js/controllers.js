@@ -50,7 +50,7 @@ function ($scope, $state, $ionicPopover,$rootScope) {
 
       $scope.products = [];
 
-      //#TODO: Load products from local storage
+      //Load products for local storage
       function getProducts() {
         $scope.products = StorageService.getAll();
       }
@@ -66,8 +66,6 @@ function ($scope, $state, $ionicPopover,$rootScope) {
           }
         });
       };
-
-      //#TODO: add popover
 
 
 }])
@@ -108,10 +106,10 @@ function ($scope, $stateParams) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce', '$ionicActionSheet', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicPopover, $sce,$ionicActionSheet) {
+    function ($scope, $ionicPopover, $sce) {
 
       //The products to be show in collapsable list
   $scope.products = [
@@ -187,7 +185,7 @@ function ($scope, $stateParams) {
   };
   //Popover function
   $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
-    scope: $scope,
+    scope: $scope
   }).then(function (popover) {
     $scope.popover = popover;
     //Ensure popover is ios
@@ -215,10 +213,32 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('offlineStorageCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('offlineStorageCtrl', ['$scope','$ionicLoading', '$ionicLoading', 'DataService', 'StorageService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope, $stateParams) {
+  function ($scope,$ionicLoading,DataService,StorageService) {
+    // Sync option automatically enabled
+    $scope.mobileSync = true;
+    $scope.autoSync = true;
+
+    //Loading functions
+    $scope.show = function() {
+      $ionicLoading.show({
+        template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
+        animation:'fade-in',
+        showBackdrop:true
+      });
+    };
+    $scope.hide = function(){
+      $ionicLoading.hide();
+    };
+    //#TODO: Check if mobile sync is deactivated first
+    $scope.show();
+    $scope.products = DataService.downloadProductData();
+    $scope.hide();
+    for(product in $scope.products){
+      StorageService.add(product);
+    }
 
 }])
 
