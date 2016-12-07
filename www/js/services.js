@@ -31,6 +31,7 @@ angular.module('app.services', [])
   var goOffline = function () {
     firebase.database().goOffline();
   };
+
   //Download Product Data
   var downloadProductData = function () {
     var products = [];
