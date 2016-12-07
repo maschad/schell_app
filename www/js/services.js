@@ -18,10 +18,15 @@ angular.module('app.services', [])
     $localStorage.products.splice($localStorage.products.indexOf(product));
   };
 
+  var storeAll = function (data) {
+    $localStorage.products = data;
+  };
+
   return {
     getAll : getAll,
     add : add,
-    remove : remove
+    remove : remove,
+    storeAll : storeAll
   };
 
 }])

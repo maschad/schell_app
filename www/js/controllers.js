@@ -56,7 +56,7 @@ function ($scope, $state, $ionicPopover,$rootScope) {
       }
       //Loading products
       getProducts();
-
+      console.log(StorageService.getAll());
 
       $scope.showFilterBar = function () {
         var filterBarInstance = $ionicFilterBar.show({
@@ -234,11 +234,9 @@ function ($scope, $stateParams) {
     };
     //#TODO: Check if mobile sync is deactivated first
     $scope.show();
-    $scope.products = DataService.downloadProductData();
+    StorageService.storeAll(DataService.downloadProductData());
     $scope.hide();
-    for(product in $scope.products){
-      StorageService.add(product);
-    }
+
 
 }])
 
