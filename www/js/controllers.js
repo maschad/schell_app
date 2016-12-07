@@ -56,7 +56,6 @@ function ($scope, $state, $ionicPopover,$rootScope) {
       }
       //Loading products
       getProducts();
-      console.log(StorageService.getAll());
 
       $scope.showFilterBar = function () {
         var filterBarInstance = $ionicFilterBar.show({
@@ -218,7 +217,7 @@ function ($scope, $stateParams) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
   function ($scope,$ionicLoading,DataService,StorageService) {
     // Sync option automatically enabled
-    $scope.mobileSync = true;
+    $scope.mobileSync = false;
     $scope.autoSync = true;
 
     //Loading functions
