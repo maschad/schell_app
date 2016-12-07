@@ -57,6 +57,7 @@ function ($scope, $state, $ionicPopover,$rootScope) {
       //Loading products
       getProducts();
 
+
       $scope.showFilterBar = function () {
         var filterBarInstance = $ionicFilterBar.show({
           items: $scope.products,

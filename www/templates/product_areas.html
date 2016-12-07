@@ -30,7 +30,8 @@
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
-                <p><strong>{{products[$index].child_ids}} Artikel</strong></p>
+                <p ng-if="products[$index].child_ids"><strong>{{products[$index].child_ids.length}} Artikel</strong></p>
+                <p ng-if="products[$index].product_ids"><strong>{{products[$index].product_ids.length}} Artikel</strong></p>
               </div>
             </div>
             <div class="row">
@@ -40,11 +41,12 @@
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 1] != undefined">
+        <div class="col" ng-if="products[$index + 1] != undefined && products[$index + 1].bild != ''">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
-                <p><strong>{{products[$index + 1].downloads}} Artikel</strong></p>
+                <p ng-if="products[$index + 1].child_ids"><strong>{{products[$index + 1].child_ids.length}} Artikel</strong></p>
+                <p ng-if="products[$index + 1].product_ids"><strong>{{products[$index + 1].product_ids.length}} Artikel</strong></p>
               </div>
             </div>
             <div class="row">
@@ -54,11 +56,12 @@
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 2] != undefined">
+        <div class="col" ng-if="products[$index + 2] != undefined && products[$index + 2].bild != ''">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
-                <p><strong>{{products[$index + 2].downloads}} Artikel</strong></p>
+                <p ng-if="products[$index + 2].child_ids"><strong>{{products[$index + 2].child_ids.length}} Artikel</strong></p>
+                <p ng-if="products[$index + 2].product_ids"><strong>{{products[$index + 2].product_ids.length}} Artikel</strong></p>
               </div>
             </div>
             <div class="row">
