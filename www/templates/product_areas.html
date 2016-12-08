@@ -25,8 +25,8 @@
       </div>
     </div>
     <!-- Products -->
-    <div ng-repeat="product in products | filter : filteredItems" ng-if="$index%3 == 0" class="row responsive-sm">
-        <div class="col" ng-if="product.bild != '' ">
+    <div ng-repeat="product in products" ng-if="$index%3 == 0" class="row responsive-sm">
+        <div class="col">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 1] != undefined && products[$index + 1].bild != ''">
+        <div class="col" ng-if="products[$index + 1] != undefined">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 2] != undefined && products[$index + 2].bild != ''">
+        <div class="col" ng-if="products[$index + 2] != undefined">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">

@@ -45,17 +45,19 @@ function ($scope, $state, $ionicPopover,$rootScope) {
 
     }])
 
-  .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','StorageService',
-    function ($scope, $state,$ionicFilterBar,StorageService) {
+  .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','StorageService','DataService',
+    function ($scope, $state,$ionicFilterBar,StorageService,DataService) {
 
       $scope.products = [];
 
       //Load products for local storage
       function getProducts() {
-        $scope.products = StorageService.getAll();
+        $scope.products = DataService.downloadProductCategories();
       }
       //Loading products
       getProducts();
+
+      console.log($scope.products);
 
 
       $scope.showFilterBar = function () {

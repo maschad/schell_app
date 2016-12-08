@@ -3,7 +3,7 @@ angular.module('app.services', [])
 .factory('StorageService', ['$localStorage', function($localStorage){
 
   $localStorage = $localStorage.$default({
-    products: [],
+    productsCategories: [],
     total: 0,
     offlinePreferences: []
   });
@@ -22,6 +22,10 @@ angular.module('app.services', [])
 
   var storeAll = function (data) {
     $localStorage.products = data;
+  };
+
+  var getProductCategories = function(){
+    return $localStorage.productsCategories;
   };
 
   var updatePreferences = function (data) {
@@ -60,10 +64,28 @@ angular.module('app.services', [])
     return products;
   };
 
+  var downloadProductCategories = function () {
+    var products = [];
+
+    firebase.database().ref('/product_categories/').orderByChild('elternelement').equalTo(0).once('value').then(function (snapshot) {
+      snapshot.forEach(function (product) {
+        products.push(product.val());
+      });
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
+    });
+
+    return products;
+  };
+
 
   return {
     goOffline : goOffline,
-    downloadProductData : downloadProductData
+    downloadProductData : downloadProductData,
+    downloadProductCategories : downloadProductCategories
   };
 
 }]);
