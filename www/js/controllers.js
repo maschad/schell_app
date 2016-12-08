@@ -45,14 +45,14 @@ function ($scope, $state, $ionicPopover,$rootScope) {
 
     }])
 
-  .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','StorageService','DataService',
-    function ($scope, $state,$ionicFilterBar,StorageService,DataService) {
+  .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','StorageService',
+    function ($scope, $state,$ionicFilterBar,StorageService) {
 
       $scope.products = [];
 
       //Load products for local storage
       function getProducts() {
-        $scope.products = DataService.downloadProductCategories();
+        $scope.products = StorageService.getProductCategories();
       }
       //Loading products
       getProducts();
@@ -236,7 +236,7 @@ function ($scope, $stateParams) {
     };
     //#TODO: Check if mobile sync is deactivated first
     $scope.show();
-    StorageService.storeAll(DataService.downloadProductData());
+    StorageService.storeProductCategories(DataService.downloadProductCategories());
     $scope.hide();
 
 

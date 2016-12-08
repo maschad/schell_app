@@ -3,6 +3,7 @@ angular.module('app.services', [])
 .factory('StorageService', ['$localStorage', function($localStorage){
 
   $localStorage = $localStorage.$default({
+    products: [],
     productsCategories: [],
     total: 0,
     offlinePreferences: []
@@ -24,6 +25,10 @@ angular.module('app.services', [])
     $localStorage.products = data;
   };
 
+  var storeProductCategories = function (data) {
+    $localStorage.productsCategories = data;
+  };
+
   var getProductCategories = function(){
     return $localStorage.productsCategories;
   };
@@ -37,7 +42,9 @@ angular.module('app.services', [])
     add : add,
     remove : remove,
     storeAll : storeAll,
-    updatePreferences: updatePreferences
+    updatePreferences: updatePreferences,
+    getProductCategories : getProductCategories,
+    storeProductCategories : storeProductCategories
   };
 
 }])
