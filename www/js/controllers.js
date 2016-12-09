@@ -13,11 +13,9 @@ function ($scope, $state, $ionicPopover,$rootScope) {
   $scope.onReadySwiper = function (swiper) {
 
     swiper.on('slideChangeStart', function () {
-      console.log('slide start');
     });
 
     swiper.on('onSlideChangeEnd', function () {
-      console.log('slide end');
     });
   };
 
@@ -57,8 +55,9 @@ function ($scope, $state, $ionicPopover,$rootScope) {
       //Loading products
       getProducts();
 
-      $scope.choice = function (child_ids) {
+      $scope.choice = function (child_ids, title) {
         StorageService.storeSubCategories(child_ids);
+        StorageService.storeTitle(title);
         $state.go('product_lines');
       };
 
@@ -204,17 +203,20 @@ function ($scope, $stateParams) {
 .controller('productLinesCtrl', ['$scope' , '$state', 'StorageService',function ($scope,$state,StorageService) {
       $scope.products = [];
 
-      $scope.content = {
-        title: 'DUSCHE'
-      };
+
 
       function getProducts() {
         $scope.products = StorageService.loadSubCategories();
+        $scope.title = StorageService.getTitle();
       }
 
       //Load the products
       getProducts();
-      console.log($scope.products);
+      console.log($scope.title);
+
+      $scope.content = {
+        title: $scope.title
+      };
       $scope.myEvent = function () {
         $state.go('start-screen');
       };

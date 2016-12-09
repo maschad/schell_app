@@ -1,4 +1,4 @@
-<ion-view title="products" id="page4" style="background-color:#9e0a22;">
+<ion-view title="Produktkategorien" id="page4" style="background-color:#9e0a22;">
   <ion-nav-buttons side="right">
     <!-- Filter search bar -->
     <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
@@ -26,7 +26,7 @@
     </div>
     <!-- Products -->
     <div ng-repeat="product in products" ng-if="$index%3 == 0" class="row responsive-sm">
-        <div class="col" ng-click="choice(products[$index].child_ids)">
+        <div class="col" ng-click="choice(products[$index].child_ids,products[$index].title_de)">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 1] != undefined" ng-click="choice(products[$index + 2].child_ids)">
+        <div class="col" ng-if="products[$index + 1] != undefined" ng-click="choice(products[$index + 1].child_ids,products[$index + 1].title_de)">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 2] != undefined" ng-click="choice(products[$index + 2].child_ids)">
+        <div class="col" ng-if="products[$index + 2] != undefined" ng-click="choice(products[$index + 2].child_ids,products[$index + 2].title_de)">
           <div class="product-tile">
             <div class="col-33">
               <div class="product-counter">
