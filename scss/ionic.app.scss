@@ -32,6 +32,17 @@ body, .ionic-body {
   font-style: normal;
 }
 
+input, button, select, textarea {
+  font-family: SyntaxLTStd-Roman, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #000;
+  font-weight: 500;
+  font-family: SyntaxLTStd-Roman, sans-serif;
+  line-height: 1.2;
+}
+
 // Schell Icons
 @font-face {
   font-family: 'schellicons';
