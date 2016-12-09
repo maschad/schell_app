@@ -1,8 +1,8 @@
 angular.module('app.services', [])
 
-.factory('StorageService', ['$localStorage', function($localStorage){
+.factory('StorageService', ['$localStorage',  function($localStorage){
+  //Subcategories to be returned
   var subs = [];
-
 
   $localStorage = $localStorage.$default({
     products: [],
@@ -36,7 +36,7 @@ angular.module('app.services', [])
   };
 
   var storeSubCategories = function (child_ids) {
-
+    subs = [];
     for(var i = 0; i < $localStorage.products.length; i ++){
       for(j=0; j < child_ids.length; j++){
         if ($localStorage.products[i]['elternelement'] == child_ids[j]){
@@ -53,6 +53,8 @@ angular.module('app.services', [])
   var updatePreferences = function (data) {
     $localStorage.offlinePreferences = data;
   };
+
+
 
   return {
     getAll : getAll,

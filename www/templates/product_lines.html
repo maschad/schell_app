@@ -13,191 +13,54 @@
       <div class="container">
         <div class="product-lines">
           <h3 class="heading">Wandeinbau Duscharmaturen</h3>
-          <div class="row responsive-md">
-
-            <div class="col">
+          <!-- Products -->
+          <div ng-repeat="product in products" ng-if="$index%3 == 0" class="row responsive-sm">
+            <div class="col" ng-click="choice(products[$index].child_ids)">
               <div class="product-tile">
                 <div class="col-33">
                   <div class="product-counter">
-                    <p>145 Artikel</p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-67">
-                    <h3 class="product-type" style="text-align: left;">Linus</h3>
-                  </div>
-                  <img src="img/linus.png" class="center" style="width: auto;">
-                </div>
-              </div>
-            </div>
-
-            <div class="col">
-              <div class="product-tile">
-                <div class="col col-40">
-                  <div class="product-counter">
-                    <p>1145 Artikel</p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-67">
-                    <h3 class="product-type" style="text-align: left;">Linus Basic</h3>
-                  </div>
-                  <img src="img/linus-basic.png" class="responsive-sm center">
-                </div>
-              </div>
-            </div>
-
-
-            <div class="col">
-              <div class="product-tile">
-                <div class="col col-40">
-                  <div class="product-counter">
-                    <p>45 Artikel</p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-60">
-                    <h3 class="product-type" style="text-align: left;">Wandeinbau Masterboxen</h3>
-                  </div>
-                  <img src="img/masterboxen.png" class="responsive-sm center">
-                </div>
-              </div>
-            </div>
-
-          </div>
-          <div class="row responsive-md">
-
-            <div class="col col-33">
-              <div class="product-tile">
-                <div class="col col-40">
-                  <div class="product-counter">
-                    <p>45 Artikel</p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-60">
-                    <h3 class="product-type" style="text-align: left;">Montagemodule</h3>
-                  </div>
-                  <img src="img/montagemodule.png" class="responsive-sm center">
-                </div>
-              </div>
-            </div>
-
-            <div class="col col-33">
-              <div class="product-tile">
-                <div class="col col-40">
-                  <div class="product-counter">
-                    <p>45 Artikel</p>
+                    <p ng-if="products[$index].child_ids"><strong>{{products[$index].child_ids.length}} Artikel</strong></p>
+                    <p ng-if="products[$index].product_ids"><strong>{{products[$index].product_ids.length}} Artikel</strong></p>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-25">
-                    <img src="img/zubehor.png" class="responsive-sm center">
-                  </div>
-                  <h3 class="product-type" style="text-align: right;">Zubehör</h3>
+                    <img src="{{products[$index].bild}}" class="center" style="width: auto;"></div>
+                  <h3 class="product-type" style="text-align: right;">{{products[$index].title_de}}</h3>
                 </div>
               </div>
             </div>
-
-          </div>
-      </div>
-      </div>
-      <div class="container">
-        <div class="product-lines">
-          <h3 class="heading">Vorwand Duscharmaturen</h3>
-          <div class="row responsive-sm">
-
-            <div class="col" ui-sref="product_overview">
-                <div class="product-tile">
-                  <div class="col-33">
-                    <div class="product-counter">
-                      <p>145 Artikel</p>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-60">
-                      <h3 class="product-type" style="text-align: left;">Bezeichnung der Kategorie</h3>
-                    </div>
-                    <img src="img/waschtisch-basin.png" class="center" style="width: auto;">
+            <div class="col" ng-if="products[$index + 1] != undefined" ng-click="choice(products[$index + 2].child_ids)">
+              <div class="product-tile">
+                <div class="col-33">
+                  <div class="product-counter">
+                    <p ng-if="products[$index + 1].child_ids"><strong>{{products[$index + 1].child_ids.length}} Artikel</strong></p>
+                    <p ng-if="products[$index + 1].product_ids"><strong>{{products[$index + 1].product_ids.length}} Artikel</strong></p>
                   </div>
                 </div>
-
-            </div>
-
-            <div class="col">
-                <div class="product-tile">
-                  <div class="col col-67">
-                    <div class="product-counter">
-                      <p>1145 Artikel</p>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-60">
-                      <h3 class="product-type" style="text-align: left;">Linus Basic</h3>
-                    </div>
-                    <img src="img/linus-basic.png" class="responsive-sm center">
-                  </div>
-                </div>
-
-            </div>
-
-
-            <div class="col">
-                <div class="product-tile">
-                  <div class="col-33">
-                    <div class="product-counter">
-                      <p>45 Artikel</p>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-60">
-                      <h3 class="product-type" style="text-align: left;">Wandeinbau Masterboxen</h3>
-                    </div>
-                    <img src="img/masterboxen.png" class="responsive-sm center">
-                  </div>
+                <div class="row">
+                  <div class="col-25">
+                    <img src="{{products[$index + 1].bild}}" class="center" style="width: auto;"></div>
+                  <h3 class="product-type" style="text-align: right;">{{products[$index + 1].title_de}}</h3>
                 </div>
               </div>
-
-
-          </div>
-          <div class="row responsive-sm">
-
-            <div class="col col-33">
-                <div class="product-tile">
-                  <div class="col-33">
-                    <div class="product-counter">
-                      <p>45 Artikel</p>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-60">
-                      <h3 class="product-type" style="text-align: left;">Montagemodule</h3>
-                    </div>
-                    <img src="img/montagemodule.png" class="responsive-sm center">
+            </div>
+            <div class="col" ng-if="products[$index + 2] != undefined" ng-click="choice(products[$index + 2].child_ids)">
+              <div class="product-tile">
+                <div class="col-33">
+                  <div class="product-counter">
+                    <p ng-if="products[$index + 2].child_ids"><strong>{{products[$index + 2].child_ids.length}} Artikel</strong></p>
+                    <p ng-if="products[$index + 2].product_ids"><strong>{{products[$index + 2].product_ids.length}} Artikel</strong></p>
                   </div>
                 </div>
-            </div>
-
-            <div class="col col-33">
-                <div class="product-tile">
-                  <div class="col-33">
-                    <div class="product-counter">
-                      <p>45 Artikel</p>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-60">
-                      <h3 class="product-type" style="text-align: left;">Zubehör</h3>
-                    </div>
-                    <h3 class="product-type" style="text-align: left;">Zubehör</h3>
-                  </div>
+                <div class="row">
+                  <div class="col-25">
+                    <img src="{{products[$index + 2].bild}}" class="center" style="width: auto;"></div>
+                  <h3 class="product-type" style="text-align: right;">{{products[$index + 2].title_de}}</h3>
                 </div>
               </div>
-
+            </div>
           </div>
-
-
-
         </div>
       </div>
     </div>
