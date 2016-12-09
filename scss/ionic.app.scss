@@ -24,6 +24,14 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 @import "www/lib/ionic/scss/ionic",
 "www/lib/ionic-filter-bar/scss/ionic.filter.bar";
 
+
+//Fonts
+body, .ionic-body {
+  font-family: SyntaxLTStd-Roman,sans-serif;
+  font-weight: normal;
+  font-style: normal;
+}
+
 // Schell Icons
 @font-face {
   font-family: 'schellicons';
@@ -408,7 +416,14 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 
 .center {
+  display: block;
+  max-width: 100%;
+  height: 70px;
+}
 
+.center-logo {
+  margin-left: auto;
+  margin-right: auto;
   display: block;
   max-width: 100%;
   height: 70px;
@@ -1385,6 +1400,34 @@ ion-popover-view.fit ion-content {
   font-size: 20px;
   padding: 50px;
   text-align: center;
+}
+
+
+
+.SyntaxLTStd-Bold {
+  font-family: SyntaxLTStd-Bold;
+  font-weight: normal;
+  font-style: normal;
+}
+.SyntaxLTStd-Black {
+  font-family: SyntaxLTStd-Black;
+  font-weight: normal;
+  font-style: normal;
+}
+.SyntaxLTStd-Roman {
+  font-family: SyntaxLTStd-Roman;
+  font-weight: normal;
+  font-style: normal;
+}
+.SyntaxLTStd-Italic {
+  font-family: SyntaxLTStd-Italic;
+  font-weight: normal;
+  font-style: normal;
+}
+.SyntaxLTStd-UltraBlack {
+  font-family: SyntaxLTStd-UltraBlack;
+  font-weight: normal;
+  font-style: normal;
 }
 
 

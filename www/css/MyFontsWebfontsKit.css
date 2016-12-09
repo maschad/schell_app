@@ -1,0 +1,52 @@
+/**
+ * @license
+ * MyFonts Webfont Build ID 3231325, 2016-06-10T06:18:07-0400
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: SyntaxLTStd-Bold by Linotype
+ * URL: http://www.myfonts.com/fonts/linotype/syntax/bold/
+ * 
+ * Webfont: SyntaxLTStd-Black by Linotype
+ * URL: http://www.myfonts.com/fonts/linotype/syntax/black/
+ * 
+ * Webfont: SyntaxLTStd-Roman by Linotype
+ * URL: http://www.myfonts.com/fonts/linotype/syntax/syntax/
+ * 
+ * Webfont: SyntaxLTStd-Italic by Linotype
+ * URL: http://www.myfonts.com/fonts/linotype/syntax/italic/
+ * 
+ * Webfont: SyntaxLTStd-UltraBlack by Linotype
+ * URL: http://www.myfonts.com/fonts/linotype/syntax/ultrablack/
+ * 
+ * 
+ * License: http://www.myfonts.com/viewlicense?type=web&buildid=3231325
+ * Licensed pageviews: 250,000
+ * Webfonts copyright: Copyright &#x00A9; 1989, 1990, 2002 Adobe Systems Incorporated.  All Rights Reserved. &#x00A9; 1981, 2002 Heidelberger Druckmaschinen AG. All rights reserved.
+ * 
+ * © 2016 MyFonts Inc
+*/
+
+
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/314e5d");
+
+  
+@font-face {font-family: 'SyntaxLTStd-Bold';src: url('webfonts/314E5D_0_0.eot');src: url('webfonts/314E5D_0_0.eot?#iefix') format('embedded-opentype'),url('webfonts/314E5D_0_0.woff2') format('woff2'),url('webfonts/314E5D_0_0.woff') format('woff'),url('webfonts/314E5D_0_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'SyntaxLTStd-Black';src: url('webfonts/314E5D_1_0.eot');src: url('webfonts/314E5D_1_0.eot?#iefix') format('embedded-opentype'),url('webfonts/314E5D_1_0.woff2') format('woff2'),url('webfonts/314E5D_1_0.woff') format('woff'),url('webfonts/314E5D_1_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'SyntaxLTStd-Roman';src: url('webfonts/314E5D_2_0.eot');src: url('webfonts/314E5D_2_0.eot?#iefix') format('embedded-opentype'),url('webfonts/314E5D_2_0.woff2') format('woff2'),url('webfonts/314E5D_2_0.woff') format('woff'),url('webfonts/314E5D_2_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'SyntaxLTStd-Italic';src: url('webfonts/314E5D_3_0.eot');src: url('webfonts/314E5D_3_0.eot?#iefix') format('embedded-opentype'),url('webfonts/314E5D_3_0.woff2') format('woff2'),url('webfonts/314E5D_3_0.woff') format('woff'),url('webfonts/314E5D_3_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'SyntaxLTStd-UltraBlack';src: url('webfonts/314E5D_4_0.eot');src: url('webfonts/314E5D_4_0.eot?#iefix') format('embedded-opentype'),url('webfonts/314E5D_4_0.woff2') format('woff2'),url('webfonts/314E5D_4_0.woff') format('woff'),url('webfonts/314E5D_4_0.ttf') format('truetype');}
+ 

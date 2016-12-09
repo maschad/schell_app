@@ -212,7 +212,6 @@ function ($scope, $stateParams) {
 
       //Load the products
       getProducts();
-      console.log($scope.title);
 
       $scope.content = {
         title: $scope.title
