@@ -1,6 +1,8 @@
 angular.module('app.services', [])
 
 .factory('StorageService', ['$localStorage', function($localStorage){
+  var subs = [];
+
 
   $localStorage = $localStorage.$default({
     products: [],
@@ -33,6 +35,21 @@ angular.module('app.services', [])
     return $localStorage.productsCategories;
   };
 
+  var storeSubCategories = function (child_ids) {
+
+    for(var i = 0; i < $localStorage.products.length; i ++){
+      for(j=0; j < child_ids.length; j++){
+        if ($localStorage.products[i]['elternelement'] == child_ids[j]){
+          subs.push($localStorage.products[i]);
+        }
+      }
+    }
+  };
+
+  var loadSubCategories = function () {
+    return subs;
+  };
+
   var updatePreferences = function (data) {
     $localStorage.offlinePreferences = data;
   };
@@ -44,7 +61,9 @@ angular.module('app.services', [])
     storeAll : storeAll,
     updatePreferences: updatePreferences,
     getProductCategories : getProductCategories,
-    storeProductCategories : storeProductCategories
+    storeProductCategories : storeProductCategories,
+    storeSubCategories : storeSubCategories,
+    loadSubCategories : loadSubCategories
   };
 
 }])

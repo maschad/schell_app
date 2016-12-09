@@ -9,76 +9,104 @@ angular.module('app.routes', [])
   $stateProvider
 
     .state('start-screen', {
-    url: '/start-screen',
+      url: '/start-screen',
       templateUrl: 'templates/start_screen.html',
-      controller: 'start_screenCtrl'
-  })
+      controller: 'start_screenCtrl',
+      ncyBreadcrumb: {
+        label: 'Home'
+      }
+    })
 
     .state('products', {
       url: '/product_areas',
       templateUrl: 'templates/product_areas.html',
-      controller: 'product_areasCtrl'
+      controller: 'product_areasCtrl',
+      ncyBreadcrumb: {
+        label: 'Products'
+      }
     })
     .state('product_overview', {
       url: '/product_overview',
       templateUrl: 'templates/product_overview.html',
-      controller: 'productsCtrl'
-  })
+      controller: 'productsCtrl',
+      ncyBreadcrumb: {
+        label: 'Overview'
+      }
+    })
 
   .state('video', {
     url: '/video',
     templateUrl: 'templates/video.html',
-    controller: 'videoCtrl'
+    controller: 'videoCtrl',
+    ncyBreadcrumb: {
+      label: 'video'
+    }
   })
 
   .state('settings', {
     url: '/settings',
     templateUrl: 'templates/settings.html',
-    controller: 'settingsCtrl'
+    controller: 'settingsCtrl',
+    ncyBreadcrumb: {
+      label: 'settings'
+    }
   })
 
   .state('countryselect', {
     url: '/country_select',
     templateUrl: 'templates/countryselect.html',
-    controller: 'countryselectCtrl'
+    controller: 'countryselectCtrl',
+    ncyBreadcrumb: {
+      label: 'Country'
+    }
   })
 
-    .state('product_lines', {
-      url: '/product_lines',
-      templateUrl: 'templates/product_lines.html',
-      controller: 'productLinesCtrl'
-    })
+  .state('product_lines', {
+    url: '/product_lines',
+    templateUrl: 'templates/product_lines.html',
+    controller: 'productLinesCtrl',
+    ncyBreadcrumb: {
+      label: 'Lines'
+    }
+  })
 
-    .state('tabsController', {
-      url: '/tab',
-      templateUrl: 'templates/tabsController.html',
-      abstract: true
-    })
 
-    .state('detailPage', {
-      url: '/detail_page',
-      templateUrl: 'templates/detailPage.html',
-      controller: 'detailPageCtrl'
+  .state('detailPage', {
+    url: '/detail_page',
+    templateUrl: 'templates/detailPage.html',
+    controller: 'detailPageCtrl',
+    ncyBreadcrumb: {
+      label: 'Details'
+    }
 
-    })
+  })
 
-    .state('bookmark', {
-      url: 'bookmark',
-      templateUrl: 'templates/bookmark.html',
-      controller: 'bookmarkCtrl'
-    })
+  .state('bookmark', {
+    url: 'bookmark',
+    templateUrl: 'templates/bookmark.html',
+    controller: 'bookmarkCtrl',
+    ncyBreadcrumb: {
+      label: 'Bookmark'
+    }
+  })
 
-    .state('offline_storage', {
-      url: 'offlineStorage',
-      templateUrl: 'templates/offline_storage.html',
-      controller: 'offlineStorageCtrl'
-     })
+  .state('offline_storage', {
+    url: 'offlineStorage',
+    templateUrl: 'templates/offline_storage.html',
+    controller: 'offlineStorageCtrl',
+    ncyBreadcrumb: {
+      label: 'Offline Settings'
+    }
+   })
 
-    .state('region', {
-      url: 'region',
-      templateUrl: 'templates/region.html',
-      controller: 'regionCtrl'
-    });
+  .state('region', {
+    url: 'region',
+    templateUrl: 'templates/region.html',
+    controller: 'regionCtrl',
+    ncyBreadcrumb: {
+      label: 'Regional Settings'
+    }
+  });
 
 $urlRouterProvider.otherwise('/country_select')
 

@@ -15,7 +15,8 @@
     "angular-ui-router": "^0.3.2",
     "swiper": "^3.4.0",
     "ionic-filter-bar": "^1.1.1",
-    "ngstorage": "^0.3.11"
+    "ngstorage": "^0.3.11",
+    "angular-breadcrumb": "^0.5.0"
   },
   "resolutions": {
     "angular": "^1.5.9",

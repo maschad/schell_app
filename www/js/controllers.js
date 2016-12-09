@@ -57,8 +57,10 @@ function ($scope, $state, $ionicPopover,$rootScope) {
       //Loading products
       getProducts();
 
-      console.log($scope.products);
-
+      $scope.choice = function (child_ids) {
+        StorageService.storeSubCategories(child_ids);
+        $state.go('product_lines');
+      };
 
       $scope.showFilterBar = function () {
         var filterBarInstance = $ionicFilterBar.show({
@@ -199,10 +201,20 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('productLinesCtrl', ['$scope' , '$state', function ($scope,$state) {
+.controller('productLinesCtrl', ['$scope' , '$state', 'StorageService',function ($scope,$state,StorageService) {
+      $scope.products = [];
+
       $scope.content = {
         title: 'DUSCHE'
       };
+
+      function getProducts() {
+        $scope.products = StorageService.loadSubCategories();
+      }
+
+      //Load the products
+      getProducts();
+      console.log($scope.products);
       $scope.myEvent = function () {
         $state.go('start-screen');
       };
@@ -236,6 +248,7 @@ function ($scope, $stateParams) {
     };
     //#TODO: Check if mobile sync is deactivated first
     $scope.show();
+    StorageService.storeAll(DataService.downloadProductData());
     StorageService.storeProductCategories(DataService.downloadProductCategories());
     $scope.hide();
 
