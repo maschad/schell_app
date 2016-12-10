@@ -1,21 +1,17 @@
-<ion-view title="products" id="page4" style="background-color:#9e0a22;">
+<ion-view  style="background-color:#9e0a22;">
+  <ion-nav-title>{{title}}</ion-nav-title>
   <!-- FAB -->
   <ion-floating-button click="myEvent()" has-footer="false" button-color="#2c2a2b" icon="ion-home" icon-color="#fff">
   </ion-floating-button>
 
   <ion-content>
     <div id="product-overview-body">
-      <!-- side nav filter -->
-      <div class="side-nav-filter">
-        <button id="c-button--push-left" class="c-button" menu-toggle="left"><img src="../img/icons/icon-filter.png"></button>
-      </div>
-
 
       <h3 class="heading">Bezeichnung der Kategorie</h3>
       <div ng-repeat="product in products" class="row responsive-sm" ng-if="$index%2 === 0">
         <div ng-repeat="p in product">
 
-          <div class="col" ng-if="p.media.image_portrait">
+          <div class="col" ng-if="p.media.image_portrait" ng-click="choice(p,p.nummer)">
             <div class="product-tile">
               <div class="row">
                 <div class="col-70">

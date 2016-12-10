@@ -36,52 +36,57 @@ function ($scope, $state, $ionicPopover,$rootScope) {
   };
 }])
 
-  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$stateParams', 'StorageService','DataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'StorageService','DataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams, $ionicFilterBar,StorageService,DataService) {
-      $scope.products = [];
+  function ($scope, $ionicFilterBar,$state,StorageService,DataService) {
+    $scope.products = [];
 
-      function getProducts() {
-        $scope.products = DataService.downloadProducts(StorageService.getProductInfo());
-      }
+    function getProducts() {
+      $scope.products = DataService.downloadProducts(StorageService.getProductInfo());
+      $scope.title = StorageService.getTitle();
+    }
 
-      //load Products
-      getProducts();
+    //load Products
+    getProducts();
 
-      console.log($scope.products);
+    $scope.choice = function (product,title) {
+      StorageService.detailDisplay(product);
+      StorageService.storeTitle(title);
+      $state.go('detailPage');
+    };
 
-    }])
+  }])
 
-  .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','StorageService',
-    function ($scope, $state,$ionicFilterBar,StorageService) {
+.controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','StorageService',
+  function ($scope, $state,$ionicFilterBar,StorageService) {
 
-      $scope.products = [];
+    $scope.products = [];
 
-      //Load products for local storage
-      function getProducts() {
-        $scope.products = StorageService.getProductCategories();
-      }
-      //Loading products
-      getProducts();
+    //Load products for local storage
+    function getProducts() {
+      $scope.products = StorageService.getProductCategories();
+    }
+    //Loading products
+    getProducts();
 
-      $scope.choice = function (child_ids, title) {
-        StorageService.storeSubCategories(child_ids);
-        StorageService.storeTitle(title);
-        $state.go('product_lines');
-      };
+    $scope.choice = function (child_ids, title) {
+      StorageService.storeSubCategories(child_ids);
+      StorageService.storeTitle(title);
+      $state.go('product_lines');
+    };
 
-      $scope.showFilterBar = function () {
-        var filterBarInstance = $ionicFilterBar.show({
-          items: $scope.products,
-          update: function (filteredItems, filterText) {
-            $scope.products = filteredItems;
-          }
-        });
-      };
+    $scope.showFilterBar = function () {
+      var filterBarInstance = $ionicFilterBar.show({
+        items: $scope.products,
+        update: function (filteredItems, filterText) {
+          $scope.products = filteredItems;
+        }
+      });
+    };
 
 
-    }])
+  }])
 
 .controller('menuCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -124,69 +129,40 @@ function ($scope, $stateParams) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $ionicPopover, $sce,DataService,StorageService) {
 
-    $scope.info = [];
+    $scope.title = StorageService.getTitle();
 
     //The products to be show in collapsable list
-  $scope.products = [
-    {
-      name: 'TECHNISCHE ZEICHNUNG',
-      data: '<img src="img/technical-drawing.png">',
-      show: false
-    },
-    {
-      name: 'LIEFERUMFANG',
-      data: ['Paneel mit vormontierter LINUS ' +
-      'Duscharmatur mit integrerter Selbstschlusskartusche SC' +
-      ' inklusive Verrohrung zwischen' +
-      ' Armatur und Duschkopfanschluss',
-        'Betätigungsknopf SC',
-        '2 Rückflussverhinderer (RV, DIN EN 1717: EB)',
-        'Duschkopf: Durchfluss 9 l/min druckunabhängig',
-        'Befestigungsmaterial',
-        'Anschlusszubehör'],
-      show: false
-    },
-    {
-      name: 'EINSATZBEREICH / TECHNISCHE DATEN:',
-      data: ['Durchfluss Armatur: ' +
-      '≤ 10,0 l/min bei 3bar Fließdruck',
-        'Fließdruck: 1,5 - 5,0 bar',
-        'Warmwassertemperatur max. 70 °C (Kurzzeitnutzung)',
-        'Laufzeiteinstellung: 5 - 30 s',
-        'Abmessung: 1200 mm x 226 mm x 115 mm'],
-      show: false
-    },
-    {
-      name: 'DETAILS',
-      data: ['Werkstoff: Paneel aus Alu / Wasserstrecke aus entzinkungsbeständigem ' +
-      'Messing konform TrinkwV /' +
-      ' Betätigung aus Messing verchromt',
-        'Oberfläche: Alu-eloxiert'],
-      show: false
-    },
-    {
-      name: 'DOWNLOADS',
-      data: ['download data'],
-      show: false
-    },
-    {
-      name: 'VARIANTEN',
-      data: ['item body'],
-      show: false
-    },
-    {
-      name: 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL',
-      data: '',
-      show: false
-    },
-    {
-      name: 'VIDEO',
-      data: 'https://www.youtube.com/v/yDvws-yl_Ew',
-      show: false
+    $scope.details = [];
+    $scope.products = [];
+
+    function getDetails() {
+      $scope.details = StorageService.getDetails();
     }
-  ];
 
-
+    //Load Details
+    getDetails();
+    $scope.products = ([
+        {
+          title : 'TECHNISCHE ZEICHNUNG',
+          drawing : $scope.details.media.technical_drawing_link,
+          show : false
+        },
+        {
+          title : 'LIEFERUMFANG',
+          list1 : $scope.details.lieferumfang,
+          show : false
+        },
+        {
+          title : 'EINSATZBEREICH / TECHNISCHE DATEN',
+          list2 : $scope.details.einsatzbereich,
+          show : false
+        },
+        {
+          title : 'DETAILS',
+          details : $scope.details.werkstoff,
+          show : false
+        }
+      ]);
 
 
 

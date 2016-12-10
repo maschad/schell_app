@@ -3,6 +3,7 @@ angular.module('app.services', [])
 .factory('StorageService', ['$localStorage',  function($localStorage){
   //Subcategories to be returned
   var subs = [];
+  var toDisplay = [];
   var title = '';
 
   $localStorage = $localStorage.$default({
@@ -72,6 +73,13 @@ angular.module('app.services', [])
     $localStorage.product_info = data;
   };
 
+  var detailDisplay = function(product) {
+    toDisplay = product;
+  };
+
+  var getDetails = function (){
+    return toDisplay;
+  };
 
   return {
     getAll : getAll,
@@ -86,7 +94,9 @@ angular.module('app.services', [])
     storeTitle : storeTitle,
     getTitle : getTitle,
     getProductInfo : getProductInfo,
-    storeProductInfo : storeProductInfo
+    storeProductInfo : storeProductInfo,
+    detailDisplay : detailDisplay,
+    getDetails : getDetails
   };
 
 }])
