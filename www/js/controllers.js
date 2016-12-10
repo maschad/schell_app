@@ -144,26 +144,44 @@ function ($scope, $stateParams) {
     $scope.products = ([
         {
           title : 'TECHNISCHE ZEICHNUNG',
-          drawing : $scope.details.media.technical_drawing_link,
           show : false
         },
         {
           title : 'LIEFERUMFANG',
-          list1 : $scope.details.lieferumfang,
           show : false
         },
         {
           title : 'EINSATZBEREICH / TECHNISCHE DATEN',
-          list2 : $scope.details.einsatzbereich,
           show : false
         },
         {
           title : 'DETAILS',
-          details : $scope.details.werkstoff,
+          show : false
+        },
+        {
+          title : 'DOWNLOADS',
+          downloads : '',
+          show : false
+        },
+        {
+          title : 'VARIANTEN',
+          varianten : '',
+          show : false
+        },
+        {
+          title : 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL',
+          varianten : '',
+          show : false
+        },
+        {
+          title : 'VIDEO',
+          varianten : '',
           show : false
         }
+
       ]);
 
+    console.log($scope.details.media.lieferumfang);
 
 
   //return trusted external links

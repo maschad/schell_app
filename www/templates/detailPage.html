@@ -73,7 +73,7 @@
         <p class="product-noted"> {{details.de_data.zusatz2}}</p>
         <ion-list>
           <div ng-repeat="product in products">
-            <ion-item class="description-item" ng-click="toggleGroup()"
+            <ion-item class="description-item" ng-click="toggleGroup(product)"
                       ng-class="{active: isGroupShown(product)}">
               <div class="item-icon-right">
                 {{product.title}}
@@ -81,15 +81,19 @@
               </div>
             </ion-item>
             <ion-item class="description-accordion" ng-show="isGroupShown(product)">
-              <div ng-if="product.title == 'TECHNISCHE ZEICHUNG'">
-                <img ng-src="{{product.drawing}}">
+              <div ng-if="product.title.includes('ZEICHNUNG')">
+                <img ng-src="{{details.media.technical_drawing_link}}">
               </div>
               <div ng-if="product.title == 'LIEFERUMFANG'">
-                <div ng-bind-html="product.list1"></div>
+                <div ng-bind-html="details.lieferumfang"></div>
               </div>
               <div ng-if="product.title == 'EINSATZBEREICH / TECHNISCHE DATEN'">
-                <div ng-bind-html="product.list2"></div>
+                <div ng-bind-html="details.einsatzbereich"></div>
               </div>
+              <div ng-if="product.title == 'DETAILS'">
+                <div ng-bind-html="details.werkstoff"></div>
+              </div>
+
             </ion-item>
           </div>
         </ion-list>
