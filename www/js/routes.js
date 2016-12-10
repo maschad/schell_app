@@ -28,7 +28,7 @@ angular.module('app.routes', [])
     .state('product_overview', {
       url: '/product_overview',
       templateUrl: 'templates/product_overview.html',
-      controller: 'productsCtrl',
+      controller: 'productOverviewCtrl',
       ncyBreadcrumb: {
         label: 'Overview'
       }

@@ -36,10 +36,20 @@ function ($scope, $state, $ionicPopover,$rootScope) {
   };
 }])
 
-  .controller('productsCtrl', ['$scope', '$ionicFilterBar', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$stateParams', 'StorageService','DataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams, $ionicFilterBar) {
+    function ($scope, $stateParams, $ionicFilterBar,StorageService,DataService) {
+      $scope.products = [];
+
+      function getProducts() {
+        $scope.products = DataService.downloadProducts(StorageService.getProductInfo());
+      }
+
+      //load Products
+      getProducts();
+
+      console.log($scope.products);
 
     }])
 
@@ -71,7 +81,7 @@ function ($scope, $state, $ionicPopover,$rootScope) {
       };
 
 
-}])
+    }])
 
 .controller('menuCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -109,12 +119,14 @@ function ($scope, $stateParams) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce','DataService', 'StorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicPopover, $sce) {
+    function ($scope, $ionicPopover, $sce,DataService,StorageService) {
 
-      //The products to be show in collapsable list
+    $scope.info = [];
+
+    //The products to be show in collapsable list
   $scope.products = [
     {
       name: 'TECHNISCHE ZEICHNUNG',
@@ -172,8 +184,12 @@ function ($scope, $stateParams) {
       data: 'https://www.youtube.com/v/yDvws-yl_Ew',
       show: false
     }
-
   ];
+
+
+
+
+
   //return trusted external links
   $scope.trustSrc = function (src) {
     return $sce.trustAsResourceUrl(src);
@@ -203,8 +219,20 @@ function ($scope, $stateParams) {
 .controller('productLinesCtrl', ['$scope' , '$state', 'StorageService',function ($scope,$state,StorageService) {
       $scope.products = [];
 
+      //Child choice
+      $scope.choice = function (child_ids, title) {
+        StorageService.storeSubCategories(child_ids);
+        StorageService.storeTitle(title);
+      };
 
+      //Product Choice
+      $scope.choice_product = function (product_ids, title) {
+        StorageService.storeProductInfo(product_ids);
+        StorageService.storeTitle(title);
+        $state.go('product_overview');
+      };
 
+      //Load the products
       function getProducts() {
         $scope.products = StorageService.loadSubCategories();
         $scope.title = StorageService.getTitle();

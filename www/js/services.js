@@ -9,7 +9,8 @@ angular.module('app.services', [])
     products: [],
     productsCategories: [],
     total: 0,
-    offlinePreferences: []
+    offlinePreferences: [],
+    product_info : []
   });
 
   var getAll = function () {
@@ -63,6 +64,15 @@ angular.module('app.services', [])
     return title;
   };
 
+  var getProductInfo = function () {
+    return $localStorage.product_info;
+  };
+
+  var storeProductInfo = function (data) {
+    $localStorage.product_info = data;
+  };
+
+
   return {
     getAll : getAll,
     add : add,
@@ -74,7 +84,9 @@ angular.module('app.services', [])
     storeSubCategories : storeSubCategories,
     loadSubCategories : loadSubCategories,
     storeTitle : storeTitle,
-    getTitle : getTitle
+    getTitle : getTitle,
+    getProductInfo : getProductInfo,
+    storeProductInfo : storeProductInfo
   };
 
 }])
@@ -118,11 +130,28 @@ angular.module('app.services', [])
     return products;
   };
 
+  var downloadProducts = function(product_ids) {
+    var products = [];
+    for(var i = 0; i < product_ids.length; i++){
+      firebase.database().ref('/products/').orderByKey().equalTo(product_ids[i]).once('value').then(function (snapshot) {
+        products.push(snapshot.val());
+      }, function (error) {
+        $ionicPopup.confirm({
+          title: "Error Connecting to Database",
+          content: error
+        });
+      });
+    }
+
+    return products;
+  };
+
 
   return {
     goOffline : goOffline,
     downloadProductData : downloadProductData,
-    downloadProductCategories : downloadProductCategories
+    downloadProductCategories : downloadProductCategories,
+    downloadProducts : downloadProducts
   };
 
 }]);

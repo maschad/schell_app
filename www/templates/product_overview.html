@@ -12,58 +12,29 @@
 
 
       <h3 class="heading">Bezeichnung der Kategorie</h3>
-      <div class="row responsive-sm">
+      <div ng-repeat="product in products" class="row responsive-sm" ng-if="$index%2 === 0">
+        <div ng-repeat="p in product">
 
-        <div class="col">
-          <div class="product-tile">
-            <div class="row">
-              <div class="col-70">
-                <p class="item-number">05 304 06 99</p>
-                <p class="item-title">Eckregulierventil COMFORT</p>
-                <p class="item-name">DIN-Eckregulierventil mit COMFORT-Griff</p>
-                <p>Mit selbstdichtendem Anschlussgewinde (ASAG easy), Prüfzeichen: DVGW zertifiziert</p>
-              </div>
-              <div class="col">
-                <img src="img/angle-valve.png"  style="width: auto;">
+          <div class="col" ng-if="p.media.image_portrait">
+            <div class="product-tile">
+              <div class="row">
+                <div class="col-70">
+                  <p class="item-number">{{p.nummer}}</p>
+                  <p class="item-title">{{p.de_data.produktbezeichnung}}</p>
+                  <p class="item-name">{{p.de_data.werkstoff}}</p>
+                  <p>{{p.de_data.zusatz2}}</p>
+                </div>
+                <div class="col">
+                  <img src="{{p.media.image_portrait}}"  style="width: auto;">
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="col">
-          <div class="product-tile">
-            <div class="row">
-              <div class="col-70">
-                <p class="item-number">00 803 08 99</p>
-                <p class="item-title">Eckregulierventil COMFORT</p>
-                <p class="item-name">DIN-Eckregulierventil mit COMFORT-Griff</p>
-                <p>Mit selbstdichtendem Anschlussgewinde (ASAG easy), Prüfzeichen: DVGW zertifiziert</p>
-              </div>
-              <div class="col">
-                <img src="img/vorwandduschpaneel-exposedshowerpanel.png" style="width: auto;">
-              </div>
-            </div>
-          </div>
         </div>
 
       </div>
-      <div class="row responsive-sm">
-        <div class="col col-50" ui-sref="detailPage">
-          <div class="product-tile">
-            <div class="row">
-              <div class="col-70">
-                <p class="item-number">00 803 08 99</p>
-                <p class="item-title"> Vorwand-Duschpaneel LINUS DP-SC-T</p>
-                <p class="item-name">Selbstschuss - Thermostat</p>
-                <p>Mit selbstdichtendem Anschlussgewinde (ASAG easy), Prüfzeichen: DVGW zertifiziert</p>
-              </div>
-              <div class="col">
-                <img src="img/vorwandduschpaneel-exposedshowerpanel.png"  style="width: auto;">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
     </div>
 
   </ion-content>
