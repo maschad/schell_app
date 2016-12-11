@@ -1,9 +1,13 @@
 angular.module('app.controllers', [])
 
-.controller('start_screenCtrl', ['$scope','$state','$ionicPopover','$rootScope', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('start_screenCtrl', ['$scope','$state','$ionicPopover','$rootScope','$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $ionicPopover,$rootScope) {
+function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
+
+  //Side Menu
+  $ionicSideMenuDelegate.canDragContent(false);
+
 
   //Whether to allow settings based on network connection
   $scope.show = $rootScope.enableSettings;
@@ -36,10 +40,15 @@ function ($scope, $state, $ionicPopover,$rootScope) {
   };
 }])
 
-  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'StorageService','DataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'StorageService','DataService','$ionicSideMenuDelegate',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope, $ionicFilterBar,$state,StorageService,DataService) {
+  function ($scope, $ionicFilterBar,$state,StorageService,DataService,$ionicSideMenuDelegate) {
+
+
+    //Side Menu
+    $ionicSideMenuDelegate.canDragContent(false);
+
     $scope.products = [];
 
     function getProducts() {
@@ -124,12 +133,15 @@ function ($scope, $stateParams) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce','DataService', 'StorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce','DataService', 'StorageService', '$ionicSideMenuDelegate',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicPopover, $sce,DataService,StorageService) {
+    function ($scope, $ionicPopover, $sce,DataService,StorageService,$ionicSideMenuDelegate) {
 
-    $scope.title = StorageService.getTitle();
+      //Side Menu
+      $ionicSideMenuDelegate.canDragContent(false);
+
+      $scope.title = StorageService.getTitle();
 
     //The products to be show in collapsable list
     $scope.details = [];
@@ -181,7 +193,6 @@ function ($scope, $stateParams) {
 
       ]);
 
-    console.log($scope.details.media.lieferumfang);
 
 
   //return trusted external links
@@ -250,10 +261,14 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', '$ionicSideMenuDelegate',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope,$ionicLoading,DataService,StorageService) {
+  function ($scope,$ionicLoading,DataService,StorageService,$ionicSideMenuDelegate) {
+
+    //Side Menu
+    $ionicSideMenuDelegate.canDragContent(false);
+
     // Sync option automatically enabled
     $scope.mobileSync = false;
     $scope.autoSync = true;
@@ -278,12 +293,14 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('regionCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('regionCtrl', ['$scope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams) {
+    function ($scope, $ionicSideMenuDelegate) {
+      //Side Menu deactivated
+      $ionicSideMenuDelegate.canDragContent(false);
 
-}])
+    }])
 
 .controller('MenuCtrl', ['$scope',
     function ($scope) {

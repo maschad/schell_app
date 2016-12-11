@@ -18,22 +18,26 @@
 
             <div class="col" ng-click="choice_product(products[$index].product_ids, $products[$index].title_de)" ng-if="products[$index].product_ids">
               <div class="product-tile">
-                <div class="col-33">
+                <div class="col">
                   <div class="product-counter">
                     <p><strong>{{products[$index].product_ids.length}} Artikel</strong></p>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-25">
-                    <img src="{{products[$index].bild}}" class="center" style="width: auto;"></div>
-                  <h3 class="product-type" style="text-align: right;">{{products[$index].title_de}}</h3>
+                    <img src="{{products[$index].bild}}" class="center" style="width: auto;">
+                  </div>
+                  <div class="col">
+                    <h3 class="product-type" style="text-align: right;">{{products[$index].title_de}}</h3>
+                  </div>
                 </div>
+
               </div>
             </div>
             <!-- Check for children -->
             <div class="col" ng-click="choice(products[$index].child_ids,$products[$index].title_de)" ng-if="products[$index].child_ids">
               <div class="product-tile">
-                <div class="col-33">
+                <div class="col">
                   <div class="product-counter">
                     <p><strong>{{products[$index].child_ids.length}} Artikel</strong></p>
                   </div>
@@ -48,7 +52,7 @@
             <!-- Product ID-->
             <div class="col" ng-if="products[$index + 1] != undefined && products[$index + 1].product_ids" ng-click="choice_product(products[$index + 1].product_ids,$products[$index].title_de)">
               <div class="product-tile">
-                <div class="col-33">
+                <div class="col">
                   <div class="product-counter">
                    <p><strong>{{products[$index + 1].product_ids.length}} Artikel</strong></p>
                   </div>
@@ -64,7 +68,7 @@
             <!--Child Product-->
             <div class="col" ng-if="products[$index + 1] != undefined && products[$index + 1].child_ids" ng-click="choice(products[$index + 1].child_ids,$products[$index].title_de)">
               <div class="product-tile">
-                <div class="col-33">
+                <div class="col">
                   <div class="product-counter">
                     <p><strong>{{products[$index + 1].child_ids.length}} Artikel</strong></p>
                   </div>
@@ -80,7 +84,7 @@
             <!--Product Ids-->
             <div class="col" ng-if="products[$index + 2] != undefined && products[$index + 2].product_ids" ng-click="choice_product(products[$index + 2].proudct_ids,products[$index + 2].title_de)">
               <div class="product-tile">
-                <div class="col-33">
+                <div class="col">
                   <div class="product-counter">
                     <p><strong>{{products[$index + 2].product_ids.length}} Artikel</strong></p>
                   </div>
@@ -95,7 +99,7 @@
             <!--Child IDs-->
             <div class="col" ng-if="products[$index + 2] != undefined && products[$index + 2].child_ids" ng-click="choice(products[$index + 2].child_ids,products[$index + 2].title_de)">
               <div class="product-tile">
-                <div class="col-33">
+                <div class="col">
                   <div class="product-counter">
                     <p><strong>{{products[$index + 2].child_ids.length}} Artikel</strong></p>
                   </div>
