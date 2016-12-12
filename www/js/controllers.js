@@ -101,8 +101,6 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
 
 
 
-
-
     $scope.choice = function (child_ids, title) {
       StorageService.storeSubCategories(child_ids);
       StorageService.storeTitle(title);
@@ -196,10 +194,10 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $ionicPopover, $sce,DataService,StorageService,$ionicSideMenuDelegate) {
 
-      //Side Menu
-      $ionicSideMenuDelegate.canDragContent(false);
+    //Side Menu
+    $ionicSideMenuDelegate.canDragContent(false);
 
-      $scope.title = StorageService.getTitle();
+    $scope.title = StorageService.getTitle();
 
     //The products to be show in collapsable list
     $scope.details = [];
@@ -274,6 +272,24 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     document.body.classList.add('platform-ion');
   });
 
+  $scope.sendEmail = function () {
+    var bodyText = 'Product nummer' .concat($scope.details.nummer)
+                    + ' ' + 'Referenzartikel' .concat($scope.details.referenzartikel)
+                    + ' ' .concat($scope.details.de_data.differenzierung);
+
+
+    window.plugin.email.open({
+        to:          [''], // email addresses for TO field
+        cc:          Array, // email addresses for CC field
+        bcc:         Array, // email addresses for BCC field
+        subject:    $scope.details.de_data.produktbezeichnung, // subject of the email
+        body:       bodyText, // email body (for HTML, set isHtml to true)
+        isHtml:    true // indicats if the body is HTML or plain text
+      }, function () {
+        console.log('email view dismissed');
+      },
+      this);
+  };
 
 
 
@@ -399,6 +415,7 @@ function ($scope, $stateParams) {
       console.log('here');
       $scope.downloadShow();
       StorageService.storeAll(DataService.downloadProductData());
+      StorageService.storeProductCategories(DataService.downloadProductCategories());
     };
 
 }])

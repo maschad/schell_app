@@ -1414,6 +1414,17 @@ ion-popover-view.fit ion-content {
   text-align: center;
 }
 
+.bar {
+  padding: 0;
+}
+
+.bar .title + .buttons {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
 
 
 .SyntaxLTStd-Bold {
