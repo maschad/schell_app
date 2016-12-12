@@ -79,6 +79,8 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     //Loading products
     getProducts();
 
+
+
     $scope.choice = function (child_ids, title) {
       StorageService.storeSubCategories(child_ids);
       StorageService.storeTitle(title);
@@ -249,8 +251,10 @@ function ($scope, $ionicSideMenuDelegate) {
 
       //Load the products
       getProducts();
+      console.log($scope.products);
 
-      $scope.content = {
+
+    $scope.content = {
         title: $scope.title
       };
       $scope.myEvent = function () {
@@ -265,10 +269,10 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', '$ionicSideMenuDelegate',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', '$ionicSideMenuDelegate','$ionicPopup',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope,$ionicLoading,DataService,StorageService,$ionicSideMenuDelegate) {
+  function ($scope,$ionicLoading,DataService,StorageService,$ionicSideMenuDelegate,$ionicPopup) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
@@ -279,6 +283,9 @@ function ($scope, $stateParams) {
     //Load Settings from local storage
     function getInfo() {
       $scope.categories = DataService.downloadProductCategories();
+      for(var i = 0; i < $scope.categories.length; i++){
+        $scope.categories[i].push({checked: false});
+      }
     }
 
     //Loading functions
@@ -293,6 +300,19 @@ function ($scope, $stateParams) {
       $ionicLoading.hide();
     };
 
+    //Loading functions
+    $scope.downloadShow = function() {
+      $ionicLoading.show({
+        template: '<p>Downloading Artikel Data...</p><ion-spinner></ion-spinner>',
+        animation:'fade-in',
+        showBackdrop:true,
+        duration: 3000
+      });
+    };
+    $scope.downloadHide = function(){
+      $ionicLoading.hide();
+    };
+
     //Load Preferences
     $scope.preferences = StorageService.loadOffline();
 
@@ -303,19 +323,30 @@ function ($scope, $stateParams) {
     }
 
     $scope.doRefresh = function() {
+      if($scope.preferences[0].checked == true) {
+        $ionicPopup.alert({
+            title: 'Bitte aktivieren Sie die Offline-Synchronisation'
+        });
+      }else {
         $scope.show();
         getInfo();
         // Stop the ion-refresher from spinning
         $scope.hide();
         $scope.$broadcast('scroll.refreshComplete');
+      }
     };
-
-    console.log($scope.categories);
 
 
     //Update preferences
     $scope.update = function () {
       StorageService.updatePreferences($scope.preferences);
+    };
+
+    //Checkbox function
+    $scope.downloadCategory = function (product) {
+      console.log('here');
+      $scope.downloadShow();
+      StorageService.storeAll(DataService.downloadProductData());
     };
 
 }])
