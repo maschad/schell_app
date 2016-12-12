@@ -4,6 +4,13 @@ angular.module('app.controllers', [])
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
+ //Remove splash screen
+  $scope.$on('$ionicView.afterEnter', function(){
+    setTimeout(function(){
+      document.getElementById("custom-overlay").style.display = "none";
+    }, 3000);
+  });
+
 
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
@@ -27,6 +34,9 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     scope: $scope
   }).then(function(popover) {
     $scope.popover = popover;
+    //Ensure popover is iOS
+    document.body.classList.remove('platform-android');
+    document.body.classList.add('platform-ios');
   });
 
   $scope.openPopover = function ($event) {
@@ -67,10 +77,20 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
 
   }])
 
-.controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','StorageService',
-  function ($scope, $state,$ionicFilterBar,StorageService) {
+.controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','StorageService','$ionicPopover',
+  function ($scope, $state,$ionicFilterBar,StorageService,$ionicPopover) {
 
     $scope.products = [];
+
+    //Popover function
+    $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
+      scope: $scope
+    }).then(function (popover) {
+      $scope.popover = popover;
+      //Ensure popover is android
+      document.body.classList.remove('platform-ios');
+      document.body.classList.add('platform-android');
+    });
 
     //Load products for local storage
     function getProducts() {
@@ -78,6 +98,8 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     }
     //Loading products
     getProducts();
+
+
 
 
 
@@ -90,6 +112,7 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     $scope.showFilterBar = function () {
       var filterBarInstance = $ionicFilterBar.show({
         items: $scope.products,
+        cancelText: 'Abrechen',
         update: function (filteredItems, filterText) {
           $scope.products = filteredItems;
         }
@@ -129,6 +152,7 @@ function ($scope, $stateParams) {
 function ($scope, $ionicSideMenuDelegate,StorageService) {
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
+
 
   $scope.$on('$ionicView.afterEnter', function(){
     setTimeout(function(){
@@ -224,7 +248,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
   }).then(function (popover) {
     $scope.popover = popover;
     //Ensure popover is ios
-    document.body.classList.add('platform-ios');
+    document.body.classList.add('platform-ion');
   });
 
 

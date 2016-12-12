@@ -13,6 +13,7 @@ angular.module('app', ['ionic','ncy-angular-breadcrumb', 'jett.ionic.filter.bar'
   $breadcrumbProvider.setOptions({
     templateUrl: 'templates/breadcrumb.html'
   });
+  $ionicFilterBarConfigProvider.placeholder('Wonach suchen Sie?');
 
 })
 
