@@ -1,7 +1,16 @@
-<ion-view title="Video" id="page6" style="background-color:#740505;">
+<ion-view title="Videos"  style="background-color:#740505;">
   <ion-content padding="true" class="has-header">
-    <div ng-init="videourl=&quot;https://www.youtube.com/embed/lTLTs2ZA2JQ?rel=0&amp;showinfo=0&quot;" style="position:relative;overflow:hidden;padding-bottom:56.25%;height:0;" id="video-video1">
-      <iframe src="{{videourl}}" frameborder="0" allowfullscreen="" width="560" height="315" style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+    <div ng-repeat="video in videos">
+      <div class="row responsive-sm">
+        <div class="col">
+          <h3 style="color: white">{{video.title}}</h3>
+        </div>
+        <div class="col">
+          <video width="100%" height="100%" controls>
+            <source src="{{trustSrc(video.de_data.videofile)}}">
+          </video>
+        </div>
+      </div>
     </div>
   </ion-content>
 </ion-view>

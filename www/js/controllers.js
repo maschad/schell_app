@@ -130,10 +130,33 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('videoCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('videoCtrl', ['$scope', '$sce', '$ionicLoading','DataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $sce, $ionicLoading, DataService) {
+
+  //Loading functions
+  $scope.show = function() {
+    $ionicLoading.show({
+      template: '<p>Downloading Videos...</p><ion-spinner></ion-spinner>',
+      animation:'fade-in',
+      showBackdrop:true,
+      duration: 3000
+    });
+  };
+  $scope.hide = function(){
+    $ionicLoading.hide();
+  };
+
+  //Load Videos
+  $scope.show();
+  $scope.videos = DataService.downloadVideos();
+
+  console.log($scope.videos);
+  //return trusted external links
+  $scope.trustSrc = function (src) {
+    return $sce.trustAsResourceUrl(src);
+  };
 
 
 }])

@@ -185,12 +185,31 @@ angular.module('app.services', [])
     return products;
   };
 
+  var downloadVideos = function () {
+    var videos = [];
+    firebase.database().ref('/videos/').orderByKey().once('value').then(function (snapshot) {
+      snapshot.forEach(function (video) {
+        videos.push(video.val());
+      });
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
+    });
+
+
+    return videos;
+
+  };
+
 
   return {
     goOffline : goOffline,
     downloadProductData : downloadProductData,
     downloadProductCategories : downloadProductCategories,
-    downloadProducts : downloadProducts
+    downloadProducts : downloadProducts,
+    downloadVideos : downloadVideos
   };
 
 }]);
