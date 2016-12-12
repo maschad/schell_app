@@ -123,19 +123,24 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('countryselectCtrl', ['$scope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('countryselectCtrl', ['$scope', '$ionicSideMenuDelegate','StorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $ionicSideMenuDelegate) {
+function ($scope, $ionicSideMenuDelegate,StorageService) {
+  //Side Menu
+  $ionicSideMenuDelegate.canDragContent(false);
+
   $scope.$on('$ionicView.afterEnter', function(){
-
-    //Side Menu
-    $ionicSideMenuDelegate.canDragContent(false);
-
     setTimeout(function(){
       document.getElementById("custom-overlay").style.display = "none";
     }, 3000);
   });
+
+
+  $scope.selection = function (country) {
+    StorageService.setCountry(country);
+
+  }
 
 }])
 

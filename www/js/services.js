@@ -19,7 +19,8 @@ angular.module('app.services', [])
         checked: false
       }
     ],
-    product_info : []
+    product_info : [],
+    country: ''
   });
 
   var getAll = function () {
@@ -97,6 +98,14 @@ angular.module('app.services', [])
     $localStorage.$reset();
   };
 
+  var setCountry = function (choice) {
+    $localStorage.country = choice;
+  };
+
+  var checkCountry = function () {
+    return !!$localStorage.country;
+  };
+
   return {
     getAll : getAll,
     add : add,
@@ -114,7 +123,9 @@ angular.module('app.services', [])
     detailDisplay : detailDisplay,
     getDetails : getDetails,
     loadOffline : loadOffline,
-    reset : reset
+    reset : reset,
+    checkCountry : checkCountry,
+    setCountry : setCountry
   };
 
 }])

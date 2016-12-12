@@ -16,9 +16,10 @@ angular.module('app', ['ionic','ncy-angular-breadcrumb', 'jett.ionic.filter.bar'
 
 })
 
-.run(function($ionicPlatform,$ionicPopup,$rootScope) {
+.run(function($ionicPlatform,$ionicPopup,$rootScope,$state,StorageService) {
   //Enable settings
   $rootScope.enableSettings = true;
+
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -31,7 +32,6 @@ angular.module('app', ['ionic','ncy-angular-breadcrumb', 'jett.ionic.filter.bar'
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
 
     //Check for internet
     if(window.Connection) {
@@ -47,5 +47,12 @@ angular.module('app', ['ionic','ncy-angular-breadcrumb', 'jett.ionic.filter.bar'
           });
       }
     }
+
+    if(StorageService.checkCountry()){
+      $state.go('start-screen');
+    }
+
+
+
   });
 });
