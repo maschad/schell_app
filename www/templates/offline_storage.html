@@ -1,5 +1,10 @@
 <ion-view title="EINSTELLUNGEN" id="page7" style="background-color:#9e0a22;">
   <ion-content padding="true" class="has-header">
+    <ion-refresher
+      pulling-text="Pull to refresh..."
+      on-refresh="doRefresh()">
+    </ion-refresher>
+
     <div class="settings-container">
       <div class="row">
         <div class="col-75">
@@ -7,32 +12,18 @@
           <span> diesem Gerät speichern möchten.</span>
         </div>
         <div class="col">
-          <button class="button icon schellicon-reload" style="border-radius: 50%;  min-height: 45px; min-width: 45px; background-color: #dfdfdf;"></button>
+          <button class="button icon schellicon-reload"  ng-click="doRefresh()" style="border-radius: 50%;  min-height: 45px; min-width: 45px; background-color: #dfdfdf;"></button>
         </div>
       </div>
       <form id="offline" class="list">
         <label class="item item-input">
           <span class="input-label">Letzte Aktualisierung: 23. 02. 2016</span></label>
         <ion-item class="item-divider" id="settings-list-item-divider1"> PRODUKTE</ion-item>
-        <ion-checkbox  id="settings-checkbox3" name="eSCHELL"><strong>eSCHELL</strong> 120 MB <h5>120 Produkte
-          verfügbar</h5></ion-checkbox>
-        <ion-checkbox id="settings-checkbox4" name="waschtisch"><strong>Waschtisch</strong> 340 MB<h5>171 Produkte
-          verfügbar</h5></ion-checkbox>
-        <ion-checkbox id="settings-checkbox5" name="dusche"><strong>Dusche</strong> 350 MB <h5>130 Produkte verfügbar</h5>
+        <ion-checkbox  ng-repeat="product in categories">
+          <strong>{{product.title_de}}</strong>
         </ion-checkbox>
-        <ion-checkbox id="settings-checkbox6" name="wc"><strong>WC</strong> 135 MB <h5>45 Produkte verfügbar</h5>
-        </ion-checkbox>
-        <ion-checkbox id="settings-checkbox7"><strong>Urinal</strong> 120 MB <h5>190 Produkte verfügbar</h5>
-        </ion-checkbox>
-        <ion-checkbox id="settings-checkbox8">Montagemodule</ion-checkbox>
-        <ion-checkbox id="settings-checkbox10">Geräteanschluss Armaturen</ion-checkbox>
-        <ion-checkbox id="settings-checkbox11">Eckventile</ion-checkbox>
-        <ion-item class="item-divider" id="settings-list-item-divider3">VIDEOS</ion-item>
-        <ion-checkbox id="settings-checkbox9">Videos</ion-checkbox>
-        <ion-item class="item-divider" id="settings-list-item-divider4">SETTINGS</ion-item>
-        <ion-toggle toggle-class="toggle-assertive" ng-model="autoSync"  style="font-size: 15px;">Automatischer Sync deaktivieren
-        </ion-toggle>
-        <ion-toggle toggle-class="toggle-assertive" ng-model="mobileSync">Mobiler Sync deaktivieren
+        <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()"  ng-repeat="item in preferences" style="font-size: 15px;">
+          {{item.text}}
         </ion-toggle>
       </form>
     </div>

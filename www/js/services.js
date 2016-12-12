@@ -9,8 +9,16 @@ angular.module('app.services', [])
   $localStorage = $localStorage.$default({
     products: [],
     productsCategories: [],
-    total: 0,
-    offlinePreferences: [],
+    offlinePreferences: [
+      {
+        text: 'Automatischer Sync deaktivieren',
+        checked: false
+      },
+      {
+        text: 'Mobiler Sync deaktivieren',
+        checked: false
+      }
+    ],
     product_info : []
   });
 
@@ -81,6 +89,14 @@ angular.module('app.services', [])
     return toDisplay;
   };
 
+  var loadOffline = function() {
+    return $localStorage.offlinePreferences;
+  };
+
+  var reset = function () {
+    $localStorage.$reset();
+  };
+
   return {
     getAll : getAll,
     add : add,
@@ -96,7 +112,9 @@ angular.module('app.services', [])
     getProductInfo : getProductInfo,
     storeProductInfo : storeProductInfo,
     detailDisplay : detailDisplay,
-    getDetails : getDetails
+    getDetails : getDetails,
+    loadOffline : loadOffline,
+    reset : reset
   };
 
 }])

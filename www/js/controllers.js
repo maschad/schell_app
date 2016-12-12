@@ -121,11 +121,15 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('countryselectCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('countryselectCtrl', ['$scope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $ionicSideMenuDelegate) {
   $scope.$on('$ionicView.afterEnter', function(){
+
+    //Side Menu
+    $ionicSideMenuDelegate.canDragContent(false);
+
     setTimeout(function(){
       document.getElementById("custom-overlay").style.display = "none";
     }, 3000);
@@ -269,9 +273,13 @@ function ($scope, $stateParams) {
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
-    // Sync option automatically enabled
-    $scope.mobileSync = false;
-    $scope.autoSync = true;
+    //Product Categories
+    $scope.categories = [];
+
+    //Load Settings from local storage
+    function getInfo() {
+      $scope.categories = DataService.downloadProductCategories();
+    }
 
     //Loading functions
     $scope.show = function() {
@@ -284,12 +292,31 @@ function ($scope, $stateParams) {
     $scope.hide = function(){
       $ionicLoading.hide();
     };
-    //#TODO: Check if mobile sync is deactivated first
-    $scope.show();
-    StorageService.storeAll(DataService.downloadProductData());
-    StorageService.storeProductCategories(DataService.downloadProductCategories());
-    $scope.hide();
 
+    //Load Preferences
+    $scope.preferences = StorageService.loadOffline();
+
+    if($scope.preferences[0].checked == false){
+      $scope.show();
+      getInfo();
+      $scope.hide();
+    }
+
+    $scope.doRefresh = function() {
+        $scope.show();
+        getInfo();
+        // Stop the ion-refresher from spinning
+        $scope.hide();
+        $scope.$broadcast('scroll.refreshComplete');
+    };
+
+    console.log($scope.categories);
+
+
+    //Update preferences
+    $scope.update = function () {
+      StorageService.updatePreferences($scope.preferences);
+    };
 
 }])
 
