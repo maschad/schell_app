@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic','ncy-angular-breadcrumb', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorage','ion-floating-menu', 'ksSwiper', 'app.controllers', 'app.routes', 'app.directives', 'app.services'])
+angular.module('app', ['ionic','ncy-angular-breadcrumb', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorage','ion-floating-menu', 'ksSwiper','ngCordova', 'app.controllers', 'app.routes', 'app.directives', 'app.services'])
 
 .config(function($ionicConfigProvider, $sceDelegateProvider,$ionicFilterBarConfigProvider,$breadcrumbProvider){
   $ionicConfigProvider.backButton.previousTitleText(false).text('');

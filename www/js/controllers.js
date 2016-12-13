@@ -150,7 +150,6 @@ function ($scope, $sce, $ionicLoading, DataService) {
   $scope.show();
   $scope.videos = DataService.downloadVideos();
 
-  console.log($scope.videos);
   //return trusted external links
   $scope.trustSrc = function (src) {
     return $sce.trustAsResourceUrl(src);
@@ -189,27 +188,46 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce','DataService', 'StorageService', '$ionicSideMenuDelegate',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce','DataService', 'StorageService', '$ionicSideMenuDelegate','$cordovaFileTransfer', '$ionicLoading',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicPopover, $sce,DataService,StorageService,$ionicSideMenuDelegate) {
+    function ($scope, $ionicPopover, $sce,DataService,StorageService,$ionicSideMenuDelegate, $cordovaFileTransfer,$ionicLoading) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
     $scope.title = StorageService.getTitle();
 
+    //Loading functions
+    $scope.show = function() {
+      $ionicLoading.show({
+        template: '<p>Downloading Data...</p><ion-spinner></ion-spinner>',
+        animation:'fade-in',
+        showBackdrop:true
+      });
+    };
+    $scope.hide = function(){
+      $ionicLoading.hide();
+    };
+
     //The products to be show in collapsable list
     $scope.details = [];
     $scope.products = [];
+    $scope.files = [];
 
     function getDetails() {
       $scope.details = StorageService.getDetails();
+      if($scope.details.media.download_ids){
+        $scope.files = DataService.downloadFiles($scope.details.media.download_ids);
+      }
     }
+
 
     //Load Details
     getDetails();
-    $scope.products = ([
+    console.log($scope.files);
+
+      $scope.products = ([
         {
           title : 'TECHNISCHE ZEICHNUNG',
           show : false
@@ -291,6 +309,24 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
       this);
   };
 
+  $scope.downloadPDF = function (url) {
+
+    $scope.show();
+    // File name only
+    var filename = url.split("/").pop();
+
+    // Save location
+    var targetPath = cordova.file.externalRootDirectory + filename;
+
+    $cordovaFileTransfer.download(url, targetPath, {}, true).then(function (result) {
+      console.log('Success');
+    }, function (error) {
+      console.log('Error');
+    }, function (progress) {
+      // PROGRESS HANDLING GOES HERE
+    });
+    $scope.hide();
+  }
 
 
 }])
@@ -319,7 +355,6 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
       //Load the products
       getProducts();
-      console.log($scope.products);
 
 
     $scope.content = {
@@ -412,7 +447,6 @@ function ($scope, $stateParams) {
 
     //Checkbox function
     $scope.downloadCategory = function (product) {
-      console.log('here');
       $scope.downloadShow();
       StorageService.storeAll(DataService.downloadProductData());
       StorageService.storeProductCategories(DataService.downloadProductCategories());

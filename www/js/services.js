@@ -203,13 +203,30 @@ angular.module('app.services', [])
 
   };
 
+  var downloadFiles = function (ids) {
+    var files = [];
+
+    for(var i = 0; i < ids.length; i++ ) {
+      firebase.database().ref('/downloads/').orderByKey().equalTo(ids[i]).once('value').then(function (snapshot) {
+        files.push(snapshot.val());
+      }, function (error) {
+        $ionicPopup.confirm({
+          title: "Error Connecting to Database",
+          content: error
+        });
+      });
+    }
+    return files;
+  };
+
 
   return {
     goOffline : goOffline,
     downloadProductData : downloadProductData,
     downloadProductCategories : downloadProductCategories,
     downloadProducts : downloadProducts,
-    downloadVideos : downloadVideos
+    downloadVideos : downloadVideos,
+    downloadFiles : downloadFiles
   };
 
 }]);

@@ -84,22 +84,43 @@
                 <img ng-src="{{details.media.technical_drawing_link}}">
               </div>
               <div ng-if="product.title == 'LIEFERUMFANG'">
-                <div ng-bind-html="details.lieferumfang"></div>
+                <div ng-bind-html="details.de_data.lieferumfang"></div>
               </div>
               <div ng-if="product.title == 'EINSATZBEREICH / TECHNISCHE DATEN'">
-                <div ng-bind-html="details.einsatzbereich"></div>
+                <div ng-bind-html="details.de_data.einsatzbereich"></div>
               </div>
               <div ng-if="product.title == 'DETAILS'">
-                <div ng-bind-html="details.werkstoff"></div>
+                <div ng-bind-html="details.de_data.werkstoff"></div>
               </div>
-
-            </ion-item>
+              <div ng-if="product.title == 'DOWNLOADS' && details.media.download_ids">
+                <div ng-repeat="file in files">
+                    <div ng-repeat="f in file">
+                       <div class="row">
+                         <div class="col-20">
+                           <img ng-src="{{f.thumbnail}}" width="40px">
+                         </div>
+                         <div class="col">
+                           {{f.de_data.broschurentitel}}
+                         </div>
+                         <div class="col">
+                           {{f.de_data.zusatzinformation}}
+                         </div>
+                       </div>
+                       <div class="row">
+                         <div class="col">
+                           <button class="icon-right ion-chevron-right button" ng-click="downloadPDF(f.de_data.datei)">Download</button>
+                         </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+            </div>
           </div>
-        </ion-list>
-        <img src="img/design-awards.png">
-      </div>
-    </div>
 
+        </ion-item>
+      </div>
+    </ion-list>
+    <img src="img/design-awards.png">
 
   </ion-content>
 </ion-view>
