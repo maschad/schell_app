@@ -460,13 +460,15 @@ function ($scope, $stateParams) {
 
     //Checkbox function
     $scope.downloadCategory = function (product,check) {
-      $scope.downloadShow();
-      console.log(product);
-      StorageService.checkCategory(product,check);
-      StorageService.storeAll(DataService.downloadProductData());
-      StorageService.storeProductCategories(DataService.downloadProductCategories());
-      console.log($scope.categories);
       //#TODO: Download details based on check
+      if(check){
+        $scope.downloadShow();
+        StorageService.checkCategory(product,check);
+        StorageService.storeAll(DataService.downloadProductData());
+        StorageService.storeProductCategories(DataService.downloadProductCategories());
+      }else {
+        StorageService.checkCategory(product,check);
+      }
     };
 
 }])
