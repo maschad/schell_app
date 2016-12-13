@@ -98,6 +98,7 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     }
     //Loading products
     getProducts();
+    console.log($scope.products);
 
 
 
@@ -387,8 +388,16 @@ function ($scope, $stateParams) {
 
     //Load Settings from local storage
     function downloadInfo() {
-      $scope.categories = DataService.downloadProductCategories();
-      console.log($scope.categories);
+      var items = DataService.downloadProductCategories();
+      setTimeout(function () {
+        for(var i = 0; i < items.length; i++){
+          if($scope.categories.length < items.length){
+            $scope.categories.push({item: items[i], checked: false});
+          }
+        }
+        StorageService.setCategories($scope.categories);
+      }, 10000);
+
 
     }
 
@@ -397,7 +406,8 @@ function ($scope, $stateParams) {
       $ionicLoading.show({
         template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
         animation:'fade-in',
-        showBackdrop:true
+        showBackdrop:true,
+        duration: 10000
       });
     };
     $scope.hide = function(){
@@ -438,7 +448,6 @@ function ($scope, $stateParams) {
         $scope.show();
         downloadInfo();
         // Stop the ion-refresher from spinning
-        $scope.hide();
         $scope.$broadcast('scroll.refreshComplete');
       }
     };
@@ -450,11 +459,13 @@ function ($scope, $stateParams) {
     };
 
     //Checkbox function
-    $scope.downloadCategory = function (product) {
+    $scope.downloadCategory = function (product,check) {
       $scope.downloadShow();
-      StorageService.checkCategory(product);
+      console.log(product);
+      StorageService.checkCategory(product,check);
       StorageService.storeAll(DataService.downloadProductData());
       StorageService.storeProductCategories(DataService.downloadProductCategories());
+      console.log($scope.categories);
       //#TODO: Download details based on check
     };
 

@@ -111,9 +111,12 @@ angular.module('app.services', [])
     return $localStorage.settingsCategories;
   };
 
+  var setCategories = function (data) {
+    $localStorage.settingsCategories = data;
+  };
+
   var checkCategory = function (product,check) {
-      remove(product);
-      $localStorage.settingsCategories.push({item: product, checked: check});
+      $localStorage.settingsCategories.splice($localStorage.settingsCategories.indexOf(product),1,{item: product.item, checked: check});
   };
 
 
@@ -138,7 +141,8 @@ angular.module('app.services', [])
     checkCountry : checkCountry,
     setCountry : setCountry,
     getCategories : getCategories,
-    checkCategory : checkCategory
+    checkCategory : checkCategory,
+    setCategories : setCategories
   };
 
 }])
