@@ -19,8 +19,10 @@
         <label class="item item-input">
           <span class="input-label">Letzte Aktualisierung: 23. 02. 2016</span></label>
         <ion-item class="item-divider" id="settings-list-item-divider1"> PRODUKTE</ion-item>
-        <ion-checkbox  ng-repeat="product in categories" ng-change="downloadCategory(product)" ng-model="product.checked">
-          <strong>{{product.title_de}}</strong>
+        <ion-checkbox  ng-repeat="product in categories" ng-change="downloadCategory(product,product.checked)" ng-model="product.checked">
+          <div ng-if="product.title_de">
+            <strong>{{product.title_de}}</strong>
+          </div>
         </ion-checkbox>
         <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()"  ng-repeat="item in preferences" style="font-size: 15px;">
           {{item.text}}

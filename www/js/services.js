@@ -8,8 +8,9 @@ angular.module('app.services', [])
 
   $localStorage = $localStorage.$default({
     products: [],
+    settingsCategories: [],
     productsCategories: [],
-    offlinePreferences: [
+    offlinePreferences:[
       {
         text: 'Automatischer Sync deaktivieren',
         checked: false
@@ -106,6 +107,16 @@ angular.module('app.services', [])
     return !!$localStorage.country;
   };
 
+  var getCategories = function () {
+    return $localStorage.settingsCategories;
+  };
+
+  var checkCategory = function (product,check) {
+      remove(product);
+      $localStorage.settingsCategories.push({item: product, checked: check});
+  };
+
+
   return {
     getAll : getAll,
     add : add,
@@ -125,7 +136,9 @@ angular.module('app.services', [])
     loadOffline : loadOffline,
     reset : reset,
     checkCountry : checkCountry,
-    setCountry : setCountry
+    setCountry : setCountry,
+    getCategories : getCategories,
+    checkCategory : checkCategory
   };
 
 }])

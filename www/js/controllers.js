@@ -384,11 +384,10 @@ function ($scope, $stateParams) {
     $scope.categories = [];
 
     //Load Settings from local storage
-    function getInfo() {
+    function downloadInfo() {
       $scope.categories = DataService.downloadProductCategories();
-      for(var i = 0; i < $scope.categories.length; i++){
-        $scope.categories[i].push({checked: false});
-      }
+      console.log($scope.categories);
+
     }
 
     //Loading functions
@@ -418,12 +417,15 @@ function ($scope, $stateParams) {
 
     //Load Preferences
     $scope.preferences = StorageService.loadOffline();
+    $scope.categories = StorageService.getCategories();
 
+    //#TODO: Check if product info updated
+    /**
     if($scope.preferences[0].checked == false){
       $scope.show();
-      getInfo();
+      downloadInfo();
       $scope.hide();
-    }
+    }**/
 
     $scope.doRefresh = function() {
       if($scope.preferences[0].checked == true) {
@@ -432,7 +434,7 @@ function ($scope, $stateParams) {
         });
       }else {
         $scope.show();
-        getInfo();
+        downloadInfo();
         // Stop the ion-refresher from spinning
         $scope.hide();
         $scope.$broadcast('scroll.refreshComplete');
@@ -448,8 +450,10 @@ function ($scope, $stateParams) {
     //Checkbox function
     $scope.downloadCategory = function (product) {
       $scope.downloadShow();
+      StorageService.checkCategory(product);
       StorageService.storeAll(DataService.downloadProductData());
       StorageService.storeProductCategories(DataService.downloadProductCategories());
+      //#TODO: Download details based on check
     };
 
 }])
