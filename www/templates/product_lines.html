@@ -16,7 +16,7 @@
           <!-- Products -->
           <div ng-repeat="product in products" ng-if="$index%3 == 0" class="row responsive-sm">
 
-            <div class="col" ng-click="choice_product(products[$index].product_ids, $products[$index].title_de)" ng-if="products[$index].product_ids">
+            <div class="col" ng-click="choice_product(products[$index].product_ids, products[$index].title_de)" ng-if="products[$index].product_ids">
               <div class="product-tile">
                 <div class="col">
                   <div class="product-counter">
@@ -35,7 +35,7 @@
               </div>
             </div>
             <!-- Check for children -->
-            <div class="col" ng-click="choice(products[$index].child_ids,$products[$index].title_de)" ng-if="products[$index].child_ids">
+            <div class="col" ng-click="choice(products[$index].child_ids,products[$index].title_de)" ng-if="products[$index].child_ids">
               <div class="product-tile">
                 <div class="col">
                   <div class="product-counter">
@@ -50,7 +50,7 @@
               </div>
             </div>
             <!-- Product ID-->
-            <div class="col" ng-if="products[$index + 1] != undefined && products[$index + 1].product_ids" ng-click="choice_product(products[$index + 1].product_ids,$products[$index].title_de)">
+            <div class="col" ng-if="products[$index + 1] != undefined && products[$index + 1].product_ids" ng-click="choice_product(products[$index + 1].product_ids,products[$index].title_de)">
               <div class="product-tile">
                 <div class="col">
                   <div class="product-counter">
@@ -66,7 +66,7 @@
             </div>
 
             <!--Child Product-->
-            <div class="col" ng-if="products[$index + 1] != undefined && products[$index + 1].child_ids" ng-click="choice(products[$index + 1].child_ids,$products[$index].title_de)">
+            <div class="col" ng-if="products[$index + 1] != undefined && products[$index + 1].child_ids" ng-click="choice(products[$index + 1].child_ids,products[$index].title_de)">
               <div class="product-tile">
                 <div class="col">
                   <div class="product-counter">

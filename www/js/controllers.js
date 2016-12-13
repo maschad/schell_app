@@ -225,7 +225,6 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
     //Load Details
     getDetails();
-    console.log($scope.files);
 
       $scope.products = ([
         {
@@ -343,6 +342,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
       //Product Choice
       $scope.choice_product = function (product_ids, title) {
         StorageService.storeProductInfo(product_ids);
+        console.log(title);
         StorageService.storeTitle(title);
         $state.go('product_overview');
       };
@@ -359,10 +359,12 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
     $scope.content = {
         title: $scope.title
-      };
-      $scope.myEvent = function () {
-        $state.go('start-screen');
-      };
+    };
+
+    $scope.myEvent = function () {
+      $state.go('start-screen');
+    };
+
 }])
 
 .controller('bookmarkCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
