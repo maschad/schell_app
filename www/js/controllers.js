@@ -375,10 +375,10 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', '$ionicSideMenuDelegate','$ionicPopup',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', '$ionicSideMenuDelegate','$ionicPopup','$cordovaFileTransfer',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope,$ionicLoading,DataService,StorageService,$ionicSideMenuDelegate,$ionicPopup) {
+  function ($scope,$ionicLoading,DataService,StorageService,$ionicSideMenuDelegate,$ionicPopup,$cordovaFileTransfer) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
@@ -401,6 +401,24 @@ function ($scope, $stateParams) {
 
     }
 
+    //Actually download Files
+    function downloadFiles(url) {
+      // File name only
+      var filename = url.split("/").pop();
+
+      // Save location
+      var targetPath = cordova.file.externalRootDirectory + filename;
+
+      $cordovaFileTransfer.download(url, targetPath, {}, true).then(function (result) {
+        console.log('Success');
+      }, function (error) {
+        console.log('Error');
+      }, function (progress) {
+        // PROGRESS HANDLING GOES HERE
+      });
+
+    }
+
     //Loading functions
     $scope.show = function() {
       $ionicLoading.show({
@@ -420,7 +438,7 @@ function ($scope, $stateParams) {
         template: '<p>Downloading Artikel Data...</p><ion-spinner></ion-spinner>',
         animation:'fade-in',
         showBackdrop:true,
-        duration: 3000
+        duration: 10000
       });
     };
     $scope.downloadHide = function(){
@@ -460,12 +478,26 @@ function ($scope, $stateParams) {
 
     //Checkbox function
     $scope.downloadCategory = function (product,check) {
-      //#TODO: Download details based on check
+      //Download details based on check
       if(check){
+        var files;
         $scope.downloadShow();
         StorageService.checkCategory(product,check);
         StorageService.storeAll(DataService.downloadProductData());
         StorageService.storeProductCategories(DataService.downloadProductCategories());
+        var items = StorageService.getAll();
+        setTimeout(function () {
+          for(var i = 0; i < product.item.child_ids.length; i++) {
+            for(var j = 0; j < items.length; j++){
+              if (items[j].elternelement == product.item.child_ids[i] && items[j].hasOwnProperty('product_ids')) {
+                //Store files for download
+                files = DataService.downloadFiles(items[j].product_ids);
+              }
+            }
+          }
+        }, 10000);
+        //downloadFiles(files);
+
       }else {
         StorageService.checkCategory(product,check);
       }
