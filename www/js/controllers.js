@@ -72,6 +72,7 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     $scope.choice = function (product,title) {
       StorageService.detailDisplay(product);
       StorageService.storeTitle(title);
+      StorageService.setLink(title + '/');
       $state.go('detailPage');
     };
 
@@ -105,6 +106,7 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     $scope.choice = function (child_ids, title) {
       StorageService.storeSubCategories(child_ids);
       StorageService.storeTitle(title);
+      StorageService.setLink(title + '/');
       $state.go('product_lines');
     };
 
@@ -198,6 +200,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     $ionicSideMenuDelegate.canDragContent(false);
 
     $scope.title = StorageService.getTitle();
+    StorageService.setLink('details/artikel/' + $scope.details.nummer + '.html');
 
     //Loading functions
     $scope.show = function() {
@@ -290,10 +293,22 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     document.body.classList.add('platform-ion');
   });
 
+  function slugify(text)
+  {
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '-')           // Replace spaces with -
+      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+      .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+      .replace(/^-+/, '')             // Trim - from start of text
+      .replace(/-+$/, '');            // Trim - from end of text
+  }
+
   $scope.sendEmail = function () {
+    var link = StorageService.getLink();
     var bodyText = 'Product nummer' .concat($scope.details.nummer)
-                    + ' ' + 'Referenzartikel' .concat($scope.details.referenzartikel)
-                    + ' ' .concat($scope.details.de_data.differenzierung);
+                    + ' ' + 'Referenzartikel' + ' ' .concat($scope.details.referenzartikel)
+                    + ' ' .concat($scope.details.de_data.differenzierung)
+                    + '' + 'Hier ist ein Link' + ' ' + link;
 
 
     window.plugin.email.open({
@@ -345,6 +360,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
         StorageService.storeProductInfo(product_ids);
         console.log(title);
         StorageService.storeTitle(title);
+        StorageService.setLink(title + '/');
         $state.go('product_overview');
       };
 

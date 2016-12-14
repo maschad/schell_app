@@ -5,6 +5,7 @@ angular.module('app.services', [])
   var subs = [];
   var toDisplay = [];
   var title = '';
+  var link = 'http://www.schell.eu/deutschland-de/produkte/';
 
   $localStorage = $localStorage.$default({
     products: [],
@@ -128,6 +129,13 @@ angular.module('app.services', [])
     $localStorage.offlineProducts = products;
   };
 
+  var setLink = function (data) {
+    link.concat(data);
+  };
+
+  var getLink = function () {
+    return link;
+  };
 
   return {
     getAll : getAll,
@@ -153,7 +161,9 @@ angular.module('app.services', [])
     checkCategory : checkCategory,
     setCategories : setCategories,
     storeOfflineProducts : storeOfflineProducts,
-    getOfflineProducts : getOfflineProducts
+    getOfflineProducts : getOfflineProducts,
+    getLink : getLink,
+    setLink : setLink
   };
 
 }])
