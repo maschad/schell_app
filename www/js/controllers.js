@@ -412,29 +412,27 @@ function ($scope, $stateParams) {
           j.forEach(function (i) {
             if(i != null){
               for(k in i){
-                i[k];
+                var url = i[k].de_data.datei;
+
+                // File name only
+                var filename = url.split("/").pop();
+
+                // Save location
+                var targetPath = cordova.file.externalRootDirectory + filename;
+
+                $cordovaFileTransfer.download(url, targetPath, {}, true).then(function (result) {
+                  console.log('Success');
+                }, function (error) {
+                  console.log('Error');
+                }, function (progress) {
+                  // PROGRESS HANDLING GOES HERE
+                });
+
               }
             }
           })
         }
       });
-
-
-      /**
-
-      // File name only
-      var filename = url.split("/").pop();
-
-      // Save location
-      var targetPath = cordova.file.externalRootDirectory + filename;
-
-      $cordovaFileTransfer.download(url, targetPath, {}, true).then(function (result) {
-        console.log('Success');
-      }, function (error) {
-        console.log('Error');
-      }, function (progress) {
-        // PROGRESS HANDLING GOES HERE
-      }); **/
 
     }
 
