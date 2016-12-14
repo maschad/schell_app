@@ -2,10 +2,13 @@
   <ion-nav-title>{{content.title}}</ion-nav-title>
   <!-- FAB Menu -->
   <ion-floating-menu menu-color="#2c2a2b" menu-open-color="#2c2a2b" backdrop="true">
-    <ion-floating-item icon="schellicon-home" ui-sref="start-screen" button-color="#2c2a2b" text="Home" icon-color="#fff"></ion-floating-item>
+    <ion-floating-item icon="schellicon-home" ui-sref="start-screen" button-color="#2c2a2b" text="Home" icon-color="#fff" ></ion-floating-item>
     <ion-floating-item icon="schellicon-filter" menu-toggle="left" button-color="#2c2a2b" text="Toggle filter" icon-color="#fff"></ion-floating-item>
   </ion-floating-menu>
   <ion-nav-buttons side="right">
+    <!-- Filter search bar -->
+    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
+    </button>
     <!-- Breadcrumb ionic -->
     <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>

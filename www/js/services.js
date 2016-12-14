@@ -7,7 +7,7 @@ angular.module('app.services', [])
   var title = '';
   var prevTitle = '';
   var rootTitle = '';
-  var filter_ids = '';
+  var filter_ids = [];
   var link = 'http://www.schell.eu/deutschland-de/produkte/';
 
   $localStorage = $localStorage.$default({
@@ -183,8 +183,36 @@ angular.module('app.services', [])
     $localStorage.downloads = data;
   };
 
-  var getFile = function () {
-    return $localStorage.downloads;
+  var getFile = function (download_ids) {
+    var toRet = [];
+    for(var i = 0; i < download_ids.length; i++){
+      toRet.push($localStorage.downloads[download_ids[i]]);
+    }
+    return toRet;
+  };
+
+  var getFilterGroups = function (filter_headings) {
+    var groups = [];
+
+    filter_headings.forEach(function (filter_heading) {
+      if(filter_heading.filters != null){
+        var keys = Object.keys(filter_heading.filters);
+        var current_keys = keys.filter(function (key) {
+          return filter_ids.indexOf(key) != -1;
+        });
+        var content = [];
+        for(var i = 0; i < current_keys.length; i ++){
+          content.push(filter_headings.filters[current_keys[i]]);
+        }
+        groups.push(
+        {
+            name: filter_heading.title_de,
+            items: content,
+            show : false
+        })
+      }
+    });
+    return groups;
   };
 
   return {
@@ -224,7 +252,8 @@ angular.module('app.services', [])
     getFilterIds : getFilterIds,
     storeFilterIds : storeFilterIds,
     storeFile : storeFile,
-    getFile : getFile
+    getFile : getFile,
+    getFilterGroups : getFilterGroups
   };
 
 }])
@@ -322,8 +351,10 @@ angular.module('app.services', [])
     var filters = [];
 
     firebase.database().ref('/product_filters/').once('value').then(function (snapshot) {
-      filters.push(snapshot.val());
-    }, function (error) {
+        snapshot.forEach(function (filter) {
+          filters.push(filter.val());
+        })
+      }, function (error) {
       $ionicPopup.confirm({
         title: "Error Connecting to Database",
         content: error

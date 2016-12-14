@@ -11,12 +11,13 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
   $ionicConfigProvider.backButton.previousTitleText(false).text('');
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
   $ionicFilterBarConfigProvider.placeholder('Wonach suchen Sie?');
+  $ionicFilterBarConfigProvider.theme('royal');
 
 })
 
 .run(function($ionicPlatform,$ionicPopup,$rootScope,$state,StorageService) {
-  //Enable settings
-  $rootScope.enableSettings = true;
+  //Set internet to true
+  $rootScope.internet = true;
 
 
   $ionicPlatform.ready(function() {
@@ -40,7 +41,7 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
         })
           .then(function (result) {
             if (!result) {
-              $rootScope.enableSettings = false;
+              $rootScope.internet = false;
             }
           });
       }
