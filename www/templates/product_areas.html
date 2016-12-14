@@ -25,7 +25,7 @@
     </div>
     <!-- Products -->
     <div ng-repeat="product in products" ng-if="$index%3 == 0" class="row responsive-sm">
-        <div class="col" ng-click="choice(products[$index].child_ids,products[$index].title_de)">
+        <div class="col" ng-click="choice(products[$index].child_ids,products[$index].title_de,products[$index].filter_ids)">
           <div class="product-tile">
             <div class="col">
               <div class="product-counter">
@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 1] != undefined" ng-click="choice(products[$index + 1].child_ids,products[$index + 1].title_de)">
+        <div class="col" ng-if="products[$index + 1] != undefined" ng-click="choice(products[$index + 1].child_ids,products[$index + 1].title_de,products[$index + 1].filter_ids)">
           <div class="product-tile">
             <div class="col">
               <div class="product-counter">
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 2] != undefined" ng-click="choice(products[$index + 2].child_ids,products[$index + 2].title_de)">
+        <div class="col" ng-if="products[$index + 2] != undefined" ng-click="choice(products[$index + 2].child_ids,products[$index + 2].title_de,products[$index + 2].filter_ids)">
           <div class="product-tile">
             <div class="col">
               <div class="product-counter">

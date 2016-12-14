@@ -112,14 +112,13 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     }
     //Loading products
     getProducts();
-    console.log($scope.products);
 
 
-
-    $scope.choice = function (child_ids, title) {
+    $scope.choice = function (child_ids, title,filter_ids) {
       StorageService.storeSubCategories(child_ids);
       StorageService.storeTitle(title);
       StorageService.storeRoot(title);
+      StorageService.storeFilterIds(filter_ids);
       StorageService.setLink(title + '/');
       $state.go('product_lines');
     };
@@ -138,10 +137,11 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
   }])
 
 
-.controller('videoCtrl', ['$scope', '$sce', '$ionicLoading','DataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('videoCtrl', ['$scope', '$sce', 'DataService','FileService','$ionicLoading','$ionicPopup','StorageService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $sce, $ionicLoading, DataService) {
+function ($scope, $sce, DataService,FileService,$ionicLoading,$ionicPopup,StorageService) {
+
 
   //Loading functions
   $scope.show = function() {
@@ -158,7 +158,14 @@ function ($scope, $sce, $ionicLoading, DataService) {
 
   //Load Videos
   $scope.show();
-  $scope.videos = DataService.downloadVideos();
+  //#TODO: Check internet for videos
+  if(DataService.downloadVideos() != null){
+    $scope.videos = DataService.downloadVideos();
+    $scope.hide();
+  }else{
+    $scope.videos = StorageService.loadVideos();
+  }
+
 
   //return trusted external links
   $scope.trustSrc = function (src) {
@@ -316,16 +323,6 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     document.body.classList.add('platform-android');
   });
 
-  function slugify(text)
-  {
-    return text.toString().toLowerCase()
-      .replace(/\s+/g, '-')           // Replace spaces with -
-      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-      .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-      .replace(/^-+/, '')             // Trim - from start of text
-      .replace(/-+$/, '');            // Trim - from end of text
-  }
-
   $scope.sendEmail = function () {
     var link = StorageService.getLink();
     var bodyText = 'Product nummer' .concat($scope.details.nummer)
@@ -347,25 +344,6 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
       this);
   };
 
-  $scope.downloadPDF = function (url) {
-
-    $scope.show();
-    // File name only
-    var filename = url.split("/").pop();
-
-    // Save location
-    var targetPath = cordova.file.externalRootDirectory + 'Library/' + filename;
-
-    $cordovaFileTransfer.download(url, targetPath, {}, true).then(function (result) {
-      console.log('Success');
-    }, function (error) {
-      console.log('Error');
-    }, function (progress) {
-      // PROGRESS HANDLING GOES HERE
-    });
-    $scope.hide();
-  }
-
 
 }])
 
@@ -383,6 +361,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
       $scope.products = [];
 
 
+
       //Child choice
       $scope.choice = function (child_ids, title) {
         StorageService.storeSubCategories(child_ids);
@@ -393,7 +372,6 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
       //Product Choice
       $scope.choice_product = function (product_ids, title) {
         StorageService.storeProductInfo(product_ids);
-        console.log(title);
         StorageService.storeTitle(title);
         StorageService.setLink(title + '/');
         $state.go('product_overview');
@@ -441,10 +419,10 @@ function ($scope, StorageService) {
     };
 }])
 
-.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', '$ionicSideMenuDelegate','$ionicPopup','$cordovaFileTransfer',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', '$ionicSideMenuDelegate','$ionicPopup','FileService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope,$ionicLoading,DataService,StorageService,$ionicSideMenuDelegate,$ionicPopup,$cordovaFileTransfer) {
+  function ($scope,$ionicLoading,DataService,StorageService,$ionicSideMenuDelegate,$ionicPopup,FileService) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
@@ -471,34 +449,46 @@ function ($scope, StorageService) {
 
     //Actually download Files
     function downloadFiles(files) {
+      var count = 0;
 
       //Get urls, imgs, number , zusatzinfromation , thumbnail
+      $scope.show();
       files.forEach(function (j) {
         if(j != null){
           j.forEach(function (i) {
             if(i != null){
               for(k in i){
                 var url = i[k].de_data.datei;
-
-                // File name only
-                var filename = url.split("/").pop();
-
-                // Save location
-                var targetPath = cordova.file.externalRootDirectory + filename;
-
-                $cordovaFileTransfer.download(url, targetPath, {}, true).then(function (result) {
-                  console.log('Success');
-                }, function (error) {
-                  console.log('Error');
-                }, function (progress) {
-                  // PROGRESS HANDLING GOES HERE
-                });
-
+                var filename = i[k].de_data.broschurentitel;
+                var path = FileService.download(url,filename,'pdfs');
+                var imgUrl = i[k].de_data.datei;
+                var imgFilename = count.toString() + '.jpg';
+                count++;
+                var thumbnail = FileService.download(imgUrl,imgFilename,'thumbnails');
+                var doc = {
+                  de_data : {
+                    artikelnummer : i[k].de_data.artikelnummer,
+                    broschurentitel : i[k].de_data.broschurentitel,
+                    datei: path,
+                    zusatzinformation : i[k].de_data.zusatzinformation
+                  },
+                  en_data: {
+                    artikelnummer : i[k].en_data.artikelnummer,
+                    broschurentitel : i[k].en_data.broschurentitel,
+                    datei: path,
+                    zusatzinformation : i[k].en_data.zusatzinformation
+                  },
+                  produziert_bis : i[k].produziert_bis,
+                  thumbnail: thumbnail,
+                  title : i[k].title
+                };
+                StorageService.storeFile(doc);
               }
             }
           })
         }
       });
+      $scope.hide();
 
     }
 
@@ -600,8 +590,35 @@ function ($scope, StorageService) {
 
     }])
 
-.controller('MenuCtrl', ['$scope',
-    function ($scope) {
+.controller('MenuCtrl', ['$scope','DataService','StorageService',
+    function ($scope,DataService,StorageService) {
+
+      var filter_headings = DataService.downloadProuctFilters();
+      var current_filter_ids = StorageService.getFilterIds();
+
+      function toShow() {
+        var groups = [];
+        filter_headings.forEach(function (filter_heading) {
+            var keys = Object.keys(filter_heading.filters);
+            var current_keys = keys.filter(function (key) {
+              return current_filter_ids.indexOf(key) != -1;
+            });
+            var content = [];
+            for(var i = 0; i < current_keys.length; i ++){
+              content.push(filter_headings.filters[current_keys[i]]);
+            }
+            groups.push(
+              {name: filter_heading.title_de,
+              items: content,
+              show : false
+              })
+        });
+
+        return groups;
+      }
+      $scope.groups = StorageService.toShow();
+      console.log($scope.groups);
+      /**
       $scope.groups = [
         {
           name: 'Funktion',
@@ -668,7 +685,8 @@ function ($scope, StorageService) {
             {name: 'Sensor', checked: false}
           ],
           show: false
-        }];
+        }]; **/
+
       $scope.toggleGroup = function (group) {
         group.show = !group.show;
       };

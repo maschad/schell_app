@@ -7,10 +7,12 @@ angular.module('app.services', [])
   var title = '';
   var prevTitle = '';
   var rootTitle = '';
+  var filter_ids = '';
   var link = 'http://www.schell.eu/deutschland-de/produkte/';
 
   $localStorage = $localStorage.$default({
     products: [],
+    downloads: [],
     offlineProducts: [],
     bookmarked: [],
     settingsCategories: [],
@@ -169,6 +171,22 @@ angular.module('app.services', [])
     $localStorage.bookmarked.splice($localStorage.bookmarked.indexOf(bookmark),1);
   };
 
+  var storeFilterIds = function (ids) {
+    filter_ids = ids;
+  };
+
+  var getFilterIds = function(){
+    return filter_ids;
+  };
+
+  var storeFile = function (data) {
+    $localStorage.downloads = data;
+  };
+
+  var getFile = function () {
+    return $localStorage.downloads;
+  };
+
   return {
     getAll : getAll,
     add : add,
@@ -202,7 +220,11 @@ angular.module('app.services', [])
     getPrev : getPrevTitle,
     getBookmarks : getBookmarks,
     bookmark : bookmark,
-    removeBookmark : removeBookmark
+    removeBookmark : removeBookmark,
+    getFilterIds : getFilterIds,
+    storeFilterIds : storeFilterIds,
+    storeFile : storeFile,
+    getFile : getFile
   };
 
 }])
@@ -296,6 +318,21 @@ angular.module('app.services', [])
     return files;
   };
 
+  var downloadProductFilters = function () {
+    var filters = [];
+
+    firebase.database().ref('/product_filters/').once('value').then(function (snapshot) {
+      filters.push(snapshot.val());
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
+    });
+
+    return filters;
+  };
+
 
   return {
     goOffline : goOffline,
@@ -303,7 +340,90 @@ angular.module('app.services', [])
     downloadProductCategories : downloadProductCategories,
     downloadProducts : downloadProducts,
     downloadVideos : downloadVideos,
-    downloadFiles : downloadFiles
+    downloadFiles : downloadFiles,
+    downloadProuctFilters : downloadProductFilters
   };
+
+}])
+
+.factory('FileService',[function () {
+
+
+    var download = function (url,filename,dirName) {
+      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
+          fs.root.getDirectory(
+            dirName,
+            {
+              create: true
+            },
+            function(dirEntry) {
+              dirEntry.getFile(
+                filename,
+                {
+                  create: true,
+                  exclusive: false
+                },
+                function gotFileEntry(fe) {
+                  var p = fe.toURL();
+                  fe.remove();
+                  ft = new FileTransfer();
+                  ft.download(
+                    encodeURI(url),
+                    p,
+                    function(entry) {
+                      return entry.toURL();
+                    },
+                    function(error) {
+                      console.log(error);
+                    },
+                    false,
+                    null
+                  );
+                },
+                function() {
+                  console.log("Get file failed");
+                }
+              );
+            }
+          );
+        },
+        function() {
+          console.log("Request for filesystem failed");
+        });
+    };
+
+    var load = function (fileName,dirName) {
+      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
+          fs.root.getDirectory(
+            dirName,
+            {
+              create: false
+            },
+            function(dirEntry) {
+              dirEntry.getFile(
+                fileName,
+                {
+                  create: false,
+                  exclusive: false
+                },
+                function gotFileEntry(fe) {
+                  return fe.toURL();
+                },
+                function(error) {
+                  console.log("Error getting file");
+                }
+              );
+            }
+          );
+        },
+        function() {
+          console.log("Error requesting filesystem");
+        });
+    };
+
+  return{
+    download : download,
+    load : load
+  }
 
 }]);
