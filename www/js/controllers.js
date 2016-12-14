@@ -50,11 +50,19 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
   };
 }])
 
-  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'StorageService','DataService','$ionicSideMenuDelegate',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'StorageService','DataService','$ionicSideMenuDelegate','$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope, $ionicFilterBar,$state,StorageService,DataService,$ionicSideMenuDelegate) {
+  function ($scope, $ionicFilterBar,$state,StorageService,DataService,$ionicSideMenuDelegate,$ionicPopover) {
 
+    //Popover function
+    $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
+      scope: $scope
+    }).then(function (popover) {
+      $scope.popover = popover;
+      //Ensure popover is ios
+      document.body.classList.add('platform-ion');
+    });
 
 
     //Side Menu
@@ -75,6 +83,7 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     $scope.choice = function (product,title) {
       StorageService.detailDisplay(product);
       StorageService.storeTitle(title);
+      StorageService.storePrev($scope.title);
       StorageService.setLink(title + '/');
       $state.go('detailPage');
     };
@@ -207,7 +216,6 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     $scope.prev = StorageService.getPrev();
     $scope.root = StorageService.getRoot();
     $scope.artikel = $scope.title;
-    StorageService.setLink('details/artikel/' + $scope.details.nummer + '.html');
 
     //Loading functions
     $scope.show = function() {
@@ -237,6 +245,10 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
     //Load Details
     getDetails();
+
+    //Build up link
+    StorageService.setLink('details/artikel/' + $scope.details.nummer + '.html');
+
 
       $scope.products = ([
         {
@@ -354,10 +366,18 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
 }])
 
-.controller('productLinesCtrl', ['$scope' , '$state', 'StorageService',function ($scope,$state,StorageService) {
+.controller('productLinesCtrl', ['$scope' , '$state', 'StorageService','$ionicPopover',function ($scope,$state,StorageService,$ionicPopover) {
+
+      //Popover function
+      $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
+        scope: $scope
+      }).then(function (popover) {
+        $scope.popover = popover;
+        //Ensure popover is ios
+        document.body.classList.add('platform-ion');
+      });
       $scope.products = [];
-      //For breadcrumb
-      $scope.root = $scope.title;
+
 
       //Child choice
       $scope.choice = function (child_ids, title) {
@@ -379,6 +399,8 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
       function getProducts() {
         $scope.products = StorageService.loadSubCategories();
         $scope.title = StorageService.getTitle();
+        //For breadcrumb
+        $scope.root = $scope.title;
       }
 
       //Load the products
