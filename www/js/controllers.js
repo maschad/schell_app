@@ -61,7 +61,8 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     }).then(function (popover) {
       $scope.popover = popover;
       //Ensure popover is ios
-      document.body.classList.add('platform-ion');
+      document.body.classList.remove('platform-ios');
+      document.body.classList.add('platform-android');
     });
 
 
@@ -309,8 +310,9 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     scope: $scope
   }).then(function (popover) {
     $scope.popover = popover;
-    //Ensure popover is ios
-    document.body.classList.add('platform-ion');
+    //Ensure popover is android
+    document.body.classList.remove('platform-ios');
+    document.body.classList.add('platform-android');
   });
 
   function slugify(text)
@@ -351,7 +353,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     var filename = url.split("/").pop();
 
     // Save location
-    var targetPath = cordova.file.externalRootDirectory + filename;
+    var targetPath = cordova.file.externalRootDirectory + 'Library/' + filename;
 
     $cordovaFileTransfer.download(url, targetPath, {}, true).then(function (result) {
       console.log('Success');
@@ -373,8 +375,9 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
         scope: $scope
       }).then(function (popover) {
         $scope.popover = popover;
-        //Ensure popover is ios
-        document.body.classList.add('platform-ion');
+        //Ensure popover is android
+        document.body.classList.remove('platform-ios');
+        document.body.classList.add('platform-android');
       });
       $scope.products = [];
 
