@@ -398,14 +398,26 @@ function ($scope, $stateParams) {
         StorageService.setCategories($scope.categories);
       }, 10000);
 
-
+      //Store data for browsing
+      StorageService.storeAll(DataService.downloadProductData());
+      StorageService.storeProductCategories(DataService.downloadProductCategories());
     }
 
     //Actually download Files
     function downloadFiles(files) {
 
       //Get urls, imgs, number , zusatzinfromation , thumbnail
-      console.log(files);
+      files.forEach(function (j) {
+        if(j != null){
+          j.forEach(function (i) {
+            if(i != null){
+              for(k in i){
+                i[k];
+              }
+            }
+          })
+        }
+      });
 
 
       /**
@@ -445,7 +457,7 @@ function ($scope, $stateParams) {
         template: '<p>Downloading Artikel Data...</p><ion-spinner></ion-spinner>',
         animation:'fade-in',
         showBackdrop:true,
-        duration: 10000
+        duration: 15000
       });
     };
     $scope.downloadHide = function(){
@@ -485,29 +497,28 @@ function ($scope, $stateParams) {
 
     //Checkbox function
     $scope.downloadCategory = function (product,check) {
+
       //Download details based on check
       if(check){
-        var files;
+        var files = [];
         $scope.downloadShow();
         StorageService.checkCategory(product,check);
-        StorageService.storeAll(DataService.downloadProductData());
-        StorageService.storeProductCategories(DataService.downloadProductCategories());
         var items = StorageService.getAll();
         setTimeout(function () {
           for(var i = 0; i < product.item.child_ids.length; i++) {
             for(var j = 0; j < items.length; j++){
               if (items[j].elternelement == product.item.child_ids[i] && items[j].hasOwnProperty('product_ids')) {
                 //Store files for download
-                files = DataService.downloadFiles(items[j].product_ids);
+                files.push(DataService.downloadFiles(items[j].product_ids));
               }
             }
           }
-        }, 10000);
-        setTimeout(function () {
-          downloadFiles(files);
-        },20000);
+          //Download the files
+          setTimeout(function () {
+            downloadFiles(files);
+          },1000);
+        }, 15000);
 
-        //Download the files
 
       }else {
         StorageService.checkCategory(product,check);
