@@ -8,6 +8,7 @@ angular.module('app.services', [])
 
   $localStorage = $localStorage.$default({
     products: [],
+    offlineProducts: [],
     settingsCategories: [],
     productsCategories: [],
     offlinePreferences:[
@@ -119,6 +120,13 @@ angular.module('app.services', [])
       $localStorage.settingsCategories.splice($localStorage.settingsCategories.indexOf(product),1,{item: product.item, checked: check});
   };
 
+  var getOfflineProducts = function () {
+    return $localStorage.offlineProducts;
+  };
+
+  var storeOfflineProducts = function (products) {
+    $localStorage.offlineProducts = products;
+  };
 
 
   return {
@@ -143,7 +151,9 @@ angular.module('app.services', [])
     setCountry : setCountry,
     getCategories : getCategories,
     checkCategory : checkCategory,
-    setCategories : setCategories
+    setCategories : setCategories,
+    storeOfflineProducts : storeOfflineProducts,
+    getOfflineProducts : getOfflineProducts
   };
 
 }])

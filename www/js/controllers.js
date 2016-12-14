@@ -402,7 +402,14 @@ function ($scope, $stateParams) {
     }
 
     //Actually download Files
-    function downloadFiles(url) {
+    function downloadFiles(files) {
+
+      //Get urls, imgs, number , zusatzinfromation , thumbnail
+      console.log(files);
+
+
+      /**
+
       // File name only
       var filename = url.split("/").pop();
 
@@ -415,7 +422,7 @@ function ($scope, $stateParams) {
         console.log('Error');
       }, function (progress) {
         // PROGRESS HANDLING GOES HERE
-      });
+      }); **/
 
     }
 
@@ -496,7 +503,11 @@ function ($scope, $stateParams) {
             }
           }
         }, 10000);
-        //downloadFiles(files);
+        setTimeout(function () {
+          downloadFiles(files);
+        },20000);
+
+        //Download the files
 
       }else {
         StorageService.checkCategory(product,check);
