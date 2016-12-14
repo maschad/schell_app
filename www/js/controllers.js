@@ -205,10 +205,10 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce','DataService', 'StorageService', '$ionicSideMenuDelegate','$cordovaFileTransfer', '$ionicLoading',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$ionicPopover', '$sce','DataService', 'StorageService', '$ionicSideMenuDelegate','$cordovaFileTransfer', '$ionicLoading','$ionicPopup',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicPopover, $sce,DataService,StorageService,$ionicSideMenuDelegate, $cordovaFileTransfer,$ionicLoading) {
+    function ($scope, $ionicPopover, $sce,DataService,StorageService,$ionicSideMenuDelegate, $cordovaFileTransfer,$ionicLoading,$ionicPopup) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
@@ -242,6 +242,14 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
       }
 
     }
+
+    //Bookmark Function
+    $scope.bookmark = function () {
+      StorageService.bookmark($scope.details);
+      $ionicPopup.alert({
+        title: 'Seite bookmarkiert'
+      });
+    };
 
 
     //Load Details
@@ -420,11 +428,24 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
 }])
 
-.controller('bookmarkCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('bookmarkCtrl', ['$scope', 'StorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, StorageService) {
+    //Download bookmarks
+    $scope.bookmarks = StorageService.getBookmarks();
+    if($scope.bookmarks == null){
+      $ionicPopup.alert({
+        title: 'No Artikels'
+      });
+    }
 
+    $scope.deleteBookmark = function (bookmark) {
+      StorageService.removeBookmark(bookmark);
+      $ionicPopup.alert({
+        title: 'Artikel Entfernt'
+      });
+    };
 }])
 
 .controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', '$ionicSideMenuDelegate','$ionicPopup','$cordovaFileTransfer',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller

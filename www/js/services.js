@@ -12,6 +12,7 @@ angular.module('app.services', [])
   $localStorage = $localStorage.$default({
     products: [],
     offlineProducts: [],
+    bookmarked: [],
     settingsCategories: [],
     productsCategories: [],
     offlinePreferences:[
@@ -156,6 +157,18 @@ angular.module('app.services', [])
     return link;
   };
 
+  var bookmark = function (data) {
+    $localStorage.bookmarked.push(data);
+  };
+
+  var getBookmarks = function () {
+    return $localStorage.bookmarked;
+  };
+
+  var removeBookmark = function (bookmark) {
+    $localStorage.bookmarked.splice($localStorage.bookmarked.indexOf(bookmark),1);
+  };
+
   return {
     getAll : getAll,
     add : add,
@@ -186,7 +199,10 @@ angular.module('app.services', [])
     storePrev : storePreviousTitle,
     storeRoot : storeRootTitle,
     getRoot : getRootTitle,
-    getPrev : getPrevTitle
+    getPrev : getPrevTitle,
+    getBookmarks : getBookmarks,
+    bookmark : bookmark,
+    removeBookmark : removeBookmark
   };
 
 }])

@@ -12,13 +12,7 @@
         </div>
       </li>
       <li class="dropdown">
-        <div class="dropdown-toggle side-nav-clip" data-toggle="dropdown">
-          <span class="bookmark-list-count">0</span>
-        </div>
-        <ul class="side-nav-dropdown dropdown-menu">
-          <li><a href="#">In Merkliste Aufnehmen</a></li>
-          <li><a ng-href="#/bookmark-list-detail">Merkliste anzeigen</a></li>
-        </ul>
+        <div class="dropdown-toggle side-nav-clip" ng-click="bookmark()"></div>
       </li>
       <li>
         <div class="side-nav-mail" ng-click="sendEmail()">
@@ -43,13 +37,8 @@
         <div class="side-nav-mail-sm" ng-click="sendEmail()">
         </div>
       </li>
-      <li class="dropup">
-        <div class="dropdown-toggle side-nav-clip-sm" data-toggle="dropdown">
-        </div>
-        <ul class="side-nav-dropup dropdown-menu">
-          <li><a href="#">In Merkliste Aufnehmen</a></li>
-          <li><a ng-href="#/detail_page">Merkliste anzeigen</a></li>
-        </ul>
+      <li class="dropup"  ng-click="bookmark()">
+        <div class="dropdown-toggle side-nav-clip-sm" ng-click="bookmark()"></div>
       </li>
       <li>
         <div class="side-nav-download-sm">
