@@ -56,6 +56,7 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
   function ($scope, $ionicFilterBar,$state,StorageService,DataService,$ionicSideMenuDelegate) {
 
 
+
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
@@ -64,6 +65,8 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     function getProducts() {
       $scope.products = DataService.downloadProducts(StorageService.getProductInfo());
       $scope.title = StorageService.getTitle();
+      $scope.root = StorageService.getRoot();
+      $scope.prev = $scope.title;
     }
 
     //load Products
@@ -106,6 +109,7 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     $scope.choice = function (child_ids, title) {
       StorageService.storeSubCategories(child_ids);
       StorageService.storeTitle(title);
+      StorageService.storeRoot(title);
       StorageService.setLink(title + '/');
       $state.go('product_lines');
     };
@@ -200,6 +204,9 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     $ionicSideMenuDelegate.canDragContent(false);
 
     $scope.title = StorageService.getTitle();
+    $scope.prev = StorageService.getPrev();
+    $scope.root = StorageService.getRoot();
+    $scope.artikel = $scope.title;
     StorageService.setLink('details/artikel/' + $scope.details.nummer + '.html');
 
     //Loading functions
@@ -224,6 +231,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
       if($scope.details.media.download_ids){
         $scope.files = DataService.downloadFiles($scope.details.media.download_ids);
       }
+
     }
 
 
@@ -348,11 +356,14 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
 .controller('productLinesCtrl', ['$scope' , '$state', 'StorageService',function ($scope,$state,StorageService) {
       $scope.products = [];
+      //For breadcrumb
+      $scope.root = $scope.title;
 
       //Child choice
       $scope.choice = function (child_ids, title) {
         StorageService.storeSubCategories(child_ids);
         StorageService.storeTitle(title);
+        StorageService.storePrev(title);
       };
 
       //Product Choice
