@@ -629,6 +629,7 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
       var filter_headings = DataService.downloadProuctFilters();
       $scope.$on('$stateChangeSuccess',function () {
           $scope.groups = StorageService.getFilterGroups(filter_headings);
+          console.log('groups',$scope.groups);
         }
       );
 

@@ -198,11 +198,12 @@ angular.module('app.services', [])
       if(filter_heading.filters != null){
         var keys = Object.keys(filter_heading.filters);
         var current_keys = keys.filter(function (key) {
-          return filter_ids.indexOf(key) != -1;
+          return filter_ids.indexOf(parseInt(key)) !== -1;
         });
+
         var content = [];
         for(var i = 0; i < current_keys.length; i ++){
-          content.push(filter_headings.filters[current_keys[i]]);
+          content.push(filter_heading.filters[current_keys[i]]);
         }
         groups.push(
         {
