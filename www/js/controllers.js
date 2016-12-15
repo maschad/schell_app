@@ -348,17 +348,20 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
                     + '' + 'Hier ist ein Link' + ' ' + link;
 
 
-    window.plugin.email.open({
-        to:          [''], // email addresses for TO field
-        cc:          Array, // email addresses for CC field
-        bcc:         Array, // email addresses for BCC field
-        subject:    $scope.details.de_data.produktbezeichnung, // subject of the email
-        body:       bodyText, // email body (for HTML, set isHtml to true)
-        isHtml:    true // indicats if the body is HTML or plain text
-      }, function () {
-        console.log('email view dismissed');
-      },
-      this);
+    if(window.plugins && window.plugins.emailComposer) {
+      window.plugins.emailComposer.showEmailComposerWithCallback(function(result) {
+          console.log("Response -> " + result);
+        },
+        "Artikel Subject", // Subject
+        bodyText,                      // Body
+        ["test@example.com"],    // To
+        null,                    // CC
+        null,                    // BCC
+        false,                   // isHTML
+        null,                    // Attachments
+        null);                   // Attachment Data
+    }
+    console.log(bodyText);
   };
 
 

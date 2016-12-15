@@ -825,7 +825,7 @@ body.has-active-menu {
 
 @media (max-width: 991px) {
   .product-tile {
-    height: auto;
+    height: avw;
   }
 }
 
@@ -1417,14 +1417,6 @@ ion-popover-view.fit ion-content {
 .bar {
   padding: 0;
 }
-
-.bar .title + .buttons {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-}
-
 
 
 .SyntaxLTStd-Bold {
