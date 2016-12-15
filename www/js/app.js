@@ -10,8 +10,6 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
 .config(function($ionicConfigProvider, $sceDelegateProvider,$ionicFilterBarConfigProvider){
   $ionicConfigProvider.backButton.previousTitleText(false).text('');
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
-  $ionicFilterBarConfigProvider.placeholder('Wonach suchen Sie?');
-  $ionicFilterBarConfigProvider.theme('royal');
 
 })
 

@@ -1,16 +1,16 @@
 <ion-popover-view style="background-color: #4c000f; border-radius:20px;">
   <ion-content>
-    <div class="item" style=" background-color: transparent; color: white;"><img
-      src="img/icons/dropdown-arrow.png" ui-sref="products"> Produktkategorien
+    <div class="item" style=" background-color: transparent; color: white;" ui-sref="products"><img
+      src="img/icons/dropdown-arrow.png" > Produktkategorien
     </div>
-    <div ng-if="root">
+    <div ng-if="root" ui-sref="product_lines">
       <div class="item" style=" background-color: transparent; color: white; text-indent: 10px;"><img
-        src="img/icons/dropdown-arrow.png" ui-sref="product_lines"> {{root}}
+        src="img/icons/dropdown-arrow.png"> {{root}}
       </div>
     </div>
-    <div ng-if="prev">
+    <div ng-if="prev" ui-sref="product_overview">
       <div class="item" style=" background-color: transparent; color: white; text-indent: 20px;"><img
-        src="img/icons/dropdown-arrow.png" ui-sref="product_overview"> {{prev}}
+        src="img/icons/dropdown-arrow.png"> {{prev}}
       </div>
     </div>
     <div ng-if="artikel">
