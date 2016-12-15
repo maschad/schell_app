@@ -268,6 +268,13 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
       });
     };
 
+    //Download PDF
+    $scope.showPDF = false;
+    $scope.downloadPDF = function (f) {
+      $scope.pdfUrl = f.de_data.datei;
+      $scope.showPDF = true;
+      window.open($scope.pdfUrl, '_blank');
+    };
 
     //Load Details
     getDetails();
@@ -465,6 +472,11 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
 
     //Product Categories
     $scope.categories = [];
+    //Videos
+    $scope.videos = [];
+
+    //Whether to download videos
+    $scope.videoCheck = StorageService.getVideoCheck();
 
     //Load Settings from local storage
     function downloadInfo() {
@@ -481,7 +493,22 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
       //Store data for browsing
       StorageService.storeAll(DataService.downloadProductData());
       StorageService.storeProductCategories(DataService.downloadProductCategories());
+      $scope.videos = DataService.downloadVideos();
     }
+
+    //Download Videos
+    function storeVideos() {
+      $scope.videos.forEach(function (video) {
+        console.log('video',video);
+      })
+    }
+
+    $scope.downloadVideos = function () {
+      StorageService.updateVideoCheck($scope.videoCheck);
+      if($scope.videoCheck){
+        storeVideos();
+      }
+    };
 
     //Actually download Files
     function downloadFiles(files) {
@@ -559,12 +586,11 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
     $scope.categories = StorageService.getCategories();
 
     //#TODO: Check if product info updated
-    /**
+
     if($scope.preferences[0].checked == false){
       $scope.show();
       downloadInfo();
-      $scope.hide();
-    }**/
+    }
 
     $scope.doRefresh = function() {
       if($scope.preferences[0].checked == true) {
@@ -632,79 +658,8 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
       var filter_headings = DataService.downloadProuctFilters();
       $scope.$on('$stateChangeSuccess',function () {
           $scope.groups = StorageService.getFilterGroups(filter_headings);
-          console.log('groups',$scope.groups);
         }
       );
-
-
-      /**
-      $scope.groups = [
-        {
-          name: 'Funktion',
-          items: [
-            {name: 'Thermostat', checked: true},
-            {name: 'Mischwasser', checked: false},
-            {name: 'Kaltwasser', checked: false},
-            {name: 'Mischwasser vorgemischt', checked: false},
-            {name: 'Sensor', checked: false}
-          ],
-          show: false
-        },
-        {
-          name: 'Temperatur',
-          items: [
-            {name: 'Thermostat', checked: true},
-            {name: 'Mischwasser', checked: false},
-            {name: 'Kaltwasser', checked: false},
-            {name: 'Mischwasser vorgemischt', checked: false},
-            {name: 'Sensor', checked: false}
-          ],
-          show: false
-        },
-        {
-          name: 'Hygiene',
-          items: [
-            {name: 'Thermostat', checked: true},
-            {name: 'Mischwasser', checked: false},
-            {name: 'Kaltwasser', checked: false},
-            {name: 'Mischwasser vorgemischt', checked: false},
-            {name: 'Sensor', checked: false}
-          ],
-          show: false
-        },
-        {
-          name: 'Energieversorgun',
-          items: [
-            {name: 'Thermostat', checked: true},
-            {name: 'Mischwasser', checked: false},
-            {name: 'Kaltwasser', checked: false},
-            {name: 'Mischwasser vorgemischt', checked: false},
-            {name: 'Sensor', checked: false}
-          ],
-          show: false
-        },
-        {
-          name: 'Oberfläche',
-          items: [
-            {name: 'Thermostat', checked: true},
-            {name: 'Mischwasser', checked: false},
-            {name: 'Kaltwasser', checked: false},
-            {name: 'Mischwasser vorgemischt', checked: false},
-            {name: 'Sensor', checked: false}
-          ],
-          show: false
-        },
-        {
-          name: 'Zertifizierung',
-          items: [
-            {name: 'Thermostat', checked: true},
-            {name: 'Mischwasser', checked: false},
-            {name: 'Kaltwasser', checked: false},
-            {name: 'Mischwasser vorgemischt', checked: false},
-            {name: 'Sensor', checked: false}
-          ],
-          show: false
-        }]; **/
 
       $scope.toggleGroup = function (group) {
         group.show = !group.show;

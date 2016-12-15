@@ -12,6 +12,8 @@ angular.module('app.services', [])
 
   $localStorage = $localStorage.$default({
     products: [],
+    videoCheck: false,
+    videos: [],
     downloads: [],
     offlineProducts: [],
     bookmarked: [],
@@ -45,6 +47,14 @@ angular.module('app.services', [])
 
   var storeAll = function (data) {
     $localStorage.products = data;
+  };
+
+  var storeVideos = function (videos) {
+    $localStorage.videos = videos;
+  };
+
+  var getVideos = function () {
+    return $localStorage.videos;
   };
 
   var storeProductCategories = function (data) {
@@ -216,6 +226,14 @@ angular.module('app.services', [])
     return groups;
   };
 
+  var getVideoCheck = function () {
+    return $localStorage.videoCheck;
+  };
+
+  var updateVideoCheck = function (check) {
+    $localStorage.videoCheck = check;
+  };
+
   return {
     getAll : getAll,
     add : add,
@@ -254,7 +272,9 @@ angular.module('app.services', [])
     storeFilterIds : storeFilterIds,
     storeFile : storeFile,
     getFile : getFile,
-    getFilterGroups : getFilterGroups
+    getFilterGroups : getFilterGroups,
+    getVideoCheck : getVideoCheck,
+    updateVideoCheck : updateVideoCheck
   };
 
 }])
