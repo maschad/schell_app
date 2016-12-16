@@ -100,8 +100,12 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
 
   }])
 
-.controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','StorageService','$ionicPopover','$ionicSideMenuDelegate',
-  function ($scope, $state,$ionicFilterBar,StorageService,$ionicPopover,$ionicSideMenuDelegate) {
+.controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','DataService','StorageService','$ionicPopover','$ionicSideMenuDelegate',
+  function ($scope, $state,$ionicFilterBar,DataService,StorageService,$ionicPopover,$ionicSideMenuDelegate) {
+
+    //Store data for browsing
+    StorageService.storeAll(DataService.downloadProductData());
+    StorageService.storeProductCategories(DataService.downloadProductCategories());
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
@@ -175,7 +179,7 @@ function ($scope, $sce,$ionicSideMenuDelegate, DataService,FileService,$ionicLoa
     $scope.videos = DataService.downloadVideos();
     $scope.hide();
   }else{
-    $scope.videos = StorageService.loadVideos();
+    //$scope.videos = StorageService.loadVideos();
   }
 
 
@@ -586,11 +590,8 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
     $scope.categories = StorageService.getCategories();
 
     //#TODO: Check if product info updated
-
-    if($scope.preferences[0].checked == false){
-      $scope.show();
-      downloadInfo();
-    }
+    $scope.show();
+    downloadInfo();
 
     $scope.doRefresh = function() {
       if($scope.preferences[0].checked == true) {
