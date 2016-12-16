@@ -303,6 +303,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 // End of icons
 
+.bar-royal .button.back-button.button-clear {
+  color: #000000;
+  padding-left: 8px;
+}
+
 .start-screen-button {
     position: absolute;
     right: 27px;
@@ -479,6 +484,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 #product-lines-body .heading {
   color: #ffffff;
+  padding-left: 10px;
 }
 
 .product-lines {
@@ -806,6 +812,7 @@ body.has-active-menu {
   color: #ffffff;
   padding-top: 30px;
   padding-bottom: 25px;
+  padding-left: 10px;
 }
 
 .product-tile {
@@ -1261,13 +1268,16 @@ p {
   font-size: 10px;
 }
 
-.item.active{
+.item.active, .item.activated, .item-complex.active .item-content, .item-complex.activated .item-content, .item .item-content.active, .item .item-content.activated {
   background-color: transparent;
 }
 
 .description-item {
-  background-color: $stable;
+  /* background-color: $stable; */
+  font-weight: bold;
+  padding: 16px 0 0;
 }
+
 .list .item.item-accordion {
   background-color: rgba(0,0,0,0.1);
   line-height: 38px;
@@ -1276,6 +1286,11 @@ p {
   transition: 0.09s all linear;
 }
 
+.description-accordion ul {
+  list-style-type: disc;
+  line-height: 20px;
+  font-size: 14px;
+}
 .list .item.description-accordion {
   line-height: 38px;
   padding-top: 0;
@@ -1290,6 +1305,19 @@ p {
 .list .item.description-accordion.ng-hide-add,
 .list .item.description-accordion.ng-hide-remove {
   display: block !important;
+}
+
+@media (max-width: 768px) {
+  .description-item {
+    background-color: $stable;
+    padding: 16px;
+  }
+  .description-accordion ul {
+    padding-left: 16px;
+  }
+  .list .item.description-accordion {
+    padding-bottom: 16px;
+  }
 }
 
 @media (min-width: 768px) {
@@ -1403,7 +1431,7 @@ ion-popover-view.fit ion-content {
 }
 
 #floating-menu li span.label-container {
-  text-align: left;
+  text-align: left !important;
   left: 75px;
 }
 
@@ -1425,7 +1453,14 @@ ion-popover-view.fit ion-content {
   bottom: 0px;
 }
 
+.design-awards {
+  margin-top: 40px;
+  margin-bottom: 60px;
+}
 
+img {
+  max-width: 100%;
+}
 
 .SyntaxLTStd-Bold {
   font-family: SyntaxLTStd-Bold;
