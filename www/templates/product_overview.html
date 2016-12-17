@@ -22,21 +22,20 @@
           <div class="col" ng-if="p.media.image_portrait" ng-click="choice(p,p.nummer)">
             <div class="product-tile">
               <div class="row">
-                <div class="col-70">
+                <div class="col col-70">
                   <p class="item-number">{{p.nummer}}</p>
                   <p class="item-title">{{p.de_data.produktbezeichnung}}</p>
                   <p class="item-name" ng-bind-html="p.de_data.werkstoff"></p>
                   <p>{{p.de_data.zusatz2}}</p>
                 </div>
                 <div class="col">
-                  <img src="{{p.media.image_portrait}}"  style="max-width: 93px;">
+                  <img src="{{p.media.image_portrait}}">
                 </div>
               </div>
             </div>
           </div>
 
         </div>
-
       </div>
 
     </div>

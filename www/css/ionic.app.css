@@ -10238,7 +10238,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 @media (max-width: 490px) {
   .button.button-block-start-screen {
-    width: 350px; }
+    width: 95vw; }
   .start-text {
     font-size: 0px; } }
 
@@ -10380,6 +10380,14 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .side-nav-filter {
   margin-top: 1px;
   margin-left: -1px; }
+
+.filter-text {
+  color: #ffffff;
+  margin-left: 100px; }
+
+@media (max-width: 767px) {
+  .filter-text {
+    margin-left: 0; } }
 
 /**
  * Menu overview.
@@ -10679,11 +10687,14 @@ body.has-active-menu {
 
 @media (max-width: 991px) {
   .product-tile {
-    height: avw; } }
+    height: 20vw; } }
 
 @media (max-width: 767px) {
   .product-tile {
     height: auto; } }
+
+#bookmark-body .product-tile {
+  height: auto; }
 
 .side-nav-wrapper {
   position: fixed;
@@ -10750,11 +10761,12 @@ body.has-active-menu {
   height: 22px; }
 
 #product-overview-body .product-tile {
-  height: 26vw; }
+  /* height: 26vw; */
+  height: auto; }
 
 @media (max-width: 991px) {
   #product-overview-body .product-tile {
-    height: 36vw; } }
+    /* height: 36vw; */ } }
 
 @media (max-width: 767px) {
   #product-overview-body .product-tile {
@@ -11038,7 +11050,8 @@ p {
 .description-item {
   /* background-color: $stable; */
   font-weight: bold;
-  padding: 16px 0 0; }
+  padding: 16px 0 0;
+  margin-bottom: 6px; }
 
 .list .item.item-accordion {
   background-color: rgba(0, 0, 0, 0.1);
@@ -11065,7 +11078,7 @@ p {
 .list .item.description-accordion.ng-hide-remove {
   display: block !important; }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .description-item {
     background-color: #f8f8f8;
     padding: 16px; }
@@ -11184,6 +11197,20 @@ ion-popover-view.fit ion-content {
 
 img {
   max-width: 100%; }
+
+#floating-button .icon.menu-icon,
+#floating-menu .icon.menu-icon {
+  line-height: 58px; }
+
+/* swiper slider */
+.swiper-pagination-bullet-active {
+  background-color: #ffffff !important; }
+
+.swiper-pagination-bullet {
+  background-color: #f3f3f3 !important; }
+
+.swiper-container-horizontal > .swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction {
+  bottom: 2px !important; }
 
 .SyntaxLTStd-Bold {
   font-family: SyntaxLTStd-Bold;

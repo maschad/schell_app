@@ -3,21 +3,21 @@
     <a class="button icon" ng-click="openPopover($event)" ng-show="show" style="background-color: black; border-radius: 0px;"><span class="schellicon-cog" style="font-size: 25px; margin-top: 8px; margin-right: 3px;"></span></a>
   </ion-nav-buttons>
   <!-- FAB -->
-  <ion-floating-button ui-sref="bookmark" has-footer="false" button-color="#2c2a2b" icon="ion-paperclip" icon-color="#fff">
+  <ion-floating-button ui-sref="bookmark" has-footer="false" button-color="#2c2a2b" icon="schellicon-paper-clip" icon-color="#fff">
   </ion-floating-button>
   <ion-content padding="false" class="has-header">
-    <ks-swiper-container initial-slide="3" autoplay="3000" loop="true" show-nav-buttons="false" slides-per-view="1">
+    <ks-swiper-container initial-slide="3" pagination-is-active="true" autoplay="3000" loop="true" show-nav-buttons="false" slides-per-view="1">
       <ks-swiper-slide class="swiper-slide" ng-repeat="s in [1,2,3]">
         <img ng-src="img/carousel-bild-{{s}}.png" width="100%">
       </ks-swiper-slide>
     </ks-swiper-container>
     <div class="row">
       <div class="col-25">
-        <div class="row responsive-lg">
+        <div class="row responsive-sm">
           <button ui-sref="products" id="start_screen-button2" class="button button-block button-block-start-screen button-stable">Produkte
           <span class="start-screen-button schellicon-product"></span></button>
         </div>
-        <div class="row responsive-lg">
+        <div class="row responsive-sm">
           <button id="start_screen-button3" class="button button-block button-block-start-screen button-stable" ui-sref="video">Videos<span class="start-screen-button schellicon-video"></span></button>
         </div>
       </div>
