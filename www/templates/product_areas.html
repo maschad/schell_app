@@ -19,24 +19,28 @@
       </div>
     </div>
     <!-- Products -->
-    <div ng-repeat="product in products" ng-if="$index%3 == 0" class="row responsive-sm">
-        <div class="col" ng-click="choice(products[$index].child_ids,products[$index].title_de,products[$index].filter_ids)">
+    <div ng-repeat="product in products" ng-if="$index%2 == 0" class="row responsive-sm">
+        <div class="col col-50" ng-click="choice(products[$index].child_ids,products[$index].title_de,products[$index].filter_ids)">
           <div class="product-tile">
-            <div class="col">
-              <div class="product-counter">
-                <p ng-if="products[$index].child_ids"><strong>{{products[$index].child_ids.length}} Artikel</strong></p>
-                <p ng-if="products[$index].product_ids"><strong>{{products[$index].product_ids.length}} Artikel</strong></p>
+            <div class="row">
+              <div class="col">
+                <div class="product-counter">
+                  <p ng-if="products[$index].child_ids"><strong>{{products[$index].child_ids.length}} Artikel</strong></p>
+                  <p ng-if="products[$index].product_ids"><strong>{{products[$index].product_ids.length}} Artikel</strong></p>
+                </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-25">
+              <div class="col col-25">
                 <img src="{{products[$index].bild}}" class="center" style="width: auto;">
               </div>
+              <div class="col">
                 <h3 class="product-type">{{products[$index].title_de}}</h3>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 1] != undefined" ng-click="choice(products[$index + 1].child_ids,products[$index + 1].title_de,products[$index + 1].filter_ids)">
+        <div class="col col-50" ng-if="products[$index + 1] != undefined" ng-click="choice(products[$index + 1].child_ids,products[$index + 1].title_de,products[$index + 1].filter_ids)">
           <div class="product-tile">
             <div class="col">
               <div class="product-counter">
@@ -45,13 +49,16 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-25">
-                <img src="{{products[$index + 1].bild}}" class="center" style="width: auto;"></div>
-              <h3 class="product-type" style="text-align: right;">{{products[$index + 1].title_de}}</h3>
+              <div class="col col-25">
+                <img src="{{products[$index + 1].bild}}" class="center" style="width: auto;">
+              </div>
+              <div class="col">
+                <h3 class="product-type">{{products[$index + 1].title_de}}</h3>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 2] != undefined" ng-click="choice(products[$index + 2].child_ids,products[$index + 2].title_de,products[$index + 2].filter_ids)">
+        <!-- <div class="col col-33" ng-if="products[$index + 2] != undefined" ng-click="choice(products[$index + 2].child_ids,products[$index + 2].title_de,products[$index + 2].filter_ids)">
           <div class="product-tile">
             <div class="col">
               <div class="product-counter">
@@ -60,12 +67,15 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-25">
-                <img src="{{products[$index + 2].bild}}" class="center" style="width: auto;"></div>
-              <h3 class="product-type" style="text-align: right;">{{products[$index + 2].title_de}}</h3>
+              <div class="col col-25">
+                <img src="{{products[$index + 2].bild}}" class="center" style="width: auto;">
+              </div>
+              <div class="col">
+                <h3 class="product-type" style="text-align: right;">{{products[$index + 2].title_de}}</h3>
+              </div>
             </div>
           </div>
-        </div>
+        </div> -->
     </div>
 
 
