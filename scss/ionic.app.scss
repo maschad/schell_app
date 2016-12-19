@@ -827,7 +827,7 @@ body.has-active-menu {
 
 .product-tile {
   background-color: #ffffff;
-  padding: 10px;
+  
   border-radius: 5px;
   height: 17vw;
 }
@@ -925,6 +925,7 @@ body.has-active-menu {
 .product-type {
   text-transform: uppercase;
   font-size: 16px;
+  font-weight: bold;
 }
 
 .product-filter-heading {
@@ -1076,9 +1077,20 @@ body.has-active-menu {
   border-radius: 10px;
   text-align: center;
   font-size: 12px;
-  width: 42%;
+  width: 24%;
 }
-
+.product-counter p {
+  margin-bottom: 0;
+  letter-spacing: 1px;
+}
+@media (max-width: 767px) {
+  .product-counter {
+    width: 30%;
+  }
+  .product-counter p {
+    font-size: 12px;
+  }
+}
 
 #custom-overlay {
   display: flex;
