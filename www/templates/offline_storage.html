@@ -7,23 +7,28 @@
 
     <div class="settings-container">
       <div class="row">
-        <div class="col-85">
+        <div class="col-80">
           <span>Wählen Sie die Kategorien die Sie offline auf</span>
           <span> diesem Gerät speichern möchten.</span>
         </div>
         <div class="col">
-          <button class="button icon schellicon-reload"  ng-click="doRefresh()" style="border-radius: 50%;  min-height: 45px; min-width: 45px; background-color: #dfdfdf;"></button>
+          <button class="button icon schellicon-reload"  ng-click="doRefresh()" style="border-radius: 50%;  min-height: 45px; min-width: 45px; background-color: #dfdfdf; float: right; padding: 0 10px;"></button>
         </div>
       </div>
       <form id="offline" class="list">
         <label class="item item-input">
-          <span class="input-label">Letzte Aktualisierung: 23. 02. 2016</span></label>
+          <span class="input-label">Letzte Aktualisierung: 23. 02. 2016</span>
+        </label>
         <ion-item class="item-divider" id="settings-list-item-divider1"> PRODUKTE</ion-item>
+        <hr class="settings-hr">
         <ion-checkbox  ng-repeat="product in categories" ng-change="downloadCategory(product,product.checked)" ng-model="product.checked">
             <strong>{{product.item.title_de}}</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
+        <hr class="settings-hr">
         <ion-checkbox ng-model="videoCheck" ng-change="downloadVideos()">Videos {{amount}}</ion-checkbox>
+        <ion-item class="item-divider" id="settings-list-item-divider3">SETTINGS</ion-item>
+        <hr class="settings-hr">
         <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()"  ng-repeat="item in preferences" style="font-size: 15px;">
           {{item.text}}
         </ion-toggle>

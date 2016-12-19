@@ -1373,6 +1373,22 @@ p {
   height: auto;
   padding: 20px;
 }
+.settings-hr {
+  width: 76%;
+  position: relative;
+  top: -26px;
+  border-color: #000000;
+  z-index: 3;
+  float: right;
+}
+@media (max-width: 767px) {
+  .settings-hr {
+    width: 60%;
+  }
+}
+.toggle input:checked + .track .handle {
+  background-color: #919191;
+}
 
 
 .platform-ios .popover-arrow:after {
