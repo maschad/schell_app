@@ -2,13 +2,13 @@
   <ion-content padding="true" class="has-header">
     <div id="bookmark-body">
       <div ng-repeat="bookmark in bookmarks track by $index" class="row responsive-sm" ng-if="$index%2 === 0">
-        <div class="col" ng-if="bookmark.media.image_portrait">
+        <div class="col col-50" ng-if="bookmark.media.image_portrait">
           <div class="product-tile">
             <div class="col">
               <div class="ion-close-round" ng-click="deleteBookmark(bookmark)"></div>
             </div>
             <div class="row">
-              <div class="col col-70">
+              <div class="col col-75">
                 <p class="item-number">{{bookmark.nummer}}</p>
                 <p class="item-title">{{bookmark.de_data.produktbezeichnung}}</p>
                 <p class="item-name">{{bookmark.de_data.werkstoff}}</p>

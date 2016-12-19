@@ -19,10 +19,10 @@
       <div ng-repeat="product in products" class="row responsive-sm" ng-if="$index%2 === 0">
         <div ng-repeat="p in product">
 
-          <div class="col" ng-if="p.media.image_portrait" ng-click="choice(p,p.nummer)">
+          <div class="col col-50" ng-if="p.media.image_portrait" ng-click="choice(p,p.nummer)">
             <div class="product-tile">
               <div class="row">
-                <div class="col col-70">
+                <div class="col col-75">
                   <p class="item-number">{{p.nummer}}</p>
                   <p class="item-title">{{p.de_data.produktbezeichnung}}</p>
                   <p class="item-name" ng-bind-html="p.de_data.werkstoff"></p>
