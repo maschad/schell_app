@@ -42,6 +42,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: SyntaxLTStd-Roman, sans-serif;
   line-height: 1.2;
 }
+h3 {
+  font-weight: bold;
+}
 
 // Schell Icons
 @font-face {
@@ -320,6 +323,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   width: 100%;
 }
 
+h2.start-text {
+  font-weight: bold;
+}
 
 
 @media (max-width: 490px) {
@@ -498,7 +504,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .filter-text {
   color: #ffffff;
-  margin-left: 100px;
 }
 @media (max-width: 767px) {
   .filter-text {
@@ -827,7 +832,6 @@ body.has-active-menu {
 
 .product-tile {
   background-color: #ffffff;
-  
   border-radius: 5px;
   height: 17vw;
 }
@@ -845,8 +849,7 @@ body.has-active-menu {
     height: 20vw;
   }
 }
-
-@media (max-width: 767px) {
+@media (max-width: 567px) {
   .product-tile {
     height: auto;
   }
@@ -916,7 +919,7 @@ body.has-active-menu {
 
 @media (max-width: 767px) {
   .product-img{
-    max-width: 100px;
+    /* max-width: 100px; */
     height: auto;
   }
 }
@@ -1077,18 +1080,20 @@ body.has-active-menu {
   border-radius: 10px;
   text-align: center;
   font-size: 12px;
-  width: 24%;
+  width: 36%;
 }
 .product-counter p {
   margin-bottom: 0;
   letter-spacing: 1px;
 }
 @media (max-width: 767px) {
-  .product-counter {
-    width: 30%;
-  }
   .product-counter p {
     font-size: 12px;
+  }
+}
+@media (max-width: 567px) {
+  .product-counter {
+    width: 30%;
   }
 }
 
