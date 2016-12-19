@@ -50,7 +50,7 @@
 
   <ion-content padding="false" class="has-header">
 
-    <div class="row responsive-sm">
+    <div class="row responsive-sm marg-top-30">
       <div class="col col-40">
         <img ng-src="{{details.media.image_landscape}}" class="product-img">
       </div>
@@ -86,14 +86,15 @@
                     <div ng-repeat="f in file">
                        <div class="row">
                          <div class="col col-20">
-                           <img ng-src="{{f.thumbnail}}" width="40px" ng-click="downloadPDF(f)">
+                           <img ng-src="{{f.thumbnail}}" width="70%" ng-click="downloadPDF(f)">
                          </div>
                          <div class="col">
-                           {{f.de_data.broschurentitel}}
+                            <p> {{f.de_data.broschurentitel}} </p>
+                            <p> {{f.de_data.zusatzinformation}} </p>
                          </div>
-                         <div class="col">
+                         <!-- <div class="col">
                            {{f.de_data.zusatzinformation}}
-                         </div>
+                         </div> -->
                        </div>
                     </div>
                  </div>

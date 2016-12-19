@@ -9975,6 +9975,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 h3 {
   font-weight: bold; }
 
+.marg-top-30 {
+  margin-top: 30px; }
+
 @font-face {
   font-family: 'schellicons';
   src: url("fonts/schellicons.eot?5178r6");
@@ -11065,10 +11068,13 @@ p {
   background-color: transparent; }
 
 .description-item {
-  /* background-color: $stable; */
   font-weight: bold;
   padding: 16px 0 0;
   margin-bottom: 6px; }
+
+.description-item .item-icon-left .icon:before, .item-icon-right .icon:before {
+  font-size: 16px;
+  color: #666666; }
 
 .list .item.item-accordion {
   background-color: rgba(0, 0, 0, 0.1);
@@ -11088,6 +11094,9 @@ p {
   padding-bottom: 0;
   transition: 0.09s all linear; }
 
+.list .item.description-accordion p {
+  line-height: normal; }
+
 .list .item.description-accordion.ng-hide {
   line-height: 0px; }
 
@@ -11097,8 +11106,10 @@ p {
 
 @media (max-width: 767px) {
   .description-item {
-    background-color: #f8f8f8;
-    padding: 16px; }
+    background-color: #ededed;
+    padding: 16px;
+    font-size: 14px;
+    border-radius: 2px; }
   .description-accordion ul {
     padding-left: 16px; }
   .list .item.description-accordion {
