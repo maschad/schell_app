@@ -11117,20 +11117,33 @@ p {
   height: auto;
   padding: 20px; }
 
+.item-divider {
+  background-color: transparent; }
+
 .settings-hr {
   width: 76%;
   position: relative;
   top: -26px;
   border-color: #000000;
   z-index: 3;
-  float: right; }
+  /* float: right; */
+  margin-left: 24%; }
 
 @media (max-width: 767px) {
   .settings-hr {
-    width: 60%; } }
+    width: 60%;
+    margin-left: 40%; } }
 
 .toggle input:checked + .track .handle {
   background-color: #919191; }
+
+.platform-ios .popover {
+  top: 50px !important;
+  right: 24px !important;
+  margin-left: auto !important; }
+
+.platform-ios .popover-arrow {
+  left: 190px !important; }
 
 .platform-ios .popover-arrow:after {
   content: ' ';
@@ -11138,8 +11151,7 @@ p {
   height: 20px;
   background: url(../img/curve.png) no-repeat;
   position: absolute;
-  top: 4px;
-  right: 0;
+  top: 3px;
   left: 10px;
   -webkit-transform: rotate(0deg);
   transform: rotate(0deg); }
