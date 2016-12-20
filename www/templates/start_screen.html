@@ -1,9 +1,9 @@
 <ion-view title="" id="start-screen" style="background-color:#9e0a22;" hide-back-button="true">
   <ion-nav-buttons side="left" class="has-header">
-    <a class="icon" style="color: #ffffff; padding: 0 10px;"><span class="schellicon-home" style="font-size: 25px; margin-top: 8px; margin-right: 3px;"></span></a>
+    <div class="icon" style="color: #ffffff; padding: 0 10px;"><span class="schellicon-home" style="font-size: 25px; margin-top: 8px; margin-right: 3px;"></span></div>
   </ion-nav-buttons>
   <ion-nav-buttons side="right" class="has-header">
-    <a class="button icon" ng-click="openPopover($event)" ng-show="show" style="background-color: black; border-radius: 0px;"><span class="schellicon-cog" style="font-size: 25px; margin-top: 8px; margin-right: 3px;"></span></a>
+    <a class="button icon" ng-click="openPopover($event)" ng-show="show" style="background-color: black; border-radius: 0px;"><span class="schellicon-cog" style="color: #ccc; font-size: 25px; margin-top: 8px; margin-right: 3px;"></span></a>
   </ion-nav-buttons>
   <!-- FAB -->
   <ion-floating-button ui-sref="bookmark" has-footer="false" button-color="#2c2a2b" icon="schellicon-paper-clip" icon-color="#fff">
@@ -14,25 +14,25 @@
         <img ng-src="img/carousel-bild-{{s}}.png" width="100%">
       </ks-swiper-slide>
     </ks-swiper-container>
-    <div class="row">
-      <div class="col-25">
-        <div class="row responsive-sm">
+    <div class="row responsive-sm">
+      <div class="col col-33">
+        <!-- <div class="row"> -->
           <button ui-sref="products" id="start_screen-button2" class="button button-block button-block-start-screen button-stable">Produkte
           <span class="start-screen-button schellicon-product"></span></button>
-        </div>
-        <div class="row responsive-sm">
+        <!-- </div> -->
+        <!-- <div class="row"> -->
           <button id="start_screen-button3" class="button button-block button-block-start-screen button-stable" ui-sref="video">Videos<span class="start-screen-button schellicon-video"></span></button>
-        </div>
+        <!-- </div> -->
       </div>
 
-      <div class="col">
-        <h2 id="start_screen-heading5" style="color:#FFFFFF;" class="start-text">Verantwortung für Gesundheit.</h2>
-        <div id="start_screen-markdown5" class="start-text">
-          <p style="color:#FFFFFF;" class="start-text">Ob Sanitärräume in Krankenhäusern, Seniorenheimen oder Schulen – in diesen und
+      <div class="col start-text">
+        <h2 id="start_screen-heading5" style="font-weight: bold; margin-top: -6px; margin-bottom: 30px;">Verantwortung für Gesundheit.</h2>
+        <div id="start_screen-markdown5">
+          <p style="margin-bottom: 20px;">Ob Sanitärräume in Krankenhäusern, Seniorenheimen oder Schulen – in diesen und
             vielen vergleichbaren Objekten stellt konsequente Hygiene eine besondere Herausforderung dar.Entweder weil
             die Sanitäranlagen nicht ununterbrochen genutzt werden oder
             weil die Gefahr der Übertragung von Krankheitserregern bestmöglich vermieden werden soll.</p>
-          <p style="color:#FFFFFF;" class="start-text">Eine anspruchsvolle Aufgabe, der sich SCHELL seit vielen Jahren verpflichtet fühlt.
+          <p>Eine anspruchsvolle Aufgabe, der sich SCHELL seit vielen Jahren verpflichtet fühlt.
             Kein Wunder, dass wir inzwischen weltweit zu den Pionieren technischer Lösungen gehören, die vor allem ein
             Ziel haben: die Gesundheit der Nutzer zu schützen.</p>
         </div>
