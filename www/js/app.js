@@ -14,9 +14,10 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
 
 })
 
-.run(function($ionicPlatform,$ionicPopup,$rootScope,$state,StorageService) {
+.run(function($ionicPlatform, $cordovaSQLite,$ionicPopup,$rootScope,$state,StorageService) {
   //Set internet to true
   $rootScope.internet = true;
+
 
 
   $ionicPlatform.ready(function() {
@@ -46,11 +47,15 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
       }
     }
 
+    //TEST DB INIT
+    db = $cordovaSQLite.openDB({"name" : "mydb.db", "location" : "default"});
+    $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS products (uid integer primary key, title_de text, title_en text)");
+
+
+
     if(StorageService.checkCountry()){
       $state.go('start-screen');
     }
-
-
 
   });
 });

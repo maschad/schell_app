@@ -1,9 +1,9 @@
 angular.module('app.controllers', [])
 
-.controller('start_screenCtrl', ['$scope','$state','$ionicPopover','$rootScope','$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('start_screenCtrl', ['$scope','$state','$cordovaSQLite','$ionicPopup','$ionicPopover','$rootScope','$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
+function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
  //Remove splash screen
   $scope.$on('$ionicView.afterEnter', function(){
     setTimeout(function(){
@@ -48,6 +48,40 @@ function ($scope, $state, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
     $state.go('settings');
     $scope.popover.hide();
   };
+
+  function execute() {
+    var query = "INSERT INTO products (title_de, title_en) VALUES (?,?)";
+    $cordovaSQLite.execute(db, query, ['german', 'english']).then(function(res) {
+      console.log("INSERT ID -> " + res.insertId);
+    }, function (err) {
+      $ionicPopup.alert({
+        title:err
+      });
+    });
+
+  }
+
+  function read() {
+    var query = "SELECT title_de, title_en FROM people WHERE title_en = ?";
+    $cordovaSQLite.execute(db, query, ['english']).then(function(res) {
+      if(res.rows.length > 0) {
+        $ionicPopup.alert({
+          title: 'Db data',
+          template: 'Title_en = ' + res.rows.item(0).title_en + 'Title_de = ' +  res.rows.item(0).title_de
+        });
+      } else {
+        $ionicPopup.alert({
+          title: "No results found"
+        });
+      }
+    }, function (err) {
+      console.error(err);
+    });
+  }
+
+  execute();
+  read();
+
 }])
 
   .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'StorageService','DataService','$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
@@ -353,8 +387,8 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
   $scope.sendEmail = function () {
     var link = StorageService.getLink();
-    var bodyText = 'Product nummer' .concat($scope.details.nummer)
-                    + ' ' + 'Referenzartikel' + ' ' .concat($scope.details.referenzartikel)
+    var bodyText = 'Product nummer ' .concat($scope.details.nummer)
+                    + ' ' + 'Referenzartikel ' + ' ' .concat($scope.details.referenzartikel)
                     + ' ' .concat($scope.details.de_data.differenzierung)
                     + '' + 'Hier ist ein Link' + ' ' + link;
 
@@ -371,8 +405,9 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
         false,                   // isHTML
         null,                    // Attachments
         null);                   // Attachment Data
+    }else{
+      console.log('could not open');
     }
-    console.log(bodyText);
   };
 
 
