@@ -10279,18 +10279,20 @@ h3 {
     right: 18px; } }
 
 /* Breadcrumb Dropdown Menu */
-.crumbs-container {
+/* .crumbs-container {
   position: relative;
   overflow: hidden;
   height: 3.2em;
   -webkit-transition: height 0.5s ease-out;
   -moz-transition: height 0.5s ease-out;
   -o-transition: height 0.5s ease-out;
-  transition: height 0.5s ease-out; }
+  transition: height 0.5s ease-out;
+}
 
 .crumbs-container.active {
   height: 17.1em;
-  width: 100%; }
+  width: 100%;
+}
 
 .crumbs {
   width: 100%;
@@ -10298,30 +10300,37 @@ h3 {
   bottom: 0;
   padding-left: 0;
   margin-bottom: 0;
-  text-transform: uppercase; }
+  text-transform: uppercase;
+}
 
 .crumbs .second {
-  text-indent: 22px; }
+  text-indent: 22px;
+}
 
 .crumbs .third {
-  text-indent: 44px; }
+  text-indent: 44px;
+}
 
 .crumbs .fourth {
-  text-indent: 66px; }
+  text-indent: 66px;
+}
 
 .crumbs-level {
   margin-top: 1.3em;
   margin-left: 1em;
-  position: absolute; }
+  position: absolute;
+}
 
 .crumbs li a {
   display: block;
   padding: 1em;
   padding-left: 2.5em;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 .crumbs li:last-child a {
-  border-bottom: 0; }
+  border-bottom: 0;
+}
 
 #crumbs-trigger {
   position: absolute;
@@ -10330,12 +10339,13 @@ h3 {
   display: block;
   font-size: 2em;
   padding: 0 0.5em 0.2em;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 #crumbs-trigger .glyphicon {
   font-size: 0.7em;
-  margin-bottom: 8px; }
-
+  margin-bottom: 8px;
+} */
 .center {
   display: block;
   max-width: 100%;
