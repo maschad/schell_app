@@ -49,39 +49,6 @@ function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$i
     $scope.popover.hide();
   };
 
-  function execute() {
-    var query = "INSERT INTO products (title_de, title_en) VALUES (?,?)";
-    $cordovaSQLite.execute(db, query, ['german', 'english']).then(function(res) {
-      console.log("INSERT ID -> " + res.insertId);
-    }, function (err) {
-      $ionicPopup.alert({
-        title:err
-      });
-    });
-
-  }
-
-  function read() {
-    var query = "SELECT title_de, title_en FROM people WHERE title_en = ?";
-    $cordovaSQLite.execute(db, query, ['english']).then(function(res) {
-      if(res.rows.length > 0) {
-        $ionicPopup.alert({
-          title: 'Db data',
-          template: 'Title_en = ' + res.rows.item(0).title_en + 'Title_de = ' +  res.rows.item(0).title_de
-        });
-      } else {
-        $ionicPopup.alert({
-          title: "No results found"
-        });
-      }
-    }, function (err) {
-      console.error(err);
-    });
-  }
-
-  execute();
-  read();
-
 }])
 
   .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'StorageService','DataService','$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
@@ -255,10 +222,10 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$rootScope','$ionicPopover', '$sce','DataService', 'StorageService', '$ionicSideMenuDelegate','$cordovaFileTransfer', '$ionicLoading','$ionicPopup',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$rootScope','$ionicPopover', '$sce','DataService', 'StorageService', '$ionicSideMenuDelegate','$cordovaFileTransfer', '$ionicLoading','$ionicPopup', '$cordovaInAppBrowser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope,$rootScope, $ionicPopover, $sce,DataService,StorageService,$ionicSideMenuDelegate, $cordovaFileTransfer,$ionicLoading,$ionicPopup) {
+    function ($scope,$rootScope, $ionicPopover, $sce,DataService,StorageService,$ionicSideMenuDelegate, $cordovaFileTransfer,$ionicLoading,$ionicPopup,$cordovaInAppBrowser) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
@@ -311,7 +278,14 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     $scope.downloadPDF = function (f) {
       $scope.pdfUrl = f.de_data.datei;
       $scope.showPDF = true;
-      window.open($scope.pdfUrl, '_blank');
+      var options = {
+        location: 'no',
+        clearcache: 'yes',
+        toolbar: 'yes',
+        closebuttoncaption: 'Close',
+        enableViewportScale: 'yes'
+      };
+      $cordovaInAppBrowser.open($scope.pdfUrl, '_blank',options);
     };
 
     //Load Details
@@ -492,6 +466,31 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
         title: 'No Artikels'
       });
     }
+
+    $scope.email = function () {
+      var link = StorageService.getLink();
+      var bodyText = 'Product nummer ' .concat($scope.details.nummer)
+        + ' ' + 'Referenzartikel ' + ' ' .concat($scope.details.referenzartikel)
+        + ' ' .concat($scope.details.de_data.differenzierung)
+        + '' + 'Hier ist ein Link' + ' ' + link;
+
+
+      if(window.plugins && window.plugins.emailComposer) {
+        window.plugins.emailComposer.showEmailComposerWithCallback(function(result) {
+            console.log("Response -> " + result);
+          },
+          "Artikel Subject", // Subject
+          bodyText,                      // Body
+          ["test@example.com"],    // To
+          null,                    // CC
+          null,                    // BCC
+          false,                   // isHTML
+          null,                    // Attachments
+          null);                   // Attachment Data
+      }else{
+        console.log('could not open');
+      }
+    };
 
     $scope.deleteBookmark = function (bookmark) {
       StorageService.removeBookmark(bookmark);

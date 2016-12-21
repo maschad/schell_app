@@ -47,12 +47,6 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
       }
     }
 
-    //TEST DB INIT
-    db = $cordovaSQLite.openDB({"name" : "mydb.db", "location" : "default"});
-    $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS products (uid integer primary key, title_de text, title_en text)");
-
-
-
     if(StorageService.checkCountry()){
       $state.go('start-screen');
     }
