@@ -14,30 +14,30 @@
   </ion-nav-buttons>
   <ion-content>
     <div id="product-overview-body">
+      <div class="container">
+        <h3 class="heading">Bezeichnung der Kategorie</h3>
+        <div ng-repeat="product in products" class="row responsive-sm" ng-if="$index%2 === 0">
+          <div ng-repeat="p in product">
 
-      <h3 class="heading">Bezeichnung der Kategorie</h3>
-      <div ng-repeat="product in products" class="row responsive-sm" ng-if="$index%2 === 0">
-        <div ng-repeat="p in product">
-
-          <div class="col col-50" ng-if="p.media.image_portrait" ng-click="choice(p,p.nummer)">
-            <div class="product-tile">
-              <div class="row">
-                <div class="col col-75">
-                  <p class="item-number">{{p.nummer}}</p>
-                  <p class="item-title">{{p.de_data.produktbezeichnung}}</p>
-                  <p class="item-name">{{p.de_data.werkstoff}}</p>
-                  <p>{{p.de_data.zusatz2}}</p>
-                </div>
-                <div class="col">
-                  <img src="{{p.media.image_portrait}}">
+            <div class="col col-50" ng-if="p.media.image_portrait" ng-click="choice(p,p.nummer)">
+              <div class="product-tile">
+                <div class="row">
+                  <div class="col col-75">
+                    <p class="item-number">{{p.nummer}}</p>
+                    <p class="item-title">{{p.de_data.produktbezeichnung}}</p>
+                    <p class="item-name" ng-bind-html="p.de_data.werkstoff"></p>
+                    <p>{{p.de_data.zusatz2}}</p>
+                  </div>
+                  <div class="col">
+                    <img src="{{p.media.image_portrait}}">
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
-
     </div>
 
   </ion-content>
