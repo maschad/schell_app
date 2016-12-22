@@ -562,6 +562,7 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
                 var url = i[k].de_data.datei;
                 var filename = i[k].de_data.broschurentitel;
                 var path = FileService.download(url,filename,'pdfs');
+                console.log(path);
                 var imgUrl = i[k].de_data.datei;
                 var imgFilename = count.toString() + '.jpg';
                 count++;

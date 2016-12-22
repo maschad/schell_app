@@ -25,7 +25,7 @@
                 <div class="col-70">
                   <p class="item-number">{{p.nummer}}</p>
                   <p class="item-title">{{p.de_data.produktbezeichnung}}</p>
-                  <p class="item-name">{{p.de_data.werkstoff}}</p>
+                  <p class="item-name" ng-bind-html="p.de_data.werkstoff"></p>
                   <p>{{p.de_data.zusatz2}}</p>
                 </div>
                 <div class="col">
