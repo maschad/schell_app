@@ -10245,7 +10245,8 @@ h3 {
   padding: 20px;
   width: 100%; }
 
-.start-text h2, p {
+.start-text h2,
+.start-text p {
   color: #ffffff; }
 
 @media (max-width: 490px) {
@@ -11052,14 +11053,15 @@ p {
 
 @media (max-width: 767px) {
   p {
-    font-size: 17px; } }
+    font-size: 16px; } }
 
 .item-select select {
   left: 0; }
 
 .item-number {
   color: #999999;
-  margin-bottom: 0; }
+  margin-bottom: 0;
+  font-size: 14px; }
 
 .item-title {
   font-weight: bold; }
@@ -11128,12 +11130,13 @@ p {
 @media (min-width: 768px) {
   .container {
     width: 720px;
-    padding-left: 50px; } }
+    /* padding-left: 50px; */
+    padding-left: 78px; } }
 
 @media (min-width: 992px) {
   .container {
     width: 1000px;
-    padding-left: 100px; } }
+    /* padding-left: 100px; */ } }
 
 .pane, .view {
   background-color: #7E071C; }
