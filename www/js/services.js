@@ -1,24 +1,14 @@
 angular.module('app.services', [])
 
-.factory('StorageService', ['$localStorage',  function($localStorage){
-  //Subcategories to be returned
-  var subs = [];
-  var toDisplay = [];
-  var title = '';
-  var prevTitle = '';
-  var rootTitle = '';
-  var filter_ids = [];
-  var link = 'http://www.schell.eu/deutschland-de/produkte/';
+.factory('localStorageService', ['$localStorage',  function($localStorage){
 
+  //Local storage using ngStorage, for trivial persistence
   $localStorage = $localStorage.$default({
-    products: [],
-    videoCheck: false,
-    videos: [],
-    downloads: [],
-    offlineProducts: [],
-    bookmarked: [],
-    settingsCategories: [],
-    productsCategories: [],
+    country: '',
+    boomarked_products: [],
+    product_files: {},
+    video_files: {},
+    download_files: {},
     offlinePreferences:[
       {
         text: 'Automatischer Sync deaktivieren',
@@ -27,179 +17,44 @@ angular.module('app.services', [])
       {
         text: 'Mobiler Sync deaktivieren',
         checked: false
+      },
+      {
+        downloaded_categories: []
+      },
+      {
+        download_videos : false
       }
     ],
-    product_info : [],
-    country: ''
+    filters : {},
+    last_updated : ''
   });
 
-  var getAll = function () {
-    return $localStorage.products;
+  // Getters and Setters
+
+  var getCountry = function () {
+    return $localStorage.country;
   };
 
-  var add = function (product) {
-    $localStorage.products.push(product);
+  var setCountry = function (country) {
+    $localStorage.country = country;
   };
 
-  var remove = function (product) {
-    $localStorage.products.splice($localStorage.products.indexOf(product));
+  var getBoomarkedProducts = function () {
+    return $localStorage.boomarked_products;
   };
 
-  var storeAll = function (data) {
-    $localStorage.products = data;
-  };
-
-  var storeVideos = function (videos) {
-    $localStorage.videos = videos;
-  };
-
-  var getVideos = function () {
-    return $localStorage.videos;
-  };
-
-  var storeProductCategories = function (data) {
-    $localStorage.productsCategories = data;
-  };
-
-  var getProductCategories = function(){
-    return $localStorage.productsCategories;
-  };
-
-  var storeSubCategories = function (child_ids) {
-    subs = [];
-    for(var i = 0; i < $localStorage.products.length; i ++){
-      for(j=0; j < child_ids.length; j++){
-        if ($localStorage.products[i]['elternelement'] == child_ids[j]){
-          subs.push($localStorage.products[i]);
-        }
-      }
+  var boomarkProduct = function (product) {
+    if($localStorage.boomarked_products.indexOf(product) != -1){
+      return false;
+    }else{
+      $localStorage.boomarked_products.push(product);
+      return true;
     }
   };
 
-  var loadSubCategories = function () {
-    return subs;
-  };
 
-  var updatePreferences = function (data) {
-    $localStorage.offlinePreferences = data;
-  };
 
-  var storeTitle = function (tit) {
-    title = tit;
-  };
 
-  var storeRootTitle = function (root) {
-    rootTitle = root;
-
-  };
-
-  var storePreviousTitle = function (prev) {
-    prevTitle = prev;
-  };
-
-  var getPrevTitle = function () {
-    return prevTitle;
-  };
-
-  var getRootTitle = function () {
-    return rootTitle;
-  };
-
-  var getTitle = function () {
-    return title;
-  };
-
-  var getProductInfo = function () {
-    return $localStorage.product_info;
-  };
-
-  var storeProductInfo = function (data) {
-    $localStorage.product_info = data;
-  };
-
-  var detailDisplay = function(product) {
-    toDisplay = product;
-  };
-
-  var getDetails = function (){
-    return toDisplay;
-  };
-
-  var loadOffline = function() {
-    return $localStorage.offlinePreferences;
-  };
-
-  var reset = function () {
-    $localStorage.$reset();
-  };
-
-  var setCountry = function (choice) {
-    $localStorage.country = choice;
-  };
-
-  var checkCountry = function () {
-    return !!$localStorage.country;
-  };
-
-  var getCategories = function () {
-    return $localStorage.settingsCategories;
-  };
-
-  var setCategories = function (data) {
-    $localStorage.settingsCategories = data;
-  };
-
-  var checkCategory = function (product,check) {
-      $localStorage.settingsCategories.splice($localStorage.settingsCategories.indexOf(product),1,{item: product.item, checked: check});
-  };
-
-  var getOfflineProducts = function () {
-    return $localStorage.offlineProducts;
-  };
-
-  var storeOfflineProducts = function (products) {
-    $localStorage.offlineProducts = products;
-  };
-
-  var setLink = function (data) {
-    link.concat(data);
-  };
-
-  var getLink = function () {
-    return link;
-  };
-
-  var bookmark = function (data) {
-    $localStorage.bookmarked.push(data);
-  };
-
-  var getBookmarks = function () {
-    return $localStorage.bookmarked;
-  };
-
-  var removeBookmark = function (bookmark) {
-    $localStorage.bookmarked.splice($localStorage.bookmarked.indexOf(bookmark),1);
-  };
-
-  var storeFilterIds = function (ids) {
-    filter_ids = ids;
-  };
-
-  var getFilterIds = function(){
-    return filter_ids;
-  };
-
-  var storeFile = function (data) {
-    $localStorage.downloads = data;
-  };
-
-  var getFile = function (download_ids) {
-    var toRet = [];
-    for(var i = 0; i < download_ids.length; i++){
-      toRet.push($localStorage.downloads[download_ids[i]]);
-    }
-    return toRet;
-  };
 
   var getFilterGroups = function (filter_headings) {
     var groups = [];
@@ -226,56 +81,6 @@ angular.module('app.services', [])
     return groups;
   };
 
-  var getVideoCheck = function () {
-    return $localStorage.videoCheck;
-  };
-
-  var updateVideoCheck = function (check) {
-    $localStorage.videoCheck = check;
-  };
-
-  return {
-    getAll : getAll,
-    add : add,
-    remove : remove,
-    storeAll : storeAll,
-    updatePreferences: updatePreferences,
-    getProductCategories : getProductCategories,
-    storeProductCategories : storeProductCategories,
-    storeSubCategories : storeSubCategories,
-    loadSubCategories : loadSubCategories,
-    storeTitle : storeTitle,
-    getTitle : getTitle,
-    getProductInfo : getProductInfo,
-    storeProductInfo : storeProductInfo,
-    detailDisplay : detailDisplay,
-    getDetails : getDetails,
-    loadOffline : loadOffline,
-    reset : reset,
-    checkCountry : checkCountry,
-    setCountry : setCountry,
-    getCategories : getCategories,
-    checkCategory : checkCategory,
-    setCategories : setCategories,
-    storeOfflineProducts : storeOfflineProducts,
-    getOfflineProducts : getOfflineProducts,
-    getLink : getLink,
-    setLink : setLink,
-    storePrev : storePreviousTitle,
-    storeRoot : storeRootTitle,
-    getRoot : getRootTitle,
-    getPrev : getPrevTitle,
-    getBookmarks : getBookmarks,
-    bookmark : bookmark,
-    removeBookmark : removeBookmark,
-    getFilterIds : getFilterIds,
-    storeFilterIds : storeFilterIds,
-    storeFile : storeFile,
-    getFile : getFile,
-    getFilterGroups : getFilterGroups,
-    getVideoCheck : getVideoCheck,
-    updateVideoCheck : updateVideoCheck
-  };
 
 }])
 
