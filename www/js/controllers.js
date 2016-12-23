@@ -104,14 +104,11 @@ function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$i
 .controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','DataService','StorageService','$ionicPopover','$ionicSideMenuDelegate',
   function ($scope, $state,$ionicFilterBar,DataService,StorageService,$ionicPopover,$ionicSideMenuDelegate) {
 
-    //Store data for browsing
-    StorageService.storeAll(DataService.downloadProductData());
-    StorageService.storeProductCategories(DataService.downloadProductCategories());
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
-    $scope.products = [];
+    $scope.categories = [];
 
     //Popover function
     $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
@@ -125,7 +122,7 @@ function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$i
 
     //Load products for local storage
     function getProducts() {
-      $scope.products = StorageService.getProductCategories();
+      $scope.categories = StorageService.getProductCategories();
     }
     //Loading products
     getProducts();
@@ -398,7 +395,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
         document.body.classList.remove('platform-ios');
         document.body.classList.add('platform-android');
       });
-      $scope.products = [];
+      $scope.categories = [];
 
       //Search
       $scope.showFilterBar = function () {
@@ -427,17 +424,6 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
         StorageService.setLink(title + '/');
         $state.go('product_overview');
       };
-
-      //Load the products
-      function getProducts() {
-        $scope.products = StorageService.loadSubCategories();
-        $scope.title = StorageService.getTitle();
-        //For breadcrumb
-        $scope.root = $scope.title;
-      }
-
-      //Load the products
-      getProducts();
 
 
     $scope.content = {
