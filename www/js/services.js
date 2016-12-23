@@ -52,66 +52,86 @@ angular.module('app.services', [])
     }
   };
 
+  var getOfflinePreferences = function () {
+    return $localStorage.offlinePreferences;
+  };
 
+  var updatePreferences = function (data) {
+    $localStorage.offlinePreferences = data;
+  };
 
+  var getProductFile = function (product_id) {
+    return $localStorage.product_files[product_id];
+  };
 
+  var setProductFile = function (product_id,product_info) {
+    $localStorage.product_files[product_id] = product_info;
+  };
 
-  var getFilterGroups = function (filter_headings) {
-    var groups = [];
+  var getAllVideoPaths = function () {
+    return $localStorage.video_files;
+  };
 
-    filter_headings.forEach(function (filter_heading) {
-      if(filter_heading.filters != null){
-        var keys = Object.keys(filter_heading.filters);
-        var current_keys = keys.filter(function (key) {
-          return filter_ids.indexOf(parseInt(key)) !== -1;
-        });
+  var getVideoPath = function (video_id) {
+    return $localStorage.video_files[video_id];
+  };
 
-        var content = [];
-        for(var i = 0; i < current_keys.length; i ++){
-          content.push(filter_heading.filters[current_keys[i]]);
-        }
-        groups.push(
-        {
-            name: filter_heading.title_de,
-            items: content,
-            show : false
-        })
-      }
-    });
-    return groups;
+  var setVideoPath = function (video_id,path) {
+    $localStorage.video_files[video_id] = path;
+  };
+
+  var getDownloadFiles =  function () {
+    return $localStorage.download_files;
+  };
+
+  var setFilters = function (filters) {
+    $localStorage.filters = filters;
+  };
+
+  return {
+    getCountry : getCountry,
+    setCountry : setCountry,
+    getBookmarkedProducts : getBoomarkedProducts,
+    bookmarkProduct : boomarkProduct,
+    getOfflinePreferences : getOfflinePreferences,
+    updatePreferences : updatePreferences,
+    getProductFile : getProductFile,
+    setProductFile : setProductFile,
+    getAllVideoPaths : getAllVideoPaths,
+    getVideoPath : getVideoPath,
+    setVideoPath : setVideoPath,
+    getDownloadFiles : getDownloadFiles,
+    setFilters : setFilters
   };
 
 
 }])
 
-.factory('DataService', ['$ionicPopup', function($ionicPopup){
+.factory('FirebaseService', ['$ionicPopup', function(){
 
   var goOffline = function () {
     firebase.database().goOffline();
   };
 
-  //Download Product Data
-  var downloadProductData = function () {
-    var products = [];
+  //Download Product Category data from firebase
+  var getAllProductCategories = function () {
+    var categories = [];
     firebase.database().ref('/product_categories/').orderByKey().once('value').then(function (snapshot) {
-      snapshot.forEach(function (product) {
-        products.push(product.val());
-      });
-    }, function (error) {
-      $ionicPopup.confirm({
-        title: "Error Connecting to Database",
-        content: error
+      snapshot.forEach(function (category) {
+        category.push(category.val());
       });
     });
-    return products;
+
+    return categories;
   };
 
-  var downloadProductCategories = function () {
-    var products = [];
+  //Get the top level categories e.g. Wastchisch, Modus, Linus etc.
+  var getTopLevelCategory = function () {
+    var  topLevel = [];
 
     firebase.database().ref('/product_categories/').orderByChild('elternelement').equalTo(0).once('value').then(function (snapshot) {
-      snapshot.forEach(function (product) {
-        products.push(product.val());
+      snapshot.forEach(function (category) {
+        topLevel.push(category.val());
       });
     }, function (error) {
       $ionicPopup.confirm({
@@ -120,9 +140,10 @@ angular.module('app.services', [])
       });
     });
 
-    return products;
+    return topLevel;
   };
 
+  //Download a set of Products by id
   var downloadProducts = function(product_ids) {
     var products = [];
     for(var i = 0; i < product_ids.length; i++){
@@ -139,6 +160,7 @@ angular.module('app.services', [])
     return products;
   };
 
+  //Download Videos
   var downloadVideos = function () {
     var videos = [];
     firebase.database().ref('/videos/').orderByKey().once('value').then(function (snapshot) {
@@ -157,6 +179,7 @@ angular.module('app.services', [])
 
   };
 
+  //Download files from downloads table
   var downloadFiles = function (ids) {
     var files = [];
 
@@ -173,6 +196,8 @@ angular.module('app.services', [])
     return files;
   };
 
+
+  //Download the filters for a product
   var downloadProductFilters = function () {
     var filters = [];
 
@@ -193,8 +218,8 @@ angular.module('app.services', [])
 
   return {
     goOffline : goOffline,
-    downloadProductData : downloadProductData,
-    downloadProductCategories : downloadProductCategories,
+    getAllProductCategories : getAllProductCategories,
+    getTopLevelCategories : getTopLevelCategory,
     downloadProducts : downloadProducts,
     downloadVideos : downloadVideos,
     downloadFiles : downloadFiles,
@@ -249,38 +274,73 @@ angular.module('app.services', [])
         });
     };
 
-    var load = function (fileName,dirName) {
-      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
-          fs.root.getDirectory(
-            dirName,
-            {
-              create: false
-            },
-            function(dirEntry) {
-              dirEntry.getFile(
-                fileName,
-                {
-                  create: false,
-                  exclusive: false
-                },
-                function gotFileEntry(fe) {
-                  return fe.toURL();
-                },
-                function(error) {
-                  console.log("Error getting file");
-                }
-              );
-            }
-          );
-        },
-        function() {
-          console.log("Error requesting filesystem");
-        });
-    };
+
 
   return{
-    download : download,
-    load : load
+    download : download
   }
 
-}]);
+}])
+
+.factory('appDataService' , function () {
+    var current_category = '';
+    var email_link = 'http://www.schell.eu/deutschland-de/produkte/';
+    var current_title = '';
+    var previous_title = '';
+    var root_title = '';
+
+    var getCurrentCategory = function () {
+      return current_category;
+    };
+
+    var setCurrentCategory = function (category) {
+      current_category = category;
+    };
+
+    var getEmailLink = function () {
+      return email_link;
+    };
+
+    var appendEmailLink = function (data) {
+      email_link.concat(data);
+    };
+
+    var getCurrentTitle = function () {
+      return current_title;
+    };
+
+    var setCurrentTitle = function (title) {
+      current_title = title;
+    };
+
+    var getPreviousTitle = function () {
+      return previous_title;
+    };
+
+    var setPreviousTitle = function (prev) {
+      previous_title = prev;
+    };
+
+    var getRootTitle = function () {
+      return root_title;
+    };
+
+    var setRootTitle = function (root) {
+      root_title = root;
+    };
+
+    return {
+      getCurrentCategory : getCurrentCategory,
+      setCurrentCategory : setCurrentCategory,
+      getEmailLink : getEmailLink,
+      appendEmailLink : appendEmailLink,
+      getCurrentTitle : getCurrentTitle,
+      setCurrentTitle : setCurrentTitle,
+      getPreviousTitle : getPreviousTitle,
+      setPreviousTitle : setPreviousTitle,
+      getRootTitle : getRootTitle,
+      setRootTitle : setRootTitle
+    }
+
+
+});
