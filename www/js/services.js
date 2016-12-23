@@ -1,5 +1,7 @@
 angular.module('app.services', [])
 
+
+//Service for managing local storage queiries and items
 .factory('localStorageService', ['$localStorage',  function($localStorage){
 
   //Local storage using ngStorage, for trivial persistence
@@ -107,6 +109,7 @@ angular.module('app.services', [])
 
 }])
 
+  //Service for managing firebase queries
 .factory('FirebaseService', ['$ionicPopup', function(){
 
   var goOffline = function () {
@@ -228,9 +231,10 @@ angular.module('app.services', [])
 
 }])
 
+//Service for managing Files
 .factory('FileService',[function () {
 
-
+    //Save a file to system path
     var download = function (url,filename,dirName) {
       window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
           fs.root.getDirectory(
@@ -281,20 +285,20 @@ angular.module('app.services', [])
   }
 
 }])
-
+//Service for storing in app Data to be shared between controllers
 .factory('appDataService' , function () {
-    var current_category = '';
+    var current_category_child_ids = '';
     var email_link = 'http://www.schell.eu/deutschland-de/produkte/';
     var current_title = '';
     var previous_title = '';
     var root_title = '';
 
-    var getCurrentCategory = function () {
-      return current_category;
+    var getCurrentCategoryIds = function () {
+      return current_category_child_ids;
     };
 
-    var setCurrentCategory = function (category) {
-      current_category = category;
+    var setCurrentCategoryIds = function (category) {
+      current_category_child_ids = category;
     };
 
     var getEmailLink = function () {
@@ -330,8 +334,8 @@ angular.module('app.services', [])
     };
 
     return {
-      getCurrentCategory : getCurrentCategory,
-      setCurrentCategory : setCurrentCategory,
+      getCurrentCategoryIds : getCurrentCategoryIds,
+      setCurrentCategoryIds : setCurrentCategoryIds,
       getEmailLink : getEmailLink,
       appendEmailLink : appendEmailLink,
       getCurrentTitle : getCurrentTitle,
@@ -343,4 +347,267 @@ angular.module('app.services', [])
     }
 
 
-});
+})
+//Database Service
+.factory('DatabaseService', ['$cordovaSQLite', function($cordovaSQLite) {
+    db = $cordovaSQLite.openDB({
+      "name": "schell.db",
+      "location": "default"
+    });
+
+    var populateProducts = function(firebaseProductsObject) {
+      var preparedStatements = [];
+      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+
+      for (var uid in firebaseProductObject) {
+        var filter_ids = firebaseProductObject[uid]['filter_ids'].join();
+        var download_ids = firebaseProductObject[uid]['media']['download_ids'].join();
+
+        preparedStatements.push([
+          BLANK_PRODUCT_INSERT_QUERY,
+          [
+            uid,
+            firebaseProductObject[uid]['nummer'],
+            firebaseProductObject[uid]['referenzartikel'],
+            firebaseProductObject[uid]['de_data']['produktbezeichnung'],
+            firebaseProductObject[uid]['de_data']['zusatz1'],
+            firebaseProductObject[uid]['de_data']['zusatz2'],
+            firebaseProductObject[uid]['de_data']['beschreibung'],
+            firebaseProductObject[uid]['de_data']['differenzierung'],
+            firebaseProductObject[uid]['de_data']['lieferumfang'],
+            firebaseProductObject[uid]['de_data']['einsatzbereich'],
+            firebaseProductObject[uid]['de_data']['werkstoff'],
+            firebaseProductObject[uid]['de_data']['geraeuschklasse'],
+            firebaseProductObject[uid]['de_data']['pruefzeichen'],
+            firebaseProductObject[uid]['de_data']['dimension'],
+            firebaseProductObject[uid]['de_data']['oberflaeche'],
+            firebaseProductObject[uid]['verpackungseinheit'],
+            firebaseProductObject[uid]['gewicht'],
+            firebaseProductObject[uid]['media']['image_landscape'],
+            firebaseProductObject[uid]['media']['image_landscape_filesize'],
+            firebaseProductObject[uid]['media']['image_portrait'],
+            firebaseProductObject[uid]['media']['image_portrait_filesize'],
+            firebaseProductObject[uid]['media']['technical_drawing_link'],
+            firebaseProductObject[uid]['media']['technical_drawing_filesize'],
+            filter_ids,
+            download_ids,
+            firebaseProductObject[uid]['en_data']['produktbezeichnung'],
+            firebaseProductObject[uid]['en_data']['zusatz1'],
+            firebaseProductObject[uid]['en_data']['zusatz2'],
+            firebaseProductObject[uid]['en_data']['beschreibung'],
+            firebaseProductObject[uid]['en_data']['differenzierung'],
+            firebaseProductObject[uid]['en_data']['lieferumfang'],
+            firebaseProductObject[uid]['en_data']['einsatzbereich'],
+            firebaseProductObject[uid]['en_data']['werkstoff'],
+            firebaseProductObject[uid]['en_data']['geraeuschklasse'],
+            firebaseProductObject[uid]['en_data']['pruefzeichen'],
+            firebaseProductObject[uid]['en_data']['dimension'],
+            firebaseProductObject[uid]['en_data']['oberflaeche']
+          ]
+        ]);
+      }
+
+      db.sqlBatch(preparedStatements, function() {
+        console.log('Products populated');
+      }, function(error) {
+        console.log('SQL BATCH ERROR. COULDN\'T POPULATE PRODUCTS.' + error.message);
+      });
+
+    };
+
+    var populateProductCategories = function(firebaseProductCategoriesObject) {
+
+
+      var preparedStatements = [];
+      BLANK_CATEGORY_INSERT_QUERY = 'INSERT INTO product_categories VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+      console.log('Category 1', firebaseProductCategoriesObject['1'].bild);
+
+      for (var uid in firebaseProductCategoriesObject) {
+
+        var filter_ids = firebaseProductCategoriesObject[uid]['filter_ids'] ? firebaseProductCategoriesObject[uid]['filter_ids'].join() : '';
+        var download_ids = firebaseProductCategoriesObject[uid]['download_ids'] ? firebaseProductCategoriesObject[uid]['download_ids'].join() : '';
+        var child_ids = firebaseProductCategoriesObject[uid]['child_ids'] ? firebaseProductCategoriesObject[uid]['child_ids'].join() : '';
+        var product_ids = firebaseProductCategoriesObject[uid]['product_ids'] ? firebaseProductCategoriesObject[uid]['product_ids'].join() : '';
+
+
+        preparedStatements.push([
+          BLANK_CATEGORY_INSERT_QUERY,
+          [
+            parseInt(uid),
+            firebaseProductCategoriesObject[uid]['title_de'],
+            parseInt(firebaseProductCategoriesObject[uid]['elternelement']),
+            firebaseProductCategoriesObject[uid]['produkte'],
+            firebaseProductCategoriesObject[uid]['bild'],
+            firebaseProductCategoriesObject[uid]['downloads'],
+            child_ids,
+            product_ids,
+            filter_ids,
+            download_ids,
+            firebaseProductCategoriesObject[uid]['title_en']
+          ]
+        ]);
+      }
+
+      db.sqlBatch(preparedStatements, function() {
+        console.log('Categories populated');
+      }, function(error) {
+        console.log('SQL BATCH ERROR. COULDN\'T POPULATE CATEGORIES.' + error.message);
+      });
+
+    };
+
+    var populateDownloads = function(firebaseDownloadsObject) {
+
+      var preparedStatements = [];
+      BLANK_DOWNLOAD_INSERT_QUERY = 'INSERT INTO downloads VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
+
+      for (var uid in firebaseDownloadsObject) {
+        preparedStatements.push([
+          BLANK_DOWNLOAD_INSERT_QUERY,
+          [
+            uid,
+            firebaseDownloadsObject[uid]['thumbnail'],
+            firebaseDownloadsObject[uid]['de_data']['artikelnummer'],
+            firebaseDownloadsObject[uid]['de_data']['broschuerentitel'],
+            firebaseDownloadsObject[uid]['de_data']['zusatzinformation'],
+            firebaseDownloadsObject[uid]['de_data']['datei'],
+            firebaseDownloadsObject[uid]['produziert_bis'],
+            firebaseDownloadsObject[uid]['en_data']['artikelnummer'],
+            firebaseDownloadsObject[uid]['en_data']['broschuerentitel'],
+            firebaseDownloadsObject[uid]['en_data']['zusatzinformation'],
+            firebaseDownloadsObject[uid]['en_data']['datei'],
+            firebaseDownloadsObject[uid]['filesize'],
+            firebaseDownloadsObject[uid]['title'],
+          ]
+        ]);
+      }
+
+      db.sqlBatch(preparedStatements, function() {
+        console.log('Downloads populated');
+      }, function(error) {
+        console.log('SQL BATCH ERROR. COULDN\'T POPULATE DOWNLOADS.' + error.message);
+      });
+
+    };
+
+    var populateAwards = function(firebaseAwardsObject) {
+
+      var preparedStatements = [];
+      BLANK_AWARDS_INSERT_QUERY = 'INSERT INTO awards VALUES (?,?,?)';
+
+      for (var uid in firebaseAwardsObject) {
+        preparedStatements.push([
+          BLANK_DOWNLOAD_INSERT_QUERY,
+          [
+            uid,
+            firebaseAwardsObject[uid]['titel'],
+            firebaseAwardsObject[uid]['logo']
+          ]
+        ]);
+      }
+
+      db.sqlBatch(preparedStatements, function() {
+        console.log('Awards populated');
+      }, function(error) {
+        console.log('SQL BATCH ERROR. COULDN\'T POPULATE AWARDS.' + error.message);
+      });
+
+    };
+
+    var populateVideos = function(firebaseVideosObject) {
+
+      var preparedStatements = [];
+      BLANK_VIDEO_INSERT_QUERY = 'INSERT INTO videos VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+
+      for (var uid in firebaseVideosObject) {
+        preparedStatements.push([
+          BLANK_DOWNLOAD_INSERT_QUERY,
+          [
+            uid,
+            firebaseVideosObject[uid]['title'],
+            firebaseVideosObject[uid]['de_data']['startimage'],
+            firebaseVideosObject[uid]['de_data']['videofile'],
+            firebaseVideosObject[uid]['de_data']['information'],
+            firebaseVideosObject[uid]['en_data']['startimage'],
+            firebaseVideosObject[uid]['en_data']['videofile'],
+            firebaseVideosObject[uid]['en_data']['information'],
+            firebaseVideosObject[uid]['filesize'],
+            firebaseVideosObject[uid]['de_data']['youtube'],
+            firebaseVideosObject[uid]['en_data']['youtube'],
+          ]
+        ]);
+      }
+
+      db.sqlBatch(preparedStatements, function() {
+        console.log('Videos populated');
+      }, function(error) {
+        console.log('SQL BATCH ERROR. COULDN\'T POPULATE VIDEOS.' + error.message);
+      });
+    };
+
+    var selectTopCategories = function(success, error) {
+      console.log('Selecting Top categories');
+      db.executeSql('SELECT * from product_categories where elternelement = 0;', [], function(rs) {
+        console.log('Success selected');
+        success(rs);
+      }, function (error) {
+        error(error);
+      });
+    };
+
+    var selectChildCategories = function(child_ids, success, error) {
+      db.executeSql('SELECT * from product_categories where uid in (' + child_ids + ');',[], function(rs) {
+        success(rs);
+      }, function(error) {
+        error(error);
+      });
+    };
+
+    var selectProducts = function(product_ids, success, error) {
+      db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
+        success(rs);
+      }, function(error) {
+        error(error);
+      });
+    };
+
+    var selectVideos = function(video_ids, success, error) {
+      db.executeSql('SELECT * from videos where uid in (' + video_ids + ');', [], function(rs) {
+        success(rs);
+      }, function(error) {
+        error(error);
+      });
+    };
+
+    var selectDownloads = function(download_ids, success, error) {
+      db.executeSql('SELECT * from downloads where uid in (' + download_ids + ');', [], function(rs) {
+        success(rs);
+      }, function(error) {
+        error(error);
+      });
+
+    };
+
+    var searchProducts = function(search_term, success, error) {
+      db.executeSql('SELECT * from products where nummer LIKE %' + search_term + '% OR beschreibung_de LIKE %' + search_term + '% OR produktbezeichnung_de LIKE %' + search_term + ';', [], function(rs) {
+        success(rs);
+      }, function(error) {
+        error(error);
+      });
+    };
+
+    return {
+      populateProducts: populateProducts,
+      populateProductCategories: populateProductCategories,
+      populateDownloads: populateDownloads,
+      populateAwards: populateAwards,
+      populateVideos: populateVideos,
+      selectTopCategories: selectTopCategories,
+      selectChildCategories: selectChildCategories,
+      selectProducts: selectProducts,
+      selectVideos: selectVideos,
+      selectDownloads: selectDownloads,
+      searchProducts: searchProducts
+    };
+
+  }]);
