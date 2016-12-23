@@ -13,7 +13,7 @@
               <div class="col col-75">
                 <p class="item-number">{{bookmark.nummer}}</p>
                 <p class="item-title">{{bookmark.de_data.produktbezeichnung}}</p>
-                <p class="item-name">{{bookmark.de_data.werkstoff}}</p>
+                <p class="item-name" ng-bind-html="bookmark.de_data.werkstoff"></p>
                 <p>{{bookmark.de_data.zusatz2}}</p>
               </div>
               <div class="col">

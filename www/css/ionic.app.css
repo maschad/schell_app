@@ -11217,15 +11217,26 @@ p {
 #offline .checkbox input:after, .checkbox-icon:after {
   display: none; }
 
-.platform-ios .popover {
+.platform-ios ion-popover-view.settings-popover,
+.platform-android ion-popover-view.settings-popover {
   top: 50px !important;
   right: 24px !important;
-  margin-left: auto !important; }
+  margin-left: auto !important;
+  border-radius: 4px;
+  margin-top: 10px !important; }
 
-.platform-ios .popover-arrow {
-  left: 190px !important; }
+.platform-ios .popover-arrow,
+.platform-android ion-popover-view.settings-popover .popover-arrow {
+  position: absolute;
+  display: block;
+  top: -17px;
+  left: 190px !important;
+  width: 30px;
+  height: 19px;
+  overflow: hidden; }
 
-.platform-ios .popover-arrow:after {
+.platform-ios .popover-arrow:after,
+.platform-android ion-popover-view.settings-popover .popover-arrow:after {
   content: ' ';
   width: 20px;
   height: 20px;
@@ -11244,9 +11255,6 @@ p {
     height: 310px;
     width: 220px; } }
 
-.platform-ios .popover {
-  border-radius: 4px; }
-
 ion-popover-view.fit {
   height: auto !important; }
 
@@ -11259,7 +11267,8 @@ ion-popover-view.fit ion-content {
 
 .platform-android .popover .item {
   background-color: transparent;
-  color: #ffffff; }
+  color: #ffffff;
+  text-transform: uppercase; }
 
 .platform-android ion-popover-view.fit {
   margin-top: -1px !important;

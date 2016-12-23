@@ -1,26 +1,26 @@
-<ion-popover-view class="fit" style="background-color: #750017; border-radius: 2px; height: 210px;">
+<ion-popover-view class="fit" style="background-color: #750017; border-radius: 2px;">
   <ion-content>
-
-    <div ng-click="popover.hide()" ui-sref="products" ui-sref-active="breadcrumb-active">
-      <div class="item">
-        <img src="img/icons/dropdown-arrow.png"> Produktkategorien
+    <div class="breadcrumb" ng-click="popover.hide()">
+      <div ui-sref="products" ui-sref-active="breadcrumb-active">
+        <div class="item">
+          <img src="img/icons/dropdown-arrow.png"> Produktkategorien
+        </div>
+      </div>
+      <div ng-if="root" ui-sref="product_lines" ui-sref-active="breadcrumb-active">
+        <div class="item" style="text-indent: 18px;">
+          <img src="img/icons/dropdown-arrow.png"> {{root}}
+        </div>
+      </div>
+      <div ng-if="prev" ui-sref="product_overview" ui-sref-active="breadcrumb-active">
+        <div class="item" style="text-indent: 36px;">
+          <img src="img/icons/dropdown-arrow.png"> {{prev}}
+        </div>
+      </div>
+      <div ng-if="artikel">
+        <div class="item" style="background-color: #000000; text-indent: 54px;">
+          <img src="img/icons/dropdown-arrow.png"> {{artikel}}
+        </div>
       </div>
     </div>
-    <div ng-if="root" ng-click="popover.hide()" ui-sref="product_lines" ui-sref-active="breadcrumb-active">
-      <div class="item" style="text-indent: 10px;">
-        <img src="img/icons/dropdown-arrow.png"> {{root}}
-      </div>
-    </div>
-    <div ng-if="prev" ng-click="popover.hide()" ui-sref="product_overview" ui-sref-active="breadcrumb-active">
-      <div class="item" style="text-indent: 20px;">
-        <img src="img/icons/dropdown-arrow.png"> {{prev}}
-      </div>
-    </div>
-    <div ng-if="artikel" ng-click="popover.hide()">
-      <div class="item" style="background-color: #000000; text-indent: 30px;">
-        <img src="img/icons/dropdown-arrow.png"> {{artikel}}
-      </div>
-    </div>
-
   </ion-content>
 </ion-popover-view>

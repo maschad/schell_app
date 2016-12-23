@@ -30,7 +30,7 @@
         <ion-checkbox class="item-checkbox-right" ng-model="videoCheck" ng-change="downloadVideos()"><strong>Videos</strong> {{amount}}</ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider3">SETTINGS</ion-item>
         <hr class="settings-hr">
-        <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()"  ng-repeat="item in preferences" style="font-size: 15px;">
+        <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()" ng-repeat="item in preferences" style="font-size: 15px;">
           <strong>{{item.text}}</strong>
         </ion-toggle>
       </form>
