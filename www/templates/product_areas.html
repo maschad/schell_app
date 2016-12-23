@@ -13,63 +13,63 @@
 
     <div class="row">
       <div class="col text-left">
-        <h3 id="products-heading6" style="color:#FFFFFF;">Das SCHELL Produktsortiment</h3>
+        <h3 id="categories-heading6" style="color:#FFFFFF;">Das SCHELL Produktsortiment</h3>
         <p style="color:#FFFFFF;">Das Produktsortiment von SCHELL Armaturen auf
           einen Blick. Bitte wählen Sie eine Kategorie</p>
       </div>
     </div>
     <!-- Products -->
-    <div ng-repeat="product in products" ng-if="$index%3 == 0" class="row responsive-sm">
-        <div class="col" ng-click="choice(products[$index].child_ids,products[$index].title_de,products[$index].filter_ids)">
+    <div ng-repeat="category in categories" ng-if="$index%3 == 0" class="row responsive-sm">
+        <div class="col" ng-click="choice(categories[$index].child_ids,categories[$index].title_de,categories[$index].filter_ids)">
           <div class="product-tile">
             <div class="col">
               <div class="product-counter">
-                <p ng-if="products[$index].child_ids"><strong>{{products[$index].child_ids.length}} Artikel</strong></p>
-                <p ng-if="products[$index].product_ids"><strong>{{products[$index].product_ids.length}} Artikel</strong></p>
+                <p ng-if="categories[$index].child_ids"><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
+                <p ng-if="categories[$index].product_ids"><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
               </div>
             </div>
             <div class="row">
               <div class="col-25">
-                <img src="{{products[$index].bild}}" class="center" style="width: auto;">
+                <img src="{{categories[$index].bild}}" class="center" style="width: auto;">
               </div>
-                <h3 class="product-type">{{products[$index].title_de}}</h3>
+                <h3 class="product-type">{{categories[$index].title_de}}</h3>
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 1] != undefined" ng-click="choice(products[$index + 1].child_ids,products[$index + 1].title_de,products[$index + 1].filter_ids)">
+        <div class="col" ng-if="categories[$index + 1] != undefined" ng-click="choice(categories[$index + 1].child_ids,categories[$index + 1].title_de,categories[$index + 1].filter_ids)">
           <div class="product-tile">
             <div class="col">
               <div class="product-counter">
-                <p ng-if="products[$index + 1].child_ids"><strong>{{products[$index + 1].child_ids.length}} Artikel</strong></p>
-                <p ng-if="products[$index + 1].product_ids"><strong>{{products[$index + 1].product_ids.length}} Artikel</strong></p>
+                <p ng-if="categories[$index + 1].child_ids"><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
+                <p ng-if="categories[$index + 1].product_ids"><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>
               </div>
             </div>
             <div class="row">
               <div class="col-25">
-                <img src="{{products[$index + 1].bild}}" class="center" style="width: auto;"></div>
-              <h3 class="product-type" style="text-align: right;">{{products[$index + 1].title_de}}</h3>
+                <img src="{{categories[$index + 1].bild}}" class="center" style="width: auto;"></div>
+              <h3 class="product-type" style="text-align: right;">{{categories[$index + 1].title_de}}</h3>
             </div>
           </div>
         </div>
-        <div class="col" ng-if="products[$index + 2] != undefined" ng-click="choice(products[$index + 2].child_ids,products[$index + 2].title_de,products[$index + 2].filter_ids)">
+        <div class="col" ng-if="categories[$index + 2] != undefined" ng-click="choice(categories[$index + 2].child_ids,categories[$index + 2].title_de,categories[$index + 2].filter_ids)">
           <div class="product-tile">
             <div class="col">
               <div class="product-counter">
-                <p ng-if="products[$index + 2].child_ids"><strong>{{products[$index + 2].child_ids.length}} Artikel</strong></p>
-                <p ng-if="products[$index + 2].product_ids"><strong>{{products[$index + 2].product_ids.length}} Artikel</strong></p>
+                <p ng-if="categories[$index + 2].child_ids"><strong>{{categories[$index + 2].child_ids.length}} Artikel</strong></p>
+                <p ng-if="categories[$index + 2].product_ids"><strong>{{categories[$index + 2].product_ids.length}} Artikel</strong></p>
               </div>
             </div>
             <div class="row">
               <div class="col-25">
-                <img src="{{products[$index + 2].bild}}" class="center" style="width: auto;"></div>
-              <h3 class="product-type" style="text-align: right;">{{products[$index + 2].title_de}}</h3>
+                <img src="{{categories[$index + 2].bild}}" class="center" style="width: auto;"></div>
+              <h3 class="product-type" style="text-align: right;">{{categories[$index + 2].title_de}}</h3>
             </div>
           </div>
         </div>
     </div>
 
 
-    <div ng-if="products !== undefined && !products.length" class="no-results">
+    <div ng-if="categories !== undefined && !categories.length" class="no-results">
       <p>No Results</p>
     </div>
 
