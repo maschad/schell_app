@@ -10279,6 +10279,11 @@ h3 {
     top: 4px;
     right: 18px; } }
 
+/* Breadcrumb */
+.breadcrumb-active .item {
+  background-color: #000000 !important;
+  color: #ffffff !important; }
+
 /* Breadcrumb Dropdown Menu */
 /* .crumbs-container {
   position: relative;
@@ -11248,8 +11253,21 @@ ion-popover-view.fit {
 ion-popover-view.fit ion-content {
   position: relative !important; }
 
+.platform-ios ion-popover-view.fit {
+  padding-top: 10px;
+  padding-bottom: 10px; }
+
+.platform-android .popover .item {
+  background-color: transparent;
+  color: #ffffff; }
+
 .platform-android ion-popover-view.fit {
-  margin-top: 10px !important; }
+  margin-top: -1px !important;
+  width: 100%;
+  left: 0 !important; }
+
+.platform-android .popover {
+  margin-top: 0; }
 
 #floating-menu {
   left: 20px; }
