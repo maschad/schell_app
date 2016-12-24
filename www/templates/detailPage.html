@@ -61,11 +61,11 @@
         <p class="product-noted"> {{details.zusatz2}}</p>
         <ion-list>
           <div ng-repeat="list in listData">
-            <ion-item class="description-item" ng-click="toggleGroup(product)"
-                      ng-class="{active: isGroupShown(product)}">
+            <ion-item class="description-item" ng-click="toggleGroup(list)"
+                      ng-class="{active: isGroupShown(list)}">
               <div class="item-icon-right">
                 {{list.title}}
-                <i class="icon" ng-class="isGroupShown(product) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+                <i class="icon" ng-class="isGroupShown(list) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
               </div>
             </ion-item>
             <ion-item class="description-accordion" ng-show="isGroupShown(product)">

@@ -22,6 +22,7 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
   //If there is internet, populate the DB with latest data, else, work with what is in database
   if($rootScope.internet){
     DatabaseService.populateProductCategories(FirebaseService.getAllProductCategories());
+    DatabaseService.populateProducts(FirebaseService.downloadAllProducts());
   }else{
     //#TODO: Handle DB offline
   }
@@ -58,21 +59,45 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
 
 }])
 
-  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'localStorageService','FirebaseService','$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state','appDataService','DatabaseService','$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope, $ionicFilterBar,$state,localStorageService,FirebaseService,$ionicPopover) {
+  function ($scope, $ionicFilterBar,$state,appDataService,DatabaseService,$ionicPopover) {
+    //Get Titles
+    $scope.title = appDataService.getCurrentTitle();
+    $scope.prev = appDataService.getPreviousTitle();
+    $scope.root = appDataService.getRootTitle();
 
-      //Search bar
-      $scope.showFilterBar = function () {
-        var filterBarInstance = $ionicFilterBar.show({
-          items: $scope.products,
-          cancelText: 'Abrechen',
-          update: function (filteredItems, filterText) {
-            $scope.products = filteredItems;
-          }
-        });
-      };
+    //Function to load the products for this category
+    function getProducts(product_ids) {
+      //Load the various products
+      DatabaseService.selectProducts(product_ids,function (products) {
+        for(var x = 0; x < products.rows.length; x++){
+          $scope.products.push(products.rows.item(x));
+        }
+      }, function (error) {
+        //Handle error
+        console.log('ERROR',error);
+      });
+    }
+
+    //Initialize products to empty
+    $scope.products = [];
+
+    //load Products
+    getProducts(appDataService.getCurrentCategoryIds());
+
+
+    //Search bar
+    $scope.showFilterBar = function () {
+      var filterBarInstance = $ionicFilterBar.show({
+        items: $scope.products,
+        cancelText: 'Abrechen',
+        update: function (filteredItems, filterText) {
+          $scope.products = filteredItems;
+        }
+      });
+    };
 
     //Popover function
     $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
@@ -84,16 +109,6 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
         document.body.classList.add('platform-android');
     });
 
-
-
-    $scope.products = [];
-
-    function getProducts() {
-      //#TODO: Load the various products
-    }
-
-    //load Products
-    getProducts();
 
     $scope.choice = function (product,title) {
 
@@ -141,6 +156,7 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
     //The category chosen by the user
     $scope.choice = function (child_ids, title,filter_ids) {
       appDataService.setRootTitle(title);
+      appDataService.setCurrentTitle(title);
       appDataService.setCurrentCategoryIds(child_ids);
       localStorageService.setFilters(filter_ids);
       $state.go('product_lines');
@@ -237,6 +253,29 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
+    //The products to be show in collapsible list
+    $scope.details = [];
+    $scope.files = [];
+
+    //To load the details about a product
+    function getProductDetails(product_id) {
+        //#TODO: Load details of specific product
+      DatabaseService.selectProducts(product_id,function (categories) {
+        for(var x = 0; x < categories.rows.length; x++){
+          $scope.details.push(categories.rows.item(x));
+        }
+      }, function (error) {
+        //Handle error
+        console.log('ERROR',error);
+      });
+
+    }
+
+    //Load Details
+    getProductDetails(appDataService.getCurrentCategoryIds());
+
+
+    //Get various labels
     $scope.title = appDataService.getCurrentTitle();
     $scope.prev = appDataService.getPreviousTitle();
     $scope.root = appDataService.getRootTitle();
@@ -254,22 +293,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $ionicLoading.hide();
     };
 
-    //The products to be show in collapsable list
-    $scope.details = [];
-    $scope.products = [];
-    $scope.files = [];
-
-    function getProductDetails() {
-    //#TODO: Load details of specific product
-
-    }
 
     //Bookmark Function
     $scope.bookmark = function () {
-      localStorageService.bookmark($scope.details);
       $ionicPopup.alert({
         title: 'Seite bookmarkiert'
       });
+      localStorageService.bookmarkProduct($scope.details);
     };
 
     //Download PDF
@@ -287,14 +317,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $cordovaInAppBrowser.open($scope.pdfUrl, '_blank',options);
     };
 
-    //Load Details
-    getDetails();
 
     //Build up link
-    localStorageService.setLink('details/artikel/' + $scope.details.nummer + '.html');
+    appDataService.appendEmailLink('details/artikel/' + $scope.details.nummer + '.html');
 
 
-      $scope.products = ([
+      $scope.listData = ([
         {
           title : 'TECHNISCHE ZEICHNUNG',
           show : false
@@ -388,7 +416,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 .controller('productLinesCtrl', ['$scope','$ionicFilterBar', '$state', 'localStorageService','DatabaseService','appDataService','$ionicPopover',
   function ($scope,$ionicFilterBar,$state,localStorageService,DatabaseService,appDataService,$ionicPopover) {
-
+    //Set the titles
+    $scope.title = appDataService.getCurrentTitle();
+    $scope.root = appDataService.getRootTitle();
 
     //Load SubCategories from database
     function loadSubCategories(child_ids) {
@@ -435,11 +465,16 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Child choice
       $scope.choice = function (child_ids, title) {
         //#TODO if user chooses something with child_ids
+        console.log('has child ids');
       };
 
       //Product Choice
       $scope.choice_product = function (product_ids, title) {
         //#TODO: If user chooses something with product_ids
+        console.log('product_ids', product_ids);
+        appDataService.setCurrentTitle(title);
+        appDataService.setCurrentCategoryIds(product_ids);
+        appDataService.setPreviousTitle(title);
         $state.go('product_overview');
       };
 
