@@ -174,6 +174,23 @@ angular.module('app.services', [])
     return products;
   };
 
+  var downloadAllProducts = function () {
+    var products = {};
+    firebase.database().ref('/products/').orderByKey().once('value').then(function (snapshot) {
+      snapshot.forEach(function (product) {
+        products[product.key] = product.val();
+      });
+      success(categories);
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
+    });
+
+    return products;
+  };
+
   //Download Videos
   var downloadVideos = function () {
     var videos = [];
@@ -237,7 +254,8 @@ angular.module('app.services', [])
     downloadProducts : downloadProducts,
     downloadVideos : downloadVideos,
     downloadFiles : downloadFiles,
-    downloadProuctFilters : downloadProductFilters
+    downloadProuctFilters : downloadProductFilters,
+    downloadAllProducts : downloadAllProducts
   };
 
 }])
@@ -370,50 +388,50 @@ angular.module('app.services', [])
       var preparedStatements = [];
       var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
-      for (var uid in firebaseProductObject) {
-        var filter_ids = firebaseProductObject[uid]['filter_ids'].join();
-        var download_ids = firebaseProductObject[uid]['media']['download_ids'].join();
+      for (var uid in firebaseProductsObject) {
+        var filter_ids = firebaseProductsObject[uid]['filter_ids'].join();
+        var download_ids = firebaseProductsObject[uid]['media']['download_ids'].join();
 
         preparedStatements.push([
           BLANK_PRODUCT_INSERT_QUERY,
           [
             uid,
-            firebaseProductObject[uid]['nummer'],
-            firebaseProductObject[uid]['referenzartikel'],
-            firebaseProductObject[uid]['de_data']['produktbezeichnung'],
-            firebaseProductObject[uid]['de_data']['zusatz1'],
-            firebaseProductObject[uid]['de_data']['zusatz2'],
-            firebaseProductObject[uid]['de_data']['beschreibung'],
-            firebaseProductObject[uid]['de_data']['differenzierung'],
-            firebaseProductObject[uid]['de_data']['lieferumfang'],
-            firebaseProductObject[uid]['de_data']['einsatzbereich'],
-            firebaseProductObject[uid]['de_data']['werkstoff'],
-            firebaseProductObject[uid]['de_data']['geraeuschklasse'],
-            firebaseProductObject[uid]['de_data']['pruefzeichen'],
-            firebaseProductObject[uid]['de_data']['dimension'],
-            firebaseProductObject[uid]['de_data']['oberflaeche'],
-            firebaseProductObject[uid]['verpackungseinheit'],
-            firebaseProductObject[uid]['gewicht'],
-            firebaseProductObject[uid]['media']['image_landscape'],
-            firebaseProductObject[uid]['media']['image_landscape_filesize'],
-            firebaseProductObject[uid]['media']['image_portrait'],
-            firebaseProductObject[uid]['media']['image_portrait_filesize'],
-            firebaseProductObject[uid]['media']['technical_drawing_link'],
-            firebaseProductObject[uid]['media']['technical_drawing_filesize'],
+            firebaseProductsObject[uid]['nummer'],
+            firebaseProductsObject[uid]['referenzartikel'],
+            firebaseProductsObject[uid]['de_data']['produktbezeichnung'],
+            firebaseProductsObject[uid]['de_data']['zusatz1'],
+            firebaseProductsObject[uid]['de_data']['zusatz2'],
+            firebaseProductsObject[uid]['de_data']['beschreibung'],
+            firebaseProductsObject[uid]['de_data']['differenzierung'],
+            firebaseProductsObject[uid]['de_data']['lieferumfang'],
+            firebaseProductsObject[uid]['de_data']['einsatzbereich'],
+            firebaseProductsObject[uid]['de_data']['werkstoff'],
+            firebaseProductsObject[uid]['de_data']['geraeuschklasse'],
+            firebaseProductsObject[uid]['de_data']['pruefzeichen'],
+            firebaseProductsObject[uid]['de_data']['dimension'],
+            firebaseProductsObject[uid]['de_data']['oberflaeche'],
+            firebaseProductsObject[uid]['verpackungseinheit'],
+            firebaseProductsObject[uid]['gewicht'],
+            firebaseProductsObject[uid]['media']['image_landscape'],
+            firebaseProductsObject[uid]['media']['image_landscape_filesize'],
+            firebaseProductsObject[uid]['media']['image_portrait'],
+            firebaseProductsObject[uid]['media']['image_portrait_filesize'],
+            firebaseProductsObject[uid]['media']['technical_drawing_link'],
+            firebaseProductsObject[uid]['media']['technical_drawing_filesize'],
             filter_ids,
             download_ids,
-            firebaseProductObject[uid]['en_data']['produktbezeichnung'],
-            firebaseProductObject[uid]['en_data']['zusatz1'],
-            firebaseProductObject[uid]['en_data']['zusatz2'],
-            firebaseProductObject[uid]['en_data']['beschreibung'],
-            firebaseProductObject[uid]['en_data']['differenzierung'],
-            firebaseProductObject[uid]['en_data']['lieferumfang'],
-            firebaseProductObject[uid]['en_data']['einsatzbereich'],
-            firebaseProductObject[uid]['en_data']['werkstoff'],
-            firebaseProductObject[uid]['en_data']['geraeuschklasse'],
-            firebaseProductObject[uid]['en_data']['pruefzeichen'],
-            firebaseProductObject[uid]['en_data']['dimension'],
-            firebaseProductObject[uid]['en_data']['oberflaeche']
+            firebaseProductsObject[uid]['en_data']['produktbezeichnung'],
+            firebaseProductsObject[uid]['en_data']['zusatz1'],
+            firebaseProductsObject[uid]['en_data']['zusatz2'],
+            firebaseProductsObject[uid]['en_data']['beschreibung'],
+            firebaseProductsObject[uid]['en_data']['differenzierung'],
+            firebaseProductsObject[uid]['en_data']['lieferumfang'],
+            firebaseProductsObject[uid]['en_data']['einsatzbereich'],
+            firebaseProductsObject[uid]['en_data']['werkstoff'],
+            firebaseProductsObject[uid]['en_data']['geraeuschklasse'],
+            firebaseProductsObject[uid]['en_data']['pruefzeichen'],
+            firebaseProductsObject[uid]['en_data']['dimension'],
+            firebaseProductsObject[uid]['en_data']['oberflaeche']
           ]
         ]);
       }
@@ -486,7 +504,7 @@ angular.module('app.services', [])
             firebaseDownloadsObject[uid]['en_data']['zusatzinformation'],
             firebaseDownloadsObject[uid]['en_data']['datei'],
             firebaseDownloadsObject[uid]['filesize'],
-            firebaseDownloadsObject[uid]['title'],
+            firebaseDownloadsObject[uid]['title']
           ]
         ]);
       }
@@ -542,7 +560,7 @@ angular.module('app.services', [])
             firebaseVideosObject[uid]['en_data']['information'],
             firebaseVideosObject[uid]['filesize'],
             firebaseVideosObject[uid]['de_data']['youtube'],
-            firebaseVideosObject[uid]['en_data']['youtube'],
+            firebaseVideosObject[uid]['en_data']['youtube']
           ]
         ]);
       }
