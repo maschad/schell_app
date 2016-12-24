@@ -11050,9 +11050,6 @@ h1.slogan {
 .button {
   text-align: left; }
 
-.menu-item {
-  background-color: transparent; }
-
 p {
   margin: 0 0 10px; }
 
@@ -11325,6 +11322,38 @@ img {
 
 .swiper-container-horizontal > .swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction {
   bottom: 2px !important; }
+
+#menu-form ion-item {
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.6);
+  margin-left: 16px;
+  margin-right: 8px;
+  padding-left: 50px;
+  padding-right: 0; }
+
+#menu-form ion-item.item.active {
+  border: none; }
+
+#menu-form .item-icon-right .icon {
+  right: 0; }
+
+#menu-form .description-item .item-icon-left .icon:before, .item-icon-right .icon:before {
+  font-size: 10px; }
+
+#menu-form .checkbox input:checked:before, .checkbox input:checked + .checkbox-icon:before {
+  background: url(../img/icons/checkmark.png) no-repeat; }
+
+#menu-form .checkbox input:before, .checkbox-icon:before {
+  margin-left: -12px; }
+
+.menu-item {
+  background-color: transparent;
+  padding: 14px 14px 14px 66px;
+  font-size: 14px; }
+
+label.menu-item {
+  padding: 6px 0 10px 60px;
+  margin-left: -52px;
+  color: #ffffff; }
 
 .SyntaxLTStd-Bold {
   font-family: SyntaxLTStd-Bold;
