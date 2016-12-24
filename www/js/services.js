@@ -41,17 +41,21 @@ angular.module('app.services', [])
     $localStorage.country = country;
   };
 
-  var getBoomarkedProducts = function () {
+  var getBookmarkedProducts = function () {
     return $localStorage.boomarked_products;
   };
 
-  var boomarkProduct = function (product) {
+  var bookmarkProduct = function (product) {
     if($localStorage.boomarked_products.indexOf(product) != -1){
       return false;
     }else{
       $localStorage.boomarked_products.push(product);
       return true;
     }
+  };
+
+  var removeBookmarkedProduct = function(bookmark){
+    $localStorage.boomarked_products.splice(indexOf(bookmark),1);
   };
 
   var getOfflinePreferences = function () {
@@ -93,8 +97,9 @@ angular.module('app.services', [])
   return {
     getCountry : getCountry,
     setCountry : setCountry,
-    getBookmarkedProducts : getBoomarkedProducts,
-    bookmarkProduct : boomarkProduct,
+    getBookmarkedProducts : getBookmarkedProducts,
+    bookmarkProduct : bookmarkProduct,
+    removeBookmarkedProduct : removeBookmarkedProduct,
     getOfflinePreferences : getOfflinePreferences,
     updatePreferences : updatePreferences,
     getProductFile : getProductFile,
@@ -118,14 +123,20 @@ angular.module('app.services', [])
 
   //Download Product Category data from firebase
   var getAllProductCategories = function () {
-    var categories = [];
-    firebase.database().ref('/product_categories/').orderByKey().once('value').then(function (snapshot) {
-      snapshot.forEach(function (category) {
-        category.push(category.val());
+      var categories = {};
+      firebase.database().ref('/product_categories/').orderByKey().once('value').then(function (snapshot) {
+        snapshot.forEach(function (category) {
+          categories[category.key] = category.val();
+        });
+        success(categories);
+      }, function (error) {
+        $ionicPopup.confirm({
+          title: "Error Connecting to Database",
+          content: error
+        });
       });
-    });
 
-    return categories;
+      return categories;
   };
 
   //Get the top level categories e.g. Wastchisch, Modus, Linus etc.
@@ -420,8 +431,6 @@ angular.module('app.services', [])
 
       var preparedStatements = [];
       BLANK_CATEGORY_INSERT_QUERY = 'INSERT INTO product_categories VALUES (?,?,?,?,?,?,?,?,?,?,?)';
-      console.log('Category 1', firebaseProductCategoriesObject['1'].bild);
-
       for (var uid in firebaseProductCategoriesObject) {
 
         var filter_ids = firebaseProductCategoriesObject[uid]['filter_ids'] ? firebaseProductCategoriesObject[uid]['filter_ids'].join() : '';

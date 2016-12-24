@@ -1,9 +1,9 @@
 angular.module('app.controllers', [])
 
-.controller('start_screenCtrl', ['$scope','$state','$cordovaSQLite','$ionicPopup','$ionicPopover','$rootScope','$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('start_screenCtrl', ['$scope','$state','DatabaseService','FirebaseService','$ionicPopup','$ionicPopover','$rootScope','$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
+function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
  //Remove splash screen
   $scope.$on('$ionicView.afterEnter', function(){
     setTimeout(function(){
@@ -18,6 +18,13 @@ function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$i
 
   //Whether to allow settings based on network connection
   $scope.show = $rootScope.internet;
+
+  //If there is internet, populate the DB with latest data, else, work with what is in database
+  if($rootScope.internet){
+    DatabaseService.populateProductCategories(FirebaseService.getAllProductCategories());
+  }else{
+    //#TODO: Handle DB offline
+  }
 
   $scope.swiper = {};
 
@@ -51,12 +58,12 @@ function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$i
 
 }])
 
-  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'StorageService','DataService','$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$state', 'localStorageService','FirebaseService','$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope, $ionicFilterBar,$state,StorageService,DataService,$ionicPopover) {
+  function ($scope, $ionicFilterBar,$state,localStorageService,FirebaseService,$ionicPopover) {
 
-      //Search
+      //Search bar
       $scope.showFilterBar = function () {
         var filterBarInstance = $ionicFilterBar.show({
           items: $scope.products,
@@ -82,33 +89,42 @@ function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$i
     $scope.products = [];
 
     function getProducts() {
-      $scope.products = DataService.downloadProducts(StorageService.getProductInfo());
-      $scope.title = StorageService.getTitle();
-      $scope.root = StorageService.getRoot();
-      $scope.prev = $scope.title;
+      //#TODO: Load the various products
     }
 
     //load Products
     getProducts();
 
     $scope.choice = function (product,title) {
-      StorageService.detailDisplay(product);
-      StorageService.storeTitle(title);
-      StorageService.storePrev($scope.title);
-      StorageService.setLink(title + '/');
+
       $state.go('detailPage');
     };
 
   }])
 
-.controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','DataService','StorageService','$ionicPopover','$ionicSideMenuDelegate',
-  function ($scope, $state,$ionicFilterBar,DataService,StorageService,$ionicPopover,$ionicSideMenuDelegate) {
-
+.controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','FirebaseService','appDataService','DatabaseService','localStorageService','$ionicPopover','$ionicSideMenuDelegate',
+  function ($scope, $state,$ionicFilterBar,FirebaseService,appDataService,DatabaseService,localStorageService,$ionicPopover,$ionicSideMenuDelegate) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
+    //Initialize as null
     $scope.categories = [];
+
+    //Call the function to populate categories
+    loadCategories();
+
+    //Load Categories from Database.
+    function loadCategories() {
+      DatabaseService.selectTopCategories(function (categories) {
+        for(var x = 0; x < categories.rows.length; x++){
+          $scope.categories.push(categories.rows.item(x));
+        }
+      }, function (error) {
+        //Handle error
+        console.log('ERROR',error);
+      });
+    }
 
     //Popover function
     $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
@@ -120,29 +136,23 @@ function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$i
       document.body.classList.add('platform-android');
     });
 
-    //Load products for local storage
-    function getProducts() {
-      $scope.categories = StorageService.getProductCategories();
-    }
-    //Loading products
-    getProducts();
 
 
+    //The category chosen by the user
     $scope.choice = function (child_ids, title,filter_ids) {
-      StorageService.storeSubCategories(child_ids);
-      StorageService.storeTitle(title);
-      StorageService.storeRoot(title);
-      StorageService.storeFilterIds(filter_ids);
-      StorageService.setLink(title + '/');
+      appDataService.setRootTitle(title);
+      appDataService.setCurrentCategoryIds(child_ids);
+      localStorageService.setFilters(filter_ids);
       $state.go('product_lines');
     };
 
+    //The filter/search bar using ionic filter bar plugin
     $scope.showFilterBar = function () {
       var filterBarInstance = $ionicFilterBar.show({
-        items: $scope.products,
+        items: $scope.categories,
         cancelText: 'Abrechen',
         update: function (filteredItems, filterText) {
-          $scope.products = filteredItems;
+          $scope.categories = filteredItems;
         }
       });
     };
@@ -151,10 +161,10 @@ function ($scope, $state,$cordovaSQLite,$ionicPopup, $ionicPopover,$rootScope,$i
   }])
 
 
-.controller('videoCtrl', ['$scope', '$sce','$ionicSideMenuDelegate', 'DataService','FileService','$ionicLoading','$ionicPopup','StorageService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('videoCtrl', ['$scope', '$sce','$ionicSideMenuDelegate', 'FirebaseService','FileService','$ionicLoading','$ionicPopup','localStorageService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $sce,$ionicSideMenuDelegate, DataService,FileService,$ionicLoading,$ionicPopup,StorageService) {
+function ($scope, $sce,$ionicSideMenuDelegate, FirebaseService,FileService,$ionicLoading,$ionicPopup,localStorageService) {
 
 
   //Loading functions
@@ -173,11 +183,11 @@ function ($scope, $sce,$ionicSideMenuDelegate, DataService,FileService,$ionicLoa
   //Load Videos
   $scope.show();
   //#TODO: Check internet for videos
-  if(DataService.downloadVideos() != null){
-    $scope.videos = DataService.downloadVideos();
+  if(FirebaseService.downloadVideos() != null){
+    $scope.videos = FirebaseService.downloadVideos();
     $scope.hide();
   }else{
-    //$scope.videos = StorageService.loadVideos();
+    //$scope.videos = localStorageService.loadVideos();
   }
 
 
@@ -197,10 +207,10 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('countryselectCtrl', ['$scope', '$ionicSideMenuDelegate','StorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('countryselectCtrl', ['$scope', '$ionicSideMenuDelegate','localStorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $ionicSideMenuDelegate,StorageService) {
+function ($scope, $ionicSideMenuDelegate,localStorageService) {
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
 
@@ -213,23 +223,23 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
 
   $scope.selection = function (country) {
-    StorageService.setCountry(country);
+    localStorageService.setCountry(country);
 
   }
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$rootScope','$ionicPopover', '$sce','DataService', 'StorageService', '$ionicSideMenuDelegate','$cordovaFileTransfer', '$ionicLoading','$ionicPopup', '$cordovaInAppBrowser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$rootScope','$ionicPopover', '$sce','FirebaseService','appDataService', 'localStorageService', '$ionicSideMenuDelegate', '$ionicLoading','$ionicPopup', '$cordovaInAppBrowser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope,$rootScope, $ionicPopover, $sce,DataService,StorageService,$ionicSideMenuDelegate, $cordovaFileTransfer,$ionicLoading,$ionicPopup,$cordovaInAppBrowser) {
+    function ($scope,$rootScope, $ionicPopover, $sce,FirebaseService,appDataService,localStorageService,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$cordovaInAppBrowser) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
-    $scope.title = StorageService.getTitle();
-    $scope.prev = StorageService.getPrev();
-    $scope.root = StorageService.getRoot();
+    $scope.title = appDataService.getCurrentTitle();
+    $scope.prev = appDataService.getPreviousTitle();
+    $scope.root = appDataService.getRootTitle();
     $scope.artikel = $scope.title;
 
     //Loading functions
@@ -249,22 +259,14 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     $scope.products = [];
     $scope.files = [];
 
-    function getDetails() {
-      $scope.details = StorageService.getDetails();
-      if($scope.details.media.download_ids){
-        $scope.files = DataService.downloadFiles($scope.details.media.download_ids);
-      }
-      if($rootScope.internet == false){
-        if($scope.details.media.download_ids) {
-          $scope.files = StorageService.getFile($scope.details.media.download_ids);
-        }
-      }
+    function getProductDetails() {
+    //#TODO: Load details of specific product
 
     }
 
     //Bookmark Function
     $scope.bookmark = function () {
-      StorageService.bookmark($scope.details);
+      localStorageService.bookmark($scope.details);
       $ionicPopup.alert({
         title: 'Seite bookmarkiert'
       });
@@ -289,7 +291,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
     getDetails();
 
     //Build up link
-    StorageService.setLink('details/artikel/' + $scope.details.nummer + '.html');
+    localStorageService.setLink('details/artikel/' + $scope.details.nummer + '.html');
 
 
       $scope.products = ([
@@ -357,7 +359,7 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
   });
 
   $scope.sendEmail = function () {
-    var link = StorageService.getLink();
+    var link = localStorageService.getLink();
     var bodyText = 'Product nummer ' .concat($scope.details.nummer)
                     + ' ' + 'Referenzartikel ' + ' ' .concat($scope.details.referenzartikel)
                     + ' ' .concat($scope.details.de_data.differenzierung)
@@ -384,77 +386,89 @@ function ($scope, $ionicSideMenuDelegate,StorageService) {
 
 }])
 
-.controller('productLinesCtrl', ['$scope','$ionicFilterBar', '$state', 'StorageService','$ionicPopover',function ($scope,$ionicFilterBar,$state,StorageService,$ionicPopover) {
+.controller('productLinesCtrl', ['$scope','$ionicFilterBar', '$state', 'localStorageService','DatabaseService','appDataService','$ionicPopover',
+  function ($scope,$ionicFilterBar,$state,localStorageService,DatabaseService,appDataService,$ionicPopover) {
 
-      //Popover function
-      $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
-        scope: $scope
-      }).then(function (popover) {
-        $scope.popover = popover;
-        //Ensure popover is android
-        document.body.classList.remove('platform-ios');
-        document.body.classList.add('platform-android');
+
+    //Load SubCategories from database
+    function loadSubCategories(child_ids) {
+      DatabaseService.selectChildCategories(child_ids,function (categories) {
+        for(var x = 0; x < categories.rows.length; x++){
+          $scope.categories.push(categories.rows.item(x));
+        }
+      }, function (error) {
+        //Handle error
+        console.log('ERROR',error);
       });
-      $scope.categories = [];
+    }
+    //Initalize as empty
+    $scope.categories = [];
 
-      //Search
-      $scope.showFilterBar = function () {
-        var filterBarInstance = $ionicFilterBar.show({
-          items: $scope.products,
-          cancelText: 'Abrechen',
-          update: function (filteredItems, filterText) {
-            $scope.products = filteredItems;
-          }
-        });
-      };
+    //Get the correct childIds and then load them from database
+    var child_ids = appDataService.getCurrentCategoryIds();
+    loadSubCategories(child_ids);
+
+
+    //Popover function
+    $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
+      scope: $scope
+    }).then(function (popover) {
+      $scope.popover = popover;
+      //Ensure popover is android
+      document.body.classList.remove('platform-ios');
+      document.body.classList.add('platform-android');
+    });
+
+    //Search
+    $scope.showFilterBar = function () {
+      var filterBarInstance = $ionicFilterBar.show({
+        items: $scope.products,
+        cancelText: 'Abrechen',
+        update: function (filteredItems, filterText) {
+          $scope.products = filteredItems;
+        }
+      });
+    };
 
 
 
       //Child choice
       $scope.choice = function (child_ids, title) {
-        StorageService.storeSubCategories(child_ids);
-        StorageService.storeTitle(title);
-        StorageService.storePrev(title);
+        //#TODO if user chooses something with child_ids
       };
 
       //Product Choice
       $scope.choice_product = function (product_ids, title) {
-        StorageService.storeProductInfo(product_ids);
-        StorageService.storeTitle(title);
-        StorageService.setLink(title + '/');
+        //#TODO: If user chooses something with product_ids
         $state.go('product_overview');
       };
 
 
-    $scope.content = {
-        title: $scope.title
-    };
-
-    $scope.myEvent = function () {
-      $state.go('start-screen');
-    };
+      $scope.myEvent = function () {
+        $state.go('start-screen');
+      };
 
 }])
 
-.controller('bookmarkCtrl', ['$scope', '$ionicSideMenuDelegate','StorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('bookmarkCtrl', ['$scope', '$ionicSideMenuDelegate','localStorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $ionicSideMenuDelegate, StorageService) {
+function ($scope, $ionicSideMenuDelegate, localStorageService) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
 
   //Download bookmarks
-    $scope.bookmarks = StorageService.getBookmarks();
+    $scope.bookmarks = localStorageService.getBookmarkedProducts();
     if($scope.bookmarks == null){
       $ionicPopup.alert({
         title: 'No Artikels'
       });
     }
 
-    $scope.email = function () {
-      var link = StorageService.getLink();
+    $scope.email = function (bookmark) {
+      var link = bookmark.email_link;
       var bodyText = 'Product nummer ' .concat($scope.details.nummer)
         + ' ' + 'Referenzartikel ' + ' ' .concat($scope.details.referenzartikel)
         + ' ' .concat($scope.details.de_data.differenzierung)
@@ -479,17 +493,17 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
     };
 
     $scope.deleteBookmark = function (bookmark) {
-      StorageService.removeBookmark(bookmark);
+      localStorageService.removeBookmarkedProduct(bookmark);
       $ionicPopup.alert({
         title: 'Artikel Entfernt'
       });
     };
 }])
 
-.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'DataService', 'StorageService', '$ionicSideMenuDelegate','$ionicPopup','FileService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'FirebaseService', 'localStorageService', '$ionicSideMenuDelegate','$ionicPopup','FileService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope,$ionicLoading,DataService,StorageService,$ionicSideMenuDelegate,$ionicPopup,FileService) {
+  function ($scope,$ionicLoading,FirebaseService,localStorageService,$ionicSideMenuDelegate,$ionicPopup,FileService) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
@@ -500,24 +514,24 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
     $scope.videos = [];
 
     //Whether to download videos
-    $scope.videoCheck = StorageService.getVideoCheck();
+    $scope.videoCheck = localStorageService.getVideoCheck();
 
     //Load Settings from local storage
     function downloadInfo() {
-      var items = DataService.downloadProductCategories();
+      var items = FirebaseService.downloadProductCategories();
       setTimeout(function () {
         for(var i = 0; i < items.length; i++){
           if($scope.categories.length < items.length){
             $scope.categories.push({item: items[i], checked: false});
           }
         }
-        StorageService.setCategories($scope.categories);
+        localStorageService.setCategories($scope.categories);
       }, 10000);
 
       //Store data for browsing
-      StorageService.storeAll(DataService.downloadProductData());
-      StorageService.storeProductCategories(DataService.downloadProductCategories());
-      $scope.videos = DataService.downloadVideos();
+      localStorageService.storeAll(FirebaseService.downloadProductData());
+      localStorageService.storeProductCategories(FirebaseService.downloadProductCategories());
+      $scope.videos = FirebaseService.downloadVideos();
     }
 
     //Download Videos
@@ -528,7 +542,7 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
     }
 
     $scope.downloadVideos = function () {
-      StorageService.updateVideoCheck($scope.videoCheck);
+      localStorageService.updateVideoCheck($scope.videoCheck);
       if($scope.videoCheck){
         storeVideos();
       }
@@ -570,7 +584,7 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
                   thumbnail: thumbnail,
                   title : i[k].title
                 };
-                StorageService.storeFile(doc);
+                localStorageService.storeFile(doc);
               }
             }
           })
@@ -607,8 +621,8 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
     };
 
     //Load Preferences
-    $scope.preferences = StorageService.loadOffline();
-    $scope.categories = StorageService.getCategories();
+    $scope.preferences = localStorageService.loadOffline();
+    $scope.categories = localStorageService.getCategories();
 
     //#TODO: Check if product info updated
     $scope.show();
@@ -630,7 +644,7 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
 
     //Update preferences
     $scope.update = function () {
-      StorageService.updatePreferences($scope.preferences);
+      localStorageService.updatePreferences($scope.preferences);
     };
 
     //Checkbox function
@@ -640,14 +654,14 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
       if(check){
         var files = [];
         $scope.downloadShow();
-        StorageService.checkCategory(product,check);
-        var items = StorageService.getAll();
+        localStorageService.checkCategory(product,check);
+        var items = localStorageService.getAll();
         setTimeout(function () {
           for(var i = 0; i < product.item.child_ids.length; i++) {
             for(var j = 0; j < items.length; j++){
               if (items[j].elternelement == product.item.child_ids[i] && items[j].hasOwnProperty('product_ids')) {
                 //Store files for download
-                files.push(DataService.downloadFiles(items[j].product_ids));
+                files.push(FirebaseService.downloadFiles(items[j].product_ids));
               }
             }
           }
@@ -659,7 +673,7 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
 
 
       }else {
-        StorageService.checkCategory(product,check);
+        localStorageService.checkCategory(product,check);
       }
     };
 
@@ -674,12 +688,12 @@ function ($scope, $ionicSideMenuDelegate, StorageService) {
 
 }])
 
-.controller('MenuCtrl', ['$scope','DataService','StorageService',
-    function ($scope,DataService,StorageService) {
+.controller('MenuCtrl', ['$scope','FirebaseService','localStorageService',
+    function ($scope,FirebaseService,localStorageService) {
 
-      var filter_headings = DataService.downloadProuctFilters();
+      var filter_headings = FirebaseService.downloadProuctFilters();
       $scope.$on('$stateChangeSuccess',function () {
-          $scope.groups = StorageService.getFilterGroups(filter_headings);
+          //#TODO: Get the filter groups
         }
       );
 
