@@ -52,52 +52,47 @@
 
     <div class="row responsive-sm marg-top-30">
       <div class="col col-40">
-        <img ng-src="{{details.media.image_landscape}}" class="product-img">
+        <img ng-src="{{details.image_landscape}}" class="product-img">
       </div>
       <div id="detailPage-markdown3" class="col">
         <p id="detailPage-heading4" class="product-order-number">Bestellnummer: {{details.nummer}}</p>
-        <p id="detailPage-heading3" class="product-name"> {{details.de_data.produktbezeichnung}} </p>
-        <p class="product-summary"> {{details.de_data.dimension}} </p>
-        <p class="product-noted"> {{details.de_data.zusatz2}}</p>
+        <p id="detailPage-heading3" class="product-name"> {{details.produktbezeichnung}} </p>
+        <p class="product-summary"> {{details.dimension}} </p>
+        <p class="product-noted"> {{details.zusatz2}}</p>
         <ion-list>
-          <div ng-repeat="product in products">
+          <div ng-repeat="list in listData">
             <ion-item class="description-item" ng-click="toggleGroup(product)"
                       ng-class="{active: isGroupShown(product)}">
               <div class="item-icon-right">
-                {{product.title}}
+                {{list.title}}
                 <i class="icon" ng-class="isGroupShown(product) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
               </div>
             </ion-item>
             <ion-item class="description-accordion" ng-show="isGroupShown(product)">
-              <div ng-if="product.title.includes('ZEICHNUNG')">
-                <img ng-src="{{details.media.technical_drawing_link}}">
+              <div ng-if="list.title.includes('ZEICHNUNG')">
+                <img ng-src="{{details.technical_drawing_link}}">
               </div>
-              <div ng-if="product.title == 'LIEFERUMFANG'">
-                <div ng-bind-html="details.de_data.lieferumfang"></div>
+              <div ng-if="list.title == 'LIEFERUMFANG'">
+                <div ng-bind-html="details.lieferumfang"></div>
               </div>
-              <div ng-if="product.title == 'EINSATZBEREICH / TECHNISCHE DATEN'">
-                <div ng-bind-html="details.de_data.einsatzbereich"></div>
+              <div ng-if="list.title == 'EINSATZBEREICH / TECHNISCHE DATEN'">
+                <div ng-bind-html="details.einsatzbereich"></div>
               </div>
-              <div ng-if="product.title == 'DETAILS'">
-                <div ng-bind-html="details.de_data.werkstoff"></div>
+              <div ng-if="list.title == 'DETAILS'">
+                <div ng-bind-html="details.werkstoff"></div>
               </div>
-              <div ng-if="product.title == 'DOWNLOADS' && details.media.download_ids">
+              <div ng-if="list.title == 'DOWNLOADS' && details.download_ids">
                 <div ng-repeat="file in files">
-                    <div ng-repeat="f in file">
-                       <div class="row">
-                         <div class="col col-20">
-                           <img ng-src="{{f.thumbnail}}" width="70%" ng-click="downloadPDF(f)">
-                         </div>
-                         <div class="col">
-                            <p> {{f.de_data.broschurentitel}} </p>
-                            <p> {{f.de_data.zusatzinformation}} </p>
-                         </div>
-                         <!-- <div class="col">
-                           {{f.de_data.zusatzinformation}}
-                         </div> -->
-                       </div>
+                  <div class="row">
+                    <div class="col col-20">
+                      <img ng-src="{{file.thumbnail}}" width="70%" ng-click="downloadPDF(file)">
                     </div>
-                 </div>
+                    <div class="col">
+                      <p> {{file.broschurentitel}} </p>
+                      <p> {{file.zusatzinformation}} </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </ion-item>
           </div>
