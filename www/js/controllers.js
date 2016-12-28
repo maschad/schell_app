@@ -21,8 +21,12 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
 
   //If there is internet, populate the DB with latest data, else, work with what is in database
   if($rootScope.internet){
-    DatabaseService.populateProductCategories(FirebaseService.getAllProductCategories());
-    DatabaseService.populateProducts(FirebaseService.downloadAllProducts());
+    FirebaseService.downloadAllProducts(function (results) {
+      DatabaseService.populateProducts(results);
+    });
+    FirebaseService.getAllProductCategories(function (results) {
+      DatabaseService.populateProductCategories(results);
+    });
   }else{
     //#TODO: Handle DB offline
   }
@@ -71,9 +75,11 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
     //Function to load the products for this category
     function getProducts(product_ids) {
       //Load the various products
-      DatabaseService.selectProducts(product_ids,function (products) {
+      DatabaseService.selectProducts(product_ids, function (products) {
+        console.log('product_ids type', typeof product_ids);
         for(var x = 0; x < products.rows.length; x++){
           $scope.products.push(products.rows.item(x));
+          console.log('nummer', products.rows.item(x).nummer);
         }
       }, function (error) {
         //Handle error
@@ -726,7 +732,7 @@ function ($scope, $ionicSideMenuDelegate, localStorageService) {
 .controller('MenuCtrl', ['$scope','FirebaseService','localStorageService',
     function ($scope,FirebaseService,localStorageService) {
 
-      var filter_headings = FirebaseService.downloadProuctFilters();
+      var filter_headings = FirebaseService.downloadProductFilters();
       $scope.$on('$stateChangeSuccess',function () {
           //#TODO: Get the filter groups
         }
