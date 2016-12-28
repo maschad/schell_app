@@ -116,8 +116,9 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
     });
 
 
-    $scope.choice = function (product,title) {
-
+    $scope.choice = function (product_id,title) {
+      appDataService.setCurrentTitle(title);
+      appDataService.setCurrentProductId(product_id);
       $state.go('detailPage');
     };
 
@@ -251,25 +252,21 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$rootScope','$ionicPopover', '$sce','FirebaseService','appDataService', 'localStorageService', '$ionicSideMenuDelegate', '$ionicLoading','$ionicPopup', '$cordovaInAppBrowser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$rootScope','$ionicPopover', '$sce','FirebaseService','appDataService', 'localStorageService','DatabaseService', '$ionicSideMenuDelegate', '$ionicLoading','$ionicPopup', '$cordovaInAppBrowser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope,$rootScope, $ionicPopover, $sce,FirebaseService,appDataService,localStorageService,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$cordovaInAppBrowser) {
+    function ($scope,$rootScope, $ionicPopover, $sce,FirebaseService,appDataService,localStorageService, DatabaseService,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$cordovaInAppBrowser) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
     //The products to be show in collapsible list
-    $scope.details = [];
     $scope.files = [];
 
     //To load the details about a product
     function getProductDetails(product_id) {
-        //#TODO: Load details of specific product
-      DatabaseService.selectProducts(product_id,function (categories) {
-        for(var x = 0; x < categories.rows.length; x++){
-          $scope.details.push(categories.rows.item(x));
-        }
+      DatabaseService.selectProducts(product_id,function (product_details) {
+        $scope.details = product_details.rows.item(0);
       }, function (error) {
         //Handle error
         console.log('ERROR',error);
@@ -277,8 +274,20 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     }
 
+    //Function to load files
+    function getFiles(download_ids) {
+      DatabaseService.selectDownloads(download_ids, function (downloads) {
+        for(var x = 0; x < downloads.rows.length; x++){
+          $scope.files.push(downloads.rows.item(x));
+        }
+      })
+    }
+
     //Load Details
-    getProductDetails(appDataService.getCurrentCategoryIds());
+    getProductDetails(appDataService.getCurrentProductId());
+
+    //Load Downloads
+    getFiles($scope.details.download_ids);
 
 
     //Get various labels

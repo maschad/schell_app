@@ -279,6 +279,7 @@ angular.module('app.services', [])
 //Service for storing in app Data to be shared between controllers
 .factory('appDataService' , function () {
     var current_category_child_ids = '';
+    var product_id = '';
     var email_link = 'http://www.schell.eu/deutschland-de/produkte/';
     var current_title = '';
     var previous_title = '';
@@ -290,6 +291,14 @@ angular.module('app.services', [])
 
     var setCurrentCategoryIds = function (category) {
       current_category_child_ids = category;
+    };
+
+    var setCurrentProductId = function (id) {
+      product_id = id;
+    };
+
+    var getCurrentProductId = function () {
+      return product_id;
     };
 
     var getEmailLink = function () {
@@ -327,6 +336,8 @@ angular.module('app.services', [])
     return {
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
+      getCurrentProductId : getCurrentProductId,
+      setCurrentProductId : setCurrentProductId,
       getEmailLink : getEmailLink,
       appendEmailLink : appendEmailLink,
       getCurrentTitle : getCurrentTitle,
