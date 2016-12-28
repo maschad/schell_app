@@ -122,13 +122,13 @@ angular.module('app.services', [])
   };
 
   //Download Product Category data from firebase
-  var getAllProductCategories = function () {
+  var getAllProductCategories = function (success,error) {
       var categories = {};
       firebase.database().ref('/product_categories/').orderByKey().once('value').then(function (snapshot) {
         snapshot.forEach(function (category) {
           categories[category.key] = category.val();
         });
-        success(categories);
+      success(categories);
       }, function (error) {
         $ionicPopup.confirm({
           title: "Error Connecting to Database",
@@ -136,45 +136,9 @@ angular.module('app.services', [])
         });
       });
 
-      return categories;
   };
 
-  //Get the top level categories e.g. Wastchisch, Modus, Linus etc.
-  var getTopLevelCategory = function () {
-    var  topLevel = [];
-
-    firebase.database().ref('/product_categories/').orderByChild('elternelement').equalTo(0).once('value').then(function (snapshot) {
-      snapshot.forEach(function (category) {
-        topLevel.push(category.val());
-      });
-    }, function (error) {
-      $ionicPopup.confirm({
-        title: "Error Connecting to Database",
-        content: error
-      });
-    });
-
-    return topLevel;
-  };
-
-  //Download a set of Products by id
-  var downloadProducts = function(product_ids) {
-    var products = {};
-    for(var i = 0; i < product_ids.length; i++){
-      firebase.database().ref('/products/').orderByKey().equalTo(product_ids[i]).once('value').then(function (snapshot) {
-        products[snapshot.key] = snapshot.val();
-      }, function (error) {
-        $ionicPopup.confirm({
-          title: "Error Connecting to Database",
-          content: error
-        });
-      });
-    }
-
-    return products;
-  };
-
-  var downloadAllProducts = function () {
+  var downloadAllProducts = function (success,error) {
     var products = {};
     firebase.database().ref('/products/').orderByKey().once('value').then(function (snapshot) {
       snapshot.forEach(function (product) {
@@ -188,11 +152,10 @@ angular.module('app.services', [])
       });
     });
 
-    return products;
   };
 
   //Download Videos
-  var downloadVideos = function () {
+  var downloadVideos = function (success,error) {
     var videos = {};
     firebase.database().ref('/videos/').orderByKey().once('value').then(function (snapshot) {
       snapshot.forEach(function (video) {
@@ -206,18 +169,18 @@ angular.module('app.services', [])
       });
     });
 
-
-    return videos;
-
   };
 
   //Download files from downloads table
-  var downloadFiles = function (ids) {
-    var files = [];
+  var downloadFiles = function (success,errors) {
+    var files = {};
 
     for(var i = 0; i < ids.length; i++ ) {
-      firebase.database().ref('/downloads/').orderByKey().equalTo(ids[i]).once('value').then(function (snapshot) {
-        files.push(snapshot.val());
+      firebase.database().ref('/downloads/').orderByKey().once('value').then(function (snapshot) {
+        snapshot.ForEach(function (file) {
+          files[file.key] = file.val();
+        });
+        success(files);
       }, function (error) {
         $ionicPopup.confirm({
           title: "Error Connecting to Database",
@@ -225,18 +188,19 @@ angular.module('app.services', [])
         });
       });
     }
-    return files;
+
   };
 
 
   //Download the filters for a product
-  var downloadProductFilters = function () {
-    var filters = [];
+  var downloadProductFilters = function (success,error) {
+    var filters = {};
 
     firebase.database().ref('/product_filters/').once('value').then(function (snapshot) {
         snapshot.forEach(function (filter) {
-          filters.push(filter.val());
-        })
+          filters[filter.key] = filter.val();
+        });
+        success(filters);
       }, function (error) {
       $ionicPopup.confirm({
         title: "Error Connecting to Database",
@@ -244,18 +208,15 @@ angular.module('app.services', [])
       });
     });
 
-    return filters;
   };
 
 
   return {
     goOffline : goOffline,
     getAllProductCategories : getAllProductCategories,
-    getTopLevelCategories : getTopLevelCategory,
-    downloadProducts : downloadProducts,
     downloadVideos : downloadVideos,
     downloadFiles : downloadFiles,
-    downloadProuctFilters : downloadProductFilters,
+    downloadProductFilters : downloadProductFilters,
     downloadAllProducts : downloadAllProducts
   };
 
@@ -387,52 +348,57 @@ angular.module('app.services', [])
 
     var populateProducts = function(firebaseProductsObject) {
       var preparedStatements = [];
-      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+
+      console.log('amount of uids', Object.keys(firebaseProductsObject).length);
 
       for (var uid in firebaseProductsObject) {
-        var filter_ids = firebaseProductsObject[uid]['filter_ids'].join();
-        var download_ids = firebaseProductsObject[uid]['media']['download_ids'].join();
+        var filter_ids = firebaseProductsObject[uid]['filter_ids'] ? firebaseProductsObject[uid]['filter_ids'].join() : '' ;
+        var download_ids = firebaseProductsObject[uid]['media']['download_ids'] ? firebaseProductsObject[uid]['media']['download_ids'].join() : '' ;
+        var video_ids = firebaseProductsObject[uid]['media']['video_ids'] ? firebaseProductsObject[uid]['media']['video_ids'].join() : '' ;
 
+        console.log('uid',uid);
         preparedStatements.push([
           BLANK_PRODUCT_INSERT_QUERY,
           [
-            uid,
-            firebaseProductsObject[uid]['nummer'],
-            firebaseProductsObject[uid]['referenzartikel'],
-            firebaseProductsObject[uid]['de_data']['produktbezeichnung'],
-            firebaseProductsObject[uid]['de_data']['zusatz1'],
-            firebaseProductsObject[uid]['de_data']['zusatz2'],
-            firebaseProductsObject[uid]['de_data']['beschreibung'],
-            firebaseProductsObject[uid]['de_data']['differenzierung'],
-            firebaseProductsObject[uid]['de_data']['lieferumfang'],
-            firebaseProductsObject[uid]['de_data']['einsatzbereich'],
-            firebaseProductsObject[uid]['de_data']['werkstoff'],
-            firebaseProductsObject[uid]['de_data']['geraeuschklasse'],
-            firebaseProductsObject[uid]['de_data']['pruefzeichen'],
-            firebaseProductsObject[uid]['de_data']['dimension'],
-            firebaseProductsObject[uid]['de_data']['oberflaeche'],
-            firebaseProductsObject[uid]['verpackungseinheit'],
-            firebaseProductsObject[uid]['gewicht'],
-            firebaseProductsObject[uid]['media']['image_landscape'],
-            firebaseProductsObject[uid]['media']['image_landscape_filesize'],
-            firebaseProductsObject[uid]['media']['image_portrait'],
-            firebaseProductsObject[uid]['media']['image_portrait_filesize'],
-            firebaseProductsObject[uid]['media']['technical_drawing_link'],
-            firebaseProductsObject[uid]['media']['technical_drawing_filesize'],
+            parseInt(uid),
+            firebaseProductsObject[uid]['nummer'] ? firebaseProductsObject[uid]['nummer'] : '',
+            firebaseProductsObject[uid]['referenzartikel'] ? firebaseProductsObject[uid]['referenzartikel'] : '',
+            firebaseProductsObject[uid]['de_data']['produktbezeichnung'] ? firebaseProductsObject[uid]['de_data']['produktbezeichnung'] : '',
+            firebaseProductsObject[uid]['de_data']['zusatz1'] ? firebaseProductsObject[uid]['de_data']['zusatz1'] : '',
+            firebaseProductsObject[uid]['de_data']['zusatz2'] ? firebaseProductsObject[uid]['de_data']['zusatz2'] : '',
+            firebaseProductsObject[uid]['de_data']['beschreibung'] ? firebaseProductsObject[uid]['de_data']['beschreibung'] : '',
+            firebaseProductsObject[uid]['de_data']['differenzierung'] ? firebaseProductsObject[uid]['de_data']['differenzierung'] : '',
+            firebaseProductsObject[uid]['de_data']['lieferumfang'] ? firebaseProductsObject[uid]['de_data']['lieferumfang'] : '',
+            firebaseProductsObject[uid]['de_data']['einsatzbereich'] ? firebaseProductsObject[uid]['de_data']['einsatzbereich'] : '',
+            firebaseProductsObject[uid]['de_data']['werkstoff'] ? firebaseProductsObject[uid]['de_data']['werkstoff'] : '',
+            firebaseProductsObject[uid]['de_data']['geraeuschklasse'] ? firebaseProductsObject[uid]['de_data']['geraeuschklasse'] : '',
+            firebaseProductsObject[uid]['de_data']['pruefzeichen'] ? firebaseProductsObject[uid]['de_data']['pruefzeichen'] : '',
+            firebaseProductsObject[uid]['de_data']['dimension'] ? firebaseProductsObject[uid]['de_data']['dimension'] : '',
+            firebaseProductsObject[uid]['de_data']['oberflaeche'] ? firebaseProductsObject[uid]['de_data']['oberflaeche'] : '',
+            firebaseProductsObject[uid]['verpackungseinheit'] ? firebaseProductsObject[uid]['verpackungseinheit'] : '',
+            firebaseProductsObject[uid]['gewicht'] ? firebaseProductsObject[uid]['gewicht'] : '',
+            firebaseProductsObject[uid]['media']['image_landscape'] ? firebaseProductsObject[uid]['media']['image_landscape'] : '',
+            firebaseProductsObject[uid]['media']['image_landscape_filesize'] ? parseInt(firebaseProductsObject[uid]['media']['image_landscape_filesize']) : 0,
+            firebaseProductsObject[uid]['media']['image_portrait'] ? firebaseProductsObject[uid]['media']['image_portrait'] : '',
+            firebaseProductsObject[uid]['media']['image_portrait_filesize'] ? parseInt(firebaseProductsObject[uid]['media']['image_portrait_filesize']) : 0,
+            firebaseProductsObject[uid]['media']['technical_drawing_link'] ?  firebaseProductsObject[uid]['media']['technical_drawling_link'] : '' ,
+            firebaseProductsObject[uid]['media']['technical_drawing_filesize'] ? parseInt(firebaseProductsObject[uid]['media']['image_portrait_filesize']) : 0 ,
             filter_ids,
             download_ids,
-            firebaseProductsObject[uid]['en_data']['produktbezeichnung'],
-            firebaseProductsObject[uid]['en_data']['zusatz1'],
-            firebaseProductsObject[uid]['en_data']['zusatz2'],
-            firebaseProductsObject[uid]['en_data']['beschreibung'],
-            firebaseProductsObject[uid]['en_data']['differenzierung'],
-            firebaseProductsObject[uid]['en_data']['lieferumfang'],
-            firebaseProductsObject[uid]['en_data']['einsatzbereich'],
-            firebaseProductsObject[uid]['en_data']['werkstoff'],
-            firebaseProductsObject[uid]['en_data']['geraeuschklasse'],
-            firebaseProductsObject[uid]['en_data']['pruefzeichen'],
-            firebaseProductsObject[uid]['en_data']['dimension'],
-            firebaseProductsObject[uid]['en_data']['oberflaeche']
+            video_ids,
+            firebaseProductsObject[uid]['en_data']['produktbezeichnung'] ? firebaseProductsObject[uid]['en_data']['produktbezeichnung'] : '' ,
+            firebaseProductsObject[uid]['en_data']['zusatz1'] ? firebaseProductsObject[uid]['en_data']['zusatz1'] : '' ,
+            firebaseProductsObject[uid]['en_data']['zusatz2'] ? firebaseProductsObject[uid]['en_data']['zusatz2'] : '',
+            firebaseProductsObject[uid]['en_data']['beschreibung'] ? firebaseProductsObject[uid]['en_data']['beschreibung'] : '',
+            firebaseProductsObject[uid]['en_data']['differenzierung'] ? firebaseProductsObject[uid]['en_data']['differenzierung'] : '',
+            firebaseProductsObject[uid]['en_data']['lieferumfang'] ? firebaseProductsObject[uid]['en_data']['lieferumfang'] : '',
+            firebaseProductsObject[uid]['en_data']['einsatzbereich'] ? firebaseProductsObject[uid]['en_data']['einsatzbereich'] : '',
+            firebaseProductsObject[uid]['en_data']['werkstoff'] ? firebaseProductsObject[uid]['en_data']['werkstoff'] : '',
+            firebaseProductsObject[uid]['en_data']['geraeuschklasse'] ? firebaseProductsObject[uid]['en_data']['geraeuschklasse'] : '',
+            firebaseProductsObject[uid]['en_data']['pruefzeichen'] ? firebaseProductsObject[uid]['en_data']['pruefzeichen'] : '',
+            firebaseProductsObject[uid]['en_data']['dimension'] ? firebaseProductsObject[uid]['en_data']['dimension'] : '',
+            firebaseProductsObject[uid]['en_data']['oberflaeche'] ? firebaseProductsObject[uid]['en_data']['oberflaeche'] : ''
           ]
         ]);
       }
@@ -447,7 +413,6 @@ angular.module('app.services', [])
 
     var populateProductCategories = function(firebaseProductCategoriesObject) {
 
-
       var preparedStatements = [];
       var BLANK_CATEGORY_INSERT_QUERY = 'INSERT INTO product_categories VALUES (?,?,?,?,?,?,?,?,?,?,?)';
       for (var uid in firebaseProductCategoriesObject) {
@@ -456,7 +421,6 @@ angular.module('app.services', [])
         var download_ids = firebaseProductCategoriesObject[uid]['download_ids'] ? firebaseProductCategoriesObject[uid]['download_ids'].join() : '';
         var child_ids = firebaseProductCategoriesObject[uid]['child_ids'] ? firebaseProductCategoriesObject[uid]['child_ids'].join() : '';
         var product_ids = firebaseProductCategoriesObject[uid]['product_ids'] ? firebaseProductCategoriesObject[uid]['product_ids'].join() : '';
-
 
         preparedStatements.push([
           BLANK_CATEGORY_INSERT_QUERY,
@@ -574,7 +538,6 @@ angular.module('app.services', [])
     };
 
     var selectTopCategories = function(success, error) {
-      console.log('Selecting Top categories');
       db.executeSql('SELECT * from product_categories where elternelement = 0;', [], function(rs) {
         console.log('Success selected');
         success(rs);
@@ -592,7 +555,9 @@ angular.module('app.services', [])
     };
 
     var selectProducts = function(product_ids, success, error) {
-      db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
+      console.log('Selecting Products');
+      //db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
+      db.executeSql('SELECT * from products',[], function(rs) {
         success(rs);
       }, function(error) {
         error(error);
