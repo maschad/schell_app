@@ -19,12 +19,12 @@
         <label class="item item-input">
           <span class="input-label">Letzte Aktualisierung: 23. 02. 2016</span></label>
         <ion-item class="item-divider" id="settings-list-item-divider1"> PRODUKTE</ion-item>
-        <ion-checkbox  ng-repeat="product in categories" ng-change="downloadCategory(product,product.checked)" ng-model="product.checked">
-            <strong>{{product.item.title_de}}</strong>
+        <ion-checkbox  ng-repeat="category in prefrences.downloaded_categories" ng-change="downloadCategory(category,category.checked)" ng-model="product.checked">
+            <strong>{{category.item.title_de}}</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
-        <ion-checkbox ng-model="videoCheck" ng-change="downloadVideos()">Videos {{amount}}</ion-checkbox>
-        <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()"  ng-repeat="item in preferences" style="font-size: 15px;">
+        <ion-checkbox ng-model="preferences.download_videos" ng-change="downloadVideos()">Videos {{total_video_size}} MBs </ion-checkbox>
+        <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()"  ng-repeat="item in preferences.sync" style="font-size: 15px;">
           {{item.text}}
         </ion-toggle>
       </form>

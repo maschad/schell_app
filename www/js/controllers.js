@@ -198,8 +198,8 @@ function ($scope, $sce,$ionicSideMenuDelegate, FirebaseService,FileService,$ioni
 
   //Load Videos
   $scope.show();
-  //#TODO: Check internet for videos
   if(FirebaseService.downloadVideos() != null){
+
     $scope.videos = FirebaseService.downloadVideos();
     $scope.hide();
   }else{
@@ -535,53 +535,100 @@ function ($scope, $ionicSideMenuDelegate, localStorageService) {
     };
 }])
 
-.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'FirebaseService', 'localStorageService', '$ionicSideMenuDelegate','$ionicPopup','FileService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('offlineStorageCtrl', ['$scope','$ionicLoading', 'FirebaseService', 'localStorageService', 'DatabaseService','FileService','$ionicSideMenuDelegate','$ionicPopup',
+// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope,$ionicLoading,FirebaseService,localStorageService,$ionicSideMenuDelegate,$ionicPopup,FileService) {
+  function ($scope,$ionicLoading,FirebaseService,localStorageService,DatabaseService,FileService,$ionicSideMenuDelegate,$ionicPopup) {
 
-    //Side Menu
+    //Disable Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
-    //Product Categories
-    $scope.categories = [];
-    //Videos
-    $scope.videos = [];
 
-    //Whether to download videos
-    $scope.videoCheck = localStorageService.getVideoCheck();
+    //Video File size
+    $scope.total_video_size = 0;
 
-    //Load Settings from local storage
-    function downloadInfo() {
-      var items = FirebaseService.downloadProductCategories();
-      setTimeout(function () {
-        for(var i = 0; i < items.length; i++){
-          if($scope.categories.length < items.length){
-            $scope.categories.push({item: items[i], checked: false});
-          }
-        }
-        localStorageService.setCategories($scope.categories);
-      }, 10000);
 
-      //Store data for browsing
-      localStorageService.storeAll(FirebaseService.downloadProductData());
-      localStorageService.storeProductCategories(FirebaseService.downloadProductCategories());
+
+    //Loading functions
+    $scope.show = function() {
+      $ionicLoading.show({
+        template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
+        animation:'fade-in',
+        showBackdrop:true
+      });
+    };
+    //Hide function
+    $scope.hide = function(){
+      $ionicLoading.hide();
+    };
+
+    //Loading functions
+    $scope.downloadShow = function() {
+      $ionicLoading.show({
+        template: '<p>Downloading Artikel Data...</p><ion-spinner></ion-spinner>',
+        animation:'fade-in',
+        showBackdrop:true
+      });
+    };
+    //Hide
+    $scope.downloadHide = function(){
+      $ionicLoading.hide();
+    };
+
+    //Function to load the data on the screen
+    function loadData() {
+      $scope.show();
       $scope.videos = FirebaseService.downloadVideos();
+      for(var key in $scope.videos){
+        $scope.total_video_size += parseInt(key.filesize);
+      }
+      //Preferences
+      $scope.preferences = localStorageService.getOfflinePreferences();
+
+      //Product Categories
+      var items = DatabaseService.selectTopCategories(function (categories) {
+        for(var x = 0; x < categories.rows.length; x++){
+          items.push(categories.rows.item(x));
+        }
+      }, function (error) {
+        //#TODO:Handle error
+        console.log('ERROR',error);
+      });
+      //Compare against local storage and most recent update of storage to remember what user checked
+      for(var i = 0; i < items.length; i++){
+        if($scope.preferences.downloaded_categories.length < items.length){
+          $scope.preferences.downloaded_categories.push({item: items[i], checked: false});
+        }
+      }
+      //Update to show selected categories
+      localStorageService.updatePreferences($scope.preferences);
+      $scope.hide();
     }
 
-    //Download Videos
-    function storeVideos() {
-      $scope.videos.forEach(function (video) {
-        console.log('video',video);
-      })
-    }
+    //Call the function on startup
+    loadData();
 
+    //Function to download videos
     $scope.downloadVideos = function () {
-      localStorageService.updateVideoCheck($scope.videoCheck);
-      if($scope.videoCheck){
-        storeVideos();
+      //If checked
+      if($scope.preferences.download_videos){
+        $scope.downloadShow();
+        for(var video in $scope.videos){
+          var file_path = FileService.download(video.de_data.videofile,video.title,videos);
+          var video_file = {
+            title: video.title,
+            de_data: video.de_data,
+            filepath: file_path
+          };
+          $scope.preferences.video_files.push(video_file);
+        }
+        localStorageService.updatePreferences($scope.preferences);
+        $scope.downloadHide();
       }
     };
+
+
 
     //Actually download Files
     function downloadFiles(files) {
@@ -629,40 +676,11 @@ function ($scope, $ionicSideMenuDelegate, localStorageService) {
 
     }
 
-    //Loading functions
-    $scope.show = function() {
-      $ionicLoading.show({
-        template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
-        animation:'fade-in',
-        showBackdrop:true,
-        duration: 10000
-      });
-    };
-    $scope.hide = function(){
-      $ionicLoading.hide();
-    };
-
-    //Loading functions
-    $scope.downloadShow = function() {
-      $ionicLoading.show({
-        template: '<p>Downloading Artikel Data...</p><ion-spinner></ion-spinner>',
-        animation:'fade-in',
-        showBackdrop:true,
-        duration: 15000
-      });
-    };
-    $scope.downloadHide = function(){
-      $ionicLoading.hide();
-    };
-
-    //Load Preferences
-    $scope.preferences = localStorageService.loadOffline();
-    $scope.categories = localStorageService.getCategories();
 
     //#TODO: Check if product info updated
     $scope.show();
-    downloadInfo();
 
+    //To refresh the page
     $scope.doRefresh = function() {
       if($scope.preferences[0].checked == true) {
         $ionicPopup.alert({
@@ -670,7 +688,7 @@ function ($scope, $ionicSideMenuDelegate, localStorageService) {
         });
       }else {
         $scope.show();
-        downloadInfo();
+        loadData();
         // Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');
       }
@@ -687,28 +705,10 @@ function ($scope, $ionicSideMenuDelegate, localStorageService) {
 
       //Download details based on check
       if(check){
-        var files = [];
-        $scope.downloadShow();
-        localStorageService.checkCategory(product,check);
-        var items = localStorageService.getAll();
-        setTimeout(function () {
-          for(var i = 0; i < product.item.child_ids.length; i++) {
-            for(var j = 0; j < items.length; j++){
-              if (items[j].elternelement == product.item.child_ids[i] && items[j].hasOwnProperty('product_ids')) {
-                //Store files for download
-                files.push(FirebaseService.downloadFiles(items[j].product_ids));
-              }
-            }
-          }
-          //Download the files
-          setTimeout(function () {
-            downloadFiles(files);
-          },1000);
-        }, 15000);
-
+        //#TODO: Download files for that category
 
       }else {
-        localStorageService.checkCategory(product,check);
+        localStorageService.updatePreferences($scope.preferences);
       }
     };
 

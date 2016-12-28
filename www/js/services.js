@@ -7,10 +7,10 @@ angular.module('app.services', [])
   //Local storage using ngStorage, for trivial persistence
   $localStorage = $localStorage.$default({
     country: '',
-    boomarked_products: [],
-    product_files: {},
-    video_files: {},
-    download_files: {},
+    bookmarked_products: [],
+    product_files: [],
+    video_files: [],
+    download_files: [],
     offlinePreferences:[
       {
         text: 'Automatischer Sync deaktivieren',
@@ -42,20 +42,20 @@ angular.module('app.services', [])
   };
 
   var getBookmarkedProducts = function () {
-    return $localStorage.boomarked_products;
+    return $localStorage.bookmarked_products;
   };
 
   var bookmarkProduct = function (product) {
-    if($localStorage.boomarked_products.indexOf(product) != -1){
+    if($localStorage.bookmarked_products.indexOf(product) != -1){
       return false;
     }else{
-      $localStorage.boomarked_products.push(product);
+      $localStorage.bookmarked_products.push(product);
       return true;
     }
   };
 
   var removeBookmarkedProduct = function(bookmark){
-    $localStorage.boomarked_products.splice(indexOf(bookmark),1);
+    $localStorage.bookmarked_products.splice(indexOf(bookmark),1);
   };
 
   var getOfflinePreferences = function () {
@@ -159,10 +159,10 @@ angular.module('app.services', [])
 
   //Download a set of Products by id
   var downloadProducts = function(product_ids) {
-    var products = [];
+    var products = {};
     for(var i = 0; i < product_ids.length; i++){
       firebase.database().ref('/products/').orderByKey().equalTo(product_ids[i]).once('value').then(function (snapshot) {
-        products.push(snapshot.val());
+        products[snapshot.key] = snapshot.val();
       }, function (error) {
         $ionicPopup.confirm({
           title: "Error Connecting to Database",
@@ -180,7 +180,7 @@ angular.module('app.services', [])
       snapshot.forEach(function (product) {
         products[product.key] = product.val();
       });
-      success(categories);
+      success(products);
     }, function (error) {
       $ionicPopup.confirm({
         title: "Error Connecting to Database",
@@ -193,11 +193,12 @@ angular.module('app.services', [])
 
   //Download Videos
   var downloadVideos = function () {
-    var videos = [];
+    var videos = {};
     firebase.database().ref('/videos/').orderByKey().once('value').then(function (snapshot) {
       snapshot.forEach(function (video) {
-        videos.push(video.val());
+        videos[video.key] = video.val();
       });
+      success(videos);
     }, function (error) {
       $ionicPopup.confirm({
         title: "Error Connecting to Database",
@@ -448,7 +449,7 @@ angular.module('app.services', [])
 
 
       var preparedStatements = [];
-      BLANK_CATEGORY_INSERT_QUERY = 'INSERT INTO product_categories VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_CATEGORY_INSERT_QUERY = 'INSERT INTO product_categories VALUES (?,?,?,?,?,?,?,?,?,?,?)';
       for (var uid in firebaseProductCategoriesObject) {
 
         var filter_ids = firebaseProductCategoriesObject[uid]['filter_ids'] ? firebaseProductCategoriesObject[uid]['filter_ids'].join() : '';
@@ -486,7 +487,7 @@ angular.module('app.services', [])
     var populateDownloads = function(firebaseDownloadsObject) {
 
       var preparedStatements = [];
-      BLANK_DOWNLOAD_INSERT_QUERY = 'INSERT INTO downloads VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_DOWNLOAD_INSERT_QUERY = 'INSERT INTO downloads VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseDownloadsObject) {
         preparedStatements.push([
@@ -520,11 +521,11 @@ angular.module('app.services', [])
     var populateAwards = function(firebaseAwardsObject) {
 
       var preparedStatements = [];
-      BLANK_AWARDS_INSERT_QUERY = 'INSERT INTO awards VALUES (?,?,?)';
+      var BLANK_AWARDS_INSERT_QUERY = 'INSERT INTO awards VALUES (?,?,?)';
 
       for (var uid in firebaseAwardsObject) {
         preparedStatements.push([
-          BLANK_DOWNLOAD_INSERT_QUERY,
+          BLANK_AWARDS_INSERT_QUERY,
           [
             uid,
             firebaseAwardsObject[uid]['titel'],
@@ -544,11 +545,11 @@ angular.module('app.services', [])
     var populateVideos = function(firebaseVideosObject) {
 
       var preparedStatements = [];
-      BLANK_VIDEO_INSERT_QUERY = 'INSERT INTO videos VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_VIDEO_INSERT_QUERY = 'INSERT INTO videos VALUES (?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseVideosObject) {
         preparedStatements.push([
-          BLANK_DOWNLOAD_INSERT_QUERY,
+          BLANK_VIDEO_INSERT_QUERY,
           [
             uid,
             firebaseVideosObject[uid]['title'],
