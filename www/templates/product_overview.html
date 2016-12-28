@@ -17,24 +17,21 @@
       <div class="container">
         <h3 class="heading">Bezeichnung der Kategorie</h3>
         <div ng-repeat="product in products" class="row responsive-sm" ng-if="$index%2 === 0">
-          <div ng-repeat="p in product">
-            <div class="col col-50" ng-if="p.media.image_portrait" ng-click="choice(p,p.nummer)">
+            <div class="col col-50" ng-if="product.image_portrait" ng-click="choice(product,product.nummer)">
               <div class="product-tile">
                 <div class="row">
                   <div class="col col-75">
-                    <p class="item-number">{{p.nummer}}</p>
-                    <p class="item-title">{{p.de_data.produktbezeichnung}}</p>
-                    <p class="item-name" ng-bind-html="p.de_data.werkstoff"></p>
-                    <p>{{p.de_data.zusatz2}}</p>
+                    <p class="item-number">{{product.nummer}}</p>
+                    <p class="item-title">{{product.produktbezeichnung}}</p>
+                    <p class="item-name" ng-bind-html="product.werkstoff"></p>
+                    <p>{{product.zusatz2}}</p>
                   </div>
                   <div class="col">
-                    <img src="{{p.media.image_portrait}}">
+                    <img src="{{product.image_portrait}}">
                   </div>
                 </div>
               </div>
             </div>
-
-          </div>
         </div>
       </div>
     </div>

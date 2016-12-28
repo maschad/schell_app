@@ -23,119 +23,119 @@
         <div class="product-lines">
           <h3 class="heading">Wandeinbau Duscharmaturen</h3>
           <!-- Products -->
-          <div ng-repeat="product in products" ng-if="$index%3 == 0" class="row responsive-sm">
+          <div ng-repeat="category in categories" ng-if="$index%3 == 0" class="row responsive-sm">
 
-            <div class="col col-33" ng-click="choice_product(products[$index].product_ids, products[$index].title_de)" ng-if="products[$index].product_ids">
+            <div class="col col-33" ng-click="choice_product(categories[$index].product_ids, categories[$index].title_de)" ng-if="categories[$index].product_ids">
               <div class="product-tile">
                 <div class="row">
                   <div class="col">
                     <div class="product-counter">
-                      <p><strong>{{products[$index].product_ids.length}} Artikel</strong></p>
+                      <p><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col col-66">
-                    <h3 class="product-type">{{products[$index].title_de}}</h3>
+                    <h3 class="product-type">{{categories[$index].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{products[$index].bild}}">
+                    <img src="{{categories[$index].bild}}">
                   </div>
                 </div>
               </div>
             </div>
             <!-- Check for children -->
-            <div class="col col-33" ng-click="choice(products[$index].child_ids,products[$index].title_de)" ng-if="products[$index].child_ids">
+            <div class="col col-33" ng-click="choice(categories[$index].child_ids,categories[$index].title_de)" ng-if="categories[$index].child_ids">
               <div class="product-tile">
                 <div class="col">
                   <div class="product-counter">
-                    <p><strong>{{products[$index].child_ids.length}} Artikel</strong></p>
+                    <p><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col col-66">
-                    <h3 class="product-type">{{products[$index].title_de}}</h3>
+                    <h3 class="product-type">{{categories[$index].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{products[$index].bild}}">
+                    <img src="{{categories[$index].bild}}">
                   </div>
                 </div>
               </div>
             </div>
             <!-- Product ID-->
-            <div class="col col-33" ng-if="products[$index + 1] != undefined && products[$index + 1].product_ids" ng-click="choice_product(products[$index + 1].product_ids,products[$index + 1].title_de)">
+            <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids" ng-click="choice_product(categories[$index + 1].product_ids,categories[$index + 1].title_de)">
               <div class="product-tile">
                 <div class="row">
                   <div class="col">
                     <div class="product-counter">
-                     <p><strong>{{products[$index + 1].product_ids.length}} Artikel</strong></p>
+                     <p><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col col-66">
-                    <h3 class="product-type">{{products[$index + 1].title_de}}</h3>
+                    <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{products[$index + 1].bild}}">
+                    <img src="{{categories[$index + 1].bild}}">
                   </div>
                 </div>
               </div>
             </div>
 
             <!--Child Product-->
-            <div class="col col-33" ng-if="products[$index + 1] != undefined && products[$index + 1].child_ids" ng-click="choice(products[$index + 1].child_ids,products[$index + 1].title_de)">
+            <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].child_ids" ng-click="choice(categories[$index + 1].child_ids,categories[$index + 1].title_de)">
               <div class="product-tile">
                 <div class="col">
                   <div class="product-counter">
-                    <p><strong>{{products[$index + 1].child_ids.length}} Artikel</strong></p>
+                    <p><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col col-66">
-                    <h3 class="product-type">{{products[$index + 1].title_de}}</h3>
+                    <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{products[$index + 1].bild}}">
+                    <img src="{{categories[$index + 1].bild}}">
                   </div>
                 </div>
               </div>
             </div>
 
             <!--Product Ids-->
-            <div class="col col-33" ng-if="products[$index + 2] != undefined && products[$index + 2].product_ids" ng-click="choice_product(products[$index + 2].product_ids,products[$index + 2].title_de)">
+            <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].product_ids" ng-click="choice_product(categories[$index + 2].product_ids,categories[$index + 2].title_de)">
               <div class="product-tile">
                 <div class="row">
                   <div class="col">
                     <div class="product-counter">
-                      <p><strong>{{products[$index + 2].product_ids.length}} Artikel</strong></p>
+                      <p><strong>{{categories[$index + 2].product_ids.length}} Artikel</strong></p>
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col col-66">
-                    <h3 class="product-type">{{products[$index + 2].title_de}}</h3>
+                    <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{products[$index + 2].bild}}">
+                    <img src="{{categories[$index + 2].bild}}">
                   </div>
                 </div>
               </div>
             </div>
             <!--Child IDs-->
-            <div class="col col-33" ng-if="products[$index + 2] != undefined && products[$index + 2].child_ids" ng-click="choice(products[$index + 2].child_ids,products[$index + 2].title_de)">
+            <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].child_ids" ng-click="choice(categories[$index + 2].child_ids,categories[$index + 2].title_de)">
               <div class="product-tile">
                 <div class="col">
                   <div class="product-counter">
-                    <p><strong>{{products[$index + 2].child_ids.length}} Artikel</strong></p>
+                    <p><strong>{{categories[$index + 2].child_ids.length}} Artikel</strong></p>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col col-66">
-                    <h3 class="product-type">{{products[$index + 2].title_de}}</h3>
+                    <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{products[$index + 2].bild}}">
+                    <img src="{{categories[$index + 2].bild}}">
                   </div>
                 </div>
               </div>

@@ -10,7 +10,7 @@
         <div class="col-80">
           <span style="font-weight: bold;">Wählen Sie die Kategorien die Sie offline auf</span>
           <span style="font-weight: bold;"> diesem Gerät speichern möchten.</span><br>
-          <span>Letzte Aktualisierung: 23. 02. 2016</span>
+          <span>Letzte Aktualisierung: {{preferences.last_updated}}</span>
         </div>
         <div class="col">
           <button class="button icon schellicon-reload"  ng-click="doRefresh()" style="border-radius: 50%;  min-height: 45px; min-width: 45px; background-color: #dfdfdf; float: right; padding: 0 10px;"></button>
@@ -22,15 +22,15 @@
         </label> -->
         <ion-item class="item-divider" id="settings-list-item-divider1"> PRODUKTE </ion-item>
         <hr class="settings-hr">
-        <ion-checkbox class="checkbox-settings item-checkbox-right" ng-repeat="product in categories" ng-change="downloadCategory(product,product.checked)" ng-model="product.checked">
-            <strong>{{product.item.title_de}}</strong>
+        <ion-checkbox class="checkbox-settings item-checkbox-right" ng-repeat="category in preferences.downloaded_categories" ng-change="downloadCategory(category,category.checked)" ng-model="category.checked">
+            <strong>{{category.title_de}}</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
         <hr class="settings-hr">
-        <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="videoCheck" ng-change="downloadVideos()"><strong>Videos</strong> {{amount}}</ion-checkbox>
+        <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="preferences.download_videos" ng-change="downloadVideos()"><strong>Videos</strong> {{total_video_size}} </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider3">SETTINGS</ion-item>
         <hr class="settings-hr">
-        <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()" ng-repeat="item in preferences" style="font-size: 15px;">
+        <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()" ng-repeat="item in preferences.sync" style="font-size: 15px;">
           <strong>{{item.text}}</strong>
         </ion-toggle>
       </form>
