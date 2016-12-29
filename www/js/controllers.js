@@ -122,6 +122,7 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
 
     $scope.choice = function (product,title) {
       appDataService.setCurrentTitle(title);
+      console.log('product', product.toString());
       appDataService.setCurrentProduct(product);
       appDataService.appendEmailLink('details/artikel/' + title + '.html');
       $state.go('detailPage');
@@ -280,6 +281,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Set details
     $scope.details = appDataService.getCurrentProduct();
+    console.log('technical link', $scope.details.technical_drawing_link);
 
     //Function to load files
     function getFiles(download_ids) {
@@ -445,11 +447,26 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-.controller('productLinesCtrl', ['$scope','$ionicFilterBar', '$state', 'localStorageService','DatabaseService','appDataService','$ionicPopover',
-  function ($scope,$ionicFilterBar,$state,localStorageService,DatabaseService,appDataService,$ionicPopover) {
+.controller('productLinesCtrl', ['$scope','$ionicLoading','$ionicFilterBar', '$state', 'localStorageService','DatabaseService','appDataService','$ionicPopover',
+  function ($scope,$ionicLoading,$ionicFilterBar,$state,localStorageService,DatabaseService,appDataService,$ionicPopover) {
     //Set the titles
     $scope.title = appDataService.getCurrentTitle();
     $scope.root = appDataService.getRootTitle();
+
+    //Loading functions
+    $scope.show = function() {
+      $ionicLoading.show({
+        template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
+        animation:'fade-in',
+        showBackdrop:true,
+        duration: 2000
+      });
+    };
+    //Hide function
+    $scope.hide = function(){
+      $ionicLoading.hide();
+    };
+
 
     //Load SubCategories from database
     function loadSubCategories(child_ids) {
@@ -495,13 +512,19 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //Child choice
       $scope.choice = function (child_ids, title) {
-        //#TODO if user chooses something with child_ids
+        //If user chooses something with child ids
+        $scope.categories = [];
+        loadSubCategories(child_ids);
+        appDataService.setCurrentTitle(title);
+        appDataService.appendEmailLink(title + '/');
+        $scope.title = title;
+        $state.reload();
         console.log('has child ids');
       };
 
       //Product Choice
       $scope.choice_product = function (product_ids, title) {
-        //#TODO: If user chooses something with product_ids
+        // If user chooses something with product_ids
         console.log('product_ids', product_ids);
         appDataService.setCurrentTitle(title);
         appDataService.setCurrentCategoryIds(product_ids);
@@ -710,7 +733,6 @@ function ($scope, $ionicSideMenuDelegate, localStorageService) {
 
 
     //#TODO: Check if product info updated
-    $scope.show();
 
     //To refresh the page
     $scope.doRefresh = function() {
