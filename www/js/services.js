@@ -175,19 +175,17 @@ angular.module('app.services', [])
   var downloadFiles = function (success,errors) {
     var files = {};
 
-    for(var i = 0; i < ids.length; i++ ) {
-      firebase.database().ref('/downloads/').orderByKey().once('value').then(function (snapshot) {
-        snapshot.ForEach(function (file) {
-          files[file.key] = file.val();
-        });
-        success(files);
-      }, function (error) {
-        $ionicPopup.confirm({
-          title: "Error Connecting to Database",
-          content: error
-        });
+    firebase.database().ref('/downloads/').orderByKey().once('value').then(function (snapshot) {
+      snapshot.forEach(function (file) {
+        files[file.key] = file.val();
       });
-    }
+      success(files);
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
+    });
 
   };
 
@@ -279,7 +277,7 @@ angular.module('app.services', [])
 //Service for storing in app Data to be shared between controllers
 .factory('appDataService' , function () {
     var current_category_child_ids = '';
-    var product_id = '';
+    var current_product = {};
     var email_link = 'http://www.schell.eu/deutschland-de/produkte/';
     var current_title = '';
     var previous_title = '';
@@ -293,12 +291,12 @@ angular.module('app.services', [])
       current_category_child_ids = category;
     };
 
-    var setCurrentProductId = function (id) {
-      product_id = id;
+    var setCurrentProduct = function (data) {
+      current_product = data;
     };
 
-    var getCurrentProductId = function () {
-      return product_id;
+    var getCurrentProduct = function () {
+      return current_product;
     };
 
     var getEmailLink = function () {
@@ -336,8 +334,8 @@ angular.module('app.services', [])
     return {
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
-      getCurrentProductId : getCurrentProductId,
-      setCurrentProductId : setCurrentProductId,
+      setCurrentProduct : setCurrentProduct,
+      getCurrentProduct : getCurrentProduct,
       getEmailLink : getEmailLink,
       appendEmailLink : appendEmailLink,
       getCurrentTitle : getCurrentTitle,
@@ -361,15 +359,12 @@ angular.module('app.services', [])
       var preparedStatements = [];
       var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
-      console.log('amount of uids', Object.keys(firebaseProductsObject).length);
-
       for (var uid in firebaseProductsObject) {
         var filter_ids = firebaseProductsObject[uid]['filter_ids'] ? firebaseProductsObject[uid]['filter_ids'].join() : '' ;
         var download_ids = firebaseProductsObject[uid]['media']['download_ids'] ? firebaseProductsObject[uid]['media']['download_ids'].join() : '' ;
         var video_ids = firebaseProductsObject[uid]['media']['video_ids'] ? firebaseProductsObject[uid]['media']['video_ids'].join() : '' ;
 
-        console.log('uid',uid);
-        preparedStatements.push([
+          preparedStatements.push([
           BLANK_PRODUCT_INSERT_QUERY,
           [
             parseInt(uid),
@@ -465,10 +460,11 @@ angular.module('app.services', [])
       var BLANK_DOWNLOAD_INSERT_QUERY = 'INSERT INTO downloads VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseDownloadsObject) {
+
         preparedStatements.push([
           BLANK_DOWNLOAD_INSERT_QUERY,
           [
-            uid,
+            parseInt(uid),
             firebaseDownloadsObject[uid]['thumbnail'],
             firebaseDownloadsObject[uid]['de_data']['artikelnummer'],
             firebaseDownloadsObject[uid]['de_data']['broschuerentitel'],
@@ -479,7 +475,7 @@ angular.module('app.services', [])
             firebaseDownloadsObject[uid]['en_data']['broschuerentitel'],
             firebaseDownloadsObject[uid]['en_data']['zusatzinformation'],
             firebaseDownloadsObject[uid]['en_data']['datei'],
-            firebaseDownloadsObject[uid]['filesize'],
+            parseInt(firebaseDownloadsObject[uid]['filesize']),
             firebaseDownloadsObject[uid]['title']
           ]
         ]);
@@ -526,7 +522,7 @@ angular.module('app.services', [])
         preparedStatements.push([
           BLANK_VIDEO_INSERT_QUERY,
           [
-            uid,
+            parseInt(uid),
             firebaseVideosObject[uid]['title'],
             firebaseVideosObject[uid]['de_data']['startimage'],
             firebaseVideosObject[uid]['de_data']['videofile'],
@@ -534,7 +530,7 @@ angular.module('app.services', [])
             firebaseVideosObject[uid]['en_data']['startimage'],
             firebaseVideosObject[uid]['en_data']['videofile'],
             firebaseVideosObject[uid]['en_data']['information'],
-            firebaseVideosObject[uid]['filesize'],
+            parseInt(firebaseVideosObject[uid]['filesize']),
             firebaseVideosObject[uid]['de_data']['youtube'],
             firebaseVideosObject[uid]['en_data']['youtube']
           ]
@@ -568,7 +564,7 @@ angular.module('app.services', [])
     var selectProducts = function(product_ids, success, error) {
       console.log('Selecting Products');
       //db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
-      db.executeSql('SELECT * from products',[], function(rs) {
+      db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
         success(rs);
       }, function(error) {
         error(error);
@@ -577,6 +573,14 @@ angular.module('app.services', [])
 
     var selectVideos = function(video_ids, success, error) {
       db.executeSql('SELECT * from videos where uid in (' + video_ids + ');', [], function(rs) {
+        success(rs);
+      }, function(error) {
+        error(error);
+      });
+    };
+
+    var selectAllVideos = function (success, error) {
+      db.executeSql('SELECT * from videos;', [], function(rs) {
         success(rs);
       }, function(error) {
         error(error);
@@ -610,6 +614,7 @@ angular.module('app.services', [])
       selectChildCategories: selectChildCategories,
       selectProducts: selectProducts,
       selectVideos: selectVideos,
+      selectAllVideos : selectAllVideos,
       selectDownloads: selectDownloads,
       searchProducts: searchProducts
     };

@@ -27,6 +27,12 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
     FirebaseService.getAllProductCategories(function (results) {
       DatabaseService.populateProductCategories(results);
     });
+    FirebaseService.downloadFiles(function (results) {
+      DatabaseService.populateDownloads(results);
+    });
+    FirebaseService.downloadVideos(function (results) {
+      DatabaseService.populateVideos(results);
+    });
   }else{
     //#TODO: Handle DB offline
   }
@@ -76,10 +82,8 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
     function getProducts(product_ids) {
       //Load the various products
       DatabaseService.selectProducts(product_ids, function (products) {
-        console.log('product_ids type', typeof product_ids);
         for(var x = 0; x < products.rows.length; x++){
           $scope.products.push(products.rows.item(x));
-          console.log('nummer', products.rows.item(x).nummer);
         }
       }, function (error) {
         //Handle error
@@ -116,9 +120,10 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
     });
 
 
-    $scope.choice = function (product_id,title) {
+    $scope.choice = function (product,title) {
       appDataService.setCurrentTitle(title);
-      appDataService.setCurrentProductId(product_id);
+      appDataService.setCurrentProduct(product);
+      appDataService.appendEmailLink('details/artikel/' + title + '.html');
       $state.go('detailPage');
     };
 
@@ -165,6 +170,7 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
       appDataService.setRootTitle(title);
       appDataService.setCurrentTitle(title);
       appDataService.setCurrentCategoryIds(child_ids);
+      appDataService.appendEmailLink(title + '/');
       localStorageService.setFilters(filter_ids);
       $state.go('product_lines');
     };
@@ -184,34 +190,40 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
   }])
 
 
-.controller('videoCtrl', ['$scope', '$sce','$ionicSideMenuDelegate', 'FirebaseService','FileService','$ionicLoading','$ionicPopup','localStorageService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('videoCtrl', ['$scope', '$rootScope','$sce','$ionicSideMenuDelegate', 'FirebaseService','FileService','$ionicLoading','$ionicPopup','localStorageService','DatabaseService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $sce,$ionicSideMenuDelegate, FirebaseService,FileService,$ionicLoading,$ionicPopup,localStorageService) {
-
+function ($scope,$rootScope, $sce,$ionicSideMenuDelegate, FirebaseService,FileService,$ionicLoading,$ionicPopup,localStorageService,DatabaseService) {
+    //Initialize empty array
+  $scope.videos = [];
 
   //Loading functions
   $scope.show = function() {
     $ionicLoading.show({
       template: '<p>Downloading Videos...</p><ion-spinner></ion-spinner>',
       animation:'fade-in',
-      showBackdrop:true,
-      duration: 3000
+      showBackdrop:true
     });
   };
   $scope.hide = function(){
     $ionicLoading.hide();
   };
 
+  //Function to load the videos
+  function loadVideos() {
+    if($rootScope.internet){
+      DatabaseService.selectAllVideos(function (videos) {
+        for(var x = 0; x < videos.rows.length; x++){
+          $scope.videos.push(videos.rows.item(x));
+        }
+      })
+    }
+  }
+
   //Load Videos
   $scope.show();
-  if(FirebaseService.downloadVideos() != null){
-
-    $scope.videos = FirebaseService.downloadVideos();
-    $scope.hide();
-  }else{
-    //$scope.videos = localStorageService.loadVideos();
-  }
+  loadVideos();
+  $scope.hide();
 
 
   //return trusted external links
@@ -263,19 +275,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //The products to be show in collapsible list
     $scope.files = [];
 
-    //To load the details about a product
-    function getProductDetails(product_id) {
-      DatabaseService.selectProducts(product_id,function (product_details) {
-        $scope.details = product_details.rows.item(0);
-      }, function (error) {
-        //Handle error
-        console.log('ERROR',error);
-      });
+    //Videos for that corresponding product
+    $scope.videos = [];
 
-    }
+    //Set details
+    $scope.details = appDataService.getCurrentProduct();
 
     //Function to load files
     function getFiles(download_ids) {
+      console.log('download ids', download_ids);
       DatabaseService.selectDownloads(download_ids, function (downloads) {
         for(var x = 0; x < downloads.rows.length; x++){
           $scope.files.push(downloads.rows.item(x));
@@ -283,12 +291,23 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       })
     }
 
-    //Load Details
-    getProductDetails(appDataService.getCurrentProductId());
+    function getVideos(video_ids) {
+      //#TODO: Check for internet, if no internet, get video paths from local storage
+      console.log('video_ids', video_ids);
+      DatabaseService.selectVideos(video_ids, function(videos){
+        for(var x = 0; x < videos.rows.length; x++){
+          $scope.videos.push(videos.rows.item(x));
+        }
+      })
+    }
 
-    //Load Downloads
-    getFiles($scope.details.download_ids);
-
+    //Load Downloads and videos
+    if($scope.details.download_ids != ''){
+      getFiles($scope.details.download_ids);
+    }
+    if($scope.details.video_ids != ''){
+      getVideos($scope.details.video_ids);
+    }
 
     //Get various labels
     $scope.title = appDataService.getCurrentTitle();
@@ -319,8 +338,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Download PDF
     $scope.showPDF = false;
-    $scope.downloadPDF = function (f) {
-      $scope.pdfUrl = f.de_data.datei;
+    $scope.downloadPDF = function (file) {
+      $scope.pdfUrl = file.datei_de;
       $scope.showPDF = true;
       var options = {
         location: 'no',
@@ -332,9 +351,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $cordovaInAppBrowser.open($scope.pdfUrl, '_blank',options);
     };
 
-
-    //Build up link
-    appDataService.appendEmailLink('details/artikel/' + $scope.details.nummer + '.html');
 
 
       $scope.listData = ([
@@ -371,7 +387,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         },
         {
           title : 'VIDEO',
-          varianten : '',
+          url : '',
           show : false
         }
 
@@ -402,10 +418,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
   });
 
   $scope.sendEmail = function () {
-    var link = localStorageService.getLink();
+    var link = appDataService.getEmailLink();
     var bodyText = 'Product nummer ' .concat($scope.details.nummer)
                     + ' ' + 'Referenzartikel ' + ' ' .concat($scope.details.referenzartikel)
-                    + ' ' .concat($scope.details.de_data.differenzierung)
+                    + ' ' .concat($scope.details.differenzierung)
                     + '' + 'Hier ist ein Link' + ' ' + link;
 
 
@@ -490,6 +506,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         appDataService.setCurrentTitle(title);
         appDataService.setCurrentCategoryIds(product_ids);
         appDataService.setPreviousTitle(title);
+        appDataService.appendEmailLink(title + '/');
         $state.go('product_overview');
       };
 

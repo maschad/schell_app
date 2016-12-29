@@ -56,7 +56,7 @@
       </div>
       <div id="detailPage-markdown3" class="col">
         <p id="detailPage-heading4" class="product-order-number">Bestellnummer: {{details.nummer}}</p>
-        <p id="detailPage-heading3" class="product-name"> {{details.produktbezeichnung}} </p>
+        <p id="detailPage-heading3" class="product-name"> {{details.produktbezeichnung_de}} </p>
         <p class="product-summary"> {{details.dimension}} </p>
         <p class="product-noted"> {{details.zusatz2}}</p>
         <ion-list>
@@ -68,7 +68,7 @@
                 <i class="icon" ng-class="isGroupShown(list) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
               </div>
             </ion-item>
-            <ion-item class="description-accordion" ng-show="isGroupShown(product)">
+            <ion-item class="description-accordion" ng-show="isGroupShown(list)">
               <div ng-if="list.title.includes('ZEICHNUNG')">
                 <img ng-src="{{details.technical_drawing_link}}">
               </div>
@@ -79,7 +79,7 @@
                 <div ng-bind-html="details.einsatzbereich"></div>
               </div>
               <div ng-if="list.title == 'DETAILS'">
-                <div ng-bind-html="details.werkstoff"></div>
+                <div ng-bind-html="details.werkstoff_de"></div>
               </div>
                <div ng-if="list.title == 'DOWNLOADS' && details.download_ids">
                 <div ng-repeat="file in files">
@@ -91,6 +91,15 @@
                       <p> {{file.broschurentitel}} </p>
                       <p> {{file.zusatzinformation}} </p>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="list.title == 'VIDEOS'">
+                <div ng-repeat="video in videos">
+                  <div class="col">
+                    <video width="100%" height="100%" controls poster="{{video.thumbnail}}">
+                      <source src="{{trustSrc(video.videofile)}}">
+                    </video>
                   </div>
                 </div>
               </div>
