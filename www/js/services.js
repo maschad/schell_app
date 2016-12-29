@@ -55,7 +55,7 @@ angular.module('app.services', [])
   };
 
   var removeBookmarkedProduct = function(bookmark){
-    $localStorage.bookmarked_products.splice(indexOf(bookmark),1);
+    $localStorage.bookmarked_products.splice($localStorage.bookmarked_products.indexOf(bookmark),1);
   };
 
   var getOfflinePreferences = function () {

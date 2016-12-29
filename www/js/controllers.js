@@ -540,13 +540,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-.controller('bookmarkCtrl', ['$scope', '$ionicSideMenuDelegate','localStorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('bookmarkCtrl', ['$scope', '$state','$ionicPopup', '$ionicSideMenuDelegate','localStorageService', 'appDataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $ionicSideMenuDelegate, localStorageService) {
+function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageService,appDataService) {
 
-    //Side Menu
-    $ionicSideMenuDelegate.canDragContent(false);
+  //Side Menu
+  $ionicSideMenuDelegate.canDragContent(false);
 
 
   //Download bookmarks
@@ -556,6 +556,12 @@ function ($scope, $ionicSideMenuDelegate, localStorageService) {
         title: 'No Artikels'
       });
     }
+
+    $scope.showDetails = function (product) {
+      appDataService.setCurrentProduct(product);
+      appDataService.setCurrentTitle(product.nummer);
+      $state.go('detailPage');
+    };
 
     $scope.email = function (bookmark) {
       var link = bookmark.email_link;
@@ -583,10 +589,12 @@ function ($scope, $ionicSideMenuDelegate, localStorageService) {
     };
 
     $scope.deleteBookmark = function (bookmark) {
+      console.log('calling delete');
       localStorageService.removeBookmarkedProduct(bookmark);
       $ionicPopup.alert({
         title: 'Artikel Entfernt'
       });
+      $state.reload();
     };
 }])
 
