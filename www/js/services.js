@@ -224,7 +224,7 @@ angular.module('app.services', [])
 .factory('FileService',[function () {
 
     //Save a file to system path
-    var download = function (url,filename,dirName) {
+  var download = function (url, filename, dirName, success) {
       window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
           fs.root.getDirectory(
             dirName,
@@ -246,7 +246,7 @@ angular.module('app.services', [])
                     encodeURI(url),
                     p,
                     function(entry) {
-                      return entry.toURL();
+                      success(entry.toURL());
                     },
                     function(error) {
                       console.log(error);

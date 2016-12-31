@@ -212,12 +212,22 @@ function ($scope,$rootScope, $sce,$ionicSideMenuDelegate, FirebaseService,FileSe
 
   //Function to load the videos
   function loadVideos() {
-    if($rootScope.internet){
-      DatabaseService.selectAllVideos(function (videos) {
-        for(var x = 0; x < videos.rows.length; x++){
-          $scope.videos.push(videos.rows.item(x));
+    DatabaseService.selectAllVideos(function (videos) {
+      for (var x = 0; x < videos.rows.length; x++) {
+        $scope.videos.push(videos.rows.item(x));
+      }
+    });
+    if (!$rootScope.internet) {
+      var vids = localStorageService.getAllVideoPaths();
+      if (vids == null) {
+        $ionicPopup.alert({
+          title: 'Keine Videos heruntergeladen'
+        });
+      } else {
+        for (var x = 0; x < $scope.videos.length; x++) {
+          $scope.videos[x].videofile_de = vids[x];
         }
-      })
+      }
     }
   }
 
@@ -702,14 +712,20 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
     $scope.downloadVideos = function () {
       //If checked
       if ($scope.preferences[3].download_videos) {
-        $scope.downloadShow();
         for (var x = 0; x < $scope.videos.length; x++) {
+          $scope.downloadShow();
           console.log('video title', $scope.videos[x].title);
-          var file_path = FileService.download($scope.videos[x].videofile_de, $scope.videos[x].title, 'videos');
-          console.log('filepath', file_path);
-          //localStorageService.setVideoPath(video.uid,file_path);
+          var uid = $scope.videos[x].uid;
+          FileService.download($scope.videos[x].videofile_de, $scope.videos[x].title, 'videos', function (file_path) {
+            console.log('filepath', file_path);
+            console.log('uid', uid);
+            localStorageService.setVideoPath(uid, file_path);
+            $scope.downloadHide();
+          });
         }
-        $scope.downloadHide();
+        localStorageService.updatePreferences($scope.preferences);
+      } else {
+        localStorageService.updatePreferences($scope.preferences);
       }
     };
 
