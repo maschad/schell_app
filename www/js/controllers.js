@@ -611,6 +611,11 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
     //Video File size
     $scope.total_video_size = 0;
 
+    //Initialize as empty
+    $scope.videos = [];
+
+    //Preferences as empty
+    $scope.preferences = [];
 
 
     //Loading functions
@@ -639,31 +644,37 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
       $ionicLoading.hide();
     };
 
+
     //Function to load the data on the screen
     function loadData() {
       $scope.show();
-      $scope.videos = FirebaseService.downloadVideos();
-      for(var key in $scope.videos){
-        $scope.total_video_size += parseInt(key.filesize);
-      }
-      //Preferences
+      DatabaseService.selectAllVideos(function (videos) {
+        var mbTotal = 0;
+        for (var x = 0; x < videos.rows.length; x++) {
+          $scope.videos.push(videos.rows.item(x));
+          mbTotal += videos.rows.item(x).filesize;
+        }
+        $scope.total_video_size = mbTotal / 100000000;
+      });
+      //Assign preferences
       $scope.preferences = localStorageService.getOfflinePreferences();
-
       //Product Categories
-      var items = DatabaseService.selectTopCategories(function (categories) {
+      var items = [];
+      DatabaseService.selectTopCategories(function (categories) {
         for(var x = 0; x < categories.rows.length; x++){
           items.push(categories.rows.item(x));
+        }
+        //Compare against local storage and most recent update of storage to remember what user checked
+        if ($scope.preferences[2].downloaded_categories.length < items.length) {
+          for (var i = 0; i < items.length; i++) {
+            $scope.preferences[2].downloaded_categories.push({item: items[i], checked: false});
+          }
         }
       }, function (error) {
         //#TODO:Handle error
         console.log('ERROR',error);
       });
-      //Compare against local storage and most recent update of storage to remember what user checked
-      for(var i = 0; i < items.length; i++){
-        if($scope.preferences.downloaded_categories.length < items.length){
-          $scope.preferences.downloaded_categories.push({item: items[i], checked: false});
-        }
-      }
+
       //Update to show selected categories
       localStorageService.updatePreferences($scope.preferences);
       $scope.hide();
@@ -672,72 +683,54 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
     //Call the function on startup
     loadData();
 
+    function getProductIds(child_ids, product_ids) {
+
+      DatabaseService.selectChildCategories(child_ids, function (children) {
+        for (var x = 0; x < children.rows.length; x++) {
+          if (children.rows.item(x).hasOwnProperty('product_ids')) {
+            product_ids.push(children.rows.item(x).product_ids);
+          } else {
+            return getProducts(children.rows.item(x).child_ids, product_ids);
+          }
+        }
+      });
+      console.log('product ids', product_ids);
+      return product_ids;
+    }
+
     //Function to download videos
     $scope.downloadVideos = function () {
       //If checked
-      if($scope.preferences.download_videos){
+      if ($scope.preferences[3].download_videos) {
         $scope.downloadShow();
-        for(var video in $scope.videos){
-          var file_path = FileService.download(video.de_data.videofile,video.title,videos);
-          var video_file = {
-            title: video.title,
-            de_data: video.de_data,
-            filepath: file_path
-          };
-          $scope.preferences.video_files.push(video_file);
+        for (var x = 0; x < $scope.videos.length; x++) {
+          console.log('video title', $scope.videos[x].title);
+          var file_path = FileService.download($scope.videos[x].videofile_de, $scope.videos[x].title, 'videos');
+          console.log('filepath', file_path);
+          //localStorageService.setVideoPath(video.uid,file_path);
         }
-        localStorageService.updatePreferences($scope.preferences);
         $scope.downloadHide();
       }
     };
 
+    //Check to download selected category
+    $scope.downloadCategory = function (category, check) {
 
+      //Download details based on check
+      if (check) {
+        //#TODO: Download files for that category
 
-    //Actually download Files
-    function downloadFiles(files) {
-      var count = 0;
+        // The product Ids to download
+        var product_ids = [];
+        product_ids = getProductIds(category.item.child_ids, product_ids);
+        console.log('child_ids  of category', category.item.child_ids);
+        localStorageService.updatePreferences($scope.preferences);
 
-      //Get urls, imgs, number , zusatzinfromation , thumbnail
-      $scope.show();
-      files.forEach(function (j) {
-        if(j != null){
-          j.forEach(function (i) {
-            if(i != null){
-              for(k in i){
-                var url = i[k].de_data.datei;
-                var filename = i[k].de_data.broschurentitel;
-                var path = FileService.download(url,filename,'pdfs');
-                console.log(path);
-                var imgUrl = i[k].de_data.datei;
-                var imgFilename = count.toString() + '.jpg';
-                count++;
-                var thumbnail = FileService.download(imgUrl,imgFilename,'thumbnails');
-                var doc = {
-                  de_data : {
-                    artikelnummer : i[k].de_data.artikelnummer,
-                    broschurentitel : i[k].de_data.broschurentitel,
-                    datei: path,
-                    zusatzinformation : i[k].de_data.zusatzinformation
-                  },
-                  en_data: {
-                    artikelnummer : i[k].en_data.artikelnummer,
-                    broschurentitel : i[k].en_data.broschurentitel,
-                    datei: path,
-                    zusatzinformation : i[k].en_data.zusatzinformation
-                  },
-                  produziert_bis : i[k].produziert_bis,
-                  thumbnail: thumbnail,
-                  title : i[k].title
-                };
-                localStorageService.storeFile(doc);
-              }
-            }
-          })
-        }
-      });
-      $scope.hide();
+      } else {
+        localStorageService.updatePreferences($scope.preferences);
+      }
+    };
 
-    }
 
 
     //#TODO: Check if product info updated
@@ -751,6 +744,7 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
       }else {
         $scope.show();
         loadData();
+        $scope.hide();
         // Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');
       }
@@ -762,19 +756,8 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
       localStorageService.updatePreferences($scope.preferences);
     };
 
-    //Checkbox function
-    $scope.downloadCategory = function (product,check) {
 
-      //Download details based on check
-      if(check){
-        //#TODO: Download files for that category
-
-      }else {
-        localStorageService.updatePreferences($scope.preferences);
-      }
-    };
-
-}])
+  }])
 
 .controller('regionCtrl', ['$scope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function

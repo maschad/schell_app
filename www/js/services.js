@@ -546,7 +546,6 @@ angular.module('app.services', [])
 
     var selectTopCategories = function(success, error) {
       db.executeSql('SELECT * from product_categories where elternelement = 0;', [], function(rs) {
-        console.log('Success selected');
         success(rs);
       }, function (error) {
         error(error);

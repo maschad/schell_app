@@ -19,12 +19,16 @@
       <form id="offline" class="list">
         <ion-item class="item-divider" id="settings-list-item-divider1"> PRODUKTE </ion-item>
         <hr class="settings-hr">
-        <ion-checkbox class="checkbox-settings item-checkbox-right" ng-repeat="category in preferences.downloaded_categories" ng-change="downloadCategory(category,category.checked)" ng-model="category.checked">
-            <strong>{{category.title_de}}</strong>
+        <ion-checkbox class="checkbox-settings item-checkbox-right"
+                      ng-repeat="category in preferences[2].downloaded_categories"
+                      ng-change="downloadCategory(category,category.checked)" ng-model="category.checked">
+          <strong>{{category.item.title_de}}</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
         <hr class="settings-hr">
-        <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="preferences.download_videos" ng-change="downloadVideos()"><strong>Videos</strong> {{total_video_size}} </ion-checkbox>
+        <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="preferences[3].download_videos"
+                      ng-change="downloadVideos()"><strong>Total size</strong><br>{{total_video_size}} GB
+        </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider3">SETTINGS</ion-item>
         <hr class="settings-hr">
         <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()" ng-repeat="item in preferences.sync" style="font-size: 15px;">
