@@ -27,7 +27,7 @@ angular.module('app.services', [])
         download_videos : false
       }
     ],
-    filters : {},
+    filters: [],
     last_updated : ''
   });
 
@@ -94,6 +94,10 @@ angular.module('app.services', [])
     $localStorage.filters = filters;
   };
 
+  var getFilters = function () {
+    return $localStorage.filters;
+  };
+
   return {
     getCountry : getCountry,
     setCountry : setCountry,
@@ -108,7 +112,8 @@ angular.module('app.services', [])
     getVideoPath : getVideoPath,
     setVideoPath : setVideoPath,
     getDownloadFiles : getDownloadFiles,
-    setFilters : setFilters
+    setFilters: setFilters,
+    getFilters: getFilters
   };
 
 
@@ -192,11 +197,11 @@ angular.module('app.services', [])
 
   //Download the filters for a product
   var downloadProductFilters = function (success,error) {
-    var filters = {};
+    var filters = [];
 
     firebase.database().ref('/product_filters/').once('value').then(function (snapshot) {
         snapshot.forEach(function (filter) {
-          filters[filter.key] = filter.val();
+          filters.push(filter.val());
         });
         success(filters);
       }, function (error) {
@@ -282,6 +287,7 @@ angular.module('app.services', [])
     var current_title = '';
     var previous_title = '';
     var root_title = '';
+  var filter_ids = '';
 
     var getCurrentCategoryIds = function () {
       return current_category_child_ids;
@@ -331,6 +337,14 @@ angular.module('app.services', [])
       root_title = root;
     };
 
+  var setFilterIds = function (ids) {
+    filter_ids = ids;
+  };
+
+  var getFilterIds = function () {
+    return filter_ids;
+  };
+
     return {
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
@@ -343,7 +357,9 @@ angular.module('app.services', [])
       getPreviousTitle : getPreviousTitle,
       setPreviousTitle : setPreviousTitle,
       getRootTitle : getRootTitle,
-      setRootTitle : setRootTitle
+      setRootTitle: setRootTitle,
+      setFilterIds: setFilterIds,
+      getFilterIds: getFilterIds
     }
 
 

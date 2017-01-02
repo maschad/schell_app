@@ -1,9 +1,9 @@
 angular.module('app.controllers', [])
 
-  .controller('start_screenCtrl', ['$scope', '$state', 'DatabaseService', 'FirebaseService', '$ionicLoading', '$ionicPopup', '$ionicPopover', '$rootScope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('start_screenCtrl', ['$scope', '$state', 'DatabaseService', 'FirebaseService', 'localStorageService', '$ionicLoading', '$ionicPopup', '$ionicPopover', '$rootScope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $state, DatabaseService, FirebaseService, $ionicLoading, $ionicPopup, $ionicPopover, $rootScope, $ionicSideMenuDelegate) {
+    function ($scope, $state, DatabaseService, FirebaseService, localStorageService, $ionicLoading, $ionicPopup, $ionicPopover, $rootScope, $ionicSideMenuDelegate) {
  //Remove splash screen
   $scope.$on('$ionicView.afterEnter', function(){
     setTimeout(function(){
@@ -45,6 +45,9 @@ angular.module('app.controllers', [])
     });
     FirebaseService.downloadVideos(function (results) {
       DatabaseService.populateVideos(results);
+    });
+    FirebaseService.downloadProductFilters(function (results) {
+      localStorageService.setFilters(results);
       $scope.hideLoad();
     });
   }else{
@@ -136,7 +139,6 @@ angular.module('app.controllers', [])
 
     $scope.choice = function (product,title) {
       appDataService.setCurrentTitle(title);
-      console.log('product', product.toString());
       appDataService.setCurrentProduct(product);
       appDataService.appendEmailLink('details/artikel/' + title + '.html');
       $state.go('detailPage');
@@ -186,7 +188,7 @@ angular.module('app.controllers', [])
       appDataService.setCurrentTitle(title);
       appDataService.setCurrentCategoryIds(child_ids);
       appDataService.appendEmailLink(title + '/');
-      localStorageService.setFilters(filter_ids);
+      appDataService.setFilterIds(filter_ids);
       $state.go('product_lines');
     };
 
@@ -305,11 +307,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Set details
     $scope.details = appDataService.getCurrentProduct();
-    console.log('technical link', $scope.details.technical_drawing_link);
 
     //Function to load files
     function getFiles(download_ids) {
-      console.log('download ids', download_ids);
       DatabaseService.selectDownloads(download_ids, function (downloads) {
         for(var x = 0; x < downloads.rows.length; x++){
           $scope.files.push(downloads.rows.item(x));
@@ -319,7 +319,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     function getVideos(video_ids) {
       //#TODO: Check for internet, if no internet, get video paths from local storage
-      console.log('video_ids', video_ids);
       DatabaseService.selectVideos(video_ids, function(videos){
         for(var x = 0; x < videos.rows.length; x++){
           $scope.videos.push(videos.rows.item(x));
@@ -543,13 +542,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         appDataService.appendEmailLink(title + '/');
         $scope.title = title;
         $state.reload();
-        console.log('has child ids');
       };
 
       //Product Choice
       $scope.choice_product = function (product_ids, title) {
         // If user chooses something with product_ids
-        console.log('product_ids', product_ids);
         appDataService.setCurrentTitle(title);
         appDataService.setCurrentCategoryIds(product_ids);
         appDataService.setPreviousTitle(title);
@@ -798,14 +795,45 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
 
 }])
 
-.controller('MenuCtrl', ['$scope','FirebaseService','localStorageService',
-    function ($scope,FirebaseService,localStorageService) {
+  .controller('MenuCtrl', ['$scope', 'FirebaseService', 'localStorageService', 'appDataService',
+    function ($scope, FirebaseService, localStorageService, appDataService) {
 
-      var filter_headings = FirebaseService.downloadProductFilters();
+      function getFilterGroups(filter_headings, filter_ids) {
+        var groups = [];
+
+
+        filter_headings.forEach(function (filter_heading) {
+          if (filter_heading.filters != null) {
+            var keys = Object.keys(filter_heading.filters);
+            var current_keys = keys.filter(function (key) {
+              return filter_ids.indexOf(key) != -1;
+            });
+            var content = [];
+            for (var i = 0; i < current_keys.length; i++) {
+              content.push(filter_heading.filters[current_keys[i]]);
+            }
+            if (content.length != 0) {
+              groups.push(
+                {
+                  name: filter_heading.title_de,
+                  items: content,
+                  show: false
+                });
+            }
+          }
+        });
+
+        return groups;
+      }
+
+      // Update the groups
       $scope.$on('$stateChangeSuccess',function () {
           //#TODO: Get the filter groups
+        var filters = localStorageService.getFilters();
+        $scope.groups = getFilterGroups(filters, appDataService.getFilterIds().split(','));
         }
       );
+
 
       $scope.toggleGroup = function (group) {
         group.show = !group.show;
