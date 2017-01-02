@@ -288,6 +288,7 @@ angular.module('app.services', [])
     var previous_title = '';
     var root_title = '';
   var filter_ids = '';
+  var current_selected_filters = [];
 
     var getCurrentCategoryIds = function () {
       return current_category_child_ids;
@@ -345,6 +346,18 @@ angular.module('app.services', [])
     return filter_ids;
   };
 
+  var addCurrentSelectedFiltersIds = function (filter_uid) {
+    current_selected_filters.push(filter_uid);
+  };
+
+  var removeCurrentSelectedFilterId = function (filter_uid) {
+    current_selected_filters.splice(current_selected_filters.indexOf(filter_uid), 1);
+  };
+
+  var getCurrentSelectedFilterIds = function () {
+    return current_selected_filters;
+  };
+
     return {
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
@@ -359,7 +372,10 @@ angular.module('app.services', [])
       getRootTitle : getRootTitle,
       setRootTitle: setRootTitle,
       setFilterIds: setFilterIds,
-      getFilterIds: getFilterIds
+      getFilterIds: getFilterIds,
+      addCurrentSelectedFilterIds: addCurrentSelectedFiltersIds,
+      removeCurrentSelectFilterId: removeCurrentSelectedFilterId,
+      getCurrentSelectedFilterIds: getCurrentSelectedFilterIds
     }
 
 

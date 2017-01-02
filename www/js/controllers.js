@@ -472,9 +472,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 .controller('productLinesCtrl', ['$scope','$ionicLoading','$ionicFilterBar', '$state', 'localStorageService','DatabaseService','appDataService','$ionicPopover',
   function ($scope,$ionicLoading,$ionicFilterBar,$state,localStorageService,DatabaseService,appDataService,$ionicPopover) {
-    //Set the titles
+    //Set the titles and initialize empty array of filters
     $scope.title = appDataService.getCurrentTitle();
     $scope.root = appDataService.getRootTitle();
+    $scope.filter_ids = [];
 
     //Loading functions
     $scope.show = function() {
@@ -502,7 +503,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         console.log('ERROR',error);
       });
     }
-    //Initalize as empty
+
+    //Initialize as empty
     $scope.categories = [];
 
     //Get the correct childIds and then load them from database
@@ -558,6 +560,24 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.myEvent = function () {
         $state.go('start-screen');
       };
+
+
+    //When user selects new filter
+    $scope.$on('new-filter-uid', function () {
+      var all_product_ids = [];
+      $scope.filter_ids = appDataService.getCurrentSelectedFilterIds();
+      var at_bottom_level = false;
+
+      $scope.categories.forEach(function (category) {
+        at_bottom_level = category.hasOwnProperty('product_ids');
+        //iterate to bottom level, get products then filters,
+        // correspond those filters with the current selected filters, then subtract
+        // artikel length from the category based on that.
+
+
+      })
+
+    });
 
 }])
 
@@ -795,8 +815,8 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
 
 }])
 
-  .controller('MenuCtrl', ['$scope', 'FirebaseService', 'localStorageService', 'appDataService',
-    function ($scope, FirebaseService, localStorageService, appDataService) {
+  .controller('MenuCtrl', ['$scope', '$rootScope', 'FirebaseService', 'localStorageService', 'appDataService',
+    function ($scope, $rootScope, FirebaseService, localStorageService, appDataService) {
 
       function getFilterGroups(filter_headings, filter_ids) {
         var groups = [];
@@ -810,7 +830,11 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
             });
             var content = [];
             for (var i = 0; i < current_keys.length; i++) {
-              content.push(filter_heading.filters[current_keys[i]]);
+              content.push({
+                uid: current_keys[i],
+                filter_content: filter_heading.filters[current_keys[i]],
+                checked: false
+              });
             }
             if (content.length != 0) {
               groups.push(
@@ -828,12 +852,19 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
 
       // Update the groups
       $scope.$on('$stateChangeSuccess',function () {
-          //#TODO: Get the filter groups
         var filters = localStorageService.getFilters();
         $scope.groups = getFilterGroups(filters, appDataService.getFilterIds().split(','));
         }
       );
 
+      $scope.applyFilter = function (uid, checked) {
+        if (checked) {
+          appDataService.addCurrentSelectedFilterIds(uid);
+        } else {
+          appDataService.removeCurrentSelectFilterId(uid);
+        }
+        $rootScope.$broadcast('new-filter-uid');
+      };
 
       $scope.toggleGroup = function (group) {
         group.show = !group.show;
