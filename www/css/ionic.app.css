@@ -11379,3 +11379,7 @@ label.menu-item {
   padding: 6px 0 10px 60px;
   margin-left: -52px;
   color: #ffffff; }
+
+.platform-ios.platform-cordova:not(.fullscreen) .search-bar {
+  margin-top: 20px;
+}

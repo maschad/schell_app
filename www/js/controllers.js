@@ -1,15 +1,27 @@
 angular.module('app.controllers', [])
 
-.controller('start_screenCtrl', ['$scope','$state','DatabaseService','FirebaseService','$ionicPopup','$ionicPopover','$rootScope','$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('start_screenCtrl', ['$scope', '$state', 'DatabaseService', 'FirebaseService', '$ionicLoading', '$ionicPopup', '$ionicPopover', '$rootScope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopover,$rootScope,$ionicSideMenuDelegate) {
+    function ($scope, $state, DatabaseService, FirebaseService, $ionicLoading, $ionicPopup, $ionicPopover, $rootScope, $ionicSideMenuDelegate) {
  //Remove splash screen
   $scope.$on('$ionicView.afterEnter', function(){
     setTimeout(function(){
       document.getElementById("custom-overlay").style.display = "none";
     }, 3000);
   });
+
+      //Loading functions
+      $scope.showLoad = function () {
+        $ionicLoading.show({
+          template: '<p>Aktualisierung lokaler Daten...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
+      };
+      $scope.hideLoad = function () {
+        $ionicLoading.hide();
+      };
 
 
   //Side Menu
@@ -21,6 +33,7 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
 
   //If there is internet, populate the DB with latest data, else, work with what is in database
   if($rootScope.internet){
+    $scope.showLoad();
     FirebaseService.downloadAllProducts(function (results) {
       DatabaseService.populateProducts(results);
     });
@@ -32,6 +45,7 @@ function ($scope, $state,DatabaseService,FirebaseService,$ionicPopup, $ionicPopo
     });
     FirebaseService.downloadVideos(function (results) {
       DatabaseService.populateVideos(results);
+      $scope.hideLoad();
     });
   }else{
     //#TODO: Handle DB offline
@@ -212,10 +226,12 @@ function ($scope,$rootScope, $sce,$ionicSideMenuDelegate, FirebaseService,FileSe
 
   //Function to load the videos
   function loadVideos() {
+    $scope.show();
     DatabaseService.selectAllVideos(function (videos) {
       for (var x = 0; x < videos.rows.length; x++) {
         $scope.videos.push(videos.rows.item(x));
       }
+      $scope.hide();
     });
     if (!$rootScope.internet) {
       var vids = localStorageService.getAllVideoPaths();
@@ -232,9 +248,7 @@ function ($scope,$rootScope, $sce,$ionicSideMenuDelegate, FirebaseService,FileSe
   }
 
   //Load Videos
-  $scope.show();
   loadVideos();
-  $scope.hide();
 
 
   //return trusted external links
@@ -674,6 +688,7 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
         for(var x = 0; x < categories.rows.length; x++){
           items.push(categories.rows.item(x));
         }
+        $scope.hide();
         //Compare against local storage and most recent update of storage to remember what user checked
         if ($scope.preferences[2].downloaded_categories.length < items.length) {
           for (var i = 0; i < items.length; i++) {
@@ -687,7 +702,6 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
 
       //Update to show selected categories
       localStorageService.updatePreferences($scope.preferences);
-      $scope.hide();
     }
 
     //Call the function on startup

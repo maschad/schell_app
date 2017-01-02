@@ -35,6 +35,7 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
+      StatusBar.overlaysWebView(false);
     }
 
     //Check for internet
