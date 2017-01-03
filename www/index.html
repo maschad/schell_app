@@ -10,9 +10,6 @@
 
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="js/ng-cordova.min.js"></script>
-    <script src="cordova.js"></script>
 
     <!-- Include fonts css -->
     <link rel="stylesheet" href="css/MyFontsWebfontsKit.css">
@@ -42,8 +39,6 @@
     <!-- Local storage -->
     <script src="lib/ngstorage/ngStorage.min.js"></script>
 
-    <!-- Angular breadcrumb -->
-    <script src="lib/angular-breadcrumb/dist/angular-breadcrumb.min.js"></script>
 
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
@@ -59,7 +54,9 @@
       firebase.initializeApp(config);
     </script>
 
-
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="js/ng-cordova.min.js"></script>
+    <script src="cordova.js"></script>
 
     <style type="text/css">
       .platform-ios .manual-ios-statusbar-padding{
@@ -144,7 +141,9 @@
               </ion-item>
               <ion-item class="item-accordion" ng-show="isGroupShown(group)">
                 <div ng-repeat="item in group.items">
-                  <ion-checkbox class="menu-item checkbox-filter" ng-model="item.checked">{{item.title_de}}</ion-checkbox>
+                  <ion-checkbox class="menu-item checkbox-filter" ng-model="item.checked"
+                                ng-change="applyFilter(item.uid,item.checked)">{{item.filter_content.title_de}}
+                  </ion-checkbox>
                 </div>
               </ion-item>
             </div>
