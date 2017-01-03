@@ -9,7 +9,7 @@ angular.module('app.services', [])
     country: '',
     bookmarked_products: [],
     product_files: [],
-    video_files: [],
+    video_files: {},
     download_files: [],
     offlinePreferences:[
       {

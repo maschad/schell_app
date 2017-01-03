@@ -41,17 +41,13 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
     //Check for internet
     if(window.Connection) {
       if (navigator.connection.type == Connection.NONE) {
+        //Set internet Variable to false
+        $rootScope.internet = false;
         $ionicPopup.confirm({
           title: "Internet Disconnected",
           content: "The internet is disconnected on your device. Settings will be disabled"
-        })
-          .then(function (result) {
-            if (!result) {
-              //Set internet Vairable to false
-              $rootScope.internet = false;
-              //#TODO: Handle DB loading.
-            }
-          });
+        });
+        //#TODO: Handle DB loading.
       }else{
         //Update all of DB
         db = $cordovaSQLite.openDB({"name" : "schell.db", "location" : "default"});

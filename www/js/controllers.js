@@ -217,7 +217,7 @@ function ($scope,$rootScope, $sce,$ionicSideMenuDelegate, FirebaseService,FileSe
   //Loading functions
   $scope.show = function() {
     $ionicLoading.show({
-      template: '<p>Downloading Videos...</p><ion-spinner></ion-spinner>',
+      template: '<p>Loading Videos...</p><ion-spinner></ion-spinner>',
       animation:'fade-in',
       showBackdrop:true
     });
@@ -233,20 +233,23 @@ function ($scope,$rootScope, $sce,$ionicSideMenuDelegate, FirebaseService,FileSe
       for (var x = 0; x < videos.rows.length; x++) {
         $scope.videos.push(videos.rows.item(x));
       }
-      $scope.hide();
-    });
-    if (!$rootScope.internet) {
-      var vids = localStorageService.getAllVideoPaths();
-      if (vids == null) {
-        $ionicPopup.alert({
-          title: 'Keine Videos heruntergeladen'
-        });
-      } else {
-        for (var x = 0; x < $scope.videos.length; x++) {
-          $scope.videos[x].videofile_de = vids[x];
+      if ($rootScope.internet == false) {
+        console.log('no internet available');
+        var vids = localStorageService.getAllVideoPaths();
+        if (vids == null) {
+          $ionicPopup.alert({
+            title: 'Keine Videos heruntergeladen'
+          });
+        } else {
+          for (var x = 0; x < $scope.videos.length; x++) {
+            console.log('video path in local storage', vids['1']);
+            $scope.videos[x].videofile_de = vids[x];
+          }
         }
       }
-    }
+      $scope.hide();
+    });
+
   }
 
   //Load Videos
