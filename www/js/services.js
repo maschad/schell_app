@@ -593,8 +593,6 @@ angular.module('app.services', [])
     };
 
     var selectProducts = function(product_ids, success, error) {
-      console.log('Selecting Products');
-      //db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
       db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
         success(rs);
       }, function(error) {
