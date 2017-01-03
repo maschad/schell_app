@@ -444,7 +444,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
   $scope.sendEmail = function () {
     var link = appDataService.getEmailLink();
-    console.log('website link', link);
     var bodyText = 'Product nummer ' .concat($scope.details.nummer)
                     + ' ' + 'Referenzartikel ' + ' ' .concat($scope.details.referenzartikel)
                     + ' ' .concat($scope.details.differenzierung)
@@ -631,7 +630,6 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
     };
 
     $scope.deleteBookmark = function (bookmark) {
-      console.log('calling delete');
       localStorageService.removeBookmarkedProduct(bookmark);
       $ionicPopup.alert({
         title: 'Artikel Entfernt'
@@ -736,7 +734,6 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
           }
         }
       });
-      console.log('product ids', product_ids);
       return product_ids;
     }
 
@@ -771,7 +768,6 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
         // The product Ids to download
         var product_ids = [];
         product_ids = getProductIds(category.item.child_ids, product_ids);
-        console.log('child_ids  of category', category.item.child_ids);
         localStorageService.updatePreferences($scope.preferences);
 
       } else {

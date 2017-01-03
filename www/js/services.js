@@ -311,8 +311,7 @@ angular.module('app.services', [])
     };
 
     var appendEmailLink = function (data) {
-      email_link.concat(data);
-      console.log('appending data', email_link);
+      email_link = email_link.concat(data);
     };
 
     var getCurrentTitle = function () {
