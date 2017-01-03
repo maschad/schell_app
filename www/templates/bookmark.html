@@ -9,12 +9,12 @@
                 <div class="ion-close-round" ng-click="deleteBookmark(bookmark)"></div>
               </div>
             </div>
-            <div class="row">
+            <div class="row" ng-click="showDetails(bookmark)">
               <div class="col col-75">
                 <p class="item-number">{{bookmark.nummer}}</p>
-                <p class="item-title">{{bookmark.produktbezeichnung}}</p>
-                <p class="item-name" ng-bind-html="bookmark.werkstoff"></p>
-                <p>{{bookmark.zusatz2}}</p>
+                <p class="item-title">{{bookmark.produktbezeichnung_de}}</p>
+                <p class="item-name" ng-bind-html="bookmark.werkstoff_de"></p>
+                <p>{{bookmark.zusatz2_de}}</p>
               </div>
               <div class="col">
                 <img src="{{bookmark.image_portrait}}">

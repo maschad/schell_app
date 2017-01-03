@@ -6,14 +6,14 @@
     <!-- Breadcrumb ionic -->
     <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
-  <ion-content padding="true" class="has-header">
+  <ion-content padding="false" class="has-header">
     <!-- For refreshing items -->
     <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="refreshItems()">
     </ion-refresher>
 
     <div class="row">
       <div class="col text-left">
-        <h3 id="products-heading6" style="color:#FFFFFF;">Das SCHELL Produktsortiment</h3>
+        <h3 id="categories-heading6" style="color:#FFFFFF;">Das SCHELL Produktsortiment</h3>
         <p style="color:#FFFFFF;">Das Produktsortiment von SCHELL Armaturen auf
           einen Blick. Bitte wählen Sie eine Kategorie</p>
       </div>
@@ -58,24 +58,6 @@
             </div>
           </div>
         </div>
-        <!-- <div class="col col-33" ng-if="categories[$index + 2] != undefined" ng-click="choice(categories[$index + 2].child_ids,categories[$index + 2].title_de,categories[$index + 2].filter_ids)">
-          <div class="product-tile">
-            <div class="col">
-              <div class="product-counter">
-                <p ng-if="categories[$index + 2].child_ids"><strong>{{categories[$index + 2].child_ids.length}} Artikel</strong></p>
-                <p ng-if="categories[$index + 2].product_ids"><strong>{{categories[$index + 2].product_ids.length}} Artikel</strong></p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col col-25">
-                <img src="{{categories[$index + 2].bild}}" class="center" style="width: auto;">
-              </div>
-              <div class="col">
-                <h3 class="product-type" style="text-align: right;">{{categories[$index + 2].title_de}}</h3>
-              </div>
-            </div>
-          </div>
-        </div> -->
     </div>
 
 
