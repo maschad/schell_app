@@ -480,6 +480,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     $scope.root = appDataService.getRootTitle();
     $scope.filter_ids = [];
 
+    //Array storing artikel counts for each category
+    $scope.counts = [];
+
+    //Initialize as empty
+    $scope.categories = [];
+
     //Loading functions
     $scope.show = function() {
       $ionicLoading.show({
@@ -501,19 +507,62 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         for(var x = 0; x < categories.rows.length; x++){
           $scope.categories.push(categories.rows.item(x));
         }
+        //Add up the artikels
+        countArtikels();
       }, function (error) {
         //Handle error
         console.log('ERROR',error);
       });
     }
 
-    //Initialize as empty
-    $scope.categories = [];
+    //Function to count the total number of artikels in category below
+    function countArtikels() {
+
+      $scope.categories.forEach(function (category) {
+        console.log('current category', category.title_de);
+        var atBottomLevel = category.product_ids != '';
+        console.log('bottom level value', atBottomLevel);
+        // 2. If we are at the bottom level category
+        // Get the products and sum the #
+        if (atBottomLevel) {
+          $scope.counts.push(category.product_ids.split(',').length);
+        } else {
+          var currentCategories = [category];
+          // 3. If we aren't at the bottom level,
+          // query all the child_ids until we get to the bottom level.
+          while (!atBottomLevel) {
+            console.log('not at bottom level loop');
+            // We copy over the current categories so we can reuse currentCategories
+            var tempCurrentCategories = currentCategories.slice();
+            currentCategories = [];
+            tempCurrentCategories.forEach(function (subCategory) {
+              console.log('looping through sub categories to query for subs', subCategory.title_de);
+              DatabaseService.selectChildCategories(subCategory.child_ids, function (results) {
+                for (var x = 0; x < results.rows.length; x++) {
+                  currentCategories.push(results.rows.item(x));
+                }
+              });
+            });
+            atBottomLevel = currentCategories[0].product_ids != '';
+          }
+          // 4. Now that we have all the bottom level categories, we can sum their product_ids
+          var count = 0;
+          currentCategories.forEach(function (categoriesToSum) {
+            count += categoriesToSum.product_ids.split(',').length;
+
+          });
+          //Update the count
+          $scope.counts.push(count);
+
+        }
+      });
+    }
+
 
     //Get the correct childIds and then load them from database
     var child_ids = appDataService.getCurrentCategoryIds();
+    //Load the sub categories to display
     loadSubCategories(child_ids);
-
 
     //Popover function
     $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
@@ -567,18 +616,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //When user selects new filter
     $scope.$on('new-filter-uid', function () {
-      var all_product_ids = [];
+      //Get the filter ids for current category
       $scope.filter_ids = appDataService.getCurrentSelectedFilterIds();
-      var at_bottom_level = false;
 
-      $scope.categories.forEach(function (category) {
-        at_bottom_level = category.hasOwnProperty('product_ids');
-        //iterate to bottom level, get products then filters,
-        // correspond those filters with the current selected filters, then subtract
-        // artikel length from the category based on that.
-
-
-      })
 
     });
 
