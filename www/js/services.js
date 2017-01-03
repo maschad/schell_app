@@ -283,7 +283,7 @@ angular.module('app.services', [])
 .factory('appDataService' , function () {
     var current_category_child_ids = '';
     var current_product = {};
-    var email_link = 'http://www.schell.eu/deutschland-de/produkte/';
+  var email_link = "http://www.schell.eu/deutschland-de/produkte/";
     var current_title = '';
     var previous_title = '';
     var root_title = '';
@@ -312,6 +312,7 @@ angular.module('app.services', [])
 
     var appendEmailLink = function (data) {
       email_link.concat(data);
+      console.log('appending data', email_link);
     };
 
     var getCurrentTitle = function () {

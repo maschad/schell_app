@@ -140,7 +140,7 @@ angular.module('app.controllers', [])
     $scope.choice = function (product,title) {
       appDataService.setCurrentTitle(title);
       appDataService.setCurrentProduct(product);
-      appDataService.appendEmailLink('details/artikel/' + title + '.html');
+      appDataService.appendEmailLink('details/artikel/'.concat(title + '.html'));
       $state.go('detailPage');
     };
 
@@ -444,6 +444,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
   $scope.sendEmail = function () {
     var link = appDataService.getEmailLink();
+    console.log('website link', link);
     var bodyText = 'Product nummer ' .concat($scope.details.nummer)
                     + ' ' + 'Referenzartikel ' + ' ' .concat($scope.details.referenzartikel)
                     + ' ' .concat($scope.details.differenzierung)
@@ -541,7 +542,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $scope.categories = [];
         loadSubCategories(child_ids);
         appDataService.setCurrentTitle(title);
-        appDataService.appendEmailLink(title + '/');
+        appDataService.appendEmailLink(title.concat('/'));
         $scope.title = title;
         $state.reload();
       };
@@ -552,7 +553,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         appDataService.setCurrentTitle(title);
         appDataService.setCurrentCategoryIds(product_ids);
         appDataService.setPreviousTitle(title);
-        appDataService.appendEmailLink(title + '/');
+        appDataService.appendEmailLink(title.concat('/'));
         $state.go('product_overview');
       };
 
