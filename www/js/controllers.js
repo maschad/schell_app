@@ -115,17 +115,6 @@ angular.module('app.controllers', [])
     getProducts(appDataService.getCurrentCategoryIds());
 
 
-    //Search bar
-    $scope.showFilterBar = function () {
-      var filterBarInstance = $ionicFilterBar.show({
-        items: $scope.products,
-        cancelText: 'Abrechen',
-        update: function (filteredItems, filterText) {
-          $scope.products = filteredItems;
-        }
-      });
-    };
-
     //Popover function
     $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
       scope: $scope
@@ -146,24 +135,42 @@ angular.module('app.controllers', [])
 
   }])
 
-.controller('product_areasCtrl', ['$scope', '$state','$ionicFilterBar','FirebaseService','appDataService','DatabaseService','localStorageService','$ionicPopover','$ionicSideMenuDelegate',
-  function ($scope, $state,$ionicFilterBar,FirebaseService,appDataService,DatabaseService,localStorageService,$ionicPopover,$ionicSideMenuDelegate) {
+  .controller('product_areasCtrl', ['$scope', '$state', '$ionicFilterBar', 'FirebaseService', 'appDataService', 'DatabaseService', 'localStorageService', '$ionicPopover', '$ionicLoading', '$ionicSideMenuDelegate',
+    function ($scope, $state, $ionicFilterBar, FirebaseService, appDataService, DatabaseService, localStorageService, $ionicPopover, $ionicLoading, $ionicSideMenuDelegate) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
+      //Filter bar is not clicked
+      $scope.filterOn = false;
+
     //Initialize as null
     $scope.categories = [];
+
+      //Loading functions
+      $scope.showLoad = function () {
+        $ionicLoading.show({
+          template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
+      };
+      $scope.hideLoad = function () {
+        $ionicLoading.hide();
+      };
 
     //Call the function to populate categories
     loadCategories();
 
+
     //Load Categories from Database.
     function loadCategories() {
+      $scope.showLoad();
       DatabaseService.selectTopCategories(function (categories) {
         for(var x = 0; x < categories.rows.length; x++){
           $scope.categories.push(categories.rows.item(x));
         }
+        $scope.hideLoad();
       }, function (error) {
         //Handle error
         console.log('ERROR',error);
@@ -180,7 +187,18 @@ angular.module('app.controllers', [])
       document.body.classList.add('platform-android');
     });
 
+      //Refresh the items
+      $scope.refreshItems = function () {
+        loadCategories();
+      };
 
+      //When user chooses a product
+      $scope.choiceProduct = function (product, nummer) {
+        appDataService.setCurrentTitle(nummer);
+        appDataService.setCurrentProduct(product);
+        appDataService.appendEmailLink('details/artikel/'.concat(nummer + '.html'));
+        $state.go('detailPage');
+      };
 
     //The category chosen by the user
     $scope.choice = function (child_ids, title,filter_ids) {
@@ -194,12 +212,27 @@ angular.module('app.controllers', [])
 
     //The filter/search bar using ionic filter bar plugin
     $scope.showFilterBar = function () {
-      var filterBarInstance = $ionicFilterBar.show({
-        items: $scope.categories,
-        cancelText: 'Abrechen',
-        update: function (filteredItems, filterText) {
-          $scope.categories = filteredItems;
+      var products = [];
+      $scope.filterOn = true;
+      DatabaseService.selectAllProducts(function (results) {
+        for (var x = 0; x < results.rows.length; x++) {
+          products.push(results.rows.item(x));
         }
+        var filterBarInstance = $ionicFilterBar.show({
+          items: products,
+          cancelText: 'Abrechen',
+          cancel: function () {
+            $scope.filterOn = false;
+            loadCategories();
+            $state.reload();
+          },
+          expression: function (filterText, value, index, array) {
+            return value.nummer.includes(filterText) || value.produktbezeichnung_de.includes(filterText) || value.beschreibung_de.includes(filterText);
+          },
+          update: function (filteredItems, filterText) {
+            $scope.products = filteredItems;
+          }
+        });
       });
     };
 
@@ -655,18 +688,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       document.body.classList.remove('platform-ios');
       document.body.classList.add('platform-android');
     });
-
-    //Search
-    $scope.showFilterBar = function () {
-      var filterBarInstance = $ionicFilterBar.show({
-        items: $scope.products,
-        cancelText: 'Abrechen',
-        update: function (filteredItems, filterText) {
-          $scope.products = filteredItems;
-        }
-      });
-    };
-
 
 
       //Child choice
