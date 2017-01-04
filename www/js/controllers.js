@@ -486,6 +486,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Initialize as empty
     $scope.categories = [];
 
+    //Whether to show the filter or not
+    $scope.showFilter = false;
+
+
     //Loading functions
     $scope.show = function() {
       $ionicLoading.show({
@@ -556,6 +560,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Function to apply the filter
     function applyFilter(applied_filters) {
+      //Initialize totals to empty
+      $scope.total_filter = 0;
+      $scope.total_products = 0;
       //Re-set array
       $scope.counts = [];
 
@@ -585,6 +592,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
               //Push in the lengths
               $scope.counts.push(filteredProducts.length);
+
+              //Add them up
+              $scope.total_filter += filteredProducts.length;
+              $scope.total_products += products.length;
             });
           } else {
             var currentCategories = [category];
@@ -617,6 +628,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                 });
                 //Push in the lengths
                 $scope.counts.push(filteredProducts.length);
+                //Add them up
+                $scope.total_filter += filteredProducts.length;
+                $scope.total_products += products.length;
               });
             });
           }
@@ -684,9 +698,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //When user selects new filter
     $scope.$on('new-filter-uid', function () {
+      $scope.showFilter = true;
       //Get the filter ids for current category
       var filter_ids = appDataService.getCurrentSelectedFilterIds();
-      console.log('filter ids being passed', filter_ids.join(','));
       //Apply the filter
       applyFilter(filter_ids);
     });
