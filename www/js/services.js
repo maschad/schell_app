@@ -592,6 +592,14 @@ angular.module('app.services', [])
       });
     };
 
+  var selectAllCategories = function (success, error) {
+    db.executeSql('SELECT * from product_categories;', [], function (rs) {
+      success(rs);
+    }, function (error) {
+      error(error);
+    })
+  };
+
     var selectProducts = function(product_ids, success, error) {
       db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
         success(rs);
@@ -648,6 +656,7 @@ angular.module('app.services', [])
       populateAwards: populateAwards,
       populateVideos: populateVideos,
       selectTopCategories: selectTopCategories,
+      selectAllCategories: selectAllCategories,
       selectChildCategories: selectChildCategories,
       selectProducts: selectProducts,
       selectAllProducts: selectAllProducts,
