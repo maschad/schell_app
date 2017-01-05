@@ -874,7 +874,7 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
       //Product ids to download
       var product_ids_toDownload = [];
       //Actual products to download
-      var products = {};
+      var products = [];
       //All categories
       var allCategories = [];
       //First current category
@@ -893,10 +893,6 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
           tempCurrentCategories.forEach(function (temp) {
             allCategories.forEach(function (cat) {
               if (cat.elternelement == temp.uid) {
-                console.log('category', cat.title_de);
-                console.log('elternelement', cat.elternelement);
-                console.log('temp uid', temp.uid);
-                console.log('temp category', temp.title_de);
                 currentCategories.push(cat);
               }
             });
@@ -908,23 +904,24 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
         currentCategories.forEach(function (categoryWithProductIds) {
           product_ids_toDownload = product_ids_toDownload.concat(categoryWithProductIds.product_ids.split(','));
         });
-        console.log('product ids', product_ids_toDownload);
         console.log('amount of products', product_ids_toDownload.length);
-        /**
          DatabaseService.selectProducts(product_ids_toDownload, function (results) {
-          for (var x = 0; x < results.rows.length; x++) {
-            products[results.rows.item(x).uid] = results.rows.item(x);
+           for (var x = 0; x < results.rows.length; x++) {
+             products.push(results.rows.item(x));
           }
-          for(var product in products){
+           console.log('length of products', products.length);
+           products.forEach(function (product) {
+             console.log('downloading products');
+             console.log('product landscape', product.image_landscape);
+             console.log('file name', product.nummer.concat('_landscape'));
+             $scope.downloadShow();
             FileService.download(product.image_landscape,product.nummer.concat('_landscape'),'images', function (path) {
               console.log('landscape filepath',path);
-              product.image_landscape = path;
+              $scope.downloadHide();
             });
-          }
-        });**/
-        $scope.downloadHide();
+           });
+         });
       });
-
 
     }
 
