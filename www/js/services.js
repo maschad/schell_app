@@ -74,6 +74,10 @@ angular.module('app.services', [])
     $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'image_landscape': product_info});
   };
 
+  var getTechnicalPath = function () {
+
+  };
+
   var getAllVideoPaths = function () {
     return $localStorage.video_files;
   };
