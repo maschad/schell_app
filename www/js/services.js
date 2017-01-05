@@ -66,12 +66,12 @@ angular.module('app.services', [])
     $localStorage.offlinePreferences = data;
   };
 
-  var getProductFile = function (product_id) {
-    return $localStorage.product_files[product_id];
+  var getLandscapePath = function (product_id) {
+    return $localStorage.product_files[product_id].image_landscape;
   };
 
-  var setProductFile = function (product_id,product_info) {
-    $localStorage.product_files[product_id] = product_info;
+  var setLandscapePath = function (product_id, product_info) {
+    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'image_landscape': product_info});
   };
 
   var getAllVideoPaths = function () {
@@ -106,8 +106,8 @@ angular.module('app.services', [])
     removeBookmarkedProduct : removeBookmarkedProduct,
     getOfflinePreferences : getOfflinePreferences,
     updatePreferences : updatePreferences,
-    getProductFile : getProductFile,
-    setProductFile : setProductFile,
+    getLandscapePath: getLandscapePath,
+    setLandscapePath: setLandscapePath,
     getAllVideoPaths : getAllVideoPaths,
     getVideoPath : getVideoPath,
     setVideoPath : setVideoPath,
@@ -230,6 +230,25 @@ angular.module('app.services', [])
 
     //Save a file to system path
   var download = function (url, filename, dirName, success) {
+    var filePath = cordova.file.dataDirectory + "files/img/" + filename;
+
+    var fileTransfer = new FileTransfer();
+    var uri = encodeURI(url);
+
+    fileTransfer.download(
+      uri,
+      filePath,
+      function (entry) {
+        console.log(entry);
+        success(entry.toURL());
+      },
+      function (error) {
+        console.log("error");
+      },
+      false,
+      null
+    );
+    /**
       window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
           fs.root.getDirectory(
             dirName,
@@ -269,7 +288,7 @@ angular.module('app.services', [])
         },
         function() {
           console.log("Request for filesystem failed");
-        });
+        });**/
     };
 
 

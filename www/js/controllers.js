@@ -344,6 +344,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Set details
     $scope.details = appDataService.getCurrentProduct();
 
+      //If no internet, load offline files
+      if (!$rootScope.internet) {
+        path = localStorageService.getLandscapePath($scope.details.uid);
+        console.log('filepath', path);
+        $scope.details.image_landscape = path;
+      }
+
     //Function to load files
     function getFiles(download_ids) {
       DatabaseService.selectDownloads(download_ids, function (downloads) {
@@ -915,8 +922,9 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
              console.log('product landscape', product.image_landscape);
              console.log('file name', product.nummer.concat('_landscape'));
              $scope.downloadShow();
-            FileService.download(product.image_landscape,product.nummer.concat('_landscape'),'images', function (path) {
+             FileService.download(product.image_landscape, product.nummer.concat('_landscape.png'), 'images', function (path) {
               console.log('landscape filepath',path);
+               localStorageService.setLandscapePath(product.uid, path);
               $scope.downloadHide();
             });
            });
