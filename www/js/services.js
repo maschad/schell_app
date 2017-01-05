@@ -8,7 +8,7 @@ angular.module('app.services', [])
   $localStorage = $localStorage.$default({
     country: '',
     bookmarked_products: [],
-    product_files: [],
+    product_files: {},
     video_files: {},
     download_files: [],
     offlinePreferences:[

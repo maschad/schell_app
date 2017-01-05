@@ -867,22 +867,49 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
       localStorageService.updatePreferences($scope.preferences);
     }
 
+    //Load the ProductIDs based on category selected
+    function getProductIds(category) {
+      var product_ids_toDownload = [];
+
+      var atBottomLevel = category.product_ids != '';
+      // 2. If we are at the bottom level category
+      // Get the products and sum the #
+      if (atBottomLevel) {
+        product_ids_toDownload.push(category.product_ids);
+      } else {
+        var currentCategories = [category];
+        // 3. If we aren't at the bottom level,
+        // query all the child_ids until we get to the bottom level.
+        while (!atBottomLevel) {
+          // We copy over the current categories so we can reuse currentCategories
+          var tempCurrentCategories = currentCategories.slice();
+          currentCategories = [];
+          tempCurrentCategories.forEach(function (subCategory) {
+            DatabaseService.selectChildCategories(subCategory.child_ids, function (results) {
+              for (var x = 0; x < results.rows.length; x++) {
+                currentCategories.push(results.rows.item(x));
+                console.log('category', results.rows.item(x).title_de);
+                console.log('product ids', results.rows.item(x).product_ids);
+              }
+            });
+          }).then(function () {
+            //#TODO: Figure out error
+            console.log('currentCategories length', currentCategories.length);
+            atBottomLevel = currentCategories[0].product_ids != '';
+          });
+
+        }
+        // 4. Now that we have all the bottom level categories, we can push in their product_ids
+        currentCategories.forEach(function (categoriesToAdd) {
+          product_ids_toDownload.push(categoriesToAdd.product_ids);
+        });
+
+      }
+      return product_ids_toDownload;
+    }
+
     //Call the function on startup
     loadData();
-
-    function getProductIds(child_ids, product_ids) {
-
-      DatabaseService.selectChildCategories(child_ids, function (children) {
-        for (var x = 0; x < children.rows.length; x++) {
-          if (children.rows.item(x).hasOwnProperty('product_ids')) {
-            product_ids.push(children.rows.item(x).product_ids);
-          } else {
-            return getProducts(children.rows.item(x).child_ids, product_ids);
-          }
-        }
-      });
-      return product_ids;
-    }
 
     //Function to download videos
     $scope.downloadVideos = function () {
@@ -907,17 +934,37 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
 
     //Check to download selected category
     $scope.downloadCategory = function (category, check) {
-
       //Download details based on check
-      if (check) {
+      if (check == true) {
         //#TODO: Download files for that category
+        //Product Ids to download, the actual products, and downloads
+        var products = {};
+        var downloads = {};
+        //Update preferences
+        $scope.preferences[2].downloaded_categories.push(category);
+        console.log('getting product ids');
+        //The product ids to download
+        var product_ids = getProductIds(category);
+        console.log('product ids', product_ids);
+        $scope.downloadShow();
+        DatabaseService.selectProducts(product_ids, function (results) {
+          for (var x = 0; x < results.rows.length; x++) {
+            products[results.rows.item(x).uid] = results.rows.item(x);
+          }
+          /**
+           for(var product in products){
+            FileService.download(product.image_landscape,product.nummer.concat('_landscape'),'images', function (path) {
+              console.log('landscape filepath',path);
+              product.image_landscape = path;
+            });
+          }**/
+          $scope.downloadHide();
+        });
 
-        // The product Ids to download
-        var product_ids = [];
-        product_ids = getProductIds(category.item.child_ids, product_ids);
         localStorageService.updatePreferences($scope.preferences);
 
       } else {
+        $scope.preferences[2].downloaded_categories.splice($scope.preferences[2].downloaded_categories.indexOf(category, 1));
         localStorageService.updatePreferences($scope.preferences);
       }
     };

@@ -21,7 +21,7 @@
         <hr class="settings-hr">
         <ion-checkbox class="checkbox-settings item-checkbox-right"
                       ng-repeat="category in preferences[2].downloaded_categories"
-                      ng-change="downloadCategory(category,category.checked)" ng-model="category.checked">
+                      ng-change="downloadCategory(category.item,category.checked)" ng-model="category.checked">
           <strong>{{category.item.title_de}}</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
