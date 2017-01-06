@@ -636,7 +636,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.total_filter = 0;
       $scope.total_products = 0;
       //Re-set array
-      $scope.counts = [];
+      $scope.counts = {};
 
       //Product ids to download for check
       var product_ids_to_download = [];
@@ -645,85 +645,97 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       if (applied_filters.length == 0) {
         countArtikels();
       } else {
-        $scope.categories.forEach(function (category) {
-          //Store the products and then crosscheck with filters
-          var products = [];
+        //all Categories
+        var allCategories = [];
 
-          var atBottomLevel = category.product_ids != '';
-          // 2. If we are at the bottom level category
-          // Get the products and sum the #
-          if (atBottomLevel) {
-            DatabaseService.selectProducts(category.product_ids, function (results) {
-              for (var x = 0; x < results.rows.length; x++) {
-                products.push(results.rows.item(x));
-              }
-              //Filter the products
-              var filteredProducts = products.filter(function (product) {
-                var intersectionOfFilters = product.filter_ids.split(',').filter(function (filter_id) {
-                  return applied_filters.indexOf(filter_id) != -1;
-                });
-                return intersectionOfFilters.length > 0;
-              });
+        //Get all categories
+        DatabaseService.selectAllCategories(function (results) {
+          for (var x = 0; x < results.rows.length; x++) {
+            allCategories.push(results.rows.item(x));
+          }
+          $scope.categories.forEach(function (category) {
+            //Store the products and then crosscheck with filters
+            var products = [];
 
-              //Push in the lengths
-              $scope.counts.push(filteredProducts.length);
-
-              //Add them up
-              $scope.total_filter += filteredProducts.length;
-              $scope.total_products += products.length;
-            });
-          } else {
-            var currentCategories = [category];
-            // 3. If we aren't at the bottom level,
-            // query all the child_ids until we get to the bottom level.
-            while (!atBottomLevel) {
-              // We copy over the current categories so we can reuse currentCategories
-              var tempCurrentCategories = currentCategories.slice();
-              currentCategories = [];
-              tempCurrentCategories.forEach(function (subCategory) {
-                DatabaseService.selectChildCategories(subCategory.child_ids, function (results) {
-                  for (var x = 0; x < results.rows.length; x++) {
-                    currentCategories.push(results.rows.item(x));
-                  }
-                });
-              });
-              atBottomLevel = true;
-              // 3. if the first subcategory has product_ids
-              currentCategories.forEach(function (currentCat) {
-                //Some categories may have two levels of sub categories
-                // and so we also have to traverse that branch
-                if (currentCat.product_ids != '') {
-                  product_ids_to_download = product_ids_to_download.concat(currentCat.product_ids.split(','));
+            var atBottomLevel = category.product_ids != '';
+            // 2. If we are at the bottom level category
+            // Get the products and sum the #
+            if (atBottomLevel) {
+              DatabaseService.selectProducts(category.product_ids, function (results) {
+                for (var x = 0; x < results.rows.length; x++) {
+                  products.push(results.rows.item(x));
                 }
-                atBottomLevel = atBottomLevel && currentCat.product_ids != '';
+                //Filtered products
+                var filteredProducts = products.slice();
+                //Loop over filters
+                applied_filters.forEach(function (filter) {
+                  //Filter the products
+                  filteredProducts = filteredProducts.filter(function (product) {
+                    return product.filter_ids.split(',').indexOf(filter) != -1;
+                  });
+                });
+                //Push in the lengths
+                $scope.counts[category.uid] = filteredProducts.length;
+
+                //Add them up
+                $scope.total_filter += filteredProducts.length;
+                $scope.total_products += products.length;
               });
-              //Filter out sub categories with product ids
-              // and traverse next branch
-              currentCategories.filter(function (currentCat) {
-                return currentCat.product_ids != '';
+            } else {
+              var currentCategories = [category];
+              // 3. If we aren't at the bottom level,
+              // query all the child_ids until we get to the bottom level.
+              while (!atBottomLevel) {
+                // We copy over the current categories so we can reuse currentCategories
+                var tempCurrentCategories = currentCategories.slice();
+                currentCategories = [];
+                tempCurrentCategories.forEach(function (temp) {
+                  allCategories.forEach(function (cat) {
+                    if (cat.elternelement == temp.uid) {
+                      currentCategories.push(cat);
+                    }
+                  });
+                });
+                atBottomLevel = true;
+                // 3. if the first subcategory has product_ids
+                currentCategories.forEach(function (currentCat) {
+                  //Some categories may have two levels of sub categories
+                  // and so we also have to traverse that branch
+                  if (currentCat.product_ids != '') {
+                    product_ids_to_download = product_ids_to_download.concat(currentCat.product_ids.split(','));
+                  }
+                  atBottomLevel = atBottomLevel && currentCat.product_ids != '';
+                });
+                //Filter out sub categories with product ids
+                // and traverse next branch
+                currentCategories.filter(function (currentCat) {
+                  return currentCat.product_ids != '';
+                });
+              }
+              currentCategories.forEach(function (category) {
+                product_ids_to_download = product_ids_to_download.concat(category.product_ids);
+              });
+              DatabaseService.selectProducts(product_ids_to_download, function (results) {
+                for (var x = 0; x < results.rows.length; x++) {
+                  products.push(results.rows.item(x));
+                }
+                //Filtered products
+                var filteredProducts = products.slice();
+                //Loop over filters
+                applied_filters.forEach(function (filter) {
+                  //Filter the products
+                  filteredProducts = filteredProducts.filter(function (product) {
+                    return product.filter_ids.split(',').indexOf(filter) != -1;
+                  });
+                });
+                //Push in the lengths
+                $scope.counts[category.uid] = filteredProducts.length;
+                //Add them up
+                $scope.total_filter += filteredProducts.length;
+                $scope.total_products += products.length;
               });
             }
-            currentCategories.forEach(function (category) {
-              product_ids_to_download = product_ids_to_download.concat(category.product_ids);
-            });
-            DatabaseService.selectProducts(product_ids_to_download, function (results) {
-              for (var x = 0; x < results.rows.length; x++) {
-                products.push(results.rows.item(x));
-              }
-              //Filter the products
-              var filteredProducts = products.filter(function (product) {
-                var intersectionOfFilters = product.filter_ids.split(',').filter(function (filter_id) {
-                  return applied_filters.indexOf(filter_id) != -1;
-                });
-                return intersectionOfFilters.length > 0;
-              });
-              //Push in the lengths
-              $scope.counts.push(filteredProducts.length);
-              //Add them up
-              $scope.total_filter += filteredProducts.length;
-              $scope.total_products += products.length;
-            });
-          }
+          });
         });
       }
 
