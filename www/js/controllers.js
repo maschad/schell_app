@@ -892,6 +892,7 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
 
     //Sum FileSizes
     function sumFileSizes(category) {
+      console.log('top level category', category.title_de);
       //Initiate load
       $scope.show();
       //Product ids to download
@@ -949,8 +950,7 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
           if (categoryWithProductIds.download_ids != '') {
             categoryDownloadIds = categoryDownloadIds.concat(categoryWithProductIds.download_ids.split(','));
           }
-          console.log('category', categoryWithProductIds.title_de);
-          console.log('category download ids', categoryWithProductIds.download_ids);
+
         });
         //Get the products with the info to download
         DatabaseService.selectProducts(product_ids_toDownload, function (results) {
@@ -977,6 +977,7 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
                   filesize += file.filesize;
                 });
 
+
                 if (product.video_ids != '') {
                   DatabaseService.selectVideos(product.video_ids, function (results) {
                     for (var x = 0; x < results.rows.length; x++) {
@@ -993,10 +994,17 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
                       }
                       //Push in the file size
                       $scope.fileSizes[category.uid] = filesize;
-                      console.log('file size for category', category.title_de);
-                      console.log('file size for category', $scope.fileSizes[category.uid]);
                       $scope.hide();
                     });
+                  });
+                } else {
+                  DatabaseService.selectDownloads(categoryDownloadIds, function (results) {
+                    for (var x = 0; x < results.rows.length; x++) {
+                      filesize += results.rows.item(x).filesize;
+                    }
+                    //Push in the file size
+                    $scope.fileSizes[category.uid] = filesize;
+                    $scope.hide();
                   });
                 }
               });
