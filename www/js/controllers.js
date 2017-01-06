@@ -820,6 +820,9 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
     //Preferences as empty
     $scope.preferences = [];
 
+    //Category file sizes
+    $scope.fileSizes = {};
+
 
     //Loading functions
     $scope.show = function() {
@@ -850,14 +853,13 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
 
     //Function to load the data on the screen
     function loadData() {
-      $scope.show();
       DatabaseService.selectAllVideos(function (videos) {
         var mbTotal = 0;
         for (var x = 0; x < videos.rows.length; x++) {
           $scope.videos.push(videos.rows.item(x));
           mbTotal += videos.rows.item(x).filesize;
         }
-        $scope.total_video_size = mbTotal / 100000000;
+        $scope.total_video_size = mbTotal / 1073741824;
       });
       //Assign preferences
       $scope.preferences = localStorageService.getOfflinePreferences();
@@ -870,20 +872,142 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
         //Compare against local storage and most recent update of storage to remember what user checked
         if ($scope.preferences[2].downloaded_categories.length < items.length) {
           for (var i = 0; i < items.length; i++) {
-            if (items[i].title_de != '') {
-              $scope.preferences[2].downloaded_categories.push({item: items[i], checked: false});
-            }
+            //Check for empty categories
+            $scope.preferences[2].downloaded_categories.push({item: items[i], checked: false});
           }
         }
-        $scope.hide();
+        //Calculate category file sizes
+        items.forEach(function (category) {
+          sumFileSizes(category);
+        });
       }, function (error) {
         //#TODO:Handle error
         console.log('ERROR',error);
       });
 
+
       //Update to show selected categories
       localStorageService.updatePreferences($scope.preferences);
     }
+
+    //Sum FileSizes
+    function sumFileSizes(category) {
+      //Initiate load
+      $scope.show();
+      //Product ids to download
+      var product_ids_toDownload = [];
+      //Actual products to download
+      var products = [];
+      //All categories
+      var allCategories = [];
+      //Sum the file sizes
+      var filesize = 0;
+      //Download ids for category
+      var categoryDownloadIds = [];
+      //First current category
+      DatabaseService.selectAllCategories(function (results) {
+        for (var x = 0; x < results.rows.length; x++) {
+          allCategories.push(results.rows.item(x));
+        }
+        //to See if we are at the bottom level
+        var atBottomLevel = false;
+        //SubCategories
+        var currentCategories = [category];
+        while (!atBottomLevel) {
+          var tempCurrentCategories = currentCategories.slice();
+          currentCategories = [];
+          // 2. get all the subcategories of [{category..}]
+          tempCurrentCategories.forEach(function (temp) {
+            allCategories.forEach(function (cat) {
+              if (cat.elternelement == temp.uid) {
+                currentCategories.push(cat);
+              }
+            });
+          });
+          atBottomLevel = true;
+          // 3. if the first subcategory has product_ids
+          currentCategories.forEach(function (currentCat) {
+            //Some categories may have two levels of sub categories
+            // and so we also have to traverse that branch
+            if (currentCat.product_ids != '') {
+              product_ids_toDownload = product_ids_toDownload.concat(currentCat.product_ids.split(','));
+              if (currentCat.download_ids != '') {
+                categoryDownloadIds = categoryDownloadIds.concat(currentCat.download_ids.split(','));
+              }
+            }
+            atBottomLevel = atBottomLevel && currentCat.product_ids != '';
+          });
+          //Filter out sub categories with product ids
+          // and traverse next branch
+          currentCategories.filter(function (currentCat) {
+            return currentCat.product_ids != '';
+          });
+        }
+        //Categories with respective product_ids
+        currentCategories.forEach(function (categoryWithProductIds) {
+          product_ids_toDownload = product_ids_toDownload.concat(categoryWithProductIds.product_ids.split(','));
+          if (categoryWithProductIds.download_ids != '') {
+            categoryDownloadIds = categoryDownloadIds.concat(categoryWithProductIds.download_ids.split(','));
+          }
+          console.log('category', categoryWithProductIds.title_de);
+          console.log('category download ids', categoryWithProductIds.download_ids);
+        });
+        //Get the products with the info to download
+        DatabaseService.selectProducts(product_ids_toDownload, function (results) {
+          for (var x = 0; x < results.rows.length; x++) {
+            products.push(results.rows.item(x));
+          }
+          products.forEach(function (product) {
+            var downloads = [];
+            var videos = [];
+
+            //Add images and technical drawings
+            filesize += product.image_landscape_filesize;
+            filesize += product.image_portrait_filesize;
+            filesize += product.technical_drawing_filesize;
+
+            //Get associated downloads
+            if (product.download_ids != '') {
+              DatabaseService.selectDownloads(product.download_ids, function (results) {
+                for (var x = 0; x < results.rows.length; x++) {
+                  downloads.push(results.rows.item(x));
+                }
+
+                downloads.forEach(function (file) {
+                  filesize += file.filesize;
+                });
+
+                if (product.video_ids != '') {
+                  DatabaseService.selectVideos(product.video_ids, function (results) {
+                    for (var x = 0; x < results.rows.length; x++) {
+                      videos.push(results.rows.item(x));
+                    }
+
+                    videos.forEach(function (file) {
+                      filesize += file.filesize;
+                    });
+
+                    DatabaseService.selectDownloads(categoryDownloadIds, function (results) {
+                      for (var x = 0; x < results.rows.length; x++) {
+                        filesize += results.rows.item(x).filesize;
+                      }
+                      //Push in the file size
+                      $scope.fileSizes[category.uid] = filesize;
+                      console.log('file size for category', category.title_de);
+                      console.log('file size for category', $scope.fileSizes[category.uid]);
+                      $scope.hide();
+                    });
+                  });
+                }
+              });
+            }
+          });
+
+        });
+      });
+
+    }
+
 
     //Download the files for the respective category and store the file paths in local storage
     function downloadCategoryFiles(category) {
@@ -927,7 +1051,6 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
            for (var x = 0; x < results.rows.length; x++) {
              products.push(results.rows.item(x));
            }
-           console.log('length of products', products.length);
            products.forEach(function (product) {
              var downloads = [];
              $scope.downloadShow();
@@ -992,7 +1115,7 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
       if (check == true) {
         //Update preferences
         //The product ids to download
-        downloadCategoryFiles(category);
+        //downloadCategoryFiles(category);
       }
       //Update preference at selected preference
       $scope.preferences[2].downloaded_categories[$scope.preferences[2].downloaded_categories.indexOf(category)].checked = check;

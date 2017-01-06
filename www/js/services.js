@@ -280,48 +280,7 @@ angular.module('app.services', [])
       false,
       null
     );
-    /**
-      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
-          fs.root.getDirectory(
-            dirName,
-            {
-              create: true
-            },
-            function(dirEntry) {
-              dirEntry.getFile(
-                filename,
-                {
-                  create: true,
-                  exclusive: false
-                },
-                function gotFileEntry(fe) {
-                  var p = fe.toURL();
-                  fe.remove();
-                  ft = new FileTransfer();
-                  ft.download(
-                    encodeURI(url),
-                    p,
-                    function(entry) {
-                      success(entry.toURL());
-                    },
-                    function(error) {
-                      console.log(error);
-                    },
-                    false,
-                    null
-                  );
-                },
-                function() {
-                  console.log("Get file failed");
-                }
-              );
-            }
-          );
-        },
-        function() {
-          console.log("Request for filesystem failed");
-        });**/
-    };
+  };
 
 
 

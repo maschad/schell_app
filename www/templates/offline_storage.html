@@ -22,17 +22,23 @@
         <ion-checkbox class="checkbox-settings item-checkbox-right"
                       ng-repeat="category in preferences[2].downloaded_categories"
                       ng-change="downloadCategory(category.item,category.checked)" ng-model="category.checked">
-          <strong>{{category.item.title_de}}</strong>
+          <strong style="font-size: 9px;">{{category.item.title_de}} {{fileSizes[category.item.uid] / (1073741824) |
+            number:2}} GBs</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
         <hr class="settings-hr">
         <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="preferences[3].download_videos"
-                      ng-change="downloadVideos()"><strong>Total size</strong><br>{{total_video_size}} GB
+                      ng-change="downloadVideos()"><strong>Total size<br>{{total_video_size | number:2}} GBs</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider3">SETTINGS</ion-item>
         <hr class="settings-hr">
-        <ion-toggle toggle-class="toggle-assertive" ng-model="item.checked" ng-change="update()" ng-repeat="item in preferences.sync" style="font-size: 15px;">
-          <strong>{{item.text}}</strong>
+        <ion-toggle toggle-class="toggle-assertive" ng-model="preferences[0].checked" ng-change="update()"
+                    style="font-size: 15px;">
+          <strong style="font-size: 10px;">{{preferences[0].text}}</strong>
+        </ion-toggle>
+        <ion-toggle toggle-class="toggle-assertive" ng-model="preferences[1].checked" ng-change="update()"
+                    style="font-size: 15px;">
+          <strong style="font-size: 10px;">{{preferences[1].text}}</strong>
         </ion-toggle>
       </form>
     </div>
