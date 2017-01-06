@@ -66,16 +66,38 @@ angular.module('app.services', [])
     $localStorage.offlinePreferences = data;
   };
 
+  var setPDFPath = function (product_id, path) {
+    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'datei_de': path});
+  };
+
+  var getPDFPath = function (product_id, lang) {
+    if (lang == 'de') {
+      return $localStorage.product_files[product_id].datei_de;
+    }
+  };
+
+  var setThumbnailPath = function (product_id, path) {
+    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': path});
+  };
+
+  var getThumbnailPath = function (product_id) {
+    return $localStorage.product_files[product_id].thumbnail;
+  };
+
   var getLandscapePath = function (product_id) {
     return $localStorage.product_files[product_id].image_landscape;
   };
 
-  var setLandscapePath = function (product_id, product_info) {
-    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'image_landscape': product_info});
+  var setLandscapePath = function (product_id, path) {
+    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'image_landscape': path});
   };
 
-  var getTechnicalPath = function () {
+  var setTechnicalPath = function (product_id, path) {
+    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'technical_drawing_link': path});
+  };
 
+  var getTechnicalPath = function (product_id) {
+    return $localStorage.product_files[product_id].technical_drawing_link;
   };
 
   var getAllVideoPaths = function () {
@@ -117,7 +139,13 @@ angular.module('app.services', [])
     setVideoPath : setVideoPath,
     getDownloadFiles : getDownloadFiles,
     setFilters: setFilters,
-    getFilters: getFilters
+    getFilters: getFilters,
+    setPDFPath: setPDFPath,
+    getPDFPath: getPDFPath,
+    setTechnicalPath: setTechnicalPath,
+    getTechnicalPath: getTechnicalPath,
+    setThumbnailPath: setThumbnailPath,
+    getThumbnailPath: getThumbnailPath
   };
 
 
