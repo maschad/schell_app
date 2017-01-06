@@ -530,7 +530,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     $scope.filter_ids = [];
 
     //Array storing artikel counts for each category
-    $scope.counts = [];
+    $scope.counts = {};
 
     //Initialize as empty
     $scope.categories = [];
@@ -570,40 +570,63 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Function to count the total number of artikels in category below
     function countArtikels() {
+      //all Categories
+      var allCategories = [];
 
-      $scope.categories.forEach(function (category) {
-        var atBottomLevel = category.product_ids != '';
-        // 2. If we are at the bottom level category
-        // Get the products and sum the #
-        if (atBottomLevel) {
-          $scope.counts.push(category.product_ids.split(',').length);
-        } else {
-          var currentCategories = [category];
-          // 3. If we aren't at the bottom level,
-          // query all the child_ids until we get to the bottom level.
-          while (!atBottomLevel) {
-            // We copy over the current categories so we can reuse currentCategories
-            var tempCurrentCategories = currentCategories.slice();
-            currentCategories = [];
-            tempCurrentCategories.forEach(function (subCategory) {
-              DatabaseService.selectChildCategories(subCategory.child_ids, function (results) {
-                for (var x = 0; x < results.rows.length; x++) {
-                  currentCategories.push(results.rows.item(x));
-                }
-              });
-            });
-            atBottomLevel = currentCategories[0].product_ids != '';
-          }
-          // 4. Now that we have all the bottom level categories, we can sum their product_ids
-          var count = 0;
-          currentCategories.forEach(function (categoriesToSum) {
-            count += categoriesToSum.product_ids.split(',').length;
-
-          });
-          //Update the count
-          $scope.counts.push(count);
-
+      //Get all categories
+      DatabaseService.selectAllCategories(function (results) {
+        for (var x = 0; x < results.rows.length; x++) {
+          allCategories.push(results.rows.item(x));
         }
+        $scope.categories.forEach(function (category) {
+          //Initialize count to 0
+          var count = 0;
+          //If we are at bottom level
+          var atBottomLevel = category.product_ids != '';
+          // 2. If we are at the bottom level category
+          // Get the products and sum the #
+          if (atBottomLevel) {
+            $scope.counts[category.uid] = category.product_ids.split(',').length;
+          } else {
+            var currentCategories = [category];
+            // 3. If we aren't at the bottom level,
+            // query all the child_ids until we get to the bottom level.
+            while (!atBottomLevel) {
+              // We copy over the current categories so we can reuse currentCategories
+              var tempCurrentCategories = currentCategories.slice();
+              currentCategories = [];
+              tempCurrentCategories.forEach(function (temp) {
+                allCategories.forEach(function (cat) {
+                  if (cat.elternelement == temp.uid) {
+                    currentCategories.push(cat);
+                  }
+                });
+              });
+              atBottomLevel = true;
+              // 3. if the first subcategory has product_ids
+              currentCategories.forEach(function (currentCat) {
+                //Some categories may have two levels of sub categories
+                // and so we also have to traverse that branch
+                if (currentCat.product_ids != '') {
+                  count += currentCat.product_ids.split(',').length;
+                }
+                atBottomLevel = atBottomLevel && currentCat.product_ids != '';
+              });
+              //Filter out sub categories with product ids
+              // and traverse next branch
+              currentCategories.filter(function (currentCat) {
+                return currentCat.product_ids != '';
+              });
+
+            }
+            // 4. Now that we have all the bottom level categories, we can sum their product_ids
+            currentCategories.forEach(function (categoriesToSum) {
+              count += categoriesToSum.product_ids.split(',').length;
+            });
+            //Update the count
+            $scope.counts[category.uid] = count;
+          }
+        });
       });
     }
 
@@ -614,6 +637,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.total_products = 0;
       //Re-set array
       $scope.counts = [];
+
+      //Product ids to download for check
+      var product_ids_to_download = [];
 
       // If empty then just add products
       if (applied_filters.length == 0) {
@@ -661,29 +687,43 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                   }
                 });
               });
-              atBottomLevel = currentCategories[0].product_ids != '';
+              atBottomLevel = true;
+              // 3. if the first subcategory has product_ids
+              currentCategories.forEach(function (currentCat) {
+                //Some categories may have two levels of sub categories
+                // and so we also have to traverse that branch
+                if (currentCat.product_ids != '') {
+                  product_ids_to_download = product_ids_to_download.concat(currentCat.product_ids.split(','));
+                }
+                atBottomLevel = atBottomLevel && currentCat.product_ids != '';
+              });
+              //Filter out sub categories with product ids
+              // and traverse next branch
+              currentCategories.filter(function (currentCat) {
+                return currentCat.product_ids != '';
+              });
             }
             currentCategories.forEach(function (category) {
-              DatabaseService.selectProducts(category.product_ids, function (results) {
-                for (var x = 0; x < results.rows.length; x++) {
-                  products.push(results.rows.item(x));
-                }
-                //Filter the products
-                var filteredProducts = products.filter(function (product) {
-                  var intersectionOfFilters = product.filter_ids.split(',').filter(function (filter_id) {
-                    return applied_filters.indexOf(filter_id) != -1;
-                  });
-                  return intersectionOfFilters.length > 0;
+              product_ids_to_download = product_ids_to_download.concat(category.product_ids);
+            });
+            DatabaseService.selectProducts(product_ids_to_download, function (results) {
+              for (var x = 0; x < results.rows.length; x++) {
+                products.push(results.rows.item(x));
+              }
+              //Filter the products
+              var filteredProducts = products.filter(function (product) {
+                var intersectionOfFilters = product.filter_ids.split(',').filter(function (filter_id) {
+                  return applied_filters.indexOf(filter_id) != -1;
                 });
-                //Push in the lengths
-                $scope.counts.push(filteredProducts.length);
-                //Add them up
-                $scope.total_filter += filteredProducts.length;
-                $scope.total_products += products.length;
+                return intersectionOfFilters.length > 0;
               });
+              //Push in the lengths
+              $scope.counts.push(filteredProducts.length);
+              //Add them up
+              $scope.total_filter += filteredProducts.length;
+              $scope.total_products += products.length;
             });
           }
-
         });
       }
 
@@ -714,6 +754,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         appDataService.setCurrentTitle(title);
         appDataService.appendEmailLink(title.concat('/'));
         $scope.title = title;
+        countArtikels();
         $state.reload();
       };
 
@@ -977,7 +1018,7 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
                   filesize += file.filesize;
                 });
 
-
+                //If product has videos
                 if (product.video_ids != '') {
                   DatabaseService.selectVideos(product.video_ids, function (results) {
                     for (var x = 0; x < results.rows.length; x++) {
@@ -1027,6 +1068,8 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
       var products = [];
       //All categories
       var allCategories = [];
+      //Categories have download ids
+      var categoryDownloadIds = [];
       //First current category
       DatabaseService.selectAllCategories(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
@@ -1047,8 +1090,25 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
               }
             });
           });
+          atBottomLevel = true;
           // 3. if the first subcategory has product_ids
-          atBottomLevel = currentCategories[0].product_ids != '';
+          currentCategories.forEach(function (currentCat) {
+            //Some categories may have two levels of sub categories
+            // and so we also have to traverse that branch
+            if (currentCat.product_ids != '') {
+              product_ids_toDownload = product_ids_toDownload.concat(currentCat.product_ids.split(','));
+              if (currentCat.download_ids != '') {
+                categoryDownloadIds = categoryDownloadIds.concat(currentCat.download_ids.split(','));
+              }
+            }
+            atBottomLevel = atBottomLevel && currentCat.product_ids != '';
+          });
+          //Filter out sub categories with product ids
+          // and traverse next branch
+          currentCategories.filter(function (currentCat) {
+            return currentCat.product_ids != '';
+          });
+
         }
         //Categories with respective product_ids
         currentCategories.forEach(function (categoryWithProductIds) {
