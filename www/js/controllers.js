@@ -354,12 +354,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 
     //Bookmark Function
-    $scope.bookmark = function () {
+    $scope.bookmark = function ($event) {
       $ionicPopup.alert({
         title: 'Seite bookmarkiert'
       });
       localStorageService.bookmarkProduct($scope.details);
     };
+
 
     //Download PDF
     $scope.showPDF = false;

@@ -37,8 +37,8 @@
         <div class="side-nav-mail-sm" ng-click="sendEmail()">
         </div>
       </li>
-      <li class="dropup"  ng-click="bookmark()">
-        <div class="dropdown-toggle side-nav-clip-sm" ng-click="bookmark()"></div>
+      <li>
+        <div class="bookmark-popup side-nav-clip-sm" ng-click="bookmark()"></div>
       </li>
       <li>
         <div class="side-nav-download-sm">
@@ -70,26 +70,26 @@
             </ion-item>
             <ion-item class="description-accordion" ng-show="isGroupShown(list)">
               <div ng-if="list.title.includes('ZEICHNUNG')">
-                <img ng-src="{{details.technical_drawing_link}}">
+                <img ng-src="{{details.technical_drawing_link}}" style="max-width: 100%; max-height: 100%;">
               </div>
               <div ng-if="list.title == 'LIEFERUMFANG'">
-                <div ng-bind-html="details.lieferumfang_de"></div>
+                <div ng-bind-html="details.lieferumfang_de" class="wrap"></div>
               </div>
               <div ng-if="list.title == 'EINSATZBEREICH / TECHNISCHE DATEN'">
-                <div ng-bind-html="details.einsatzbereich_de"></div>
+                <div ng-bind-html="details.einsatzbereich_de" class="wrap"></div>
               </div>
               <div ng-if="list.title == 'DETAILS'">
-                <div ng-bind-html="details.werkstoff_de"></div>
+                <div ng-bind-html="details.werkstoff_de" class="wrap"></div>
               </div>
                <div ng-if="list.title == 'DOWNLOADS' && details.download_ids">
                 <div ng-repeat="file in files">
                   <div class="row">
                     <div class="col col-20">
-                      <img ng-src="{{file.thumbnail}}" width="70%" ng-click="downloadPDF(file)">
+                      <img ng-src="{{file.thumbnail}}" width="70%" style="border: 1px solid #000;" ng-click="downloadPDF(file)">
                     </div>
                     <div class="col">
-                      <p> {{file.broschurentitel}} </p>
-                      <p> {{file.zusatzinformation}} </p>
+                      <p class="wrap"> {{file.broschurentitel}} </p>
+                      <p class="wrap"> {{file.zusatzinformation}} </p>
                     </div>
                   </div>
                 </div>

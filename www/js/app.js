@@ -44,14 +44,8 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
         $ionicPopup.confirm({
           title: "Internet Disconnected",
           content: "The internet is disconnected on your device. Settings will be disabled"
-        })
-          .then(function (result) {
-            if (!result) {
-              //Set internet Vairable to false
-              $rootScope.internet = false;
-              //#TODO: Handle DB loading.
-            }
-          });
+        });
+        $rootScope.internet = false;
       }else{
         //Update all of DB
         db = $cordovaSQLite.openDB({"name" : "schell.db", "location" : "default"});
