@@ -12,7 +12,7 @@
     <!-- Breadcrumb ionic -->
     <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
-  <ion-content padding="true" class="has-header">
+  <ion-content padding="false" class="has-header">
     <div id="product-lines-body">
       <div class="container">
         <div class="row">
@@ -34,14 +34,14 @@
                   </div>
                 </div> -->
                 <div class="row">
-                  <div class="col col-66">
+                  <div class="col col-67">
                     <div class="product-counter">
                       <p><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index].title_de}}</h3>
                   </div>
-                  <div class="col" style="padding-bottom: 0;">
-                    <img src="{{categories[$index].bild}}">
+                  <div class="col">
+                    <img src="{{categories[$index].bild}}" style="float: right;">
                   </div>
                 </div>
               </div>
@@ -55,14 +55,14 @@
                   </div>
                 </div> -->
                 <div class="row">
-                  <div class="col col-66">
+                  <div class="col col-67">
                     <div class="product-counter">
                       <p><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index].title_de}}</h3>
                   </div>
-                  <div class="col" style="padding-bottom: 0;">
-                    <img src="{{categories[$index].bild}}">
+                  <div class="col">
+                    <img src="{{categories[$index].bild}}" style="float: right;">
                   </div>
                 </div>
               </div>
@@ -78,14 +78,14 @@
                   </div>
                 </div> -->
                 <div class="row">
-                  <div class="col col-66">
+                  <div class="col col-67">
                     <div class="product-counter">
                       <p><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
                   </div>
-                  <div class="col" style="padding-bottom: 0;">
-                    <img src="{{categories[$index + 1].bild}}">
+                  <div class="col">
+                    <img src="{{categories[$index + 1].bild}}" style="float: right;">
                   </div>
                 </div>
               </div>
@@ -100,14 +100,14 @@
                   </div>
                 </div> -->
                 <div class="row">
-                  <div class="col col-66">
+                  <div class="col col-67">
                     <div class="product-counter">
                       <p><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
                   </div>
-                  <div class="col" style="padding-bottom: 0;">
-                    <img src="{{categories[$index + 1].bild}}">
+                  <div class="col">
+                    <img src="{{categories[$index + 1].bild}}" style="float: right;">
                   </div>
                 </div>
               </div>
@@ -124,14 +124,14 @@
                   </div>
                 </div> -->
                 <div class="row">
-                  <div class="col col-66">
+                  <div class="col col-67">
                     <div class="product-counter">
                       <p><strong>{{categories[$index + 2].product_ids.length}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
                   </div>
-                  <div class="col" style="padding-bottom: 0;">
-                    <img src="{{categories[$index + 2].bild}}">
+                  <div class="col">
+                    <img src="{{categories[$index + 2].bild}}" style="float: right;">
                   </div>
                 </div>
               </div>
@@ -145,14 +145,14 @@
                   </div>
                 </div> -->
                 <div class="row">
-                  <div class="col col-66">
+                  <div class="col col-67">
                     <div class="product-counter">
                       <p><strong>{{categories[$index + 2].child_ids.length}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
                   </div>
-                  <div class="col" style="padding-bottom: 0;">
-                    <img src="{{categories[$index + 2].bild}}">
+                  <div class="col">
+                    <img src="{{categories[$index + 2].bild}}" style="float: right;">
                   </div>
                 </div>
               </div>

@@ -36,7 +36,7 @@
                   <p ng-if="categories[$index].child_ids"><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
                   <p ng-if="categories[$index].product_ids"><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
                 </div>
-                <img src="{{categories[$index].bild}}" class="center" style="width: auto;">
+                <img src="{{categories[$index].bild}}" class="center">
               </div>
               <div class="col">
                 <h3 class="product-type">{{categories[$index].title_de}}</h3>
@@ -58,7 +58,7 @@
                   <p ng-if="categories[$index + 1].child_ids"><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
                   <p ng-if="categories[$index + 1].product_ids"><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>
                 </div>
-                <img src="{{categories[$index + 1].bild}}" class="center" style="width: auto;">
+                <img src="{{categories[$index + 1].bild}}" class="center">
               </div>
               <div class="col">
                 <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>

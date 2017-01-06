@@ -133,13 +133,13 @@
           <ion-list>
 
             <div ng-repeat="group in groups">
-              <ion-item class="menu-item" ng-click="toggleGroup(group)" ng-class="{active: isGroupShown(group)}">
+              <ion-item class="menu-item wrap" ng-click="toggleGroup(group)" ng-class="{active: isGroupShown(group)}">
                 <div style="color: white" class="item-icon-right">
                   {{group.name}}
                   <i class="icon" ng-class="isGroupShown(group) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
                 </div>
               </ion-item>
-              <ion-item class="item-accordion" ng-show="isGroupShown(group)">
+              <ion-item class="item-accordion wrap" ng-show="isGroupShown(group)">
                 <div ng-repeat="item in group.items">
                   <ion-checkbox class="menu-item checkbox-filter" ng-model="item.checked"
                                 ng-change="applyFilter(item.uid,item.checked)">{{item.filter_content.title_de}}

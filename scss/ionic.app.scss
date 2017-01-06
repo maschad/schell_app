@@ -1623,8 +1623,8 @@ ion-popover-view.fit ion-content {
   background-color: #000;
   position: absolute;
   bottom: 64px;
-  left: 34%;
-  width: 220px;
+  left: 32%;
+  width: 230px;
 }
 .popup-container .popup:after {
   content: '';
@@ -1638,17 +1638,20 @@ ion-popover-view.fit ion-content {
   border-width: 10px 10px 0 10px;
   border-color: #000000 transparent transparent transparent;
 }
-// .popup-container .popup:after {
-//   content: '';
-//   width: 0;
-//   height: 0;
-//   position: absolute;
-//   left: 84%;
-//   bottom: -9px;
-//   border-style: solid;
-//   border-width: 10px 10px 0 10px;
-//   border-color: #000000 transparent transparent transparent;
-// }
+.popup-container.download-popup .popup {
+  left: 35%;
+}
+.popup-container.download-popup .popup:after {
+  content: '';
+  width: 0;
+  height: 0;
+  position: absolute;
+  left: 90%;
+  bottom: -9px;
+  border-style: solid;
+  border-width: 10px 10px 0 10px;
+  border-color: #000000 transparent transparent transparent;
+}
 .popup-head {
   background-color: #000;
   border-bottom: none;

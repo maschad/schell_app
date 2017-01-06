@@ -361,6 +361,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       localStorageService.bookmarkProduct($scope.details);
     };
 
+    //Download Function
+    $scope.download = function ($event) {
+      $ionicPopup.alert({
+        title: 'Möchten Sie diesen Artikel offline speichern?',
+        cssClass: 'download-popup',
+        okText: 'Offline verfügbar machen'
+      });
+      // localStorageService.downloadProduct($scope.details);
+    };
 
     //Download PDF
     $scope.showPDF = false;
