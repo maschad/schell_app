@@ -991,12 +991,8 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
       //Download details based on check
       if (check == true) {
         //Update preferences
-        /**
         //The product ids to download
-         downloadCategoryFiles(category);**/
-
-      } else {
-
+        downloadCategoryFiles(category);
       }
       //Update preference at selected preference
       $scope.preferences[2].downloaded_categories[$scope.preferences[2].downloaded_categories.indexOf(category)].checked = check;
