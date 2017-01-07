@@ -376,11 +376,11 @@ angular.module('app.controllers', [])
             title: 'Keine Videos heruntergeladen'
           });
         } else {
-          for (var y = 0; y < $scope.videos.length; y++) {
-            console.log('video path in local storage', vids[$scope.videos[y].uid].videofile_de);
-            //console.log('image video path in local storage', vids[$scope.videos[y].uid].startimage_de);
-            //$scope.videos[y].videofile_de = vids[$scope.videos[y].uid].videofile_de;
-            //$scope.videos[y].startimage_de = vids[$scope.videos[y].uid].startimage_de;
+          for (var key in vids) {
+            console.log('video path in local storage', vids[key].videofile_de);
+            $scope.videos[key].videofile_de = vids[key].videofile_de;
+            console.log('image video path in local storage', vids[key].startimage_de);
+            $scope.videos[key].startimage_de = vids[key].startimage_de;
           }
         }
       }
@@ -1332,23 +1332,32 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Call the function on startup
     loadData();
 
-    function downloadVideo(uid, url, filename, dirName) {
+      function downloadVideo(uid, url, filename) {
       $scope.downloadVideoShow();
-      FileService.originalDownload(url, filename, dirName, 'videos', function (result) {
+        FileService.originalDownload(url, filename, 'videos', function (result) {
         console.log('filepath', result);
         localStorageService.setVideoPath(uid, result);
         $scope.downloadVideoHide();
       });
     }
 
+      function downloadVideoImage(uid, url, filename) {
+        $scope.downloadVideoShow();
+        FileService.originalDownload(url, filename, 'imgs', function (result) {
+          console.log('filepath', result);
+          localStorageService.setVideoImagePath(uid, result);
+          $scope.downloadVideoHide();
+        });
+      }
+
     //Function to download videos
     $scope.downloadVideos = function () {
       //If checked
       if ($scope.preferences[3].download_videos) {
         for (var x = 0; x < $scope.videos.length; x++) {
-          console.log('video title', $scope.videos[x].title);
-          console.log('url', $scope.videos[x].videofile_de);
+
           downloadVideo($scope.videos[x].uid, $scope.videos[x].videofile_de, $scope.videos[x].title.concat('.mp4'));
+          downloadVideoImage($scope.videos[x].uid, $scope.videos[x].startimage_de, $scope.videos[x].title.concat('.jpg'));
 
           /**
            FileService.download($scope.videos[x].startimage_de, $scope.videos[x].title.concat('.jpg'), 'imgs', function (path) {

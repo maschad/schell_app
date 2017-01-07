@@ -28,6 +28,7 @@ angular.module('app.routes', [])
     })
 
   .state('video', {
+    cache: false,
     url: '/video',
     templateUrl: 'templates/video.html',
     controller: 'videoCtrl'
