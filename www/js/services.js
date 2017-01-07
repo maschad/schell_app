@@ -118,11 +118,11 @@ angular.module('app.services', [])
   };
 
   var getVideoPath = function (video_id) {
-    return $localStorage.video_files[video_id];
+    return $localStorage.video_files[video_id].videofile_de;
   };
 
   var setVideoPath = function (video_id,path) {
-    $localStorage.video_files[video_id] = path;
+    $localStorage.video_files[video_id] = Object.assign({}, $localStorage.video_files[video_id], {'videofile_de': path});
   };
 
   var setVideoImagePath = function (video_id, path) {
@@ -371,7 +371,7 @@ angular.module('app.services', [])
 }])
 
 //Service for storing in app Data to be shared between controllers
-  .factory('appDataService', ['$rootScope', function ($rootScope) {
+  .factory('appDataService', ['$rootScope', '$ionicPopup', function ($rootScope, $ionicPopup) {
     var current_category_child_ids = '';
     var current_product = {};
     var email_link = "http://www.schell.eu/deutschland-de/produkte/";
@@ -455,10 +455,8 @@ angular.module('app.services', [])
         if (navigator.connection.type == Connection.NONE) {
           //Set internet Variable to false
           $rootScope.internet = false;
-          $ionicPopup.confirm({
-            title: "Internet Disconnected",
-            content: "The internet is disconnected on your device. Settings will be disabled"
-          });
+        } else {
+          $rootScope.internet = true;
         }
       }
     };

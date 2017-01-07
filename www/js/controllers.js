@@ -27,35 +27,37 @@ angular.module('app.controllers', [])
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
 
-      //Check for internet
-      appDataService.checkInternet();
 
+      function loadPage() {
+        //Check for internet
+        appDataService.checkInternet();
+        //Whether to allow settings based on network connection
+        $scope.show = $rootScope.internet;
+        //If there is internet, populate the DB with latest data, else, work with what is in database
+        if ($rootScope.internet) {
+          $scope.showLoad();
+          FirebaseService.downloadAllProducts(function (results) {
+            DatabaseService.populateProducts(results);
+          });
+          FirebaseService.getAllProductCategories(function (results) {
+            DatabaseService.populateProductCategories(results);
+          });
+          FirebaseService.downloadFiles(function (results) {
+            DatabaseService.populateDownloads(results);
+          });
+          FirebaseService.downloadVideos(function (results) {
+            DatabaseService.populateVideos(results);
+          });
+          FirebaseService.downloadProductFilters(function (results) {
+            localStorageService.setFilters(results);
+            $scope.hideLoad();
+          });
+        } else {
+          //#TODO: Handle DB offline
+        }
+      }
 
-  //Whether to allow settings based on network connection
-  $scope.show = $rootScope.internet;
-
-  //If there is internet, populate the DB with latest data, else, work with what is in database
-  if($rootScope.internet){
-    $scope.showLoad();
-    FirebaseService.downloadAllProducts(function (results) {
-      DatabaseService.populateProducts(results);
-    });
-    FirebaseService.getAllProductCategories(function (results) {
-      DatabaseService.populateProductCategories(results);
-    });
-    FirebaseService.downloadFiles(function (results) {
-      DatabaseService.populateDownloads(results);
-    });
-    FirebaseService.downloadVideos(function (results) {
-      DatabaseService.populateVideos(results);
-    });
-    FirebaseService.downloadProductFilters(function (results) {
-      localStorageService.setFilters(results);
-      $scope.hideLoad();
-    });
-  }else{
-    //#TODO: Handle DB offline
-  }
+      loadPage();
 
   $scope.swiper = {};
 
@@ -86,6 +88,10 @@ angular.module('app.controllers', [])
     $state.go('settings');
     $scope.popover.hide();
   };
+
+      $scope.refreshItems = function () {
+        loadPage();
+      };
 
 }])
 
@@ -165,8 +171,7 @@ angular.module('app.controllers', [])
         $ionicLoading.hide();
       };
 
-      //Check for internet
-      appDataService.checkInternet();
+
 
     //Call the function to populate categories
     loadCategories();
@@ -184,6 +189,8 @@ angular.module('app.controllers', [])
     //Load Categories from Database.
     function loadCategories() {
       $scope.showLoad();
+      //Check for internet
+      appDataService.checkInternet();
       DatabaseService.selectTopCategories(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
           $scope.categories.push(results.rows.item(x));
@@ -347,12 +354,12 @@ angular.module('app.controllers', [])
     $ionicLoading.hide();
   };
 
-      //Check for internet
-      appDataService.checkInternet();
 
   //Function to load the videos
   function loadVideos() {
     $scope.show();
+    //Check for internet
+    appDataService.checkInternet();
     DatabaseService.selectAllVideos(function (videos) {
       for (var x = 0; x < videos.rows.length; x++) {
         $scope.videos.push(videos.rows.item(x));
@@ -366,7 +373,7 @@ angular.module('app.controllers', [])
           });
         } else {
           for (var y = 0; y < $scope.videos.length; y++) {
-            console.log('video path in local storage', vids[$scope.videos[y].uid]);
+            console.log('video path in local storage', vids[$scope.videos[y].uid].videofile_de);
             //console.log('image video path in local storage', vids[$scope.videos[y].uid].startimage_de);
             //$scope.videos[y].videofile_de = vids[$scope.videos[y].uid].videofile_de;
             //$scope.videos[y].startimage_de = vids[$scope.videos[y].uid].startimage_de;
@@ -434,11 +441,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Videos for that corresponding product
     $scope.videos = [];
 
-      //Check for internet
-      appDataService.checkInternet();
-
-    //Set details
-    $scope.details = appDataService.getCurrentProduct();
+      function loadProduct() {
+        //Set details
+        $scope.details = appDataService.getCurrentProduct();
+        //Check for internet
+        appDataService.checkInternet();
 
       //If no internet, load offline files
       if (!$rootScope.internet) {
@@ -449,6 +456,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         /**
          $scope.details.technical_drawing_link = localStorageService.getTechnicalPath($scope.details.uid);
          console.log('technical drawing link',$scope.details.technical_drawing_link);**/
+      }
       }
 
     //Function to load files
@@ -474,6 +482,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
       })
     }
+
+      loadProduct();
 
     //Load Downloads and videos
     if($scope.details.download_ids != ''){
@@ -1286,20 +1296,24 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
     //Call the function on startup
     loadData();
 
+    function downloadVideo(uid, url, filename, dirName) {
+      $scope.downloadVideoShow();
+      FileService.originalDownload(url, filename, dirName, 'videos', function (result) {
+        console.log('filepath', result);
+        localStorageService.setVideoPath(uid, result);
+        $scope.downloadVideoHide();
+      });
+    }
+
     //Function to download videos
     $scope.downloadVideos = function () {
       //If checked
       if ($scope.preferences[3].download_videos) {
         for (var x = 0; x < $scope.videos.length; x++) {
           console.log('video title', $scope.videos[x].title);
-          var uid = $scope.videos[x].uid;
-          console.log('videofile_de', $scope.videos[x].videofile_de);
-          $scope.downloadVideoShow();
-          FileService.originalDownload($scope.videos[x].videofile_de, $scope.videos[x].title.concat('.mp4'), 'videos', function (result) {
-            console.log('filepath', result);
-            localStorageService.setVideoPath(uid, result);
-            $scope.downloadVideoHide();
-          });
+          console.log('url', $scope.videos[x].videofile_de);
+          downloadVideo($scope.videos[x].uid, $scope.videos[x].videofile_de, $scope.videos[x].title.concat('.mp4'));
+
           /**
            FileService.download($scope.videos[x].startimage_de, $scope.videos[x].title.concat('.jpg'), 'imgs', function (path) {
             console.log('filepath', path);

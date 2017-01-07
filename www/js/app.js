@@ -23,8 +23,6 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
   //Set internet to true
   $rootScope.internet = true;
 
-
-
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
