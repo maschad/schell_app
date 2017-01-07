@@ -369,16 +369,17 @@ angular.module('app.services', [])
   }
 
 }])
+
 //Service for storing in app Data to be shared between controllers
-.factory('appDataService' , function () {
+  .factory('appDataService', ['$rootScope', function ($rootScope) {
     var current_category_child_ids = '';
     var current_product = {};
-  var email_link = "http://www.schell.eu/deutschland-de/produkte/";
+    var email_link = "http://www.schell.eu/deutschland-de/produkte/";
     var current_title = '';
     var previous_title = '';
     var root_title = '';
-  var filter_ids = '';
-  var current_selected_filters = [];
+    var filter_ids = '';
+    var current_selected_filters = [];
 
     var getCurrentCategoryIds = function () {
       return current_category_child_ids;
@@ -448,12 +449,27 @@ angular.module('app.services', [])
     return current_selected_filters;
   };
 
+    var checkInternet = function () {
+      //Check for internet
+      if (window.Connection) {
+        if (navigator.connection.type == Connection.NONE) {
+          //Set internet Variable to false
+          $rootScope.internet = false;
+          $ionicPopup.confirm({
+            title: "Internet Disconnected",
+            content: "The internet is disconnected on your device. Settings will be disabled"
+          });
+        }
+      }
+    };
+
     return {
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
       setCurrentProduct : setCurrentProduct,
       getCurrentProduct : getCurrentProduct,
       getEmailLink : getEmailLink,
+      checkInternet: checkInternet,
       appendEmailLink : appendEmailLink,
       getCurrentTitle : getCurrentTitle,
       setCurrentTitle : setCurrentTitle,
@@ -469,7 +485,8 @@ angular.module('app.services', [])
     }
 
 
-})
+  }])
+
 //Database Service
 .factory('DatabaseService', ['$cordovaSQLite', function($cordovaSQLite) {
     db = $cordovaSQLite.openDB({

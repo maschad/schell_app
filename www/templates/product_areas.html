@@ -25,8 +25,7 @@
             <div class="row">
               <div class="col">
                 <div class="product-counter">
-                  <p ng-if="categories[$index].child_ids"><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
-                  <p ng-if="categories[$index].product_ids"><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
+                  <p> {{counts[categories[$index].uid]}} Artikels</p>
                 </div>
               </div>
             </div>
@@ -44,8 +43,7 @@
           <div class="product-tile">
             <div class="col">
               <div class="product-counter">
-                <p ng-if="categories[$index + 1].child_ids"><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
-                <p ng-if="categories[$index + 1].product_ids"><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>
+                <p> {{counts[categories[$index + 1].uid]}} Artikels </p>
               </div>
             </div>
             <div class="row">

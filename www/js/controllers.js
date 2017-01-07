@@ -1,9 +1,9 @@
 angular.module('app.controllers', [])
 
-  .controller('start_screenCtrl', ['$scope', '$state', 'DatabaseService', 'FirebaseService', 'localStorageService', '$ionicLoading', '$ionicPopup', '$ionicPopover', '$rootScope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('start_screenCtrl', ['$scope', '$state', 'appDataService', 'DatabaseService', 'FirebaseService', 'localStorageService', '$ionicLoading', '$ionicPopup', '$ionicPopover', '$rootScope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $state, DatabaseService, FirebaseService, localStorageService, $ionicLoading, $ionicPopup, $ionicPopover, $rootScope, $ionicSideMenuDelegate) {
+    function ($scope, $state, appDataService, DatabaseService, FirebaseService, localStorageService, $ionicLoading, $ionicPopup, $ionicPopover, $rootScope, $ionicSideMenuDelegate) {
  //Remove splash screen
   $scope.$on('$ionicView.afterEnter', function(){
     setTimeout(function(){
@@ -26,6 +26,9 @@ angular.module('app.controllers', [])
 
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
+
+      //Check for internet
+      appDataService.checkInternet();
 
 
   //Whether to allow settings based on network connection
@@ -147,6 +150,9 @@ angular.module('app.controllers', [])
     //Initialize as null
     $scope.categories = [];
 
+      //Counts
+      $scope.counts = {};
+
       //Loading functions
       $scope.showLoad = function () {
         $ionicLoading.show({
@@ -158,6 +164,9 @@ angular.module('app.controllers', [])
       $scope.hideLoad = function () {
         $ionicLoading.hide();
       };
+
+      //Check for internet
+      appDataService.checkInternet();
 
     //Call the function to populate categories
     loadCategories();
@@ -183,9 +192,10 @@ angular.module('app.controllers', [])
             downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
           } else {
             console.log('getting uid', $scope.categories[x].uid);
-            $scope.categories[x].bild = localStorageService.getBildPath($scope.categories[x].uid);
+            //$scope.categories[x].bild = localStorageService.getBildPath($scope.categories[x].uid);
           }
         }
+        countArtikels();
         $scope.hideLoad();
       }, function (error) {
         //Handle error
@@ -252,14 +262,76 @@ angular.module('app.controllers', [])
       });
     };
 
+      //Function to count the total number of artikels in category below
+      function countArtikels() {
+        //all Categories
+        var allCategories = [];
+
+        //Get all categories
+        DatabaseService.selectAllCategories(function (results) {
+          for (var x = 0; x < results.rows.length; x++) {
+            allCategories.push(results.rows.item(x));
+          }
+          $scope.categories.forEach(function (category) {
+            //Initialize count to 0
+            var count = 0;
+            //If we are at bottom level
+            var atBottomLevel = category.product_ids != '';
+            // 2. If we are at the bottom level category
+            // Get the products and sum the #
+            if (atBottomLevel) {
+              $scope.counts[category.uid] = category.product_ids.split(',').length;
+            } else {
+              var currentCategories = [category];
+              // 3. If we aren't at the bottom level,
+              // query all the child_ids until we get to the bottom level.
+              while (!atBottomLevel) {
+                // We copy over the current categories so we can reuse currentCategories
+                var tempCurrentCategories = currentCategories.slice();
+                currentCategories = [];
+                tempCurrentCategories.forEach(function (temp) {
+                  allCategories.forEach(function (cat) {
+                    if (cat.elternelement == temp.uid) {
+                      currentCategories.push(cat);
+                    }
+                  });
+                });
+                atBottomLevel = true;
+                // 3. if the first subcategory has product_ids
+                currentCategories.forEach(function (currentCat) {
+                  //Some categories may have two levels of sub categories
+                  // and so we also have to traverse that branch
+                  if (currentCat.product_ids != '') {
+                    count += currentCat.product_ids.split(',').length;
+                  }
+                  atBottomLevel = atBottomLevel && currentCat.product_ids != '';
+                });
+                //Filter out sub categories with product ids
+                // and traverse next branch
+                currentCategories.filter(function (currentCat) {
+                  return currentCat.product_ids != '';
+                });
+
+              }
+              // 4. Now that we have all the bottom level categories, we can sum their product_ids
+              currentCategories.forEach(function (categoriesToSum) {
+                count += categoriesToSum.product_ids.split(',').length;
+              });
+              //Update the count
+              $scope.counts[category.uid] = count;
+            }
+          });
+        });
+      }
+
 
   }])
 
 
-.controller('videoCtrl', ['$scope', '$rootScope','$sce','$ionicSideMenuDelegate', 'FirebaseService','FileService','$ionicLoading','$ionicPopup','localStorageService','DatabaseService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('videoCtrl', ['$scope', '$rootScope', '$sce', '$ionicSideMenuDelegate', 'appDataService', 'FirebaseService', 'FileService', '$ionicLoading', '$ionicPopup', 'localStorageService', 'DatabaseService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope,$rootScope, $sce,$ionicSideMenuDelegate, FirebaseService,FileService,$ionicLoading,$ionicPopup,localStorageService,DatabaseService) {
+    function ($scope, $rootScope, $sce, $ionicSideMenuDelegate, appDataService, FirebaseService, FileService, $ionicLoading, $ionicPopup, localStorageService, DatabaseService) {
     //Initialize empty array
   $scope.videos = [];
 
@@ -274,6 +346,9 @@ function ($scope,$rootScope, $sce,$ionicSideMenuDelegate, FirebaseService,FileSe
   $scope.hide = function(){
     $ionicLoading.hide();
   };
+
+      //Check for internet
+      appDataService.checkInternet();
 
   //Function to load the videos
   function loadVideos() {
@@ -359,6 +434,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Videos for that corresponding product
     $scope.videos = [];
 
+      //Check for internet
+      appDataService.checkInternet();
+
     //Set details
     $scope.details = appDataService.getCurrentProduct();
 
@@ -369,10 +447,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         console.log('landscape', path);
         $scope.details.image_landscape = localStorageService.getLandscapePath($scope.details.uid);
         /**
-         $scope.details.image_landscape = localStorageService.getLandscapePath($scope.details.uid);
          $scope.details.technical_drawing_link = localStorageService.getTechnicalPath($scope.details.uid);
-         console.log('technical drawing link',$scope.details.technical_drawing_link);
-         **/
+         console.log('technical drawing link',$scope.details.technical_drawing_link);**/
       }
 
     //Function to load files
@@ -404,6 +480,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       getFiles($scope.details.download_ids);
     }
     if($scope.details.video_ids != ''){
+      console.log('video ids', $scope.details.video_ids);
       getVideos($scope.details.video_ids);
     }
 
@@ -560,6 +637,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Whether to show the filter or not
     $scope.showFilter = false;
+
+    //Check for internet
+    appDataService.checkInternet();
 
 
     //Loading functions
@@ -789,7 +869,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         appDataService.setCurrentTitle(title);
         appDataService.appendEmailLink(title.concat('/'));
         $scope.title = title;
-        countArtikels();
         $state.reload();
       };
 
@@ -1173,11 +1252,11 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
              var downloads = [];
              $scope.downloadShow();
              //Store images and technical drawings
-             FileService.download(product.image_landscape, product.nummer.concat('_landscape.png'), 'images', function (path) {
+             FileService.originalDownload(product.image_landscape, product.nummer.concat('_landscape.png'), 'images', function (path) {
                console.log('setting landscape path', path);
                localStorageService.setLandscapePath(product.uid, path);
              });
-             FileService.download(product.technical_drawing_link, product.nummer.concat('_technical_drawing.png'), 'images', function (path) {
+             FileService.originalDownload(product.technical_drawing_link, product.nummer.concat('_technical_drawing.png'), 'images', function (path) {
                localStorageService.setTechnicalPath(product.uid, path);
              });
              //Get associated downloads
@@ -1188,10 +1267,10 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
                  }
                  downloads.forEach(function (file) {
                    //#TODO:Check for other languages later on
-                   FileService.download(file.datei_de, product.nummer.concat('_pdfFile.pdf'), 'pdfs', function (path) {
+                   FileService.originalDownload(file.datei_de, product.nummer.concat('_pdfFile.pdf'), 'pdfs', function (path) {
                      localStorageService.setPDFPath(product.uid, path);
                    });
-                   FileService.download(file.thumbnail, product.nummer.concat('_thumbnail.png'), 'images', function (path) {
+                   FileService.originalDownload(file.thumbnail, product.nummer.concat('_thumbnail.png'), 'images', function (path) {
                      localStorageService.setThumbnailPath(product.uid, path);
                      $scope.downloadHide();
                    });
