@@ -402,21 +402,14 @@ angular.module('app.services', [])
     };
 
     var addNavigatedCategory = function (data) {
-      console.log('categories', navigated_categories);
-      console.log('adding cateogry');
       navigated_categories.push(data);
-      console.log('categories', navigated_categories);
     };
 
     var removeNavigatedCategory = function () {
-      console.log('categories', navigated_categories);
-      console.log('removing cateogry');
       navigated_categories.pop();
-      console.log('categories', navigated_categories);
     };
 
     var clearNavigatedCategories = function () {
-      console.log('clearing categories');
       navigated_categories = [];
     };
 

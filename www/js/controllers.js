@@ -186,8 +186,7 @@ angular.module('app.controllers', [])
       function downloadImage(uid, url, filename) {
         FileService.originalDownload(url, filename, 'imgs', function (path) {
           localStorageService.setBildPath(uid, path);
-          console.log('uid', uid);
-          console.log('path', path);
+          console.log('bild path', localStorageService.getBildPath(uid));
         });
       }
 
@@ -200,12 +199,12 @@ angular.module('app.controllers', [])
       DatabaseService.selectTopCategories(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
           $scope.categories.push(results.rows.item(x));
+          var uid = $scope.categories[x].uid;
           if ($rootScope.internet) {
-            var uid = $scope.categories[x].uid;
             downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
           } else {
-            console.log('getting uid', $scope.categories[x].uid);
-            //$scope.categories[x].bild = localStorageService.getBildPath($scope.categories[x].uid);
+            console.log('getting uid', uid);
+            $scope.categories[x].bild = localStorageService.getBildPath(uid);
           }
         }
         countArtikels();
