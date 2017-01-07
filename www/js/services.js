@@ -8,6 +8,7 @@ angular.module('app.services', [])
   $localStorage = $localStorage.$default({
     country: '',
     bookmarked_products: [],
+    category_files: {},
     product_files: {},
     video_files: {},
     download_files: [],
@@ -85,11 +86,23 @@ angular.module('app.services', [])
   };
 
   var getLandscapePath = function (product_id) {
-    return $localStorage.product_files[product_id].image_landscape;
+    if ($localStorage.product_files[product_id].image_landscape == undefined) {
+      return '';
+    } else {
+      return $localStorage.product_files[product_id].image_landscape;
+    }
   };
 
   var setLandscapePath = function (product_id, path) {
     $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'image_landscape': path});
+  };
+
+  var setBildPath = function (category_id, path) {
+    $localStorage.category_files[category_id] = Object.assign({}, $localStorage.category_files[category_id], {'bild': path});
+  };
+
+  var getBildPath = function (category_id) {
+    return $localStorage.category_files[category_id].bild;
   };
 
   var setTechnicalPath = function (product_id, path) {
@@ -105,11 +118,19 @@ angular.module('app.services', [])
   };
 
   var getVideoPath = function (video_id) {
-    return $localStorage.video_files[video_id];
+    return $localStorage.video_files[video_id].videofile_de;
   };
 
   var setVideoPath = function (video_id,path) {
-    $localStorage.video_files[video_id] = path;
+    $localStorage.video_files[video_id] = Object.assign({}, $localStorage.video_files[video_id], {'videofile_de': path});
+  };
+
+  var setVideoImagePath = function (video_id, path) {
+    $localStorage.video_files[video_id] = Object.assign({}, $localStorage.video_files[video_id], {'startimage_de': path});
+  };
+
+  var getVideoImagePath = function (video_id) {
+    return $localStorage.video_files[video_id].startimage_de;
   };
 
   var getDownloadFiles =  function () {
@@ -137,6 +158,8 @@ angular.module('app.services', [])
     getAllVideoPaths : getAllVideoPaths,
     getVideoPath : getVideoPath,
     setVideoPath : setVideoPath,
+    setVideoImagePath: setVideoImagePath,
+    getVideoImagePath: getVideoImagePath,
     getDownloadFiles : getDownloadFiles,
     setFilters: setFilters,
     getFilters: getFilters,
@@ -145,7 +168,9 @@ angular.module('app.services', [])
     setTechnicalPath: setTechnicalPath,
     getTechnicalPath: getTechnicalPath,
     setThumbnailPath: setThumbnailPath,
-    getThumbnailPath: getThumbnailPath
+    getThumbnailPath: getThumbnailPath,
+    setBildPath: setBildPath,
+    getBildPath: getBildPath
   };
 
 
@@ -258,11 +283,11 @@ angular.module('app.services', [])
 }])
 
 //Service for managing Files
-.factory('FileService',[function () {
+  .factory('FileService', ['$cordovaFileTransfer', function ($cordovaFileTransfer) {
 
     //Save a file to system path
   var download = function (url, filename, dirName, success) {
-    var filePath = cordova.file.dataDirectory + "files/img/" + filename;
+    var filePath = cordova.file.dataDirectory + "files/" + dirName + "/" + filename;
 
     var fileTransfer = new FileTransfer();
     var uri = encodeURI(url);
@@ -282,10 +307,65 @@ angular.module('app.services', [])
     );
   };
 
+    var cordovaDownload = function (url, filename, dirName, success, loading) {
 
+      var targetPath = cordova.file.dataDirectory + dirName + "/" + filename;
+      $cordovaFileTransfer.download(url, targetPath, {}, true).then(function (result) {
+        success(targetPath);
+      }, function (error) {
+        console.log('Error Download file', error);
+      }, function (progress) {
+        loading(progress);
+      });
+    };
+
+    var originalDownload = function (url, filename, dirName, success) {
+      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+          fs.root.getDirectory(
+            dirName,
+            {
+              create: true
+            },
+            function (dirEntry) {
+              dirEntry.getFile(
+                filename,
+                {
+                  create: true,
+                  exclusive: false
+                },
+                function gotFileEntry(fe) {
+                  var p = fe.toURL();
+                  fe.remove();
+                  ft = new FileTransfer();
+                  ft.download(
+                    encodeURI(url),
+                    p,
+                    function (entry) {
+                      success(entry.toURL());
+                    },
+                    function (error) {
+                      console.log(error);
+                    },
+                    false,
+                    null
+                  );
+                },
+                function () {
+                  console.log("Get file failed");
+                }
+              );
+            }
+          );
+        },
+        function () {
+          console.log("Request for filesystem failed");
+        });
+    };
 
   return{
-    download : download
+    download: download,
+    cordovaDownload: cordovaDownload,
+    originalDownload: originalDownload
   }
 
 }])
