@@ -13,7 +13,7 @@
 
     <div class="row">
       <div class="col text-left">
-        <h3 id="categories-heading6" style="color:#FFFFFF;">Das SCHELL Produktsortiment</h3>
+        <h3 id="categories-heading6" style="color: #FFFFFF; margin-top: 20px;">Das SCHELL Produktsortiment</h3>
         <p style="color:#FFFFFF;">Das Produktsortiment von SCHELL Armaturen auf
           einen Blick. Bitte wählen Sie eine Kategorie</p>
       </div>
@@ -31,7 +31,7 @@
               </div>
             </div> -->
             <div class="row">
-              <div class="col col-25">
+              <div class="col col-33">
                 <div class="product-counter">
                   <p ng-if="categories[$index].child_ids"><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
                   <p ng-if="categories[$index].product_ids"><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
@@ -53,7 +53,7 @@
               </div>
             </div> -->
             <div class="row">
-              <div class="col col-25">
+              <div class="col col-33">
                 <div class="product-counter">
                   <p ng-if="categories[$index + 1].child_ids"><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
                   <p ng-if="categories[$index + 1].product_ids"><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>

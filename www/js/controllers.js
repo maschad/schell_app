@@ -356,7 +356,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Bookmark Function
     $scope.bookmark = function ($event) {
       $ionicPopup.alert({
-        title: 'Seite bookmarkiert'
+        title: 'Seite bookmarkiert',
+        cssClass: 'bookmark-popup'
       });
       localStorageService.bookmarkProduct($scope.details);
     };
