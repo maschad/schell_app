@@ -11,67 +11,50 @@ angular.module('app.routes', [])
     .state('start-screen', {
       url: '/start-screen',
       templateUrl: 'templates/start_screen.html',
-      controller: 'start_screenCtrl',
-      ncyBreadcrumb: {
-        label: 'Home'
-      }
+      controller: 'start_screenCtrl'
     })
 
     .state('products', {
+      cache: false,
       url: '/product_areas',
       templateUrl: 'templates/product_areas.html',
-      controller: 'product_areasCtrl',
-      ncyBreadcrumb: {
-        label: 'Products'
-      }
+      controller: 'product_areasCtrl'
     })
     .state('product_overview', {
+      cache: false,
       url: '/product_overview',
       templateUrl: 'templates/product_overview.html',
-      controller: 'productOverviewCtrl',
-      ncyBreadcrumb: {
-        label: 'Overview'
-      }
+      controller: 'productOverviewCtrl'
     })
 
   .state('video', {
     url: '/video',
     templateUrl: 'templates/video.html',
-    controller: 'videoCtrl',
-    ncyBreadcrumb: {
-      label: 'video'
-    }
+    controller: 'videoCtrl'
   })
 
   .state('settings', {
+    cache: false,
     url: '/settings',
     templateUrl: 'templates/settings.html',
-    controller: 'settingsCtrl',
-    ncyBreadcrumb: {
-      label: 'settings'
-    }
+    controller: 'settingsCtrl'
   })
 
   .state('countryselect', {
     url: '/country_select',
     templateUrl: 'templates/countryselect.html',
-    controller: 'countryselectCtrl',
-    ncyBreadcrumb: {
-      label: 'Country'
-    }
+    controller: 'countryselectCtrl'
   })
 
   .state('product_lines', {
     url: '/product_lines',
     templateUrl: 'templates/product_lines.html',
-    controller: 'productLinesCtrl',
-    ncyBreadcrumb: {
-      label: 'Lines'
-    }
+    controller: 'productLinesCtrl'
   })
 
 
   .state('detailPage', {
+    cache: false,
     url: '/detail_page',
     templateUrl: 'templates/detailPage.html',
     controller: 'detailPageCtrl',
@@ -91,6 +74,7 @@ angular.module('app.routes', [])
   })
 
   .state('offline_storage', {
+    cache: false,
     url: 'offlineStorage',
     templateUrl: 'templates/offline_storage.html',
     controller: 'offlineStorageCtrl',

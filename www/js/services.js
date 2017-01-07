@@ -374,7 +374,7 @@ angular.module('app.services', [])
   .factory('appDataService', ['$rootScope', '$ionicPopup', function ($rootScope, $ionicPopup) {
     var current_category_child_ids = '';
     var current_product = {};
-    var email_link = "http://www.schell.eu/deutschland-de/produkte/";
+    var navigated_categories = [];
     var current_title = '';
     var previous_title = '';
     var root_title = '';
@@ -397,12 +397,27 @@ angular.module('app.services', [])
       return current_product;
     };
 
-    var getEmailLink = function () {
-      return email_link;
+    var getNavigatedCategories = function () {
+      return navigated_categories;
     };
 
-    var appendEmailLink = function (data) {
-      email_link = email_link.concat(data);
+    var addNavigatedCategory = function (data) {
+      console.log('categories', navigated_categories);
+      console.log('adding cateogry');
+      navigated_categories.push(data);
+      console.log('categories', navigated_categories);
+    };
+
+    var removeNavigatedCategory = function () {
+      console.log('categories', navigated_categories);
+      console.log('removing cateogry');
+      navigated_categories.pop();
+      console.log('categories', navigated_categories);
+    };
+
+    var clearNavigatedCategories = function () {
+      console.log('clearing categories');
+      navigated_categories = [];
     };
 
     var getCurrentTitle = function () {
@@ -466,9 +481,11 @@ angular.module('app.services', [])
       setCurrentCategoryIds : setCurrentCategoryIds,
       setCurrentProduct : setCurrentProduct,
       getCurrentProduct : getCurrentProduct,
-      getEmailLink : getEmailLink,
+      getNavigatedCategories: getNavigatedCategories,
       checkInternet: checkInternet,
-      appendEmailLink : appendEmailLink,
+      addNavigatedCategory: addNavigatedCategory,
+      removeNavigatedCategory: removeNavigatedCategory,
+      clearNavigatedCategories: clearNavigatedCategories,
       getCurrentTitle : getCurrentTitle,
       setCurrentTitle : setCurrentTitle,
       getPreviousTitle : getPreviousTitle,
