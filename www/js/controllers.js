@@ -438,17 +438,25 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //The products to be show in collapsible list
     $scope.files = [];
 
-    //Videos for that corresponding product
-    $scope.videos = [];
 
       function loadProduct() {
-        //Set details
-        $scope.details = appDataService.getCurrentProduct();
         //Check for internet
         appDataService.checkInternet();
 
-      //If no internet, load offline files
-      if (!$rootScope.internet) {
+        //Set details
+        $scope.details = appDataService.getCurrentProduct();
+
+        if ($rootScope.internet) {
+          //Load Downloads and videos
+          if ($scope.details.download_ids != '') {
+            getFiles($scope.details.download_ids);
+          }
+          if ($scope.details.video_ids != '') {
+            console.log('video ids', $scope.details.video_ids);
+            getVideos($scope.details.video_ids);
+          }
+
+        } else {
         //If no internet load these files
         var path = localStorageService.getLandscapePath($scope.details.uid);
         console.log('landscape', path);
@@ -476,23 +484,19 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     function getVideos(video_ids) {
       //#TODO: Check for internet, if no internet, get video paths from local storage
+      //Videos for that corresponding product
+      $scope.videos = [];
+
       DatabaseService.selectVideos(video_ids, function(videos){
         for(var x = 0; x < videos.rows.length; x++){
           $scope.videos.push(videos.rows.item(x));
+          console.log('pushing videos urls', $scope.videos[x].videofile_de);
         }
-      })
+      });
     }
 
+      //Load the product
       loadProduct();
-
-    //Load Downloads and videos
-    if($scope.details.download_ids != ''){
-      getFiles($scope.details.download_ids);
-    }
-    if($scope.details.video_ids != ''){
-      console.log('video ids', $scope.details.video_ids);
-      getVideos($scope.details.video_ids);
-    }
 
     //Get various labels
     $scope.title = appDataService.getCurrentTitle();
@@ -574,7 +578,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         },
         {
           title : 'VIDEO',
-          url : '',
           show : false
         }
 
