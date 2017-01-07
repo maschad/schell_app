@@ -118,11 +118,11 @@ angular.module('app.services', [])
   };
 
   var getVideoPath = function (video_id) {
-    return $localStorage.video_files[video_id].videofile_de;
+    return $localStorage.video_files[video_id];
   };
 
   var setVideoPath = function (video_id,path) {
-    $localStorage.video_files[video_id] = Object.assign({}, $localStorage.video_files[video_id], {'videofile_de': path});
+    $localStorage.video_files[video_id] = path;
   };
 
   var setVideoImagePath = function (video_id, path) {

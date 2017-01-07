@@ -291,10 +291,10 @@ function ($scope,$rootScope, $sce,$ionicSideMenuDelegate, FirebaseService,FileSe
           });
         } else {
           for (var y = 0; y < $scope.videos.length; y++) {
-            //console.log('video path in local storage', vids[$scope.videos[y].uid].videofile_de);
-            console.log('image video path in local storage', vids[$scope.videos[y].uid].startimage_de);
+            console.log('video path in local storage', vids[$scope.videos[y].uid]);
+            //console.log('image video path in local storage', vids[$scope.videos[y].uid].startimage_de);
             //$scope.videos[y].videofile_de = vids[$scope.videos[y].uid].videofile_de;
-            $scope.videos[y].startimage_de = vids[$scope.videos[y].uid].startimage_de;
+            //$scope.videos[y].startimage_de = vids[$scope.videos[y].uid].startimage_de;
           }
         }
       }
@@ -1215,12 +1215,11 @@ function ($scope,$state, $ionicPopup, $ionicSideMenuDelegate, localStorageServic
           console.log('video title', $scope.videos[x].title);
           var uid = $scope.videos[x].uid;
           console.log('videofile_de', $scope.videos[x].videofile_de);
-          FileService.cordovaDownload($scope.videos[x].videofile_de, $scope.videos[x].title.concat('.mp4'), 'videos', function (result) {
+          $scope.downloadVideoShow();
+          FileService.originalDownload($scope.videos[x].videofile_de, $scope.videos[x].title.concat('.mp4'), 'videos', function (result) {
             console.log('filepath', result);
+            localStorageService.setVideoPath(uid, result);
             $scope.downloadVideoHide();
-          }, function (prog) {
-            $scope.downloadVideoShow();
-            $scope.progress = (prog.loaded / prog.total) * 100;
           });
           /**
            FileService.download($scope.videos[x].startimage_de, $scope.videos[x].title.concat('.jpg'), 'imgs', function (path) {
