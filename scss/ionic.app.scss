@@ -1090,9 +1090,9 @@ body.has-active-menu {
 .side-nav-download-sm {
   height: 23px;
   width: 29px;
-  // background: url(../img/icons/download.png) no-repeat 0 0;
+  //background: url(../img/icons/download.png) no-repeat 0 0;
   position: relative;
-  top: 4px;
+  top: -19px;
   font-size: 24px;
   color: #fff;
   // color: red;
@@ -1101,9 +1101,9 @@ body.has-active-menu {
 .side-nav-downloaded-sm {
   height: 23px;
   width: 29px;
-  // background: url(../img/icons/download.png) no-repeat 0 0;
+  //background: url(../img/icons/download.png) no-repeat 0 0;
   position: relative;
-  top: 4px;
+  top: -19px;
   font-size: 24px;
   color: darkred;
 }
@@ -1829,4 +1829,5 @@ label.menu-item {
 
 .ion-close-round {
   float: right;
+  font-size: 18px;
 }

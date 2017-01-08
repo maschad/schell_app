@@ -81,6 +81,10 @@ angular.module('app.services', [])
     }
   };
 
+  var categoryDownloaded = function (uid) {
+    return $localStorage.category_files.hasOwnProperty(uid.toString());
+  };
+
   var setThumbnailPath = function (product_id, path) {
     $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': path});
   };
@@ -149,6 +153,7 @@ angular.module('app.services', [])
     return $localStorage.filters;
   };
 
+
   return {
     getCountry : getCountry,
     setCountry : setCountry,
@@ -166,6 +171,7 @@ angular.module('app.services', [])
     getVideoImagePath: getVideoImagePath,
     getDownloadFiles : getDownloadFiles,
     productDownloaded: productDownloaded,
+    categoryDownloaded: categoryDownloaded,
     setFilters: setFilters,
     getFilters: getFilters,
     setPDFPath: setPDFPath,

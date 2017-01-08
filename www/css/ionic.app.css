@@ -10917,7 +10917,7 @@ body.has-active-menu {
   height: 23px;
   width: 29px;
   position: relative;
-  top: 4px;
+  top: -19px;
   font-size: 24px;
   color: #fff;
 }
@@ -10926,7 +10926,7 @@ body.has-active-menu {
   height: 23px;
   width: 29px;
   position: relative;
-  top: 4px;
+  top: -19px;
   font-size: 24px;
   color: darkred;
 }
@@ -11446,7 +11446,6 @@ ion-popover-view.fit ion-content {
     left: 34%;
     width: 220px;
   }
-
   .popup-container.bookmark-popup .popup:after {
     content: '';
     width: 0;
@@ -11459,14 +11458,12 @@ ion-popover-view.fit ion-content {
     border-width: 10px 10px 0 10px;
     border-color: #000000 transparent transparent transparent;
   }
-
   .popup-container.download-popup .popup {
     position: absolute;
     bottom: 64px;
     left: 35%;
     width: 230px;
   }
-
   .popup-container.download-popup .popup:after {
     content: '';
     width: 0;
@@ -11582,4 +11579,5 @@ label.menu-item {
 
 .ion-close-round {
   float: right;
+  font-size: 18px;
 }

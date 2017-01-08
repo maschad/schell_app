@@ -199,10 +199,11 @@ angular.module('app.controllers', [])
         for (var x = 0; x < results.rows.length; x++) {
           $scope.categories.push(results.rows.item(x));
           var uid = $scope.categories[x].uid;
-          if ($rootScope.internet) {
-            downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
-          } else {
+          if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
             $scope.categories[x].bild = localStorageService.getBildPath(uid);
+
+          } else if ($rootScope.internet) {
+            downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
           }
         }
         countArtikels();
@@ -431,21 +432,24 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$rootScope', '$ionicPopover', '$ionicHistory', '$sce', 'FileService', 'FirebaseService', 'appDataService', 'localStorageService', 'DatabaseService', '$ionicSideMenuDelegate', '$ionicLoading', '$ionicPopup', '$cordovaInAppBrowser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$state', '$rootScope', '$ionicPopover', '$ionicHistory', '$sce', 'FileService', 'FirebaseService', 'appDataService', 'localStorageService', 'DatabaseService', '$ionicSideMenuDelegate', '$ionicLoading', '$ionicPopup', '$cordovaInAppBrowser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $rootScope, $ionicPopover, $ionicHistory, $sce, FileService, FirebaseService, appDataService, localStorageService, DatabaseService, $ionicSideMenuDelegate, $ionicLoading, $ionicPopup, $cordovaInAppBrowser) {
+    function ($scope, $state, $rootScope, $ionicPopover, $ionicHistory, $sce, FileService, FirebaseService, appDataService, localStorageService, DatabaseService, $ionicSideMenuDelegate, $ionicLoading, $ionicPopup, $cordovaInAppBrowser) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
-    //The products to be show in collapsible list
-    $scope.files = [];
+      //The products to be show in collapsible list
+      $scope.files = [];
       //Array of Bookmarked Products
       $scope.bookmarked = [];
 
-      //Videos for that corresponding product
-      $scope.videos = [];
+      //Refresh page
+      $scope.refreshItems = function () {
+        loadProduct();
+        $state.reload();
+      };
 
 
       //Load the product information
@@ -495,6 +499,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     }
 
     function getVideos(video_ids) {
+      //Videos for that corresponding product
+      $scope.videos = [];
+
       DatabaseService.selectVideos(video_ids, function(videos){
         for(var x = 0; x < videos.rows.length; x++){
           $scope.videos.push(videos.rows.item(x));
@@ -583,12 +590,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         },
         {
           title : 'VARIANTEN',
-          varianten : '',
           show : false
         },
         {
           title : 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL',
-          varianten : '',
           show : false
         },
         {
@@ -600,10 +605,21 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //Function to download product
       $scope.downloadProduct = function () {
-        if ($rootScope.internet) {
-          FileService.originalDownload($scope.details.image_landscape, $scope.details.image_landscape.concat('_landscape.png'), 'img', function (path) {
+        if ($rootScope.internet && !$scope.productDownloaded) {
+          FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
             localStorageService.setLandscapePath($scope.details.uid, path);
           });
+          FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
+            localStorageService.setTechnicalPath($scope.details.uid, path);
+          });
+          for (var y = 0; y < files.length; y++) {
+            FileService.originalDownload($scope.files[y].datei_de, $scope.files[y].nummer.concat('_booklet.pdf'), 'pdfs', function (path) {
+              localStorageService.setPDFPath($scope.details.uid, path);
+            });
+            FileService.originalDownload($scope.files[y].thumbnail, $scope.files[y].nummer.concat('_thumbnail.png'), 'img', function (path) {
+              localStorageService.setThumbnailPath($scope.details.uid, path);
+            });
+          }
         } else {
           $ionicPopup.alert({
             title: 'Bereits heruntergeladen'
@@ -667,8 +683,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('productLinesCtrl', ['$scope', '$rootScope', '$ionicLoading', '$ionicHistory', '$ionicFilterBar', '$state', 'localStorageService', 'FileService', 'DatabaseService', 'appDataService', '$ionicPopover',
-    function ($scope, $rootScope, $ionicLoading, $ionicHistory, $ionicFilterBar, $state, localStorageService, FileService, DatabaseService, appDataService, $ionicPopover) {
+  .controller('productLinesCtrl', ['$scope', '$state', '$rootScope', '$ionicLoading', '$ionicHistory', '$ionicFilterBar', 'localStorageService', 'FileService', 'DatabaseService', 'appDataService', '$ionicPopover',
+    function ($scope, $state, $rootScope, $ionicLoading, $ionicHistory, $ionicFilterBar, localStorageService, FileService, DatabaseService, appDataService, $ionicPopover) {
     //Set the titles and initialize empty array of filters
     $scope.title = appDataService.getCurrentTitle();
     $scope.root = appDataService.getRootTitle();
@@ -677,14 +693,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Array storing artikel counts for each category
     $scope.counts = {};
 
-    //Initialize as empty
-    $scope.categories = [];
-
     //Whether to show the filter or not
     $scope.showFilter = false;
 
-    //Check for internet
-    appDataService.checkInternet();
 
 
     //Loading functions
@@ -695,6 +706,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         showBackdrop: true
       });
     };
+
     //Hide function
     $scope.hide = function(){
       $ionicLoading.hide();
@@ -716,22 +728,33 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Load SubCategories from database
     function loadSubCategories(child_ids) {
+      //Initialize as empty
+      $scope.categories = [];
+      console.log('child ids', child_ids);
       $scope.show();
+      //Check for internet
+      appDataService.checkInternet();
+      //Load the child ids from db
+      console.log('internet check', $rootScope.internet);
       DatabaseService.selectChildCategories(child_ids,function (categories) {
         for(var x = 0; x < categories.rows.length; x++){
           $scope.categories.push(categories.rows.item(x));
           //Grab the images or load them in offline mode
+          var uid = $scope.categories[x].uid;
+          console.log('category uid', uid);
           if ($scope.categories[x].bild != '') {
-            if ($rootScope.internet) {
+            if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
+              console.log('loading bild');
+              $scope.categories[x].bild = localStorageService.getBildPath(uid);
+            } else if ($rootScope.internet) {
               console.log('downloading images');
-              downloadImage($scope.categories[x].uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
-            } else {
-              $scope.categories[x].bild = localStorageService.getBildPath($scope.categories[x].uid)
+              downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
             }
           }
         }
         //Add up the artikels
-        countArtikels();
+        //countArtikels();
+        $scope.hide();
       }, function (error) {
         //Handle error
         console.log('ERROR',error);
@@ -914,13 +937,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     }
 
-
     //Get the correct childIds and then load them from database
     var child_ids = appDataService.getCurrentCategoryIds();
     //Load the sub categories to display
     loadSubCategories(child_ids);
 
-    //Popover function
+
+      //Popover function
     $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
       scope: $scope
     }).then(function (popover) {
@@ -934,11 +957,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Child choice
       $scope.choice = function (child_ids, title) {
         //If user chooses something with child ids
-        $scope.categories = [];
-        loadSubCategories(child_ids);
         appDataService.setCurrentTitle(title);
         appDataService.addNavigatedCategory(title);
         $scope.title = title;
+        loadSubCategories(child_ids);
         $state.reload();
       };
 

@@ -46,13 +46,17 @@
       </li>
       <li>
         <div
-          ng-class="productDownloaded ? 'side-nav-download-sm schellicon-downloaded' : 'side-nav-downloaded-sm schellicon-download'"
+          ng-class="productDownloaded ? 'side-nav-downloaded-sm schellicon-download' : 'side-nav-download-sm schellicon-download'"
           ng-click="downloadProduct()"></div>
       </li>
     </ul>
   </div>
 
   <ion-content padding="false" class="has-header">
+    <!-- For refreshing items -->
+    <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="refreshItems()">
+    </ion-refresher>
+
     <div class="row responsive-sm marg-top-30">
       <div class="col col-40">
         <img ng-src="{{details.image_landscape}}" class="product-img">
@@ -60,7 +64,7 @@
       <div id="detailPage-markdown3" class="col">
         <p id="detailPage-heading4" class="product-order-number">Bestellnummer: {{details.nummer}}</p>
         <p id="detailPage-heading3" class="product-name"> {{details.produktbezeichnung_de}} </p>
-        <p class="product-summary"> {{details.dimension}} </p>
+        <p class="product-summary"> {{details.beschreibung_de}}</p>
         <p class="product-noted"> {{details.zusatz2_de}}</p>
         <ion-list>
           <div ng-repeat="list in listData">
@@ -89,16 +93,24 @@
                   <div class="row">
                     <div class="col col-20">
                       <img ng-src="{{file.thumbnail}}" width="70%" style="border: 1px solid #000;"
-                           ng-click="downloadPDF(file)">
-                    </div>
-                    <div class="col">
-                      <p class="wrap"> {{file.broschuerentitel_de}} </p>
-                      <p class="wrap"> {{file.zusatzinformation_de}} </p>
+                           ng-click="downloadPDF(file)"><!-- #TODO: put in download button -->
                     </div>
                   </div>
                 </div>
               </div>
-              <div ng-if="list.title == 'VIDEOS'">
+              <div ng-if="list.title == 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL'">
+                <div ng-repeat="file in files">
+
+                  <div class="col">
+                    <p class="wrap"> {{file.zusatzinformation_de}} </p>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="list.title == 'VARIANTEN'">
+                <div class="wrap" ng-bind-html="details.differenzierung_de"></div>
+              </div>
+
+              <div ng-if="list.title == 'VIDEO'">
                 <div ng-show="videos">
                   <div ng-repeat="video in videos">
                     <div class="col">
