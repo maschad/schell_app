@@ -288,7 +288,21 @@ angular.module('app.services', [])
 }])
 
 //Service for managing Files
-  .factory('FileService', ['$cordovaFileTransfer', '$rootScope', function ($cordovaFileTransfer, $rootScope) {
+  .factory('FileService', ['$cordovaFileTransfer', '$rootScope', '$ionicLoading', function ($cordovaFileTransfer, $rootScope, $ionicLoading) {
+
+    //Loading functions
+    var downloadShow = function () {
+      $ionicLoading.show({
+        scope: $rootScope,
+        template: '<p>Downloading Data...{{download_status}}%</p><ion-spinner></ion-spinner>',
+        animation: 'fade-in',
+        showBackdrop: true
+      });
+    };
+    //Hide
+    var downloadHide = function () {
+      $ionicLoading.hide();
+    };
 
     //Save a file to system path
   var download = function (url, filename, dirName, success) {
@@ -347,6 +361,7 @@ angular.module('app.services', [])
                     p,
                     function (entry) {
                       success(entry.toURL());
+                      downloadHide();
                     },
                     function (error) {
                       console.log(error);
@@ -355,9 +370,9 @@ angular.module('app.services', [])
                     null
                   );
                   ft.onprogress = function (progressEvent) {
+                    downloadShow();
                     if (progressEvent.lengthComputable) {
-                      $rootScope.download_status = (progressEvent.loaded / progressEvent.total) * 100;
-                      console.log('download status', $rootScope.download_status);
+                      $rootScope.download_status = Math.round((progressEvent.loaded / progressEvent.total) * 100);
                     } else {
                       $rootScope.download_status += 1;
                     }

@@ -1083,6 +1083,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Function to load the data on the screen
     function loadData() {
+      //Initiate load
+      $scope.show();
       DatabaseService.selectAllVideos(function (videos) {
         var mbTotal = 0;
         for (var x = 0; x < videos.rows.length; x++) {
@@ -1122,8 +1124,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Sum FileSizes
     function sumFileSizes(category) {
-      //Initiate load
-      $scope.show();
       //Product ids to download
       var product_ids_toDownload = [];
       //Actual products to download
@@ -1347,15 +1347,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     loadData();
 
       function downloadVideo(uid, url, filename) {
-        $scope.downloadVideoShow();
         FileService.originalDownload(url, filename, 'videos', function (result) {
           localStorageService.setVideoPath(uid, result);
-          $scope.downloadVideoHide();
         });
-    }
+      }
 
       function downloadVideoImage(uid, url, filename) {
-        $scope.downloadVideoShow();
         FileService.originalDownload(url, filename, 'imgs', function (result) {
           localStorageService.setVideoImagePath(uid, result);
         });
@@ -1366,7 +1363,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //If checked
       if ($scope.preferences[3].download_videos) {
         for (var x = 0; x < $scope.videos.length; x++) {
-          $scope.downloadVideoShow();
           downloadVideo($scope.videos[x].uid, $scope.videos[x].videofile_de, $scope.videos[x].title.concat('.mp4'));
           downloadVideoImage($scope.videos[x].uid, $scope.videos[x].startimage_de, $scope.videos[x].title.concat('.jpg'));
         }
