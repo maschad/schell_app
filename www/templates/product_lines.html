@@ -9,7 +9,7 @@
     <!-- Breadcrumb ionic -->
     <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
-  <ion-content padding="true" class="has-header">
+  <ion-content padding="false" class="has-header">
     <div id="product-lines-body">
       <div class="container">
         <div class="row">
@@ -24,18 +24,14 @@
             <div class="col col-33" ng-click="choice_product(categories[$index].product_ids, categories[$index].title_de)" ng-if="categories[$index].product_ids">
               <div class="product-tile">
                 <div class="row">
-                  <div class="col">
+                  <div class="col col-67">
                     <div class="product-counter">
                       <p><strong>{{counts[categories[$index].uid]}} Artikel</strong></p>
                     </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col col-66">
                     <h3 class="product-type">{{categories[$index].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{categories[$index].bild}}">
+                    <img src="{{categories[$index].bild}}" style="float:right;">
                   </div>
                 </div>
               </div>
@@ -43,17 +39,15 @@
             <!-- Check for children -->
             <div class="col col-33" ng-click="choice(categories[$index].child_ids,categories[$index].title_de)" ng-if="categories[$index].child_ids">
               <div class="product-tile">
-                <div class="col">
-                  <div class="product-counter">
-                    <p><strong>{{counts[categories[$index].uid]}} Artikel</strong></p>
-                  </div>
-                </div>
                 <div class="row">
-                  <div class="col col-66">
+                  <div class="col col-67">
+                    <div class="product-counter">
+                      <p><strong>{{counts[categories[$index].uid]}} Artikel</strong></p>
+                    </div>
                     <h3 class="product-type">{{categories[$index].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{categories[$index].bild}}">
+                    <img src="{{categories[$index].bild}}" style="float:right;">
                   </div>
                 </div>
               </div>
@@ -62,18 +56,14 @@
             <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids" ng-click="choice_product(categories[$index + 1].product_ids,categories[$index + 1].title_de)">
               <div class="product-tile">
                 <div class="row">
-                  <div class="col">
+                  <div class="col col-67">
                     <div class="product-counter">
                       <p><strong>{{counts[categories[$index + 1].uid]}} Artikel</strong></p>
                     </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col col-66">
                     <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{categories[$index + 1].bild}}">
+                    <img src="{{categories[$index + 1].bild}}" style="float:right;">
                   </div>
                 </div>
               </div>
@@ -82,17 +72,15 @@
             <!--Child Product-->
             <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].child_ids" ng-click="choice(categories[$index + 1].child_ids,categories[$index + 1].title_de)">
               <div class="product-tile">
-                <div class="col">
-                  <div class="product-counter">
-                    <p><strong>{{counts[categories[$index + 1].uid]}} Artikel</strong></p>
-                  </div>
-                </div>
                 <div class="row">
-                  <div class="col col-66">
+                  <div class="col col-67">
+                    <div class="product-counter">
+                      <p><strong>{{counts[categories[$index + 1].uid]}} Artikel</strong></p>
+                    </div>
                     <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{categories[$index + 1].bild}}">
+                    <img src="{{categories[$index + 1].bild}}" style="float:right;">
                   </div>
                 </div>
               </div>
@@ -102,18 +90,14 @@
             <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].product_ids" ng-click="choice_product(categories[$index + 2].product_ids,categories[$index + 2].title_de)">
               <div class="product-tile">
                 <div class="row">
-                  <div class="col">
+                  <div class="col col-67">
                     <div class="product-counter">
                       <p><strong>{{counts[categories[$index + 2].uid]}} Artikel</strong></p>
                     </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col col-66">
                     <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{categories[$index + 2].bild}}">
+                    <img src="{{categories[$index + 2].bild}}" style="float:right;">
                   </div>
                 </div>
               </div>
@@ -121,22 +105,19 @@
             <!--Child IDs-->
             <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].child_ids" ng-click="choice(categories[$index + 2].child_ids,categories[$index + 2].title_de)">
               <div class="product-tile">
-                <div class="col">
-                  <div class="product-counter">
-                    <p><strong>{{counts[categories[$index + 2].uid]}} Artikel</strong></p>
-                  </div>
-                </div>
                 <div class="row">
-                  <div class="col col-66">
+                  <div class="col col-67">
+                    <div class="product-counter">
+                      <p><strong>{{counts[categories[$index + 2].uid]}} Artikel</strong></p>
+                    </div>
                     <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
                   </div>
                   <div class="col">
-                    <img src="{{categories[$index + 2].bild}}">
+                    <img src="{{categories[$index + 2].bild}}" style="float:right;">
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>

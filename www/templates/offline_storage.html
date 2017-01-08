@@ -22,7 +22,7 @@
         <ion-checkbox class="checkbox-settings item-checkbox-right"
                       ng-repeat="category in preferences[2].downloaded_categories"
                       ng-change="downloadCategory(category.item,category.checked)" ng-model="category.checked">
-          <strong style="font-size: 9px;">{{category.item.title_de}} {{fileSizes[category.item.uid] / (1073741824) |
+          <strong class="wrap">{{category.item.title_de}} {{fileSizes[category.item.uid] / (1073741824) |
             number:2}} GBs</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>

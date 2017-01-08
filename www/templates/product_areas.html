@@ -1,4 +1,4 @@
-<ion-view title="Produktkategorien" id="page4" style="background-color:#9e0a22;">
+<ion-view title="PRODUKTKATEGORIEN" id="page4" style="background-color:#9e0a22;">
   <ion-nav-buttons side="right">
     <!-- Filter search bar -->
     <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
@@ -13,7 +13,7 @@
 
     <div class="row">
       <div class="col text-left">
-        <h3 id="categories-heading6" style="color:#FFFFFF;">Das SCHELL Produktsortiment</h3>
+        <h3 id="categories-heading6" style="color:#FFFFFF; margin-top: 20px;">Das SCHELL Produktsortiment</h3>
         <p style="color:#FFFFFF;">Das Produktsortiment von SCHELL Armaturen auf
           einen Blick. Bitte wählen Sie eine Kategorie</p>
       </div>
@@ -23,15 +23,11 @@
         <div class="col col-50" ng-click="choice(categories[$index].child_ids,categories[$index].title_de,categories[$index].filter_ids)">
           <div class="product-tile">
             <div class="row">
-              <div class="col">
+              <div class="col col-33">
                 <div class="product-counter">
                   <p> {{counts[categories[$index].uid]}} Artikels</p>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col col-25">
-                <img src="{{categories[$index].bild}}" class="center" style="width: auto;">
+                <img src="{{categories[$index].bild}}" class="center">
               </div>
               <div class="col">
                 <h3 class="product-type">{{categories[$index].title_de}}</h3>
@@ -41,14 +37,12 @@
         </div>
         <div class="col col-50" ng-if="categories[$index + 1] != undefined" ng-click="choice(categories[$index + 1].child_ids,categories[$index + 1].title_de,categories[$index + 1].filter_ids)">
           <div class="product-tile">
-            <div class="col">
-              <div class="product-counter">
-                <p> {{counts[categories[$index + 1].uid]}} Artikels </p>
-              </div>
-            </div>
             <div class="row">
-              <div class="col col-25">
-                <img src="{{categories[$index + 1].bild}}" class="center" style="width: auto;">
+              <div class="col col-33">
+                <div class="product-counter">
+                  <p> {{counts[categories[$index + 1].uid]}} Artikels </p>
+                </div>
+                <img src="{{categories[$index + 1].bild}}" class="center">
               </div>
               <div class="col">
                 <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
