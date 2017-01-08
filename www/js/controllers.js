@@ -186,7 +186,6 @@ angular.module('app.controllers', [])
       function downloadImage(uid, url, filename) {
         FileService.originalDownload(url, filename, 'imgs', function (path) {
           localStorageService.setBildPath(uid, path);
-          console.log('bild path', localStorageService.getBildPath(uid));
         });
       }
 
@@ -203,7 +202,6 @@ angular.module('app.controllers', [])
           if ($rootScope.internet) {
             downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
           } else {
-            console.log('getting uid', uid);
             $scope.categories[x].bild = localStorageService.getBildPath(uid);
           }
         }
@@ -648,8 +646,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('productLinesCtrl', ['$scope', '$ionicLoading', '$ionicHistory', '$ionicFilterBar', '$state', 'localStorageService', 'DatabaseService', 'appDataService', '$ionicPopover',
-    function ($scope, $ionicLoading, $ionicHistory, $ionicFilterBar, $state, localStorageService, DatabaseService, appDataService, $ionicPopover) {
+  .controller('productLinesCtrl', ['$scope', '$rootScope', '$ionicLoading', '$ionicHistory', '$ionicFilterBar', '$state', 'localStorageService', 'FileService', 'DatabaseService', 'appDataService', '$ionicPopover',
+    function ($scope, $rootScope, $ionicLoading, $ionicHistory, $ionicFilterBar, $state, localStorageService, FileService, DatabaseService, appDataService, $ionicPopover) {
     //Set the titles and initialize empty array of filters
     $scope.title = appDataService.getCurrentTitle();
     $scope.root = appDataService.getRootTitle();
@@ -687,13 +685,32 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $ionicHistory.goBack();
       };
 
+      //Function to download Image file
+      function downloadImage(uid, url, filename) {
+        FileService.originalDownload(url, filename, 'imgs', function (path) {
+          localStorageService.setBildPath(uid, path);
+          console.log('bild path', localStorageService.getBildPath(uid));
+        });
+      }
+
 
     //Load SubCategories from database
     function loadSubCategories(child_ids) {
+      $scope.show();
       DatabaseService.selectChildCategories(child_ids,function (categories) {
         for(var x = 0; x < categories.rows.length; x++){
           $scope.categories.push(categories.rows.item(x));
+          //Grab the images or load them in offline mode
+          if ($scope.categories[x].bild != '') {
+            if ($rootScope.internet) {
+              console.log('downloading images');
+              downloadImage($scope.categories[x].uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
+            } else {
+              $scope.categories[x].bild = localStorageService.getBildPath($scope.categories[x].uid)
+            }
+          }
         }
+        $scope.hide();
         //Add up the artikels
         countArtikels();
       }, function (error) {
