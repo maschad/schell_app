@@ -8,11 +8,13 @@
   <div class="side-nav-wrapper">
     <ul class="side-nav hidden-xs">
       <li>
-        <div class="side-nav-download">
-        </div>
+        <div ng-class="productDownloaded ? 'side-nav-downloaded':'side-nav-download' "
+             ng-click="downloadProduct()"></div>
       </li>
       <li class="dropdown">
-        <div class="dropdown-toggle side-nav-clip" ng-click="bookmark()"></div>
+        <div class="dropdown-toggle side-nav-clip" ng-click="bookmark()">
+          <span class="badge badge-assertive">{{bookmarked.length}}</span>
+        </div>
       </li>
       <li>
         <div class="side-nav-mail" ng-click="sendEmail()">
@@ -29,27 +31,28 @@
     <ul class="menu-wrapper visible-xs-block">
       <li>
         <a ng-href="#/start-screen">
-          <div class="side-nav-home-sm">
+          <div class="side-nav-home-sm schellicon-home">
           </div>
         </a>
       </li>
       <li>
-        <div class="side-nav-mail-sm" ng-click="sendEmail()">
+        <div class="side-nav-mail-sm schellicon-mail" ng-click="sendEmail()">
         </div>
-      </li>
-      <li class="dropup"  ng-click="bookmark()">
-        <div class="dropdown-toggle side-nav-clip-sm" ng-click="bookmark()"></div>
       </li>
       <li>
-        <div class="side-nav-download-sm">
+        <div class="bookmark-popup side-nav-clip-sm schellicon-paper-clip" ng-click="bookmark()">
+          <span class="badge badge-assertive">{{bookmarked.length}}</span>
         </div>
+      </li>
+      <li>
+        <div
+          ng-class="productDownloaded ? 'side-nav-download-sm schellicon-downloaded' : 'side-nav-downloaded-sm schellicon-download'"
+          ng-click="downloadProduct()"></div>
       </li>
     </ul>
   </div>
-  <!-- Menu end -->
 
   <ion-content padding="false" class="has-header">
-
     <div class="row responsive-sm marg-top-30">
       <div class="col col-40">
         <img ng-src="{{details.image_landscape}}" class="product-img">
@@ -58,7 +61,7 @@
         <p id="detailPage-heading4" class="product-order-number">Bestellnummer: {{details.nummer}}</p>
         <p id="detailPage-heading3" class="product-name"> {{details.produktbezeichnung_de}} </p>
         <p class="product-summary"> {{details.dimension}} </p>
-        <p class="product-noted"> {{details.zusatz2}}</p>
+        <p class="product-noted"> {{details.zusatz2_de}}</p>
         <ion-list>
           <div ng-repeat="list in listData">
             <ion-item class="description-item" ng-click="toggleGroup(list)"
@@ -70,31 +73,32 @@
             </ion-item>
             <ion-item class="description-accordion" ng-show="isGroupShown(list)">
               <div ng-if="list.title.includes('ZEICHNUNG')">
-                <img ng-src="{{details.technical_drawing_link}}">
+                <img ng-src="{{details.technical_drawing_link}}" style="max-width: 100%; max-height: 100%;">
               </div>
               <div ng-if="list.title == 'LIEFERUMFANG'">
-                <div ng-bind-html="details.lieferumfang_de"></div>
+                <div ng-bind-html="details.lieferumfang_de" class="wrap"></div>
               </div>
               <div ng-if="list.title == 'EINSATZBEREICH / TECHNISCHE DATEN'">
-                <div ng-bind-html="details.einsatzbereich_de"></div>
+                <div ng-bind-html="details.einsatzbereich_de" class="wrap"></div>
               </div>
               <div ng-if="list.title == 'DETAILS'">
-                <div ng-bind-html="details.werkstoff_de"></div>
+                <div ng-bind-html="details.werkstoff_de" class="wrap"></div>
               </div>
-               <div ng-if="list.title == 'DOWNLOADS' && details.download_ids">
+              <div ng-if="list.title == 'DOWNLOADS' && details.download_ids">
                 <div ng-repeat="file in files">
                   <div class="row">
                     <div class="col col-20">
-                      <img ng-src="{{file.thumbnail}}" width="70%" ng-click="downloadPDF(file)">
+                      <img ng-src="{{file.thumbnail}}" width="70%" style="border: 1px solid #000;"
+                           ng-click="downloadPDF(file)">
                     </div>
                     <div class="col">
-                      <p> {{file.broschurentitel}} </p>
-                      <p> {{file.zusatzinformation}} </p>
+                      <p class="wrap"> {{file.broschuerentitel_de}} </p>
+                      <p class="wrap"> {{file.zusatzinformation_de}} </p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div ng-if="list.title == 'VIDEO'">
+              <div ng-if="list.title == 'VIDEOS'">
                 <div ng-show="videos">
                   <div ng-repeat="video in videos">
                     <div class="col">

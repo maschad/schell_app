@@ -1,14 +1,9 @@
-<ion-view title="Merkzettel"  style="background-color:#7E071C;">
+<ion-view title="MERKZETTEL" style="background-color:#7E071C;">
   <ion-content padding="true" class="has-header">
     <div id="bookmark-body">
       <div ng-repeat="bookmark in bookmarks track by $index" class="row responsive-sm" ng-if="$index%2 === 0">
         <div class="col col-50" ng-if="bookmark.image_portrait">
           <div class="product-tile">
-            <div class="row">
-              <div class="col col-20">
-                <div class="ion-close-round" ng-click="deleteBookmark(bookmark)"></div>
-              </div>
-            </div>
             <div class="row" ng-click="showDetails(bookmark)">
               <div class="col col-75">
                 <p class="item-number">{{bookmark.nummer}}</p>
@@ -17,7 +12,8 @@
                 <p>{{bookmark.zusatz2_de}}</p>
               </div>
               <div class="col">
-                <img src="{{bookmark.image_portrait}}">
+                <div class="ion-close-round" ng-click="deleteBookmark(bookmark)"></div>
+                <img src="{{bookmark.image_portrait}}" class="center">
               </div>
             </div>
           </div>
