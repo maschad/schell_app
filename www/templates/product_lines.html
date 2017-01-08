@@ -26,13 +26,6 @@
           <div ng-repeat="category in categories" ng-if="$index%3 == 0" class="row responsive-sm">
             <div class="col col-33" ng-click="choice_product(categories[$index].product_ids, categories[$index].title_de)" ng-if="categories[$index].product_ids">
               <div class="product-tile">
-                <!-- <div class="row">
-                  <div class="col">
-                    <div class="product-counter">
-                      <p><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
-                    </div>
-                  </div>
-                </div> -->
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
@@ -49,11 +42,6 @@
             <!-- Check for children -->
             <div class="col col-33" ng-click="choice(categories[$index].child_ids,categories[$index].title_de)" ng-if="categories[$index].child_ids">
               <div class="product-tile">
-                <!-- <div class="col">
-                  <div class="product-counter">
-                    <p><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
-                  </div>
-                </div> -->
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
@@ -70,13 +58,6 @@
             <!-- Product ID-->
             <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids" ng-click="choice_product(categories[$index + 1].product_ids,categories[$index + 1].title_de)">
               <div class="product-tile">
-                <!-- <div class="row">
-                  <div class="col">
-                    <div class="product-counter">
-                      <p><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>
-                    </div>
-                  </div>
-                </div> -->
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
@@ -94,11 +75,6 @@
             <!--Child Product-->
             <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].child_ids" ng-click="choice(categories[$index + 1].child_ids,categories[$index + 1].title_de)">
               <div class="product-tile">
-                <!-- <div class="col">
-                  <div class="product-counter">
-                    <p><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
-                  </div>
-                </div> -->
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
@@ -116,13 +92,6 @@
             <!--Product Ids-->
             <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].product_ids" ng-click="choice_product(categories[$index + 2].product_ids,categories[$index + 2].title_de)">
               <div class="product-tile">
-                <!-- <div class="row">
-                  <div class="col">
-                    <div class="product-counter">
-                      <p><strong>{{categories[$index + 2].product_ids.length}} Artikel</strong></p>
-                    </div>
-                  </div>
-                </div> -->
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
@@ -139,11 +108,6 @@
             <!--Child IDs-->
             <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].child_ids" ng-click="choice(categories[$index + 2].child_ids,categories[$index + 2].title_de)">
               <div class="product-tile">
-                <!-- <div class="col">
-                  <div class="product-counter">
-                    <p><strong>{{categories[$index + 2].child_ids.length}} Artikel</strong></p>
-                  </div>
-                </div> -->
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">

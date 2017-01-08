@@ -22,14 +22,6 @@
     <div ng-repeat="category in categories" ng-if="$index%2 == 0" class="row responsive-sm">
         <div class="col col-50" ng-click="choice(categories[$index].child_ids,categories[$index].title_de,categories[$index].filter_ids)">
           <div class="product-tile">
-            <!-- <div class="row">
-              <div class="col">
-                <div class="product-counter">
-                  <p ng-if="categories[$index].child_ids"><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
-                  <p ng-if="categories[$index].product_ids"><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
-                </div>
-              </div>
-            </div> -->
             <div class="row">
               <div class="col col-33">
                 <div class="product-counter">
@@ -46,12 +38,6 @@
         </div>
         <div class="col col-50" ng-if="categories[$index + 1] != undefined" ng-click="choice(categories[$index + 1].child_ids,categories[$index + 1].title_de,categories[$index + 1].filter_ids)">
           <div class="product-tile">
-            <!-- <div class="col">
-              <div class="product-counter">
-                <p ng-if="categories[$index + 1].child_ids"><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
-                <p ng-if="categories[$index + 1].product_ids"><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>
-              </div>
-            </div> -->
             <div class="row">
               <div class="col col-33">
                 <div class="product-counter">
