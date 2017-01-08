@@ -671,8 +671,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $ionicLoading.show({
         template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
         animation:'fade-in',
-        showBackdrop:true,
-        duration: 2000
+        showBackdrop: true
       });
     };
     //Hide function
@@ -710,7 +709,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             }
           }
         }
-        $scope.hide();
         //Add up the artikels
         countArtikels();
       }, function (error) {
@@ -776,6 +774,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             });
             //Update the count
             $scope.counts[category.uid] = count;
+            $scope.hide();
           }
         });
       });
@@ -881,6 +880,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                 });
                 //Push in the lengths
                 $scope.counts[category.uid] = filteredProducts.length;
+                //Loading
+                $scope.hide();
                 //Add them up
                 $scope.total_filter += filteredProducts.length;
                 $scope.total_products += products.length;
@@ -1048,33 +1049,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $ionicLoading.hide();
     };
 
-    //Loading functions
-    $scope.downloadShow = function() {
-      $ionicLoading.show({
-        scope: $scope,
-        template: '<p>Downloading Artikel Data...{{download_status}}%</p><ion-spinner></ion-spinner>',
-        animation:'fade-in',
-        showBackdrop:true
-      });
-    };
-    //Hide
-    $scope.downloadHide = function(){
-      $ionicLoading.hide();
-    };
-
-    //Loading functions
-    $scope.downloadVideoShow = function () {
-      $ionicLoading.show({
-        scope: $scope,
-        template: '<p>Downloading Video Data...{{download_status}}%</p><ion-spinner></ion-spinner>',
-        animation: 'fade-in',
-        showBackdrop: true
-      });
-    };
-    //Hide
-    $scope.downloadVideoHide = function () {
-      $ionicLoading.hide();
-    };
 
       $scope.goBack = function () {
         $ionicHistory.goBack();
@@ -1248,8 +1222,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Download the files for the respective category and store the file paths in local storage
     function downloadCategoryFiles(category) {
-      //Initiate load
-      $scope.downloadShow();
       //Product ids to download
       var product_ids_toDownload = [];
       //Actual products to download
@@ -1316,11 +1288,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
              });
              FileService.originalDownload(product.technical_drawing_link, product.nummer.concat('_technical_drawing.png'), 'images', function (path) {
                localStorageService.setTechnicalPath(product.uid, path);
-               $scope.downloadHide();
              });
              //Get associated downloads
              if (product.download_ids != '') {
-               $scope.downloadShow();
                DatabaseService.selectDownloads(product.download_ids, function (results) {
                  for (var x = 0; x < results.rows.length; x++) {
                    downloads.push(results.rows.item(x));
@@ -1332,7 +1302,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                    });
                    FileService.originalDownload(file.thumbnail, product.nummer.concat('_thumbnail.png'), 'images', function (path) {
                      localStorageService.setThumbnailPath(product.uid, path);
-                     $scope.downloadHide();
                    });
                  });
                });
