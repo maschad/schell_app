@@ -1,7 +1,7 @@
 <ion-view title="MERKZETTEL" style="background-color:#7E071C;">
   <ion-content padding="true" class="has-header">
     <div id="bookmark-body">
-      <div ng-repeat="bookmark in bookmarks track by $index" class="row responsive-sm" ng-if="$index%2 === 0">
+      <div ng-repeat="bookmark in bookmarks" class="row responsive-sm">
         <div class="col col-50" ng-if="bookmark.image_portrait">
           <div class="product-tile">
             <div class="row" ng-click="showDetails(bookmark)">

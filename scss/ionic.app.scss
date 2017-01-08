@@ -1087,12 +1087,13 @@ body.has-active-menu {
   color: #fff;
 }
 
+
 .side-nav-download-sm {
   height: 23px;
   width: 29px;
   //background: url(../img/icons/download.png) no-repeat 0 0;
   position: relative;
-  top: -19px;
+  top: -20px;
   font-size: 24px;
   color: #fff;
   // color: red;
@@ -1103,7 +1104,7 @@ body.has-active-menu {
   width: 29px;
   //background: url(../img/icons/download.png) no-repeat 0 0;
   position: relative;
-  top: -19px;
+  top: -20px;
   font-size: 24px;
   color: darkred;
 }
@@ -1113,6 +1114,14 @@ span.badge.badge-assertive {
   position: relative;
   top: 0px;
   right: -30px;
+  /* padding: 1px 6px 3px 6px; */
+}
+
+span.badge.badge-hide.badge-assertive {
+  position: relative;
+  top: 0px;
+  right: -30px;
+  opacity: 0;
   /* padding: 1px 6px 3px 6px; */
 }
 
@@ -1689,7 +1698,7 @@ ion-popover-view.fit ion-content {
     background-color: #000;
     position: absolute;
     bottom: 64px;
-    left: 34%;
+    left: 28%;
     width: 220px;
   }
   .popup-container.bookmark-popup .popup:after {
@@ -1707,7 +1716,7 @@ ion-popover-view.fit ion-content {
   .popup-container.download-popup .popup {
     position: absolute;
     bottom: 64px;
-    left: 35%;
+    left: 25%;
     width: 230px;
   }
   .popup-container.download-popup .popup:after {
@@ -1790,33 +1799,6 @@ label.menu-item {
   color: #ffffff;
 }
 
-// Tabs
-.tabs-striped.tabs-positive .tabs {
-  background-color: rgba(0, 0, 0, 0.65);
-}
-
-.tabs-striped.tabs-positive .tab-item {
-  color: #ffffff;
-}
-
-.tabs-top.tabs-striped .tab-item.tab-item-active, .tabs-top.tabs-striped .tab-item.active, .tabs-top.tabs-striped .tab-item.activated {
-  border: none;
-}
-
-.tabs-striped.tabs-positive .tab-item .badge {
-  opacity: 1;
-}
-
-.tab-item .icon {
-  font-size: 24px;
-  padding-top: 12px;
-}
-
-.tab-item .badge {
-  top: 8%;
-  right: calc(50% - 20px);
-}
-
 .platform-ios.platform-cordova:not(.fullscreen) .search-bar {
   margin-top: 20px;
 }
@@ -1829,5 +1811,5 @@ label.menu-item {
 
 .ion-close-round {
   float: right;
-  font-size: 18px;
+  font-size: 25px;
 }

@@ -41,13 +41,14 @@
       </li>
       <li>
         <div class="bookmark-popup side-nav-clip-sm schellicon-paper-clip" ng-click="bookmark()">
-          <span ng-show="bookmarked.length > 0" class="badge badge-assertive">{{bookmarked.length}}</span>
+          <span ng-class="bookmarked.length > 0 ? 'badge badge-assertive' : 'badge badge-hide badge-assertive'">{{bookmarked.length}}</span>
         </div>
       </li>
       <li>
         <div
           ng-class="productDownloaded ? 'side-nav-downloaded-sm schellicon-download' : 'side-nav-download-sm schellicon-download'"
-          ng-click="downloadProduct()"></div>
+          ng-click="downloadProduct()">
+        </div>
       </li>
     </ul>
   </div>

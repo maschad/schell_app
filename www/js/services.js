@@ -47,12 +47,16 @@ angular.module('app.services', [])
   };
 
   var bookmarkProduct = function (product) {
-    if($localStorage.bookmarked_products.indexOf(product) != -1){
-      return false;
-    }else{
-      $localStorage.bookmarked_products.push(product);
-      return true;
+    console.log('uid', product.uid);
+    console.log('index uid', $localStorage.bookmarked_products.indexOf(product));
+    for (var i = 0; i < $localStorage.bookmarked_products.length; i++) {
+      if ($localStorage.bookmarked_products[i] === product) {
+        return false;
+      }
     }
+    $localStorage.bookmarked_products.push(product);
+    return true;
+
   };
 
   var removeBookmarkedProduct = function(bookmark){

@@ -101,33 +101,52 @@ angular.module('app.controllers', [])
 
 }])
 
-  .controller('productOverviewCtrl', ['$scope', '$ionicFilterBar', '$ionicHistory', '$state', 'appDataService', 'DatabaseService', '$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productOverviewCtrl', ['$scope', '$ionicLoading', '$ionicHistory', '$state', 'appDataService', 'DatabaseService', '$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicFilterBar, $ionicHistory, $state, appDataService, DatabaseService, $ionicPopover) {
-    //Get Titles
-    $scope.title = appDataService.getCurrentTitle();
-    $scope.prev = appDataService.getPreviousTitle();
-    $scope.root = appDataService.getRootTitle();
+    function ($scope, $ionicLoading, $ionicHistory, $state, appDataService, DatabaseService, $ionicPopover) {
 
-    //Function to load the products for this category
-    function getProducts(product_ids) {
+      //Loading functions
+      $scope.showLoad = function () {
+        $ionicLoading.show({
+          template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
+      };
+      $scope.hideLoad = function () {
+        $ionicLoading.hide();
+      };
+
+
+      //Function to load the products for this category
+      function getProducts(product_ids) {
+        //Get Titles
+        $scope.prev = appDataService.getPreviousTitle();
+        $scope.title = $scope.prev;
+        $scope.root = appDataService.getRootTitle();
+
+        //Initialize products to empty
+        $scope.products = [];
+        //Show loading
+        $scope.showLoad();
       //Load the various products
       DatabaseService.selectProducts(product_ids, function (products) {
         for(var x = 0; x < products.rows.length; x++){
           $scope.products.push(products.rows.item(x));
         }
+        $scope.hideLoad();
       }, function (error) {
         //Handle error
         console.log('ERROR',error);
       });
     }
 
-    //Initialize products to empty
-    $scope.products = [];
+
 
     //load Products
     getProducts(appDataService.getCurrentCategoryIds());
+
       //History function
       $scope.goBack = function () {
         appDataService.removeNavigatedCategory();
@@ -579,10 +598,19 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Bookmark Function
     $scope.bookmark = function () {
-      $ionicPopup.alert({
-        title: 'Seite bookmarkiert'
-      });
-      localStorageService.bookmarkProduct($scope.details);
+      console.log('uid passed in', $scope.details.uid);
+      if (!localStorageService.bookmarkProduct($scope.details)) {
+        $ionicPopup.alert({
+          title: 'bereits vorgemerkt',
+          cssClass: 'bookmark-popup'
+        });
+      } else {
+        $ionicPopup.alert({
+          title: 'Seite bookmarkiert',
+          cssClass: 'bookmark-popup'
+        });
+      }
+
     };
 
     //Download PDF
@@ -648,7 +676,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.downloadProduct = function () {
         if ($rootScope.internet && !$scope.productDownloaded) {
           $ionicPopup.alert({
-            title: 'downloading product'
+            title: 'downloading product',
+            cssClass: 'download-popup',
+            okText: 'Offline verfügbar machen'
           }).then(function () {
             FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
               localStorageService.setLandscapePath($scope.details.uid, path);
@@ -1166,7 +1196,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       });
       //Assign preferences
       $scope.preferences = localStorageService.getOfflinePreferences();
-      $scope.preferences.last_updated = getDate();
       //Product Categories
       var items = [];
       DatabaseService.selectTopCategories(function (categories) {
@@ -1359,6 +1388,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Product ids to download
       var product_ids_toDownload = [];
       //Actual products to download
+
       var products = [];
       //All categories
       var allCategories = [];
@@ -1480,6 +1510,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     $scope.downloadVideos = function () {
       //If checked
       if ($scope.preferences[3].download_videos) {
+        $scope.preferences.last_updated = getDate();
         for (var x = 0; x < $scope.videos.length; x++) {
           downloadVideo($scope.videos[x].uid, $scope.videos[x].videofile_de, $scope.videos[x].title);
           downloadVideoImage($scope.videos[x].uid, $scope.videos[x].startimage_de, $scope.videos[x].title);
@@ -1494,6 +1525,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     $scope.downloadCategory = function (category, check) {
       //Download details based on check
       if (check == true) {
+        $scope.preferences.last_updated = getDate();
         //Update preferences
         //The product ids to download
         downloadCategoryFiles(category);
