@@ -22,6 +22,8 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
 .run(function($ionicPlatform, $cordovaSQLite,$ionicPopup,$rootScope,$state,localStorageService) {
   //Set internet to true
   $rootScope.internet = true;
+  //Set download bar to 0
+  $rootScope.download_status = 0;
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

@@ -157,8 +157,8 @@ angular.module('app.controllers', [])
       //Filter bar is not clicked
       $scope.filterOn = false;
 
-    //Initialize as null
-    $scope.categories = [];
+      //Initialize as null
+      $scope.categories = [];
 
       //Counts
       $scope.counts = {};
@@ -444,7 +444,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //The products to be show in collapsible list
     $scope.files = [];
 
-
+      //Load the product information
       function loadProduct() {
         //Check for internet
         appDataService.checkInternet();
@@ -452,25 +452,19 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //Set details
         $scope.details = appDataService.getCurrentProduct();
 
-        if ($rootScope.internet) {
-          //Load Downloads and videos
-          if ($scope.details.download_ids != '') {
-            getFiles($scope.details.download_ids);
-          }
-          if ($scope.details.video_ids != '') {
-            console.log('video ids', $scope.details.video_ids);
-            getVideos($scope.details.video_ids);
-          }
-
-        } else {
-        //If no internet load these files
-        var path = localStorageService.getLandscapePath($scope.details.uid);
-        console.log('landscape', path);
-        $scope.details.image_landscape = localStorageService.getLandscapePath($scope.details.uid);
-        /**
-         $scope.details.technical_drawing_link = localStorageService.getTechnicalPath($scope.details.uid);
-         console.log('technical drawing link',$scope.details.technical_drawing_link);**/
-      }
+        if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
+          //If no internet load these files
+          $scope.details.image_landscape = localStorageService.getLandscapePath($scope.details.uid);
+          $scope.details.technical_drawing_link = localStorageService.getTechnicalPath($scope.details.uid);
+        }
+        //Load Downloads and videos
+        if ($scope.details.download_ids != '') {
+          getFiles($scope.details.download_ids);
+        }
+        if ($scope.details.video_ids != '') {
+          console.log('video ids', $scope.details.video_ids);
+          getVideos($scope.details.video_ids);
+        }
       }
 
     //Function to load files
@@ -479,25 +473,28 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         for(var x = 0; x < downloads.rows.length; x++){
           $scope.files.push(downloads.rows.item(x));
         }
-        if (!$rootScope.internet) {
+        //If no internet load local path
+        if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
           $scope.files.forEach(function (file) {
-            //file.thumbnail = localStorageService.getThumbnailPath($scope.detail.uid);
-            //console.log('thumbnail', file.thumbnail);
+            file.thumbnail = localStorageService.getThumbnailPath($scope.detail.uid);
+            console.log('thumbnail', file.thumbnail);
           });
         }
       })
     }
 
     function getVideos(video_ids) {
-      //#TODO: Check for internet, if no internet, get video paths from local storage
       //Videos for that corresponding product
       $scope.videos = [];
 
       DatabaseService.selectVideos(video_ids, function(videos){
         for(var x = 0; x < videos.rows.length; x++){
           $scope.videos.push(videos.rows.item(x));
-          console.log('pushing videos urls', $scope.videos[x].videofile_de);
+          if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
+            $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
+          }
         }
+
       });
     }
 
@@ -998,11 +995,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     };
 }])
 
-  .controller('offlineStorageCtrl', ['$scope', '$ionicLoading', '$ionicHistory', 'FirebaseService', 'localStorageService', 'DatabaseService', 'FileService', '$ionicSideMenuDelegate', '$ionicPopup',
+  .controller('offlineStorageCtrl', ['$scope', '$rootScope', '$ionicLoading', '$ionicHistory', 'FirebaseService', 'localStorageService', 'DatabaseService', 'FileService', '$ionicSideMenuDelegate', '$ionicPopup',
 // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicLoading, $ionicHistory, FirebaseService, localStorageService, DatabaseService, FileService, $ionicSideMenuDelegate, $ionicPopup) {
+    function ($scope, $rootScope, $ionicLoading, $ionicHistory, FirebaseService, localStorageService, DatabaseService, FileService, $ionicSideMenuDelegate, $ionicPopup) {
 
     //Disable Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
@@ -1019,9 +1016,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Category file sizes
     $scope.fileSizes = {};
-
-    //Progress meter
-    $scope.progress = 0;
 
 
     //Loading functions
@@ -1040,7 +1034,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Loading functions
     $scope.downloadShow = function() {
       $ionicLoading.show({
-        template: '<p>Downloading Artikel Data...</p><ion-spinner></ion-spinner>',
+        scope: $scope,
+        template: '<p>Downloading Artikel Data...{{download_status}}%</p><ion-spinner></ion-spinner>',
         animation:'fade-in',
         showBackdrop:true
       });
@@ -1053,7 +1048,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Loading functions
     $scope.downloadVideoShow = function () {
       $ionicLoading.show({
-        template: '<p>Downloading Video Data...</p>{{progress}}%<ion-spinner></ion-spinner>',
+        scope: $scope,
+        template: '<p>Downloading Video Data...{{download_status}}%</p><ion-spinner></ion-spinner>',
         animation: 'fade-in',
         showBackdrop: true
       });
@@ -1296,7 +1292,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
            }
            products.forEach(function (product) {
              var downloads = [];
-             $scope.downloadShow();
              //Store images and technical drawings
              FileService.originalDownload(product.image_landscape, product.nummer.concat('_landscape.png'), 'images', function (path) {
                console.log('setting landscape path', path);
@@ -1304,9 +1299,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
              });
              FileService.originalDownload(product.technical_drawing_link, product.nummer.concat('_technical_drawing.png'), 'images', function (path) {
                localStorageService.setTechnicalPath(product.uid, path);
+               $scope.downloadHide();
              });
              //Get associated downloads
              if (product.download_ids != '') {
+               $scope.downloadShow();
                DatabaseService.selectDownloads(product.download_ids, function (results) {
                  for (var x = 0; x < results.rows.length; x++) {
                    downloads.push(results.rows.item(x));
@@ -1333,20 +1330,17 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     loadData();
 
       function downloadVideo(uid, url, filename) {
-      $scope.downloadVideoShow();
+        $scope.downloadVideoShow();
         FileService.originalDownload(url, filename, 'videos', function (result) {
-        console.log('filepath', result);
-        localStorageService.setVideoPath(uid, result);
-        $scope.downloadVideoHide();
-      });
+          localStorageService.setVideoPath(uid, result);
+          $scope.downloadVideoHide();
+        });
     }
 
       function downloadVideoImage(uid, url, filename) {
         $scope.downloadVideoShow();
         FileService.originalDownload(url, filename, 'imgs', function (result) {
-          console.log('filepath', result);
           localStorageService.setVideoImagePath(uid, result);
-          $scope.downloadVideoHide();
         });
       }
 
@@ -1355,22 +1349,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //If checked
       if ($scope.preferences[3].download_videos) {
         for (var x = 0; x < $scope.videos.length; x++) {
-
+          $scope.downloadVideoShow();
           downloadVideo($scope.videos[x].uid, $scope.videos[x].videofile_de, $scope.videos[x].title.concat('.mp4'));
           downloadVideoImage($scope.videos[x].uid, $scope.videos[x].startimage_de, $scope.videos[x].title.concat('.jpg'));
-
-          /**
-           FileService.download($scope.videos[x].startimage_de, $scope.videos[x].title.concat('.jpg'), 'imgs', function (path) {
-            console.log('filepath', path);
-            console.log('uid', uid);
-            localStorageService.setVideoImagePath(uid, path);
-          });
-          FileService.download($scope.videos[x].videofile_de, $scope.videos[x].title.concat('.mp4'), 'videos', function (file_path) {
-            console.log('filepath', file_path);
-            console.log('uid', uid);
-            localStorageService.setVideoPath(uid, file_path);
-            $scope.downloadHide();
-          });**/
         }
         localStorageService.updatePreferences($scope.preferences);
       } else {

@@ -67,6 +67,10 @@ angular.module('app.services', [])
     $localStorage.offlinePreferences = data;
   };
 
+  var productDownloaded = function (uid) {
+    return $localStorage.product_files.hasOwnProperty(uid.toString());
+  };
+
   var setPDFPath = function (product_id, path) {
     $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'datei_de': path});
   };
@@ -161,6 +165,7 @@ angular.module('app.services', [])
     setVideoImagePath: setVideoImagePath,
     getVideoImagePath: getVideoImagePath,
     getDownloadFiles : getDownloadFiles,
+    productDownloaded: productDownloaded,
     setFilters: setFilters,
     getFilters: getFilters,
     setPDFPath: setPDFPath,
@@ -283,7 +288,7 @@ angular.module('app.services', [])
 }])
 
 //Service for managing Files
-  .factory('FileService', ['$cordovaFileTransfer', function ($cordovaFileTransfer) {
+  .factory('FileService', ['$cordovaFileTransfer', '$rootScope', function ($cordovaFileTransfer, $rootScope) {
 
     //Save a file to system path
   var download = function (url, filename, dirName, success) {
@@ -349,6 +354,14 @@ angular.module('app.services', [])
                     false,
                     null
                   );
+                  ft.onprogress = function (progressEvent) {
+                    if (progressEvent.lengthComputable) {
+                      $rootScope.download_status = (progressEvent.loaded / progressEvent.total) * 100;
+                      console.log('download status', $rootScope.download_status);
+                    } else {
+                      $rootScope.download_status += 1;
+                    }
+                  };
                 },
                 function () {
                   console.log("Get file failed");
