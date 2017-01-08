@@ -329,10 +329,6 @@ angular.module('app.controllers', [])
                 });
 
               }
-              // 4. Now that we have all the bottom level categories, we can sum their product_ids
-              currentCategories.forEach(function (categoriesToSum) {
-                count += categoriesToSum.product_ids.split(',').length;
-              });
               //Update the count
               $scope.counts[category.uid] = count;
             }
@@ -780,30 +776,27 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     function loadSubCategories(child_ids) {
       //Initialize as empty
       $scope.categories = [];
-      console.log('child ids', child_ids);
+      //Set title
+      $scope.title = appDataService.getCurrentTitle();
       $scope.show();
       //Check for internet
       appDataService.checkInternet();
       //Load the child ids from db
-      console.log('internet check', $rootScope.internet);
       DatabaseService.selectChildCategories(child_ids,function (categories) {
         for(var x = 0; x < categories.rows.length; x++){
           $scope.categories.push(categories.rows.item(x));
           //Grab the images or load them in offline mode
           var uid = $scope.categories[x].uid;
-          console.log('category uid', uid);
           if ($scope.categories[x].bild != '') {
             if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
-              console.log('loading bild');
               $scope.categories[x].bild = localStorageService.getBildPath(uid);
             } else if ($rootScope.internet) {
-              console.log('downloading images');
               downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
             }
           }
         }
         //Add up the artikels
-        //countArtikels();
+        countArtikels();
         $scope.hide();
       }, function (error) {
         //Handle error
@@ -862,10 +855,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               });
 
             }
-            // 4. Now that we have all the bottom level categories, we can sum their product_ids
-            currentCategories.forEach(function (categoriesToSum) {
-              count += categoriesToSum.product_ids.split(',').length;
-            });
             //Update the count
             $scope.counts[category.uid] = count;
             $scope.hide();
@@ -1009,7 +998,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //If user chooses something with child ids
         appDataService.setCurrentTitle(title);
         appDataService.addNavigatedCategory(title);
-        $scope.title = title;
         loadSubCategories(child_ids);
         $state.reload();
       };
