@@ -3,7 +3,8 @@
     <a class="button icon" ng-click="openPopover($event)" ng-show="show" style="background-color: black; border-radius: 0px;"><span class="schellicon-cog" style="color: #ccc; font-size: 25px; margin-top: 8px; margin-right: 3px;"></span></a>
   </ion-nav-buttons>
   <!-- FAB -->
-  <ion-floating-button ui-sref="bookmark" has-footer="false" button-color="#2c2a2b" icon="schellicon-paper-clip" icon-color="#fff">
+  <ion-floating-button ng-show="bookmarks.length > 0" ui-sref="bookmark" has-footer="false" button-color="#2c2a2b"
+                       icon="schellicon-paper-clip" icon-color="#fff">
   </ion-floating-button>
   <ion-content padding="false" class="has-header">
     <!-- For refreshing items -->

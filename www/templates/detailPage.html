@@ -13,7 +13,7 @@
       </li>
       <li class="dropdown">
         <div class="dropdown-toggle side-nav-clip" ng-click="bookmark()">
-          <span class="badge badge-assertive">{{bookmarked.length}}</span>
+          <span ng-show="bookmarked.length > 0" class="badge badge-assertive">{{bookmarked.length}}</span>
         </div>
       </li>
       <li>
@@ -41,7 +41,7 @@
       </li>
       <li>
         <div class="bookmark-popup side-nav-clip-sm schellicon-paper-clip" ng-click="bookmark()">
-          <span class="badge badge-assertive">{{bookmarked.length}}</span>
+          <span ng-show="bookmarked.length > 0" class="badge badge-assertive">{{bookmarked.length}}</span>
         </div>
       </li>
       <li>

@@ -31,6 +31,12 @@ angular.module('app.controllers', [])
       function loadPage() {
         //Check for internet
         appDataService.checkInternet();
+
+        //Whether anything is bookmarked
+        $scope.bookmarks = [];
+
+        //load bookmarked
+        $scope.bookmarks = localStorageService.getBookmarkedProducts();
         //Whether to allow settings based on network connection
         $scope.show = $rootScope.internet;
         //If there is internet, populate the DB with latest data, else, work with what is in database
@@ -645,16 +651,21 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Function to download product
       $scope.downloadProduct = function () {
         if ($rootScope.internet && !$scope.productDownloaded) {
-          FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
-            localStorageService.setLandscapePath($scope.details.uid, path);
+          $ionicPopup.alert({
+            title: 'downloading product'
+          }).then(function () {
+            FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
+              localStorageService.setLandscapePath($scope.details.uid, path);
+            });
+            FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
+              localStorageService.setTechnicalPath($scope.details.uid, path);
+            });
+            for (var y = 0; y < $scope.files.length; y++) {
+              downloadPDFFiles($scope.details.uid, $scope.files[y].datei_de, $scope.details.nummer);
+              downloadPDFFiles($scope.details.uid, $scope.files[y].thumbnail, $scope.details.nummer);
+            }
+            $state.reload();
           });
-          FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
-            localStorageService.setTechnicalPath($scope.details.uid, path);
-          });
-          for (var y = 0; y < $scope.files.length; y++) {
-            downloadPDFFiles($scope.details.uid, $scope.files[y].datei_de, $scope.details.nummer);
-            downloadPDFFiles($scope.details.uid, $scope.files[y].thumbnail, $scope.details.nummer);
-          }
         } else if ($scope.productDownloaded) {
           $ionicPopup.alert({
             title: 'Bereits heruntergeladen'
@@ -1319,6 +1330,42 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     }
 
 
+      function downloadPDFFiles(uid, url, filename) {
+        //Check whether pdf or zip for PDF file
+        switch (url.substr(url.length - 3)) {
+          case 'pdf':
+            FileService.originalDownload(url, filename.concat('_booklet.pdf'), 'pdfs', function (path) {
+              localStorageService.setPDFPath(uid, path);
+              console.log('downloading pdf uid', uid);
+              console.log('to path', path);
+            });
+            break;
+          case 'zip':
+            FileService.originalDownload(url, filename.concat('_booklet.zip'), 'pdfs', function (path) {
+              localStorageService.setPDFPath(uid, path);
+              console.log('downloading pdf uid', uid);
+              console.log('to path', path);
+            });
+            break;
+
+          case 'jpg':
+            FileService.originalDownload(url, filename.concat('_thumbnail.jpg'), 'pdfs', function (path) {
+              localStorageService.setThumbnailPath(uid, path);
+              console.log('downloading pdf uid', uid);
+              console.log('to path', path);
+            });
+            break;
+
+          case 'png':
+            FileService.originalDownload(url, filename.concat('_booklet.png'), 'pdfs', function (path) {
+              localStorageService.setThumbnailPath(uid, path);
+              console.log('downloading pdf uid', uid);
+              console.log('to path', path);
+            });
+            break;
+        }
+      }
+
     //Download the files for the respective category and store the file paths in local storage
     function downloadCategoryFiles(category) {
       //Product ids to download
@@ -1396,12 +1443,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                  }
                  downloads.forEach(function (file) {
                    //#TODO:Check for other languages later on
-                   FileService.originalDownload(file.datei_de, product.nummer.concat('_pdfFile.pdf'), 'pdfs', function (path) {
-                     localStorageService.setPDFPath(product.uid, path);
-                   });
-                   FileService.originalDownload(file.thumbnail, product.nummer.concat('_thumbnail.png'), 'images', function (path) {
-                     localStorageService.setThumbnailPath(product.uid, path);
-                   });
+                   downloadPDFFiles(product.uid, file.datei_de, product.nummer);
+                   downloadPDFFiles(product.uid, file.thumbnail, product.nummer);
                  });
                });
              }
@@ -1415,15 +1458,34 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     loadData();
 
       function downloadVideo(uid, url, filename) {
-        FileService.originalDownload(url, filename, 'videos', function (result) {
-          localStorageService.setVideoPath(uid, result);
-        });
+        switch (url.substr(url.length - 3)) {
+          case 'mp4':
+            FileService.originalDownload(url, filename.concat('_video.mp4'), 'videos', function (result) {
+              localStorageService.setVideoPath(uid, result);
+            });
+            break;
+          case '.zip':
+            FileService.originalDownload(url, filename.concat('_video.zip'), 'videos', function (result) {
+              localStorageService.setVideoPath(uid, result);
+            });
+            break;
+        }
       }
 
       function downloadVideoImage(uid, url, filename) {
-        FileService.originalDownload(url, filename, 'imgs', function (result) {
-          localStorageService.setVideoImagePath(uid, result);
-        });
+        switch (url.substr(url.length - 3)) {
+          case 'jpg':
+            FileService.originalDownload(url, filename.concat('_startimage.jpg'), 'imgs', function (result) {
+              localStorageService.setVideoImagePath(uid, result);
+            });
+            break;
+
+          case 'png':
+            FileService.originalDownload(url, filename.concat('_startimage.png'), 'imgs', function (result) {
+              localStorageService.setVideoImagePath(uid, result);
+            });
+            break;
+        }
       }
 
     //Function to download videos
@@ -1431,8 +1493,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //If checked
       if ($scope.preferences[3].download_videos) {
         for (var x = 0; x < $scope.videos.length; x++) {
-          downloadVideo($scope.videos[x].uid, $scope.videos[x].videofile_de, $scope.videos[x].title.concat('.mp4'));
-          downloadVideoImage($scope.videos[x].uid, $scope.videos[x].startimage_de, $scope.videos[x].title.concat('.jpg'));
+          downloadVideo($scope.videos[x].uid, $scope.videos[x].videofile_de, $scope.videos[x].title);
+          downloadVideoImage($scope.videos[x].uid, $scope.videos[x].startimage_de, $scope.videos[x].title);
         }
         localStorageService.updatePreferences($scope.preferences);
       } else {
