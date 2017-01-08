@@ -76,7 +76,7 @@ angular.module('app.services', [])
   };
 
   var getPDFPath = function (product_id, lang) {
-    if (lang == 'de') {
+    if (lang === 'de') {
       return $localStorage.product_files[product_id].datei_de;
     }
   };

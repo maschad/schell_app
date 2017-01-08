@@ -513,6 +513,42 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       });
     }
 
+      function downloadPDFFiles(uid, url, filename) {
+        //Check whether pdf or zip for PDF file
+        switch (url.substr(url.length - 3)) {
+          case 'pdf':
+            FileService.originalDownload(url, filename.concat('_booklet.pdf'), 'pdfs', function (path) {
+              localStorageService.setPDFPath(uid, path);
+              console.log('downloading pdf uid', uid);
+              console.log('to path', path);
+            });
+            break;
+          case 'zip':
+            FileService.originalDownload(url, filename.concat('_booklet.zip'), 'pdfs', function (path) {
+              localStorageService.setPDFPath(uid, path);
+              console.log('downloading pdf uid', uid);
+              console.log('to path', path);
+            });
+            break;
+
+          case 'jpg':
+            FileService.originalDownload(url, filename.concat('_thumbnail.jpg'), 'pdfs', function (path) {
+              localStorageService.setThumbnailPath(uid, path);
+              console.log('downloading pdf uid', uid);
+              console.log('to path', path);
+            });
+            break;
+
+          case 'png':
+            FileService.originalDownload(url, filename.concat('_booklet.png'), 'pdfs', function (path) {
+              localStorageService.setThumbnailPath(uid, path);
+              console.log('downloading pdf uid', uid);
+              console.log('to path', path);
+            });
+            break;
+        }
+      }
+
       //Load the product
       loadProduct();
 
@@ -550,9 +586,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Download PDF
     $scope.showPDF = false;
     $scope.downloadPDF = function (file) {
+      appDataService.checkInternet();
       if ($rootScope.internet) {
         $scope.pdfUrl = file.datei_de;
       } else {
+        console.log('uid of file being accessed ', $scope.details.uid);
+        console.log('pdf file being passed ', localStorageService.getPDFPath($scope.details.uid, 'de'));
         $scope.pdfUrl = localStorageService.getPDFPath($scope.details.uid, 'de');
       }
       $scope.showPDF = true;
@@ -612,17 +651,17 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
             localStorageService.setTechnicalPath($scope.details.uid, path);
           });
-          for (var y = 0; y < files.length; y++) {
-            FileService.originalDownload($scope.files[y].datei_de, $scope.files[y].nummer.concat('_booklet.pdf'), 'pdfs', function (path) {
-              localStorageService.setPDFPath($scope.details.uid, path);
-            });
-            FileService.originalDownload($scope.files[y].thumbnail, $scope.files[y].nummer.concat('_thumbnail.png'), 'img', function (path) {
-              localStorageService.setThumbnailPath($scope.details.uid, path);
-            });
+          for (var y = 0; y < $scope.files.length; y++) {
+            downloadPDFFiles($scope.details.uid, $scope.files[y].datei_de, $scope.details.nummer);
+            downloadPDFFiles($scope.details.uid, $scope.files[y].thumbnail, $scope.details.nummer);
           }
-        } else {
+        } else if ($scope.productDownloaded) {
           $ionicPopup.alert({
             title: 'Bereits heruntergeladen'
+          });
+        } else {
+          $ionicPopup.alert({
+            title: 'keine Internetverbindung'
           });
         }
       };

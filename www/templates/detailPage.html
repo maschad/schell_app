@@ -64,7 +64,7 @@
       <div id="detailPage-markdown3" class="col">
         <p id="detailPage-heading4" class="product-order-number">Bestellnummer: {{details.nummer}}</p>
         <p id="detailPage-heading3" class="product-name"> {{details.produktbezeichnung_de}} </p>
-        <p class="product-summary"> {{details.beschreibung_de}}</p>
+        <div class="product-summary" ng-bind-html="details.beschreibung_de"></div>
         <p class="product-noted"> {{details.zusatz2_de}}</p>
         <ion-list>
           <div ng-repeat="list in listData">
@@ -100,10 +100,7 @@
               </div>
               <div ng-if="list.title == 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL'">
                 <div ng-repeat="file in files">
-
-                  <div class="col">
-                    <p class="wrap"> {{file.zusatzinformation_de}} </p>
-                  </div>
+                  <p class="wrap"> {{file.zusatzinformation_de}} </p>
                 </div>
               </div>
               <div ng-if="list.title == 'VARIANTEN'">
