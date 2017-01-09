@@ -96,7 +96,9 @@ angular.module('app.controllers', [])
   };
 
       $scope.refreshItems = function () {
-        loadPage();
+        //Check for internet
+        appDataService.checkInternet();
+        $state.reload();
       };
 
 }])
@@ -389,7 +391,6 @@ angular.module('app.controllers', [])
         $scope.videos.push(videos.rows.item(x));
       }
       if ($rootScope.internet == false) {
-        console.log('no internet available');
         var vids = localStorageService.getAllVideoPaths();
         if (vids == null) {
           $ionicPopup.alert({
@@ -486,8 +487,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //Whether this product has been downloaded
         $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
 
-        console.log('loading products');
-
         if (!$rootScope.internet && $scope.productDownloaded) {
           //If no internet load these files
           $scope.details.image_landscape = localStorageService.getLandscapePath($scope.details.uid);
@@ -498,7 +497,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           getFiles($scope.details.download_ids);
         }
         if ($scope.details.video_ids != '') {
-          console.log('video ids', $scope.details.video_ids);
           getVideos($scope.details.video_ids);
         }
       }
@@ -511,9 +509,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
         //If no internet load local path
         if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
-          $scope.files.forEach(function (file) {
-            file.thumbnail = localStorageService.getThumbnailPath($scope.detail.uid);
-            console.log('thumbnail', file.thumbnail);
+          $scope.files.forEach(function (file, index) {
+            file.thumbnail = localStorageService.getThumbnailPath($scope.detail.uid, index);
           });
         }
       })
@@ -526,7 +523,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       DatabaseService.selectVideos(video_ids, function(videos){
         for(var x = 0; x < videos.rows.length; x++){
           $scope.videos.push(videos.rows.item(x));
-          if (!$rootScope.internet && $scope.downloaded) {
+          if (!$rootScope.internet && localStorageService.productDownloaded($scope.videos[x].uid)) {
             $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
           }
         }
@@ -539,32 +536,33 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         switch (url.substr(url.length - 3)) {
           case 'pdf':
             FileService.originalDownload(url, filename.concat('_booklet.pdf'), 'pdfs', function (path) {
-              localStorageService.setPDFPath(uid, path);
               console.log('downloading pdf uid', uid);
               console.log('to path', path);
+              localStorageService.setPDFPath(uid, path);
+
             });
             break;
           case 'zip':
             FileService.originalDownload(url, filename.concat('_booklet.zip'), 'pdfs', function (path) {
-              localStorageService.setPDFPath(uid, path);
               console.log('downloading pdf uid', uid);
               console.log('to path', path);
+              localStorageService.setPDFPath(uid, path);
             });
             break;
 
           case 'jpg':
             FileService.originalDownload(url, filename.concat('_thumbnail.jpg'), 'pdfs', function (path) {
-              localStorageService.setThumbnailPath(uid, path);
-              console.log('downloading pdf uid', uid);
+              console.log('downloading thumbnail uid', uid);
               console.log('to path', path);
+              localStorageService.setThumbnailPath(uid, path);
             });
             break;
 
           case 'png':
             FileService.originalDownload(url, filename.concat('_booklet.png'), 'pdfs', function (path) {
-              localStorageService.setThumbnailPath(uid, path);
-              console.log('downloading pdf uid', uid);
+              console.log('downloading thumbnail uid', uid);
               console.log('to path', path);
+              localStorageService.setThumbnailPath(uid, path);
             });
             break;
         }
@@ -615,14 +613,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Download PDF
     $scope.showPDF = false;
-    $scope.downloadPDF = function (file) {
+      $scope.downloadPDF = function (file, index) {
       appDataService.checkInternet();
       if ($rootScope.internet) {
         $scope.pdfUrl = file.datei_de;
       } else {
         console.log('uid of file being accessed ', $scope.details.uid);
-        console.log('pdf file being passed ', localStorageService.getPDFPath($scope.details.uid, 'de'));
-        $scope.pdfUrl = localStorageService.getPDFPath($scope.details.uid, 'de');
+        console.log('index being passed', index);
+        console.log('pdf file being passed ', localStorageService.getPDFPath($scope.details.uid, index, 'de'));
+        $scope.pdfUrl = localStorageService.getPDFPath($scope.details.uid, 'de', index);
       }
       $scope.showPDF = true;
       var options = {
@@ -687,8 +686,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               localStorageService.setTechnicalPath($scope.details.uid, path);
             });
             for (var y = 0; y < $scope.files.length; y++) {
-              downloadPDFFiles($scope.details.uid, $scope.files[y].datei_de, $scope.details.nummer);
-              downloadPDFFiles($scope.details.uid, $scope.files[y].thumbnail, $scope.details.nummer);
+              downloadPDFFiles($scope.details.uid, $scope.files[y].datei_de, $scope.details.nummer.concat(y));
+              downloadPDFFiles($scope.details.uid, $scope.files[y].thumbnail, $scope.details.nummer.concat(y));
             }
             $state.reload();
           });
@@ -1459,10 +1458,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                  for (var x = 0; x < results.rows.length; x++) {
                    downloads.push(results.rows.item(x));
                  }
-                 downloads.forEach(function (file) {
+                 downloads.forEach(function (file, index) {
                    //#TODO:Check for other languages later on
-                   downloadPDFFiles(product.uid, file.datei_de, product.nummer);
-                   downloadPDFFiles(product.uid, file.thumbnail, product.nummer);
+                   downloadPDFFiles(product.uid, file.datei_de, product.nummer.concat(index));
+                   downloadPDFFiles(product.uid, file.thumbnail, product.nummer.concat(index));
                  });
                });
              }
