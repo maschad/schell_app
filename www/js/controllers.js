@@ -63,6 +63,7 @@ angular.module('app.controllers', [])
         }
       }
 
+      //Load the page
       loadPage();
 
   $scope.swiper = {};
@@ -125,7 +126,7 @@ angular.module('app.controllers', [])
       function getProducts(product_ids) {
         //Get Titles
         $scope.prev = appDataService.getPreviousTitle();
-        $scope.title = $scope.prev;
+        $scope.title = appDataService.getCurrentTitle();
         $scope.root = appDataService.getRootTitle();
 
         //Initialize products to empty
@@ -259,6 +260,7 @@ angular.module('app.controllers', [])
       //When user chooses a product
       $scope.choiceProduct = function (product, nummer) {
         appDataService.setCurrentTitle(nummer);
+        appDataService.setPreviousTitle('PRODUKTKATEGORIEN');
         appDataService.setCurrentProduct(product);
         $state.go('detailPage');
       };
@@ -266,6 +268,7 @@ angular.module('app.controllers', [])
     //The category chosen by the user
     $scope.choice = function (child_ids, title,filter_ids) {
       appDataService.setRootTitle(title);
+      appDataService.setPreviousTitle('PRODUKTKATEGORIEN');
       appDataService.setCurrentTitle(title);
       appDataService.setCurrentCategoryIds(child_ids);
       appDataService.addNavigatedCategory(title);
@@ -618,9 +621,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       if ($rootScope.internet) {
         $scope.pdfUrl = file.datei_de;
       } else {
-        console.log('uid of file being accessed ', $scope.details.uid);
-        console.log('index being passed', index);
-        console.log('pdf file being passed ', localStorageService.getPDFPath($scope.details.uid, index, 'de'));
         $scope.pdfUrl = localStorageService.getPDFPath($scope.details.uid, 'de', index);
       }
       $scope.showPDF = true;
@@ -762,6 +762,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     function ($scope, $state, $rootScope, $ionicLoading, $ionicHistory, $ionicFilterBar, localStorageService, FileService, DatabaseService, appDataService, $ionicPopover) {
     //Set the titles and initialize empty array of filters
     $scope.title = appDataService.getCurrentTitle();
+
     $scope.root = appDataService.getRootTitle();
     $scope.filter_ids = [];
 
@@ -1025,6 +1026,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Child choice
       $scope.choice = function (child_ids, title) {
         //If user chooses something with child ids
+        appDataService.setPreviousTitle($scope.title);
         appDataService.setCurrentTitle(title);
         appDataService.addNavigatedCategory(title);
         loadSubCategories(child_ids);
@@ -1034,9 +1036,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Product Choice
       $scope.choice_product = function (product_ids, title) {
         // If user chooses something with product_ids
+        appDataService.setPreviousTitle($scope.title);
         appDataService.setCurrentTitle(title);
         appDataService.setCurrentCategoryIds(product_ids);
-        appDataService.setPreviousTitle(title);
         appDataService.addNavigatedCategory(title);
         $state.go('product_overview');
       };

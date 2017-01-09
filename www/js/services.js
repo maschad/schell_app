@@ -47,8 +47,6 @@ angular.module('app.services', [])
   };
 
   var bookmarkProduct = function (product) {
-    console.log('uid', product.uid);
-    console.log('index uid', $localStorage.bookmarked_products.indexOf(product));
     for (var i = 0; i < $localStorage.bookmarked_products.length; i++) {
       if ($localStorage.bookmarked_products[i] === product) {
         return false;
@@ -91,7 +89,6 @@ angular.module('app.services', [])
 
   var getPDFPath = function (product_id, lang, index) {
     if (lang == 'de') {
-      console.log('local storage array', $localStorage.product_files[product_id].datei_de);
       return $localStorage.product_files[product_id].datei_de[index];
     }
   };
@@ -103,15 +100,12 @@ angular.module('app.services', [])
   var setThumbnailPath = function (product_id, path) {
     if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
       if ($localStorage.product_files[product_id].hasOwnProperty('thumbnail')) {
-        console.log('pushing the thumbnail path', path);
         $localStorage.product_files[product_id].thumbnail.push(path);
       } else {
-        console.log('creating and pushing the thumbnail path', path);
         $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': []});
         $localStorage.product_files[product_id].thumbnail.push(path);
       }
     } else {
-      console.log('creating and pushing the thumbnail path if false', path);
       $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': []});
       $localStorage.product_files[product_id].thumbnail.push(path);
     }
