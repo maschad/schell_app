@@ -10,6 +10,9 @@
     <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
   <ion-content>
+    <!-- For refreshing items -->
+    <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="refreshItems()">
+    </ion-refresher>
     <div id="product-overview-body">
       <div class="container">
         <h3 class="heading">{{prev}} {{title}} der Kategorie</h3>

@@ -99,15 +99,14 @@ angular.module('app.controllers', [])
       $scope.refreshItems = function () {
         //Check for internet
         appDataService.checkInternet();
-        $state.reload();
       };
 
 }])
 
-  .controller('productOverviewCtrl', ['$scope', '$ionicLoading', '$ionicHistory', '$state', 'appDataService', 'DatabaseService', '$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productOverviewCtrl', ['$scope', '$rootScope', '$ionicLoading', '$ionicHistory', '$state', 'appDataService', 'DatabaseService', '$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicLoading, $ionicHistory, $state, appDataService, DatabaseService, $ionicPopover) {
+    function ($scope, $rootScope, $ionicLoading, $ionicHistory, $state, appDataService, DatabaseService, $ionicPopover) {
 
       //Loading functions
       $scope.showLoad = function () {
@@ -121,28 +120,50 @@ angular.module('app.controllers', [])
         $ionicLoading.hide();
       };
 
+      //Function to download file
+      function downloadImage(uid, url, filename) {
+        console.log('url for image', url);
+        console.log('filename', filename);
+        //Seems to be a re-direct
+        FileService.originalDownload(url, filename.concat('.png'), 'imgs', function (path) {
+          console.log('setting path', path);
+          console.log('for uid', uid);
+          localStorageService.setPortraitPath(uid, path);
+        });
+      }
+
 
       //Function to load the products for this category
       function getProducts(product_ids) {
+
         //Get Titles
         $scope.prev = appDataService.getPreviousTitle();
         $scope.title = appDataService.getCurrentTitle();
         $scope.root = appDataService.getRootTitle();
 
+        //Check for internet
+        appDataService.checkInternet();
+
         //Initialize products to empty
         $scope.products = [];
-        //Show loading
-        $scope.showLoad();
-      //Load the various products
-      DatabaseService.selectProducts(product_ids, function (products) {
-        for(var x = 0; x < products.rows.length; x++){
-          $scope.products.push(products.rows.item(x));
-        }
-        $scope.hideLoad();
-      }, function (error) {
-        //Handle error
-        console.log('ERROR',error);
-      });
+
+        //Load the various products
+        DatabaseService.selectProducts(product_ids, function (products) {
+          for (var x = 0; x < products.rows.length; x++) {
+            $scope.products.push(products.rows.item(x));
+            /** #TODO: Check why file won't download these images
+             var uid = $scope.products[x].uid;
+             if (!$rootScope.internet && localStorageService.productDownloaded(uid)) {
+              $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
+
+            } else if ($rootScope.internet) {
+              downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
+            }**/
+          }
+        }, function (error) {
+          //Handle error
+          console.log('ERROR', error);
+        });
     }
 
 
@@ -173,6 +194,11 @@ angular.module('app.controllers', [])
       appDataService.setCurrentProduct(product);
       $state.go('detailPage');
     };
+
+      //For refreshing the page
+      $scope.refreshItems = function () {
+        getProducts(appDataService.getCurrentCategoryIds());
+      };
 
   }])
 
@@ -465,6 +491,18 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
+      //Loading functions
+      $scope.show = function () {
+        $ionicLoading.show({
+          template: '<p>Downloading Data...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
+      };
+      $scope.hide = function () {
+        $ionicLoading.hide();
+      };
+
       //The products to be show in collapsible list
       $scope.files = [];
       //Array of Bookmarked Products
@@ -479,6 +517,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //Load the product information
       function loadProduct() {
+        $scope.show();
         //Check for internet
         appDataService.checkInternet();
         //Load bookmarked products
@@ -502,6 +541,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         if ($scope.details.video_ids != '') {
           getVideos($scope.details.video_ids);
         }
+        $scope.hide();
       }
 
     //Function to load files
@@ -527,6 +567,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         for(var x = 0; x < videos.rows.length; x++){
           $scope.videos.push(videos.rows.item(x));
           if (!$rootScope.internet && localStorageService.productDownloaded($scope.videos[x].uid)) {
+            $scope.videos[x].startimage_de = localStorageService.getVideoImagePath($scope.videos[x].uid);
             $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
           }
         }
@@ -539,32 +580,24 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         switch (url.substr(url.length - 3)) {
           case 'pdf':
             FileService.originalDownload(url, filename.concat('_booklet.pdf'), 'pdfs', function (path) {
-              console.log('downloading pdf uid', uid);
-              console.log('to path', path);
               localStorageService.setPDFPath(uid, path);
 
             });
             break;
           case 'zip':
             FileService.originalDownload(url, filename.concat('_booklet.zip'), 'pdfs', function (path) {
-              console.log('downloading pdf uid', uid);
-              console.log('to path', path);
               localStorageService.setPDFPath(uid, path);
             });
             break;
 
           case 'jpg':
             FileService.originalDownload(url, filename.concat('_thumbnail.jpg'), 'pdfs', function (path) {
-              console.log('downloading thumbnail uid', uid);
-              console.log('to path', path);
               localStorageService.setThumbnailPath(uid, path);
             });
             break;
 
           case 'png':
             FileService.originalDownload(url, filename.concat('_booklet.png'), 'pdfs', function (path) {
-              console.log('downloading thumbnail uid', uid);
-              console.log('to path', path);
               localStorageService.setThumbnailPath(uid, path);
             });
             break;
@@ -580,17 +613,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     $scope.root = appDataService.getRootTitle();
     $scope.artikel = $scope.title;
 
-    //Loading functions
-    $scope.show = function() {
-      $ionicLoading.show({
-        template: '<p>Downloading Data...</p><ion-spinner></ion-spinner>',
-        animation:'fade-in',
-        showBackdrop:true
-      });
-    };
-    $scope.hide = function(){
-      $ionicLoading.hide();
-    };
+
 
       $scope.goBack = function () {
         appDataService.removeNavigatedCategory();
@@ -599,7 +622,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Bookmark Function
     $scope.bookmark = function () {
-      console.log('uid passed in', $scope.details.uid);
       if (!localStorageService.bookmarkProduct($scope.details)) {
         $ionicPopup.alert({
           title: 'bereits vorgemerkt',
@@ -637,36 +659,43 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.listData = ([
         {
           title : 'TECHNISCHE ZEICHNUNG',
-          show : false
+          show: false,
+          hasData: false
         },
         {
           title : 'LIEFERUMFANG',
-          show : false
+          show: false,
+          hasData: false
         },
         {
           title : 'EINSATZBEREICH / TECHNISCHE DATEN',
-          show : false
+          show: false,
+          hasData: false
         },
         {
           title : 'DETAILS',
-          show : false
+          show: false,
+          hasData: false
         },
         {
           title : 'DOWNLOADS',
-          downloads : '',
-          show : false
+          show: false,
+          hasData: false
         },
         {
           title : 'VARIANTEN',
-          show : false
+          show: false,
+          hasData: false
         },
         {
           title : 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL',
-          show : false
+          show: false,
+          hasData: false
         },
         {
           title : 'VIDEO',
-          show : false
+          show: false,
+          hasData: false
         }
 
       ]);
@@ -689,7 +718,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               downloadPDFFiles($scope.details.uid, $scope.files[y].datei_de, $scope.details.nummer.concat(y));
               downloadPDFFiles($scope.details.uid, $scope.files[y].thumbnail, $scope.details.nummer.concat(y));
             }
-            $state.reload();
+            //Whether this product has been downloaded
+            $scope.productDownloaded = true;
           });
         } else if ($scope.productDownloaded) {
           $ionicPopup.alert({
@@ -797,7 +827,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       function downloadImage(uid, url, filename) {
         FileService.originalDownload(url, filename, 'imgs', function (path) {
           localStorageService.setBildPath(uid, path);
-          console.log('bild path', localStorageService.getBildPath(uid));
         });
       }
 
@@ -1354,31 +1383,27 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           case 'pdf':
             FileService.originalDownload(url, filename.concat('_booklet.pdf'), 'pdfs', function (path) {
               localStorageService.setPDFPath(uid, path);
-              console.log('downloading pdf uid', uid);
-              console.log('to path', path);
+
             });
             break;
           case 'zip':
             FileService.originalDownload(url, filename.concat('_booklet.zip'), 'pdfs', function (path) {
               localStorageService.setPDFPath(uid, path);
-              console.log('downloading pdf uid', uid);
-              console.log('to path', path);
+
             });
             break;
 
           case 'jpg':
             FileService.originalDownload(url, filename.concat('_thumbnail.jpg'), 'pdfs', function (path) {
               localStorageService.setThumbnailPath(uid, path);
-              console.log('downloading pdf uid', uid);
-              console.log('to path', path);
+
             });
             break;
 
           case 'png':
             FileService.originalDownload(url, filename.concat('_booklet.png'), 'pdfs', function (path) {
               localStorageService.setThumbnailPath(uid, path);
-              console.log('downloading pdf uid', uid);
-              console.log('to path', path);
+
             });
             break;
         }
@@ -1448,7 +1473,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
              var downloads = [];
              //Store images and technical drawings
              FileService.originalDownload(product.image_landscape, product.nummer.concat('_landscape.png'), 'images', function (path) {
-               console.log('setting landscape path', path);
                localStorageService.setLandscapePath(product.uid, path);
              });
              FileService.originalDownload(product.technical_drawing_link, product.nummer.concat('_technical_drawing.png'), 'images', function (path) {

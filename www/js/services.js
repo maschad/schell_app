@@ -85,6 +85,7 @@ angular.module('app.services', [])
       $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'datei_de': []});
       $localStorage.product_files[product_id].datei_de.push(path);
     }
+    console.log('length of pdf array', $localStorage.product_files[product_id].datei_de.length);
   };
 
   var getPDFPath = function (product_id, lang, index) {
@@ -98,6 +99,7 @@ angular.module('app.services', [])
   };
 
   var setThumbnailPath = function (product_id, path) {
+    console.log('attempting to download thumbnail');
     if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
       if ($localStorage.product_files[product_id].hasOwnProperty('thumbnail')) {
         $localStorage.product_files[product_id].thumbnail.push(path);
@@ -109,6 +111,7 @@ angular.module('app.services', [])
       $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': []});
       $localStorage.product_files[product_id].thumbnail.push(path);
     }
+    console.log('length of thumbnail array', $localStorage.product_files[product_id].thumbnail.length);
   };
 
   var getThumbnailPath = function (product_id, index) {
@@ -116,11 +119,7 @@ angular.module('app.services', [])
   };
 
   var getLandscapePath = function (product_id) {
-    if ($localStorage.product_files[product_id].image_landscape == undefined) {
-      return '';
-    } else {
-      return $localStorage.product_files[product_id].image_landscape;
-    }
+    return $localStorage.product_files[product_id].image_landscape;
   };
 
   var setLandscapePath = function (product_id, path) {
@@ -133,6 +132,14 @@ angular.module('app.services', [])
 
   var getBildPath = function (category_id) {
     return $localStorage.category_files[category_id].bild;
+  };
+
+  var setPortraitPath = function (product_id, path) {
+    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'image_portrait': path});
+  };
+
+  var getPortraitPath = function (product_id) {
+    return $localStorage.product_files[product_id].image_portrait;
   };
 
   var setTechnicalPath = function (product_id, path) {
@@ -203,7 +210,9 @@ angular.module('app.services', [])
     setThumbnailPath: setThumbnailPath,
     getThumbnailPath: getThumbnailPath,
     setBildPath: setBildPath,
-    getBildPath: getBildPath
+    getBildPath: getBildPath,
+    setPortraitPath: setPortraitPath,
+    getPortraitPath: getPortraitPath
   };
 
 
