@@ -64,9 +64,9 @@
       </div>
       <div id="detailPage-markdown3" class="col">
         <p id="detailPage-heading4" class="product-order-number">Bestellnummer: {{details.nummer}}</p>
-        <p id="detailPage-heading3" class="product-name"> {{details.produktbezeichnung_de}} </p>
-        <div class="product-summary" ng-bind-html="details.beschreibung_de"></div>
+        <p id="detailPage-heading3" class="product-name"> {{details.produktbezeichnung_de}} {{details.zusatz1_de}} </p>
         <p class="product-noted"> {{details.zusatz2_de}}</p>
+        <div class="product-summary" ng-bind-html="details.beschreibung_de"></div>
         <ion-list>
           <div ng-repeat="list in listData">
             <ion-item class="description-item" ng-click="toggleGroup(list)"
@@ -87,7 +87,18 @@
                 <div ng-bind-html="details.einsatzbereich_de" class="wrap"></div>
               </div>
               <div ng-if="list.title == 'DETAILS'">
+                Werkstoff
                 <div ng-bind-html="details.werkstoff_de" class="wrap"></div>
+                Prüfzeichen
+                <div ng-bind-html="details.pruefzeichen_de" class="wrap"></div>
+                Geräuschklasse
+                <div ng-bind-html="details.pruefzeichen_de" class="wrap"></div>
+                Oberfläche
+                <div ng-bind-html="details.oberflaeche_de" class="wrap"></div>
+                Gewicht
+                <div ng-bind-html="details.gewicht_de" class="wrap"></div>
+                Verpackungseinheit
+                <div ng-bind-html="details.verpackungseinheit" class="wrap"></div>
               </div>
               <div ng-if="list.title == 'DOWNLOADS' && details.download_ids">
                 <div ng-repeat="file in files">
@@ -101,11 +112,14 @@
               </div>
               <div ng-if="list.title == 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL'">
                 <div ng-repeat="file in files">
-                  <p class="wrap"> {{file.zusatzinformation_de}} </p>
+                  <p class="wrap"> {{file.referenzartikel}} </p>
                 </div>
               </div>
               <div ng-if="list.title == 'VARIANTEN'">
-                <div class="wrap">{{details.differenzierung_de}}</div>
+                <div ng-repeat="product in productVariations">
+                  <div class="wrap" ng-click="selectProductVariations(product.uid)">{{product.produktbezeichnung_de}}
+                  </div>
+                </div>
               </div>
 
               <div ng-if="list.title == 'VIDEO'">

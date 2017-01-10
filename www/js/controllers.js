@@ -541,7 +541,23 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         if ($scope.details.video_ids != '') {
           getVideos($scope.details.video_ids);
         }
+        if ($scope.details.varianten != '') {
+          getProductVariations($scope.details.varianten);
+        }
         $scope.hide();
+      }
+
+
+      //Load the varianten field for products
+      function getProductVariations(uids) {
+        //Initialize empty array
+        $scope.productVariations = [];
+        //Populate array
+        DatabaseService.selectProducts(uids, function (results) {
+          for (var x = 0; x < results.rows.length; x++) {
+            $scope.productVariations.push(results.rows.item(x));
+          }
+        })
       }
 
     //Function to load files
@@ -549,6 +565,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       DatabaseService.selectDownloads(download_ids, function (downloads) {
         for(var x = 0; x < downloads.rows.length; x++){
           $scope.files.push(downloads.rows.item(x));
+          console.log('zusatzinformation_de', $scope.files[x].zusatzinformation_de);
         }
         //If no internet load local path
         if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
@@ -584,12 +601,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
             });
             break;
-          case 'zip':
-            FileService.originalDownload(url, filename.concat('_booklet.zip'), 'pdfs', function (path) {
-              localStorageService.setPDFPath(uid, path);
-            });
-            break;
-
           case 'jpg':
             FileService.originalDownload(url, filename.concat('_thumbnail.jpg'), 'pdfs', function (path) {
               localStorageService.setThumbnailPath(uid, path);
@@ -784,6 +795,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       console.log('could not open');
     }
   };
+
+      //For the varianten field, we want to select Product variations
+      $scope.selectProductVariations = function (product_id) {
+        DatabaseService.selectProducts(product_id, function (results) {
+          appDataService.setCurrentProduct(results.rows.item(0));
+          loadProduct();
+          $state.reload();
+        });
+      };
 
 
 }])
@@ -1386,13 +1406,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
             });
             break;
-          case 'zip':
-            FileService.originalDownload(url, filename.concat('_booklet.zip'), 'pdfs', function (path) {
-              localStorageService.setPDFPath(uid, path);
-
-            });
-            break;
-
           case 'jpg':
             FileService.originalDownload(url, filename.concat('_thumbnail.jpg'), 'pdfs', function (path) {
               localStorageService.setThumbnailPath(uid, path);
