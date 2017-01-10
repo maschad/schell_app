@@ -87,18 +87,14 @@
                 <div ng-bind-html="details.einsatzbereich_de" class="wrap"></div>
               </div>
               <div ng-if="list.title == 'DETAILS'">
-                Werkstoff
-                <div ng-bind-html="details.werkstoff_de" class="wrap"></div>
-                Prüfzeichen
-                <div ng-bind-html="details.pruefzeichen_de" class="wrap"></div>
-                Geräuschklasse
-                <div ng-bind-html="details.pruefzeichen_de" class="wrap"></div>
-                Oberfläche
-                <div ng-bind-html="details.oberflaeche_de" class="wrap"></div>
-                Gewicht
-                <div ng-bind-html="details.gewicht_de" class="wrap"></div>
-                Verpackungseinheit
-                <div ng-bind-html="details.verpackungseinheit" class="wrap"></div>
+                <ul>
+                  <li>Werkstoff: <p ng-bind-html="details.werkstoff_de" class="wrap"></p></li>
+                  <li>Prüfzeichen: <p ng-bind-html="details.pruefzeichen_de" class="wrap"></p></li>
+                  <li>Geräuschklasse: <p ng-bind-html="details.pruefzeichen_de" class="wrap"></p></li>
+                  <li>Oberfläche: <p ng-bind-html="details.oberflaeche_de" class="wrap"></p></li>
+                  <li>Gewicht: <p ng-bind-html="details.gewicht_de" class="wrap"></p></li>
+                  <li>Verpackungseinheit: <p ng-bind-html="details.verpackungseinheit" class="wrap"></p></li>
+                </ul>
               </div>
               <div ng-if="list.title == 'DOWNLOADS' && details.download_ids">
                 <div ng-repeat="file in files">
