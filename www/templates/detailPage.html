@@ -88,12 +88,19 @@
               </div>
               <div ng-if="list.title == 'DETAILS'">
                 <ul>
-                  <li>Werkstoff: <p ng-bind-html="details.werkstoff_de" class="wrap"></p></li>
-                  <li>Prüfzeichen: <p ng-bind-html="details.pruefzeichen_de" class="wrap"></p></li>
-                  <li>Geräuschklasse: <p ng-bind-html="details.geraeuschklasse_de" class="wrap"></p></li>
-                  <li>Oberfläche: <p ng-bind-html="details.oberflaeche_de" class="wrap"></p></li>
-                  <li>Gewicht: <p ng-bind-html="details.gewicht_de" class="wrap"></p></li>
-                  <li>Verpackungseinheit: <p ng-bind-html="details.verpackungseinheit" class="wrap"></p></li>
+                  <li><strong>Werkstoff:</strong>
+                    <div ng-bind-html="details.werkstoff_de" class="wrap"></div>
+                  </li>
+                  <li><strong>Prüfzeichen:</strong>
+                    <p ng-bind-html="details.pruefzeichen_de" class="wrap"></p></li>
+                  <li><strong>Geräuschklasse:</strong>
+                    <p ng-bind-html="details.geraeuschklasse_de" class="wrap"></p></li>
+                  <li><strong>Oberfläche:</strong>
+                    <p ng-bind-html="details.oberflaeche_de" class="wrap"></p></li>
+                  <li><strong>Gewicht:</strong>
+                    <p ng-bind-html="details.gewicht" class="wrap"></p></li>
+                  <li><strong>Verpackungseinheit:</strong>
+                    <p ng-bind-html="details.verpackungseinheit" class="wrap"></p></li>
                 </ul>
               </div>
               <div ng-if="list.title == 'DOWNLOADS' && details.download_ids">
@@ -113,8 +120,14 @@
               </div>
               <div ng-if="list.title == 'VARIANTEN'">
                 <div ng-repeat="product in productVariations">
-                  <div class="wrap" ng-click="selectProductVariations(product.uid)">{{product.produktbezeichnung_de}}
-                  </div>
+                  <table style="width: 100%">
+                    <tr>
+                      <th class="wrap">
+                        <div ng-bind-html="product.werkstoff_de"> , {{product.oberflaeche_de}} ,{{product.gewicht_de}}
+                      </th>
+                      <th class="wrap"><a ng-click="selectProductVariations(product.uid)">{{product.nummer}}</a></th>
+                    </tr>
+                  </table>
                 </div>
               </div>
 

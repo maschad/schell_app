@@ -26,10 +26,12 @@ angular.module('app.services', [])
       },
       {
         download_videos : false
+      },
+      {
+        last_updated: ''
       }
     ],
-    filters: [],
-    last_updated : ''
+    filters: []
   });
 
   // Getters and Setters
@@ -354,38 +356,11 @@ angular.module('app.services', [])
       $ionicLoading.hide();
     };
 
-    //Save a file to system path
-  var download = function (url, filename, dirName, success) {
-    var filePath = cordova.file.dataDirectory + "files/" + dirName + "/" + filename;
 
-    var fileTransfer = new FileTransfer();
-    var uri = encodeURI(url);
-
-    fileTransfer.download(
-      uri,
-      filePath,
-      function (entry) {
-        console.log(entry);
-        success(entry.toURL());
-      },
-      function (error) {
-        console.log("error");
-      },
-      false,
-      null
-    );
-  };
-
-    var cordovaDownload = function (url, filename, dirName, success, loading) {
-
-      var targetPath = cordova.file.dataDirectory + dirName + "/" + filename;
-      $cordovaFileTransfer.download(url, targetPath, {}, true).then(function (result) {
-        success(targetPath);
-      }, function (error) {
-        console.log('Error Download file', error);
-      }, function (progress) {
-        loading(progress);
-      });
+    var cordovaDownload = function (url, filename, dirName) {
+      var targetPath = cordova.file.dataDirectory + '/' + dirName + '/' + filename;
+      url = encodeURI(url);
+      return $cordovaFileTransfer.download(url, targetPath, {}, true);
     };
 
     var originalDownload = function (url, filename, dirName, success) {
@@ -440,8 +415,8 @@ angular.module('app.services', [])
         });
     };
 
+
   return{
-    download: download,
     cordovaDownload: cordovaDownload,
     originalDownload: originalDownload
   }

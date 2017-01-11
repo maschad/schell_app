@@ -37,8 +37,6 @@ angular.module('app.controllers', [])
 
         //load bookmarked
         $scope.bookmarks = localStorageService.getBookmarkedProducts();
-        //Whether to allow settings based on network connection
-        $scope.show = $rootScope.internet;
         //If there is internet, populate the DB with latest data, else, work with what is in database
         if ($rootScope.internet) {
           $scope.showLoad();
@@ -122,12 +120,7 @@ angular.module('app.controllers', [])
 
       //Function to download file
       function downloadImage(uid, url, filename) {
-        console.log('url for image', url);
-        console.log('filename', filename);
-        //Seems to be a re-direct
         FileService.originalDownload(url, filename.concat('.png'), 'imgs', function (path) {
-          console.log('setting path', path);
-          console.log('for uid', uid);
           localStorageService.setPortraitPath(uid, path);
         });
       }
@@ -418,7 +411,7 @@ angular.module('app.controllers', [])
       for (var x = 0; x < videos.rows.length; x++) {
         $scope.videos.push(videos.rows.item(x));
       }
-      if ($rootScope.internet == false) {
+      if (!$rootScope.internet) {
         var vids = localStorageService.getAllVideoPaths();
         if (vids == null) {
           $ionicPopup.alert({
@@ -426,10 +419,14 @@ angular.module('app.controllers', [])
           });
         } else {
           for (var key in vids) {
+
+            var index = $scope.videos.findIndex(function (video) {
+              return video.uid == key;
+            });
+            //console.log('image video path in local storage', vids[key].startimage_de);
+            //$scope.videos[index].startimage_de = vids[key].startimage_de;
             console.log('video path in local storage', vids[key].videofile_de);
-            $scope.videos[key].videofile_de = vids[key].videofile_de;
-            console.log('image video path in local storage', vids[key].startimage_de);
-            $scope.videos[key].startimage_de = vids[key].startimage_de;
+            $scope.videos[index].videofile_de = vids[key].videofile_de;
           }
         }
       }
@@ -522,6 +519,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //Load bookmarked products
         $scope.bookmarked = localStorageService.getBookmarkedProducts();
 
+        //Get various labels
+        $scope.title = appDataService.getCurrentTitle();
+        $scope.prev = appDataService.getPreviousTitle();
+        $scope.root = appDataService.getRootTitle();
+        $scope.artikel = $scope.title;
+
         //Set details
         $scope.details = appDataService.getCurrentProduct();
 
@@ -564,7 +567,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       DatabaseService.selectDownloads(download_ids, function (downloads) {
         for(var x = 0; x < downloads.rows.length; x++){
           $scope.files.push(downloads.rows.item(x));
-          console.log('zusatzinformation_de', $scope.files[x].zusatzinformation_de);
         }
         //If no internet load local path
         if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
@@ -614,14 +616,30 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
       }
 
+      function downloadVideo(uid, url, filename) {
+        FileService.originalDownload(url, filename.concat('_video.mp4'), 'videos', function (result) {
+          localStorageService.setVideoPath(uid, result);
+        });
+      }
+
+      function downloadVideoImage(uid, url, filename) {
+        switch (url.substr(url.length - 3)) {
+          case 'jpg':
+            FileService.originalDownload(url, filename.concat('_startimage.jpg'), 'imgs', function (result) {
+              localStorageService.setVideoImagePath(uid, result);
+            });
+            break;
+
+          case 'png':
+            FileService.originalDownload(url, filename.concat('_startimage.png'), 'imgs', function (result) {
+              localStorageService.setVideoImagePath(uid, result);
+            });
+            break;
+        }
+      }
+
       //Load the product
       loadProduct();
-
-    //Get various labels
-    $scope.title = appDataService.getCurrentTitle();
-    $scope.prev = appDataService.getPreviousTitle();
-    $scope.root = appDataService.getRootTitle();
-    $scope.artikel = $scope.title;
 
 
 
@@ -728,6 +746,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               downloadPDFFiles($scope.details.uid, $scope.files[y].datei_de, $scope.details.nummer.concat(y));
               downloadPDFFiles($scope.details.uid, $scope.files[y].thumbnail, $scope.details.nummer.concat(y));
             }
+            for (var z = 0; z < $scope.videos.length; z++) {
+              downloadVideoImage($scope.details.uid, $scope.videos[z].startimage_de, $scope.details.nummer.concat(z));
+              downloadVideo($scope.details.uid, $scope.videos[z].videofile_de, $scope.details.nummer.concat(z));
+            }
+
             //Whether this product has been downloaded
             $scope.productDownloaded = true;
           });
@@ -799,6 +822,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.selectProductVariations = function (product_id) {
         DatabaseService.selectProducts(product_id, function (results) {
           appDataService.setCurrentProduct(results.rows.item(0));
+          appDataService.setCurrentTitle(results.rows.item(0).nummer);
           loadProduct();
           $state.reload();
         });
@@ -1227,7 +1251,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         if (mm < 10) {
           mm = '0' + mm
         }
-        today = mm + '/' + dd + '/' + yyyy;
+        today = dd + '/' + mm + '/' + yyyy;
         return today;
       }
 
@@ -1512,46 +1536,35 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Call the function on startup
     loadData();
 
-      function downloadVideo(uid, url, filename) {
-        switch (url.substr(url.length - 3)) {
-          case 'mp4':
-            FileService.originalDownload(url, filename.concat('_video.mp4'), 'videos', function (result) {
-              localStorageService.setVideoPath(uid, result);
-            });
-            break;
-          case '.zip':
-            FileService.originalDownload(url, filename.concat('_video.zip'), 'videos', function (result) {
-              localStorageService.setVideoPath(uid, result);
-            });
-            break;
-        }
+
+      function downloadVideoImage(videos) {
+        FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
+          localStorageService.setVideoImagePath(videos[0].uid, result);
+          videos.shift();
+          if (videos.length > 0) {
+            downloadVideoImage(videos);
+          }
+        });
       }
 
-      function downloadVideoImage(uid, url, filename) {
-        switch (url.substr(url.length - 3)) {
-          case 'jpg':
-            FileService.originalDownload(url, filename.concat('_startimage.jpg'), 'imgs', function (result) {
-              localStorageService.setVideoImagePath(uid, result);
-            });
-            break;
-
-          case 'png':
-            FileService.originalDownload(url, filename.concat('_startimage.png'), 'imgs', function (result) {
-              localStorageService.setVideoImagePath(uid, result);
-            });
-            break;
+      function downloadVideo(videos) {
+        FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
+          localStorageService.setVideoPath(videos[0].uid, result);
+          videos.shift();
+          if (videos.length > 0) {
+            downloadVideo(videos);
         }
+        });
       }
 
     //Function to download videos
     $scope.downloadVideos = function () {
       //If checked
       if ($scope.preferences[3].download_videos) {
-        $scope.preferences.last_updated = getDate();
-        for (var x = 0; x < $scope.videos.length; x++) {
-          downloadVideo($scope.videos[x].uid, $scope.videos[x].videofile_de, $scope.videos[x].title);
-          downloadVideoImage($scope.videos[x].uid, $scope.videos[x].startimage_de, $scope.videos[x].title);
-        }
+        $scope.preferences[4].last_updated = getDate();
+        var toPass = $scope.videos.slice();
+        downloadVideo(toPass);
+        downloadVideoImage(toPass);
         localStorageService.updatePreferences($scope.preferences);
       } else {
         localStorageService.updatePreferences($scope.preferences);
@@ -1562,7 +1575,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     $scope.downloadCategory = function (category, check) {
       //Download details based on check
       if (check == true) {
-        $scope.preferences.last_updated = getDate();
+        $scope.preferences[4].last_updated = getDate();
         //Update preferences
         //The product ids to download
         downloadCategoryFiles(category);
