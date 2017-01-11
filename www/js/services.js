@@ -70,7 +70,19 @@ angular.module('app.services', [])
   };
 
   var productDownloaded = function (uid) {
-    return $localStorage.product_files.hasOwnProperty(uid.toString());
+    if ($localStorage.product_files.hasOwnProperty(uid.toString())) {
+      return $localStorage.product_files[uid].hasOwnProperty('technical_drawing_link');
+    }
+
+    return false;
+  };
+
+  var productImageDownloaded = function (uid) {
+    if ($localStorage.product_files.hasOwnProperty(uid.toString())) {
+      return $localStorage.product_files[uid].hasOwnProperty('image_portrait');
+    }
+
+    return false;
   };
 
   var setPDFPath = function (product_id, path) {
@@ -200,6 +212,7 @@ angular.module('app.services', [])
     getVideoImagePath: getVideoImagePath,
     getDownloadFiles : getDownloadFiles,
     productDownloaded: productDownloaded,
+    productImageDownloaded: productImageDownloaded,
     categoryDownloaded: categoryDownloaded,
     setFilters: setFilters,
     getFilters: getFilters,

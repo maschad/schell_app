@@ -103,10 +103,10 @@ angular.module('app.controllers', [])
 
 }])
 
-  .controller('productOverviewCtrl', ['$scope', '$rootScope', '$ionicLoading', '$ionicHistory', '$state', 'appDataService', 'DatabaseService', '$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('productOverviewCtrl', ['$scope', '$rootScope', '$ionicLoading', '$ionicHistory', '$state', 'appDataService', 'FileService', 'DatabaseService', 'localStorageService', '$ionicPopover',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $rootScope, $ionicLoading, $ionicHistory, $state, appDataService, DatabaseService, $ionicPopover) {
+    function ($scope, $rootScope, $ionicLoading, $ionicHistory, $state, appDataService, FileService, DatabaseService, localStorageService, $ionicPopover) {
 
       //Loading functions
       $scope.showLoad = function () {
@@ -151,14 +151,13 @@ angular.module('app.controllers', [])
         DatabaseService.selectProducts(product_ids, function (products) {
           for (var x = 0; x < products.rows.length; x++) {
             $scope.products.push(products.rows.item(x));
-            /** #TODO: Check why file won't download these images
              var uid = $scope.products[x].uid;
-             if (!$rootScope.internet && localStorageService.productDownloaded(uid)) {
+            if (!$rootScope.internet && localStorageService.productImageDownloaded(uid)) {
               $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
 
             } else if ($rootScope.internet) {
               downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
-            }**/
+            }
           }
         }, function (error) {
           //Handle error
