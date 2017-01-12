@@ -304,7 +304,7 @@ angular.module('app.controllers', [])
         }
         var filterBarInstance = $ionicFilterBar.show({
           items: products,
-          cancelText: 'Abrechen',
+          cancelText: 'Abbrechen',
           cancel: function () {
             $scope.filterOn = false;
             loadCategories();
@@ -423,8 +423,8 @@ angular.module('app.controllers', [])
             var index = $scope.videos.findIndex(function (video) {
               return video.uid == key;
             });
-            //console.log('image video path in local storage', vids[key].startimage_de);
-            //$scope.videos[index].startimage_de = vids[key].startimage_de;
+            console.log('image video path in local storage', vids[key].startimage_de);
+            $scope.videos[index].startimage_de = vids[key].startimage_de;
             console.log('video path in local storage', vids[key].videofile_de);
             $scope.videos[index].videofile_de = vids[key].videofile_de;
           }
@@ -616,26 +616,26 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
       }
 
-      function downloadVideo(uid, url, filename) {
-        FileService.originalDownload(url, filename.concat('_video.mp4'), 'videos', function (result) {
-          localStorageService.setVideoPath(uid, result);
+      //Recursive functions to download videos and the corresponding thumbnail
+      //This avoids Large queues for downloading Files
+      function downloadVideoImage(videos) {
+        FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
+          localStorageService.setVideoImagePath(videos[0].uid, result);
+          videos.shift();
+          if (videos.length > 0) {
+            downloadVideoImage(videos);
+          }
         });
       }
 
-      function downloadVideoImage(uid, url, filename) {
-        switch (url.substr(url.length - 3)) {
-          case 'jpg':
-            FileService.originalDownload(url, filename.concat('_startimage.jpg'), 'imgs', function (result) {
-              localStorageService.setVideoImagePath(uid, result);
-            });
-            break;
-
-          case 'png':
-            FileService.originalDownload(url, filename.concat('_startimage.png'), 'imgs', function (result) {
-              localStorageService.setVideoImagePath(uid, result);
-            });
-            break;
-        }
+      function downloadVideo(videos) {
+        FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
+          localStorageService.setVideoPath(videos[0].uid, result);
+          videos.shift();
+          if (videos.length > 0) {
+            downloadVideo(videos);
+          }
+        });
       }
 
       //Load the product
@@ -736,6 +736,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             cssClass: 'download-popup',
             okText: 'Offline verfügbar machen'
           }).then(function () {
+            //Whether this product has been downloaded
+            $scope.productDownloaded = true;
+
             FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
               localStorageService.setLandscapePath($scope.details.uid, path);
             });
@@ -746,13 +749,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               downloadPDFFiles($scope.details.uid, $scope.files[y].datei_de, $scope.details.nummer.concat(y));
               downloadPDFFiles($scope.details.uid, $scope.files[y].thumbnail, $scope.details.nummer.concat(y));
             }
-            for (var z = 0; z < $scope.videos.length; z++) {
-              downloadVideoImage($scope.details.uid, $scope.videos[z].startimage_de, $scope.details.nummer.concat(z));
-              downloadVideo($scope.details.uid, $scope.videos[z].videofile_de, $scope.details.nummer.concat(z));
+            //Check for videos
+            if ($scope.videos.length > 0) {
+              var videos = $scope.videos.slice();
+              var images = $scope.videos.slice();
+              downloadVideoImage(images);
+              downloadVideo(videos);
             }
-
-            //Whether this product has been downloaded
-            $scope.productDownloaded = true;
           });
         } else if ($scope.productDownloaded) {
           $ionicPopup.alert({
@@ -1536,7 +1539,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Call the function on startup
     loadData();
 
-
+      //Recursive functions to download videos and the corresponding thumbnail
+      //This avoids Large queues for downloading Files
       function downloadVideoImage(videos) {
         FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
           localStorageService.setVideoImagePath(videos[0].uid, result);
@@ -1553,7 +1557,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           videos.shift();
           if (videos.length > 0) {
             downloadVideo(videos);
-        }
+          }
         });
       }
 
@@ -1562,9 +1566,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //If checked
       if ($scope.preferences[3].download_videos) {
         $scope.preferences[4].last_updated = getDate();
-        var toPass = $scope.videos.slice();
-        downloadVideo(toPass);
-        downloadVideoImage(toPass);
+        var images = $scope.videos.slice();
+        var videos = $scope.videos.slice();
+        downloadVideoImage(images);
+        downloadVideo(videos);
         localStorageService.updatePreferences($scope.preferences);
       } else {
         localStorageService.updatePreferences($scope.preferences);
