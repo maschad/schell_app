@@ -366,7 +366,8 @@ img {
 
 .bar-royal .button.back-button.button-clear {
   color: #000000;
-  padding-left: 8px;
+  padding: 0 14px 0 10px;
+  margin-right: 0;
 }
 
 .start-screen-button {
@@ -569,6 +570,19 @@ img {
   .filter-text {
     margin-left: 0;
   }
+}
+
+.filter-close {
+  background: none; 
+  color: #fff; 
+  font-size: 20px; 
+  border: none; 
+  position: absolute; 
+  bottom: 24px; 
+  left: 12px;
+}
+.filter-close.activated {
+  background-color: transparent;
 }
 
 /**
@@ -989,9 +1003,8 @@ body.has-active-menu {
 
 .product-type {
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
-  padding-top: 24%;
 }
 
 .product-filter-heading {
@@ -1634,7 +1647,11 @@ ion-popover-view.fit ion-content {
   padding: 0;
 }
 .bar .title {
-  font-size: 14px;
+  font-size: 18px;
+}
+.platform-android .bar .title {
+  font-size: 18px;
+  line-height: 50px;
 }
 .bar .title + .buttons {
   position: absolute;
@@ -1818,4 +1835,18 @@ label.menu-item {
 .ion-close-round {
   float: right;
   font-size: 18px;
+}
+
+
+// to edit settings popover
+.platform-ios .popover-arrow, .platform-android ion-popover-view.settings-popover .popover-arrow {
+  top: -16px;
+  left: 90% !important;
+}
+
+@media (min-width: 300px) {
+  .popover {
+    height: 262px;
+    width: 300px;
+  }
 }

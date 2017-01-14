@@ -4,7 +4,7 @@
     <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
     </button>
     <!-- Breadcrumb ionic -->
-    <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
+    <button class="button icon ion-chevron-down" ng-click="popover.show($event)" style="padding: 0 12px;"></button>
   </ion-nav-buttons>
   <ion-content padding="false" class="has-header">
     <!-- For refreshing items -->
@@ -30,7 +30,7 @@
                 </div>
                 <img src="{{categories[$index].bild}}" class="center">
               </div>
-              <div class="col">
+              <div class="col col-center">
                 <h3 class="product-type">{{categories[$index].title_de}}</h3>
               </div>
             </div>
@@ -46,7 +46,7 @@
                 </div>
                 <img src="{{categories[$index + 1].bild}}" class="center">
               </div>
-              <div class="col">
+              <div class="col col-center">
                 <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
               </div>
             </div>
