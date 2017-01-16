@@ -1,11 +1,17 @@
 <ion-view  style="background-color:white;">
   <ion-nav-title>{{title}}</ion-nav-title>
+  <ion-floating-menu menu-color="#2c2a2b" menu-open-color="#2c2a2b" backdrop="true">
+    <ion-floating-item icon="schellicon-home" ui-sref="start-screen" button-color="#2c2a2b" text="Hauptmenü" icon-color="#fff" ></ion-floating-item>
+    <ion-floating-item icon="schellicon-mail" button-color="#2c2a2b" text="Artikel weiterempfehlen" icon-color="#fff"></ion-floating-item>
+    <ion-floating-item icon="schellicon-download" button-color="#2c2a2b" text="Artikel offline speichern" icon-color="#fff"></ion-floating-item>
+    <ion-floating-item icon="schellicon-paper-clip" button-color="#2c2a2b" text="Artikel merken" icon-color="#fff"></ion-floating-item>
+  </ion-floating-menu>
   <!-- Breadcrumb ionic -->
   <ion-nav-buttons side="right" class="has-header">
     <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
   <!-- Menu -->
-  <div class="side-nav-wrapper">
+  <!-- <div class="side-nav-wrapper">
     <ul class="side-nav hidden-xs">
       <li>
         <div class="side-nav-download">
@@ -51,7 +57,7 @@
         </div>
       </li>
     </ul>
-  </div>
+  </div> -->
   <!-- Menu end -->
 
   <ion-content padding="false" class="has-header">

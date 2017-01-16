@@ -1,12 +1,25 @@
-<ion-view title="Ländereinstellungen" style="background-color: #8c0b0c">
+<ion-view title="LÄNDEREINSTELLUNGEN" style="background-color: #8c0b0c">
   <ion-content padding="true" class="has-header">
     <div class="settings-container">
       <div class="row">
         <h3>Ländereinstellungen</h3>
       </div>
-      <div class="row">
-        <p><strong>Wählen Sie die Kategorien die Sie offline auf diesem Gerät speichern möchten.</strong></p>
-        <p>Letzte Aktualisierung: </p>
+      <div class="row responsive-md">
+        <div class="col col-33 col-offset-33 text-center">
+          <form id="countryselect-form8" class="list">
+            <span style="color: #000; padding: 3px;" class="SyntaxLTStd-Bold">Wählen Sie Ihr Land:</span>
+            <div style="padding: 5px;"></div>
+            <label class="item item-select" id="countryselect-select1" style="border: 1px solid #333; border-radius: 4px;">
+              <span class="input-label"></span>
+              <select style="font-size: 16px;" ng-model="country" ng-change="selection(country)">
+                <option disabled selected value> -- select an option -- </option>
+                <option ng-value="de">Deutschland</option>
+              </select>
+            </label>
+          </form>
+          <button id="countryselect-button1" class="button button-black button" style="width: 100%; text-align: center;">Angaben
+            speichern</button>
+        </div>
       </div>
     </div>
   </ion-content>
