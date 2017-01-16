@@ -52,10 +52,14 @@ angular.module('app.controllers', [])
           FirebaseService.downloadVideos(function (results) {
             DatabaseService.populateVideos(results);
           });
+          FirebaseService.downloadAwards(function (results) {
+            DatabaseService.populateAwards(results);
+          });
           FirebaseService.downloadProductFilters(function (results) {
             localStorageService.setFilters(results);
             $scope.hideLoad();
           });
+
         } else {
           //#TODO: Handle DB offline
         }
@@ -546,7 +550,22 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         if ($scope.details.varianten != '') {
           getProductVariations($scope.details.varianten);
         }
+        if ($scope.details.designpreis != '') {
+          getAwards($scope.details.designpreis);
+        }
         $scope.hide();
+      }
+
+      //Load the awards images
+      function getAwards(award_ids) {
+        $scope.awards = [];
+
+        DatabaseService.selectAwards(award_ids, function (results) {
+          for (var x = 0; x < results.rows.length; x++) {
+            console.log('award', results.rows.item(x).titel);
+            $scope.awards.push(results.rows.item(x));
+          }
+        });
       }
 
 

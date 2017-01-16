@@ -327,6 +327,22 @@ angular.module('app.services', [])
 
   };
 
+  var downloadAwards = function (success, error) {
+    var awards = {};
+
+    firebase.database().ref('/awards/').orderByKey().once('value').then(function (snapshot) {
+      snapshot.forEach(function (award) {
+        awards[award.key] = award.val();
+      });
+      success(awards);
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
+    });
+  };
+
 
   return {
     goOffline : goOffline,
@@ -334,7 +350,8 @@ angular.module('app.services', [])
     downloadVideos : downloadVideos,
     downloadFiles : downloadFiles,
     downloadProductFilters : downloadProductFilters,
-    downloadAllProducts : downloadAllProducts
+    downloadAllProducts: downloadAllProducts,
+    downloadAwards: downloadAwards
   };
 
 }])
@@ -557,7 +574,7 @@ angular.module('app.services', [])
 
     var populateProducts = function(firebaseProductsObject) {
       var preparedStatements = [];
-      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseProductsObject) {
         var filter_ids = firebaseProductsObject[uid]['filter_ids'] ? firebaseProductsObject[uid]['filter_ids'].join() : '' ;
@@ -605,7 +622,8 @@ angular.module('app.services', [])
             firebaseProductsObject[uid]['en_data']['pruefzeichen'] ? firebaseProductsObject[uid]['en_data']['pruefzeichen'] : '',
             firebaseProductsObject[uid]['en_data']['dimension'] ? firebaseProductsObject[uid]['en_data']['dimension'] : '',
             firebaseProductsObject[uid]['en_data']['oberflaeche'] ? firebaseProductsObject[uid]['en_data']['oberflaeche'] : '',
-            firebaseProductsObject[uid]['varianten'] ? firebaseProductsObject[uid]['varianten'] : ''
+            firebaseProductsObject[uid]['varianten'] ? firebaseProductsObject[uid]['varianten'] : '',
+            firebaseProductsObject[uid]['designpreis'] ? firebaseProductsObject[uid]['designpreis'] : ''
           ]
         ]);
       }
@@ -818,6 +836,14 @@ angular.module('app.services', [])
       });
     };
 
+  var selectAwards = function (award_ids, success, error) {
+    db.executeSql('SELECT * from awards where uid in (' + award_ids + ');', [], function (rs) {
+      success(rs);
+    }, function (error) {
+      error(error);
+    });
+  };
+
     return {
       populateProducts: populateProducts,
       populateProductCategories: populateProductCategories,
@@ -832,6 +858,7 @@ angular.module('app.services', [])
       selectVideos: selectVideos,
       selectAllVideos : selectAllVideos,
       selectDownloads: selectDownloads,
+      selectAwards: selectAwards,
       searchProducts: searchProducts
     };
 

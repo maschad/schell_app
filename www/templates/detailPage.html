@@ -145,9 +145,12 @@
             </ion-item>
           </div>
         </ion-list>
-        <div class="design-awards">
-          <img src="img/design-awards.png">
+        <div ng-repeat="award in awards">
+          <div class="design-awards">
+            <img ng-src="{{award.logo}}">
+          </div>
         </div>
+
       </div>
     </div>
 
