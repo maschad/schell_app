@@ -19,14 +19,13 @@
       </div>
     </div>
     <!-- Products -->
-    <div ng-repeat="category in categories" ng-if="$index%2 == 0" class="row responsive-sm">
+    <div ng-repeat="category in categories" ng-if="$index%2 == 0" class="row responsive-sm" ng-show="filterOn == false">
         <div class="col col-50" ng-click="choice(categories[$index].child_ids,categories[$index].title_de,categories[$index].filter_ids)">
           <div class="product-tile">
             <div class="row">
               <div class="col col-33">
                 <div class="product-counter">
-                  <p ng-if="categories[$index].child_ids"><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
-                  <p ng-if="categories[$index].product_ids"><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
+                  <p> {{counts[categories[$index].uid]}} Artikels</p>
                 </div>
                 <img src="{{categories[$index].bild}}" class="center">
               </div>
@@ -41,8 +40,7 @@
             <div class="row">
               <div class="col col-33">
                 <div class="product-counter">
-                  <p ng-if="categories[$index + 1].child_ids"><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
-                  <p ng-if="categories[$index + 1].product_ids"><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>
+                  <p> {{counts[categories[$index + 1].uid]}} Artikels </p>
                 </div>
                 <img src="{{categories[$index + 1].bild}}" class="center">
               </div>
@@ -52,6 +50,28 @@
             </div>
           </div>
         </div>
+    </div>
+
+    <div id="product-overview-body" ng-show="filterOn == true">
+      <div class="container">
+        <div ng-repeat="product in products" class="row responsive-sm">
+          <div class="col col-50" ng-if="product.image_portrait" ng-click="choiceProduct(product,product.nummer)">
+            <div class="product-tile">
+              <div class="row">
+                <div class="col col-75">
+                  <p class="item-number">{{product.nummer}}</p>
+                  <p class="item-title">{{product.produktbezeichnung_de}}</p>
+                  <p class="item-name" ng-bind-html="product.werkstoff_de"></p>
+                  <p>{{product.zusatz2_de}}</p>
+                </div>
+                <div class="col">
+                  <img src="{{product.image_portrait}}">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
 

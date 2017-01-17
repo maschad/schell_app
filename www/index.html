@@ -54,9 +54,6 @@
       firebase.initializeApp(config);
     </script>
 
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="js/ng-cordova.min.js"></script>
-    <script src="cordova.js"></script>
 
     <style type="text/css">
       .platform-ios .manual-ios-statusbar-padding{
@@ -96,6 +93,10 @@
 
     <script src="js/services.js"></script>
 
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="js/ng-cordova.min.js"></script>
+    <script src="cordova.js"></script>
+
 
     <!-- Only required for Tab projects w/ pages in multiple tabs
     <script src="lib/ionicuirouter/ionicUIRouter.js"></script>
@@ -117,7 +118,7 @@
   <ion-side-menus enable-menu-with-back-views="true" data-componentid="side-menu21" ng-controller="MenuCtrl">
     <ion-side-menu-content>
       <ion-nav-bar class="bar-royal" align-title="left">
-        <ion-nav-back-button></ion-nav-back-button>
+        <ion-nav-back-button ng-click="goBack()"></ion-nav-back-button>
         <ion-nav-buttons side="left">
       </ion-nav-buttons>
       </ion-nav-bar>

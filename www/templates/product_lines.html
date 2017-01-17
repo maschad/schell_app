@@ -6,9 +6,6 @@
     <ion-floating-item icon="schellicon-filter" menu-toggle="left" button-color="#2c2a2b" text="Filter" icon-color="#fff"></ion-floating-item>
   </ion-floating-menu>
   <ion-nav-buttons side="right">
-    <!-- Filter search bar -->
-    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
-    </button>
     <!-- Breadcrumb ionic -->
     <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
@@ -17,19 +14,19 @@
       <div class="container">
         <div class="row">
           <div class="col">
-            <p class="filter-text">Filter aktiv 181/200 Produkte</p>
+            <p class="filter-text" ng-show="showFilter">Filter aktiv {{total_filter}}/{{total_products}} Produkte</p>
           </div>
         </div>
         <div class="product-lines">
-          <h3 class="heading">Wandeinbau Duscharmaturen</h3>
+          <h3 class="heading">{{title}}</h3>
           <!-- Products -->
           <div ng-repeat="category in categories" ng-if="$index%3 == 0" class="row responsive-sm">
             <div class="col col-33" ng-click="choice_product(categories[$index].product_ids, categories[$index].title_de)" ng-if="categories[$index].product_ids">
-              <div class="product-tile">
+              <div class="product-tile" ng-style="{'opacity' : counts[categories[$index].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{categories[$index].product_ids.length}} Artikel</strong></p>
+                      <p><strong>{{counts[categories[$index].uid]}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index].title_de}}</h3>
                   </div>
@@ -41,11 +38,11 @@
             </div>
             <!-- Check for children -->
             <div class="col col-33" ng-click="choice(categories[$index].child_ids,categories[$index].title_de)" ng-if="categories[$index].child_ids">
-              <div class="product-tile">
+              <div class="product-tile" ng-style="{'opacity' : counts[categories[$index].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{categories[$index].child_ids.length}} Artikel</strong></p>
+                      <p><strong>{{counts[categories[$index].uid]}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index].title_de}}</h3>
                   </div>
@@ -57,11 +54,11 @@
             </div>
             <!-- Product ID-->
             <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids" ng-click="choice_product(categories[$index + 1].product_ids,categories[$index + 1].title_de)">
-              <div class="product-tile">
+              <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 1].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{categories[$index + 1].product_ids.length}} Artikel</strong></p>
+                      <p><strong>{{counts[categories[$index + 1].uid]}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
                   </div>
@@ -74,11 +71,11 @@
 
             <!--Child Product-->
             <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].child_ids" ng-click="choice(categories[$index + 1].child_ids,categories[$index + 1].title_de)">
-              <div class="product-tile">
+              <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 1].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{categories[$index + 1].child_ids.length}} Artikel</strong></p>
+                      <p><strong>{{counts[categories[$index + 1].uid]}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
                   </div>
@@ -91,11 +88,11 @@
 
             <!--Product Ids-->
             <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].product_ids" ng-click="choice_product(categories[$index + 2].product_ids,categories[$index + 2].title_de)">
-              <div class="product-tile">
+              <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 2].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{categories[$index + 2].product_ids.length}} Artikel</strong></p>
+                      <p><strong>{{counts[categories[$index + 2].uid]}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
                   </div>
@@ -107,11 +104,11 @@
             </div>
             <!--Child IDs-->
             <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].child_ids" ng-click="choice(categories[$index + 2].child_ids,categories[$index + 2].title_de)">
-              <div class="product-tile">
+              <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 2].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{categories[$index + 2].child_ids.length}} Artikel</strong></p>
+                      <p><strong>{{counts[categories[$index + 2].uid]}} Artikel</strong></p>
                     </div>
                     <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
                   </div>
@@ -121,7 +118,6 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>

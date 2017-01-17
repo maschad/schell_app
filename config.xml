@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version='1.0' encoding='utf-8'?>
 <widget id="com.ionicframework.schellapp336515" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>schell-app</name>
   <description>&#xD;
@@ -10,10 +10,6 @@
   <content src="index.html"/>
   <access origin="*"/>
   <allow-navigation href="*"/>
-  <allow-navigation href="http://192.168.33.102:8100"/>
-  <allow-navigation href="http://192.168.100.70:8100"/>
-  <allow-navigation href="http://192.168.1.56:8101"/>
-  <allow-navigation href="http://192.168.1.56:8100"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
@@ -34,7 +30,6 @@
   <plugin name="cordova-plugin-splashscreen" spec="~4.0.0"/>
   <plugin name="cordova-plugin-statusbar" spec="~2.2.0"/>
   <plugin name="ionic-plugin-keyboard" spec="~2.2.1"/>
-  <plugin name="cordova-sqlite-storage" spec="~2.0.0"/>
   <platform name="ios">
     <splash height="1136" src="resources/ios/splash/Default-568h@2x~iphone.png" width="640"/>
     <splash height="1334" src="resources/ios/splash/Default-667h.png" width="750"/>
@@ -89,4 +84,7 @@
     <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png"/>
   </platform>
   <icon src="resources/ios/icon/icon-small@3x.png"/>
+  <allow-navigation href="http://192.168.33.102:8100"/>
+  <allow-navigation href="http://192.168.100.70:8100"/>
+  <plugin name="cordova-sqlite-storage" spec="~2.0.0"/>
 </widget>

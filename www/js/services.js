@@ -8,8 +8,9 @@ angular.module('app.services', [])
   $localStorage = $localStorage.$default({
     country: '',
     bookmarked_products: [],
-    product_files: [],
-    video_files: [],
+    category_files: {},
+    product_files: {},
+    video_files: {},
     download_files: [],
     offlinePreferences:[
       {
@@ -25,10 +26,12 @@ angular.module('app.services', [])
       },
       {
         download_videos : false
+      },
+      {
+        last_updated: ''
       }
     ],
-    filters: [],
-    last_updated : ''
+    filters: []
   });
 
   // Getters and Setters
@@ -46,12 +49,14 @@ angular.module('app.services', [])
   };
 
   var bookmarkProduct = function (product) {
-    if($localStorage.bookmarked_products.indexOf(product) != -1){
-      return false;
-    }else{
-      $localStorage.bookmarked_products.push(product);
-      return true;
+    for (var i = 0; i < $localStorage.bookmarked_products.length; i++) {
+      if ($localStorage.bookmarked_products[i] === product) {
+        return false;
+      }
     }
+    $localStorage.bookmarked_products.push(product);
+    return true;
+
   };
 
   var removeBookmarkedProduct = function(bookmark){
@@ -66,12 +71,97 @@ angular.module('app.services', [])
     $localStorage.offlinePreferences = data;
   };
 
-  var getProductFile = function (product_id) {
-    return $localStorage.product_files[product_id];
+  var productDownloaded = function (uid) {
+    if ($localStorage.product_files.hasOwnProperty(uid.toString())) {
+      return $localStorage.product_files[uid].hasOwnProperty('technical_drawing_link');
+    }
+
+    return false;
   };
 
-  var setProductFile = function (product_id,product_info) {
-    $localStorage.product_files[product_id] = product_info;
+  var productImageDownloaded = function (uid) {
+    if ($localStorage.product_files.hasOwnProperty(uid.toString())) {
+      return $localStorage.product_files[uid].hasOwnProperty('image_portrait');
+    }
+
+    return false;
+  };
+
+  var setPDFPath = function (product_id, path) {
+    if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
+      if ($localStorage.product_files[product_id].hasOwnProperty('datei_de')) {
+        $localStorage.product_files[product_id].datei_de.push(path);
+      } else {
+        $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'datei_de': []});
+        $localStorage.product_files[product_id].datei_de.push(path);
+      }
+    } else {
+      $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'datei_de': []});
+      $localStorage.product_files[product_id].datei_de.push(path);
+    }
+    console.log('length of pdf array', $localStorage.product_files[product_id].datei_de.length);
+  };
+
+  var getPDFPath = function (product_id, lang, index) {
+    if (lang == 'de') {
+      return $localStorage.product_files[product_id].datei_de[index];
+    }
+  };
+
+  var categoryDownloaded = function (uid) {
+    return $localStorage.category_files.hasOwnProperty(uid.toString());
+  };
+
+  var setThumbnailPath = function (product_id, path) {
+    console.log('attempting to download thumbnail');
+    if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
+      if ($localStorage.product_files[product_id].hasOwnProperty('thumbnail')) {
+        $localStorage.product_files[product_id].thumbnail.push(path);
+      } else {
+        $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': []});
+        $localStorage.product_files[product_id].thumbnail.push(path);
+      }
+    } else {
+      $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': []});
+      $localStorage.product_files[product_id].thumbnail.push(path);
+    }
+    console.log('length of thumbnail array', $localStorage.product_files[product_id].thumbnail.length);
+  };
+
+  var getThumbnailPath = function (product_id, index) {
+    return $localStorage.product_files[product_id].thumbnail[index];
+  };
+
+  var getLandscapePath = function (product_id) {
+    return $localStorage.product_files[product_id].image_landscape;
+  };
+
+  var setLandscapePath = function (product_id, path) {
+    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'image_landscape': path});
+  };
+
+  var setBildPath = function (category_id, path) {
+    $localStorage.category_files[category_id] = Object.assign({}, $localStorage.category_files[category_id], {'bild': path});
+  };
+
+  var getBildPath = function (category_id) {
+    return $localStorage.category_files[category_id].bild;
+  };
+
+  var setPortraitPath = function (product_id, path) {
+    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'image_portrait': path});
+  };
+
+  var getPortraitPath = function (product_id) {
+    return $localStorage.product_files[product_id].image_portrait;
+  };
+
+  var setTechnicalPath = function (product_id, path) {
+    $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'technical_drawing_link': path});
+  };
+
+  var getTechnicalPath = function (product_id) {
+    return $localStorage.product_files[product_id].technical_drawing_link;
   };
 
   var getAllVideoPaths = function () {
@@ -79,11 +169,19 @@ angular.module('app.services', [])
   };
 
   var getVideoPath = function (video_id) {
-    return $localStorage.video_files[video_id];
+    return $localStorage.video_files[video_id].videofile_de;
   };
 
   var setVideoPath = function (video_id,path) {
-    $localStorage.video_files[video_id] = path;
+    $localStorage.video_files[video_id] = Object.assign({}, $localStorage.video_files[video_id], {'videofile_de': path});
+  };
+
+  var setVideoImagePath = function (video_id, path) {
+    $localStorage.video_files[video_id] = Object.assign({}, $localStorage.video_files[video_id], {'startimage_de': path});
+  };
+
+  var getVideoImagePath = function (video_id) {
+    return $localStorage.video_files[video_id].startimage_de;
   };
 
   var getDownloadFiles =  function () {
@@ -98,6 +196,7 @@ angular.module('app.services', [])
     return $localStorage.filters;
   };
 
+
   return {
     getCountry : getCountry,
     setCountry : setCountry,
@@ -106,14 +205,29 @@ angular.module('app.services', [])
     removeBookmarkedProduct : removeBookmarkedProduct,
     getOfflinePreferences : getOfflinePreferences,
     updatePreferences : updatePreferences,
-    getProductFile : getProductFile,
-    setProductFile : setProductFile,
+    getLandscapePath: getLandscapePath,
+    setLandscapePath: setLandscapePath,
     getAllVideoPaths : getAllVideoPaths,
     getVideoPath : getVideoPath,
     setVideoPath : setVideoPath,
+    setVideoImagePath: setVideoImagePath,
+    getVideoImagePath: getVideoImagePath,
     getDownloadFiles : getDownloadFiles,
+    productDownloaded: productDownloaded,
+    productImageDownloaded: productImageDownloaded,
+    categoryDownloaded: categoryDownloaded,
     setFilters: setFilters,
-    getFilters: getFilters
+    getFilters: getFilters,
+    setPDFPath: setPDFPath,
+    getPDFPath: getPDFPath,
+    setTechnicalPath: setTechnicalPath,
+    getTechnicalPath: getTechnicalPath,
+    setThumbnailPath: setThumbnailPath,
+    getThumbnailPath: getThumbnailPath,
+    setBildPath: setBildPath,
+    getBildPath: getBildPath,
+    setPortraitPath: setPortraitPath,
+    getPortraitPath: getPortraitPath
   };
 
 
@@ -213,6 +327,22 @@ angular.module('app.services', [])
 
   };
 
+  var downloadAwards = function (success, error) {
+    var awards = {};
+
+    firebase.database().ref('/awards/').orderByKey().once('value').then(function (snapshot) {
+      snapshot.forEach(function (award) {
+        awards[award.key] = award.val();
+      });
+      success(awards);
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
+    });
+  };
+
 
   return {
     goOffline : goOffline,
@@ -220,23 +350,44 @@ angular.module('app.services', [])
     downloadVideos : downloadVideos,
     downloadFiles : downloadFiles,
     downloadProductFilters : downloadProductFilters,
-    downloadAllProducts : downloadAllProducts
+    downloadAllProducts: downloadAllProducts,
+    downloadAwards: downloadAwards
   };
 
 }])
 
 //Service for managing Files
-.factory('FileService',[function () {
+  .factory('FileService', ['$cordovaFileTransfer', '$rootScope', '$ionicLoading', function ($cordovaFileTransfer, $rootScope, $ionicLoading) {
 
-    //Save a file to system path
-  var download = function (url, filename, dirName, success) {
-      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
+    //Loading functions
+    var downloadShow = function () {
+      $ionicLoading.show({
+        scope: $rootScope,
+        template: '<p>Downloading Data...{{download_status}}%</p><ion-spinner></ion-spinner>',
+        animation: 'fade-in',
+        showBackdrop: true
+      });
+    };
+    //Hide
+    var downloadHide = function () {
+      $ionicLoading.hide();
+    };
+
+
+    var cordovaDownload = function (url, filename, dirName) {
+      var targetPath = cordova.file.dataDirectory + '/' + dirName + '/' + filename;
+      url = encodeURI(url);
+      return $cordovaFileTransfer.download(url, targetPath, {}, true);
+    };
+
+    var originalDownload = function (url, filename, dirName, success) {
+      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
           fs.root.getDirectory(
             dirName,
             {
               create: true
             },
-            function(dirEntry) {
+            function (dirEntry) {
               dirEntry.getFile(
                 filename,
                 {
@@ -250,45 +401,55 @@ angular.module('app.services', [])
                   ft.download(
                     encodeURI(url),
                     p,
-                    function(entry) {
+                    function (entry) {
                       success(entry.toURL());
+                      downloadHide();
                     },
-                    function(error) {
+                    function (error) {
                       console.log(error);
                     },
                     false,
                     null
                   );
+                  ft.onprogress = function (progressEvent) {
+                    downloadShow();
+                    if (progressEvent.lengthComputable) {
+                      $rootScope.download_status = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                    } else {
+                      $rootScope.download_status += 1;
+                    }
+                  };
                 },
-                function() {
+                function () {
                   console.log("Get file failed");
                 }
               );
             }
           );
         },
-        function() {
+        function () {
           console.log("Request for filesystem failed");
         });
     };
 
 
-
   return{
-    download : download
+    cordovaDownload: cordovaDownload,
+    originalDownload: originalDownload
   }
 
 }])
+
 //Service for storing in app Data to be shared between controllers
-.factory('appDataService' , function () {
+  .factory('appDataService', ['$rootScope', '$ionicPopup', function ($rootScope, $ionicPopup) {
     var current_category_child_ids = '';
     var current_product = {};
-  var email_link = "http://www.schell.eu/deutschland-de/produkte/";
+    var navigated_categories = [];
     var current_title = '';
     var previous_title = '';
     var root_title = '';
-  var filter_ids = '';
-  var current_selected_filters = [];
+    var filter_ids = '';
+    var current_selected_filters = [];
 
     var getCurrentCategoryIds = function () {
       return current_category_child_ids;
@@ -306,13 +467,20 @@ angular.module('app.services', [])
       return current_product;
     };
 
-    var getEmailLink = function () {
-      return email_link;
+    var getNavigatedCategories = function () {
+      return navigated_categories;
     };
 
-    var appendEmailLink = function (data) {
-      email_link.concat(data);
-      console.log('appending data', email_link);
+    var addNavigatedCategory = function (data) {
+      navigated_categories.push(data);
+    };
+
+    var removeNavigatedCategory = function () {
+      navigated_categories.pop();
+    };
+
+    var clearNavigatedCategories = function () {
+      navigated_categories = [];
     };
 
     var getCurrentTitle = function () {
@@ -359,13 +527,28 @@ angular.module('app.services', [])
     return current_selected_filters;
   };
 
+    var checkInternet = function () {
+      //Check for internet
+      if (window.Connection) {
+        if (navigator.connection.type == Connection.NONE) {
+          //Set internet Variable to false
+          $rootScope.internet = false;
+        } else {
+          $rootScope.internet = true;
+        }
+      }
+    };
+
     return {
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
       setCurrentProduct : setCurrentProduct,
       getCurrentProduct : getCurrentProduct,
-      getEmailLink : getEmailLink,
-      appendEmailLink : appendEmailLink,
+      getNavigatedCategories: getNavigatedCategories,
+      checkInternet: checkInternet,
+      addNavigatedCategory: addNavigatedCategory,
+      removeNavigatedCategory: removeNavigatedCategory,
+      clearNavigatedCategories: clearNavigatedCategories,
       getCurrentTitle : getCurrentTitle,
       setCurrentTitle : setCurrentTitle,
       getPreviousTitle : getPreviousTitle,
@@ -380,7 +563,8 @@ angular.module('app.services', [])
     }
 
 
-})
+  }])
+
 //Database Service
 .factory('DatabaseService', ['$cordovaSQLite', function($cordovaSQLite) {
     db = $cordovaSQLite.openDB({
@@ -390,7 +574,7 @@ angular.module('app.services', [])
 
     var populateProducts = function(firebaseProductsObject) {
       var preparedStatements = [];
-      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseProductsObject) {
         var filter_ids = firebaseProductsObject[uid]['filter_ids'] ? firebaseProductsObject[uid]['filter_ids'].join() : '' ;
@@ -437,7 +621,9 @@ angular.module('app.services', [])
             firebaseProductsObject[uid]['en_data']['geraeuschklasse'] ? firebaseProductsObject[uid]['en_data']['geraeuschklasse'] : '',
             firebaseProductsObject[uid]['en_data']['pruefzeichen'] ? firebaseProductsObject[uid]['en_data']['pruefzeichen'] : '',
             firebaseProductsObject[uid]['en_data']['dimension'] ? firebaseProductsObject[uid]['en_data']['dimension'] : '',
-            firebaseProductsObject[uid]['en_data']['oberflaeche'] ? firebaseProductsObject[uid]['en_data']['oberflaeche'] : ''
+            firebaseProductsObject[uid]['en_data']['oberflaeche'] ? firebaseProductsObject[uid]['en_data']['oberflaeche'] : '',
+            firebaseProductsObject[uid]['varianten'] ? firebaseProductsObject[uid]['varianten'] : '',
+            firebaseProductsObject[uid]['designpreis'] ? firebaseProductsObject[uid]['designpreis'] : ''
           ]
         ]);
       }
@@ -593,15 +779,29 @@ angular.module('app.services', [])
       });
     };
 
+  var selectAllCategories = function (success, error) {
+    db.executeSql('SELECT * from product_categories;', [], function (rs) {
+      success(rs);
+    }, function (error) {
+      error(error);
+    })
+  };
+
     var selectProducts = function(product_ids, success, error) {
-      console.log('Selecting Products');
-      //db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
       db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
         success(rs);
       }, function(error) {
         error(error);
       });
     };
+
+  var selectAllProducts = function (success, error) {
+    db.executeSql('SELECT * from products;', [], function (rs) {
+      success(rs);
+    }, function (error) {
+      error(error);
+    });
+  };
 
     var selectVideos = function(video_ids, success, error) {
       db.executeSql('SELECT * from videos where uid in (' + video_ids + ');', [], function(rs) {
@@ -636,6 +836,14 @@ angular.module('app.services', [])
       });
     };
 
+  var selectAwards = function (award_ids, success, error) {
+    db.executeSql('SELECT * from awards where uid in (' + award_ids + ');', [], function (rs) {
+      success(rs);
+    }, function (error) {
+      error(error);
+    });
+  };
+
     return {
       populateProducts: populateProducts,
       populateProductCategories: populateProductCategories,
@@ -643,11 +851,14 @@ angular.module('app.services', [])
       populateAwards: populateAwards,
       populateVideos: populateVideos,
       selectTopCategories: selectTopCategories,
+      selectAllCategories: selectAllCategories,
       selectChildCategories: selectChildCategories,
       selectProducts: selectProducts,
+      selectAllProducts: selectAllProducts,
       selectVideos: selectVideos,
       selectAllVideos : selectAllVideos,
       selectDownloads: selectDownloads,
+      selectAwards: selectAwards,
       searchProducts: searchProducts
     };
 

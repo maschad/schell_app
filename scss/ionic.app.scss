@@ -78,6 +78,24 @@ img {
   }
 }
 
+.wrap {
+  font-size: 14px;
+  white-space: normal;
+  line-height: initial;
+}
+
+// Ensure images fit inside columns
+img {
+  max-width: 100%;
+}
+
+@media (max-width: 567px) {
+  img {
+    // max-width: 125px;
+    max-height: 200px;
+  }
+}
+
 // Font Classes
 .SyntaxLTStd-Bold {
   font-family: SyntaxLTStd-Bold;
@@ -110,9 +128,9 @@ img {
   font-family: 'schellicons';
   src:  url('fonts/schellicons.eot?5178r6');
   src:  url('fonts/schellicons.eot?5178r6#iefix') format('embedded-opentype'),
-    url('fonts/schellicons.ttf?5178r6') format('truetype'),
-    url('fonts/schellicons.woff?5178r6') format('woff'),
-    url('fonts/schellicons.svg?5178r6#schellicons') format('svg');
+  url('fonts/schellicons.ttf?5178r6') format('truetype'),
+  url('fonts/schellicons.woff?5178r6') format('woff'),
+  url('fonts/schellicons.svg?5178r6#schellicons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -994,6 +1012,7 @@ body.has-active-menu {
 .product-img {
   height: auto;
 }
+
 @media (max-width: 567px) {
   .product-img {
     height: auto;
@@ -1005,6 +1024,7 @@ body.has-active-menu {
   text-transform: uppercase;
   font-size: 18px;
   font-weight: bold;
+  padding-top: 24%;
 }
 
 .product-filter-heading {
@@ -1038,6 +1058,13 @@ body.has-active-menu {
 .side-nav-download {
   height: 45px;
   width: 63px;
+  background: url(../img/icons/download-icon.png) no-repeat 0 0;
+}
+
+.side-nav-downloaded {
+  height: 45px;
+  width: 63px;
+  color: darkred;
   background: url(../img/icons/download-icon.png) no-repeat 0 0;
 }
 
@@ -1090,15 +1117,26 @@ body.has-active-menu {
   color: #fff;
 }
 
+
 .side-nav-download-sm {
   height: 23px;
   width: 29px;
-  // background: url(../img/icons/download.png) no-repeat 0 0;
+  //background: url(../img/icons/download.png) no-repeat 0 0;
   position: relative;
-  top: 4px;
+  top: -20px;
   font-size: 24px;
   color: #fff;
   // color: red;
+}
+
+.side-nav-downloaded-sm {
+  height: 23px;
+  width: 29px;
+  //background: url(../img/icons/download.png) no-repeat 0 0;
+  position: relative;
+  top: -20px;
+  font-size: 24px;
+  color: darkred;
 }
 
 // badge
@@ -1107,6 +1145,34 @@ span.badge.badge-assertive {
   top: 0px;
   right: -30px;
   /* padding: 1px 6px 3px 6px; */
+}
+
+span.badge.badge-hide.badge-assertive {
+  position: relative;
+  top: 0px;
+  right: -30px;
+  opacity: 0;
+  /* padding: 1px 6px 3px 6px; */
+>>>>>>> master
+}
+
+// badge
+span.badge.badge-assertive {
+  position: relative;
+  top: 0px;
+  right: -30px;
+  /* padding: 1px 6px 3px 6px; */
+}
+@media (max-width: 767px) {
+  span.badge.badge-assertive {
+    position: relative;
+    top: -38px;
+    right: -16px;
+  }
+}
+
+.menu-wrapper a {
+  color: transparent;
 }
 @media (max-width: 767px) {
   span.badge.badge-assertive {
@@ -1472,7 +1538,7 @@ h1.slogan {
 }
 
 .pane, .view {
- background-color: #7E071C;
+  background-color: #7E071C;
 }
 
 // Settings Screen
@@ -1647,6 +1713,7 @@ ion-popover-view.fit ion-content {
 .bar {
   padding: 0;
 }
+
 .bar .title {
   font-size: 18px;
 }
@@ -1688,7 +1755,7 @@ ion-popover-view.fit ion-content {
     background-color: #000;
     position: absolute;
     bottom: 64px;
-    left: 34%;
+    left: 28%;
     width: 220px;
   }
   .popup-container.bookmark-popup .popup:after {
@@ -1706,7 +1773,7 @@ ion-popover-view.fit ion-content {
   .popup-container.download-popup .popup {
     position: absolute;
     bottom: 64px;
-    left: 35%;
+    left: 25%;
     width: 230px;
   }
   .popup-container.download-popup .popup:after {
@@ -1721,6 +1788,7 @@ ion-popover-view.fit ion-content {
     border-color: #000000 transparent transparent transparent;
   }
 }
+
 .popup-head {
   background-color: #000;
   border-bottom: none;
@@ -1735,11 +1803,13 @@ ion-popover-view.fit ion-content {
 .popup-buttons {
   background-color: #000;
 }
+
 .popup-buttons .button {
   background-color: #fff;
   color: #000;
   border-radius: 0;
 }
+
 .popup-buttons .button.activated {
   background-color: #000;
   // color: #fff;
@@ -1805,28 +1875,6 @@ label.menu-item {
   right: calc(50% - 20px);
 }
 
-// .platform-ios.platform-cordova:not(.fullscreen) .search-bar {
-  // margin-top: 20px;
-// }
-
-// .platform-ios.platform-cordova:not(.fullscreen) .bar-header:not(.bar-subheader) {
-//   height: 44px;
-// }
-
-// .platform-ios.platform-cordova:not(.fullscreen) .bar-header:not(.bar-subheader) > * {
-//   margin-top: 0;
-// }
-
-// .platform-ios.platform-cordova:not(.fullscreen) .bar-header:not(.bar-subheader) {
-//   height: 44px; }
-  
-//   .platform-ios.platform-cordova:not(.fullscreen) .bar-header:not(.bar-subheader) > * {
-//     margin-top: 0px; }
-
-// .platform-ios.platform-cordova:not(.fullscreen) .has-header, .platform-ios.platform-cordova:not(.fullscreen) .bar-subheader {
-//   top: 44px;
-// }
-
 @media (max-width: 567px) {
   .responsive-sm .col {
     margin-bottom: 0;
@@ -1835,20 +1883,9 @@ label.menu-item {
 
 .ion-close-round {
   float: right;
-  font-size: 18px;
+  font-size: 30px;
 }
 
-
-// to edit settings popover
-.platform-ios .popover-arrow, .platform-android ion-popover-view.settings-popover .popover-arrow {
-  top: -16px;
-  left: 90% !important;
-}
-
-@media (min-width: 300px) {
-  // see line 1591
-  .popover {
-    height: 270px;
-    width: 300px;
-  }
+.swiper-container {
+  height: auto;
 }

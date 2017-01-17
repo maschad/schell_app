@@ -4,23 +4,13 @@
       <div class="row">
         <h3>Ländereinstellungen</h3>
       </div>
-      <div class="row responsive-md">
-        <div class="col col-33 col-offset-33 text-center">
-          <form id="countryselect-form8" class="list">
-            <span style="color: #000; padding: 3px;" class="SyntaxLTStd-Bold">Wählen Sie Ihr Land:</span>
-            <div style="padding: 5px;"></div>
-            <label class="item item-select" id="countryselect-select1" style="border: 1px solid #333; border-radius: 4px;">
-              <span class="input-label"></span>
-              <select style="font-size: 16px;" ng-model="country" ng-change="selection(country)">
-                <option disabled selected value> -- select an option -- </option>
-                <option ng-value="de">Deutschland</option>
-              </select>
-            </label>
-          </form>
-          <button id="countryselect-button1" class="button button-black button" style="width: 100%; text-align: center;">Angaben
-            speichern</button>
-        </div>
-      </div>
+      <label class="item item-select" id="countryselect-select2" style="border-radius: 4px;">
+        <select style="font-size: 16px;">
+          <option disabled selected value> -- select an option --</option>
+          <option>Deutschland</option>
+          <option>Österreich</option>
+        </select>
+      </label>
     </div>
   </ion-content>
 </ion-view>

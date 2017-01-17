@@ -6,24 +6,24 @@
     <ion-floating-item icon="schellicon-filter" menu-toggle="left" button-color="#2c2a2b" text="Filter" icon-color="#fff"></ion-floating-item>
   </ion-floating-menu>
   <ion-nav-buttons side="right">
-    <!-- Filter search bar -->
-    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
-    </button>
     <!-- Breadcrumb ionic -->
     <button class="button icon ion-chevron-down" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
   <ion-content>
+    <!-- For refreshing items -->
+    <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="refreshItems()">
+    </ion-refresher>
     <div id="product-overview-body">
       <div class="container">
-        <h3 class="heading">Bezeichnung der Kategorie</h3>
-        <div ng-repeat="product in products" class="row responsive-sm" ng-if="$index%2 === 0">
+        <h3 class="heading">{{prev}} {{title}}</h3>
+        <div ng-repeat="product in products" class="row responsive-sm">
             <div class="col col-50" ng-if="product.image_portrait" ng-click="choice(product,product.nummer)">
               <div class="product-tile">
                 <div class="row">
                   <div class="col col-75">
                     <p class="item-number">{{product.nummer}}</p>
                     <p class="item-title">{{product.produktbezeichnung_de}}</p>
-                    <p class="item-name" ng-bind-html="product.werkstoff_de"></p>
+                    <p class="item-name">{{product.zusatz1_de}}</p>
                     <p>{{product.zusatz2_de}}</p>
                   </div>
                   <div class="col">
