@@ -740,42 +740,42 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         {
           title : 'TECHNISCHE ZEICHNUNG',
           show: false,
-          hasData: false
+          hasData: $scope.details.technical_drawing_link
         },
         {
           title : 'LIEFERUMFANG',
           show: false,
-          hasData: false
+          hasData: $scope.details.lieferumfang_de
         },
         {
           title : 'EINSATZBEREICH / TECHNISCHE DATEN',
           show: false,
-          hasData: false
+          hasData: $scope.details.einsatzbereich_de
         },
         {
           title : 'DETAILS',
           show: false,
-          hasData: false
+          hasData: $scope.details.werkstoff_de
         },
         {
           title : 'DOWNLOADS',
           show: false,
-          hasData: false
+          hasData: $scope.details.download_ids
         },
         {
           title : 'VARIANTEN',
           show: false,
-          hasData: false
+          hasData: $scope.details.varianten
         },
         {
           title : 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL',
           show: false,
-          hasData: false
+          hasData: ''
         },
         {
           title : 'VIDEO',
           show: false,
-          hasData: false
+          hasData: $scope.details.video_ids
         }
 
       ]);

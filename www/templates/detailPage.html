@@ -31,13 +31,15 @@
         <div class="product-summary" ng-bind-html="details.beschreibung_de"></div>
         <ion-list>
           <div ng-repeat="list in listData">
-            <ion-item class="description-item" ng-click="toggleGroup(list)"
-                      ng-class="{active: isGroupShown(list)}">
-              <div class="item-icon-right">
-                {{list.title}}
-                <i class="icon" ng-class="isGroupShown(list) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
-              </div>
-            </ion-item>
+            <div ng-show="list.hasData != '' ">
+              <ion-item class="description-item" ng-click="toggleGroup(list)"
+                        ng-class="{active: isGroupShown(list)}">
+                <div class="item-icon-right">
+                  {{list.title}}
+                  <i class="icon" ng-class="isGroupShown(list) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+                </div>
+              </ion-item>
+            </div>
             <ion-item class="description-accordion" ng-show="isGroupShown(list)">
               <div ng-if="list.title.includes('ZEICHNUNG')">
                 <img ng-src="{{details.technical_drawing_link}}" style="max-width: 100%; max-height: 100%;">
@@ -65,7 +67,7 @@
                     <p ng-bind-html="details.verpackungseinheit" class="wrap"></p></li>
                 </ul>
               </div>
-              <div ng-if="list.title == 'DOWNLOADS' && details.download_ids">
+              <div ng-if="list.title == 'DOWNLOADS'">
                 <div ng-repeat="file in files">
                   <div class="row">
                     <div class="col col-20">
@@ -92,7 +94,6 @@
                   </table>
                 </div>
               </div>
-
               <div ng-if="list.title == 'VIDEO'">
                 <div ng-show="videos">
                   <div ng-repeat="video in videos">
