@@ -10,6 +10,7 @@ angular.module('app.services', [])
     bookmarked_products: [],
     category_files: {},
     product_files: {},
+    carousel_images: [],
     video_files: {},
     download_files: [],
     offlinePreferences:[
@@ -148,6 +149,14 @@ angular.module('app.services', [])
     return $localStorage.category_files[category_id].bild;
   };
 
+  var setCarouselPath = function (path) {
+    $localStorage.carousel_images.push(path);
+  };
+
+  var getCarouselPaths = function () {
+    return $localStorage.carousel_images;
+  };
+
   var setPortraitPath = function (product_id, path) {
     $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'image_portrait': path});
   };
@@ -197,6 +206,7 @@ angular.module('app.services', [])
   };
 
 
+
   return {
     getCountry : getCountry,
     setCountry : setCountry,
@@ -226,6 +236,8 @@ angular.module('app.services', [])
     getThumbnailPath: getThumbnailPath,
     setBildPath: setBildPath,
     getBildPath: getBildPath,
+    setCarouselPath: setCarouselPath,
+    getCarouselPaths: getCarouselPaths,
     setPortraitPath: setPortraitPath,
     getPortraitPath: getPortraitPath
   };

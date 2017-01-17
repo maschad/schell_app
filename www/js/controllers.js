@@ -1,9 +1,9 @@
 angular.module('app.controllers', [])
 
-  .controller('start_screenCtrl', ['$scope', '$state', 'appDataService', 'DatabaseService', 'FirebaseService', 'localStorageService', '$ionicLoading', '$ionicPopup', '$ionicPopover', '$rootScope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('start_screenCtrl', ['$scope', '$state', 'appDataService', 'DatabaseService', 'FileService', 'FirebaseService', 'localStorageService', '$ionicLoading', '$ionicPopup', '$ionicPopover', '$rootScope', '$ionicSideMenuDelegate', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $state, appDataService, DatabaseService, FirebaseService, localStorageService, $ionicLoading, $ionicPopup, $ionicPopover, $rootScope, $ionicSideMenuDelegate) {
+    function ($scope, $state, appDataService, DatabaseService, FileService, FirebaseService, localStorageService, $ionicLoading, $ionicPopup, $ionicPopover, $rootScope, $ionicSideMenuDelegate) {
  //Remove splash screen
   $scope.$on('$ionicView.afterEnter', function(){
     setTimeout(function(){
@@ -23,6 +23,12 @@ angular.module('app.controllers', [])
         $ionicLoading.hide();
       };
 
+      //Helper function to cache slider images
+      function downloadImages(url, fileName, dirName) {
+        FileService.originalDownload(url, fileName, dirName, function (path) {
+          localStorageService.setCarouselPath(path)
+        });
+      }
 
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
@@ -31,6 +37,15 @@ angular.module('app.controllers', [])
       function loadPage() {
         //Check for internet
         appDataService.checkInternet();
+
+        if ($rootScope.internet) {
+          var url = 'http://www.schell.eu/fileadmin/app/slider/slider';
+          for (var i = 1; i < 5; i++) {
+            downloadImages(url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
+          }
+        } else {
+          $scope.images = localStorageService.getCarouselPaths();
+        }
 
         //Whether anything is bookmarked
         $scope.bookmarks = [];
@@ -101,6 +116,15 @@ angular.module('app.controllers', [])
       $scope.refreshItems = function () {
         //Check for internet
         appDataService.checkInternet();
+        //Download images if internet
+        if ($rootScope.internet) {
+          var url = 'http://www.schell.eu/fileadmin/app/slider/slider';
+          for (var i = 1; i < 5; i++) {
+            downloadImages(url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
+          }
+        } else {
+          $scope.images = localStorageService.getCarouselPaths();
+        }
       };
 
 }])

@@ -591,12 +591,12 @@ img {
 }
 
 .filter-close {
-  background: none; 
-  color: #fff; 
-  font-size: 20px; 
-  border: none; 
-  position: absolute; 
-  bottom: 24px; 
+  background: none;
+  color: #fff;
+  font-size: 20px;
+  border: none;
+  position: absolute;
+  bottom: 24px;
   left: 12px;
 }
 .filter-close.activated {
@@ -1153,7 +1153,6 @@ span.badge.badge-hide.badge-assertive {
   right: -30px;
   opacity: 0;
   /* padding: 1px 6px 3px 6px; */
->>>>>>> master
 }
 
 // badge
@@ -1793,7 +1792,7 @@ ion-popover-view.fit ion-content {
   background-color: #000;
   border-bottom: none;
   text-align: left;
-} 
+}
 .popup-body {
   background-color: #000;
 }
@@ -1888,4 +1887,12 @@ label.menu-item {
 
 .swiper-container {
   height: auto;
+}
+
+.not-downloaded-product {
+  color: #2c2a2b;
+}
+
+.downloaded-product {
+  color: darkred;
 }
