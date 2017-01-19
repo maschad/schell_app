@@ -21,7 +21,9 @@
           <h3 class="heading">{{title}}</h3>
           <!-- Products -->
           <div ng-repeat="category in categories" ng-if="$index%3 == 0" class="row responsive-sm">
-            <div class="col col-33" ng-click="choice_product(categories[$index].product_ids, categories[$index].title_de)" ng-if="categories[$index].product_ids">
+            <div class="col col-33"
+                 ng-click="choice_product(categories[$index].product_ids, categories[$index].title_de, categories[$index].uid)"
+                 ng-if="categories[$index].product_ids">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">

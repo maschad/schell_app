@@ -453,9 +453,11 @@ angular.module('app.services', [])
 }])
 
 //Service for storing in app Data to be shared between controllers
-  .factory('appDataService', ['$rootScope', '$ionicPopup', function ($rootScope, $ionicPopup) {
+  .factory('appDataService', ['$rootScope', function ($rootScope) {
     var current_category_child_ids = '';
+    var current_filtered_products = {};
     var current_product = {};
+    var current_category = 0;
     var navigated_categories = [];
     var current_title = '';
     var previous_title = '';
@@ -465,6 +467,14 @@ angular.module('app.services', [])
 
     var getCurrentCategoryIds = function () {
       return current_category_child_ids;
+    };
+
+    var setCurrentCategory = function (category) {
+      current_category = category;
+    };
+
+    var getCurrentCategory = function () {
+      return current_category;
     };
 
     var setCurrentCategoryIds = function (category) {
@@ -535,6 +545,18 @@ angular.module('app.services', [])
     current_selected_filters.splice(current_selected_filters.indexOf(filter_uid), 1);
   };
 
+    var setCurrentFilteredProducts = function (category_id, data) {
+      current_filtered_products[category_id] = data;
+    };
+
+    var getCurrentFilteredProducts = function (category_id) {
+      if (current_filtered_products.hasOwnProperty(category_id.toString())) {
+        return current_filtered_products[category_id];
+      } else {
+        return false;
+      }
+    };
+
   var getCurrentSelectedFilterIds = function () {
     return current_selected_filters;
   };
@@ -551,11 +573,14 @@ angular.module('app.services', [])
       }
     };
 
+
     return {
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
       setCurrentProduct : setCurrentProduct,
       getCurrentProduct : getCurrentProduct,
+      setCurrentCategory: setCurrentCategory,
+      getCurrentCategory: getCurrentCategory,
       getNavigatedCategories: getNavigatedCategories,
       checkInternet: checkInternet,
       addNavigatedCategory: addNavigatedCategory,
@@ -571,7 +596,9 @@ angular.module('app.services', [])
       getFilterIds: getFilterIds,
       addCurrentSelectedFilterIds: addCurrentSelectedFiltersIds,
       removeCurrentSelectFilterId: removeCurrentSelectedFilterId,
-      getCurrentSelectedFilterIds: getCurrentSelectedFilterIds
+      getCurrentSelectedFilterIds: getCurrentSelectedFilterIds,
+      setCurrentFilteredProducts: setCurrentFilteredProducts,
+      getCurrentFilteredProducts: getCurrentFilteredProducts
     }
 
 

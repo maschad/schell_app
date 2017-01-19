@@ -38,15 +38,6 @@ angular.module('app.controllers', [])
         //Check for internet
         appDataService.checkInternet();
 
-        if ($rootScope.internet) {
-          var url = 'http://www.schell.eu/fileadmin/app/slider/slider';
-          for (var i = 1; i < 5; i++) {
-            downloadImages(url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
-          }
-        } else {
-          $scope.images = localStorageService.getCarouselPaths();
-        }
-
         //Whether anything is bookmarked
         $scope.bookmarks = [];
 
@@ -73,10 +64,16 @@ angular.module('app.controllers', [])
           FirebaseService.downloadProductFilters(function (results) {
             localStorageService.setFilters(results);
             $scope.hideLoad();
+            //If internet grab those images
+            var url = 'http://www.schell.eu/fileadmin/app/slider/slider';
+            for (var i = 1; i < 5; i++) {
+              downloadImages(url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
+            }
           });
 
         } else {
           //#TODO: Handle DB offline
+          $scope.images = localStorageService.getCarouselPaths();
         }
       }
 
@@ -113,6 +110,7 @@ angular.module('app.controllers', [])
     $scope.popover.hide();
   };
 
+      //On item refresh
       $scope.refreshItems = function () {
         //Check for internet
         appDataService.checkInternet();
@@ -168,11 +166,16 @@ angular.module('app.controllers', [])
         //Initialize products to empty
         $scope.products = [];
 
+        //Get the filtered products if any
+        var toFilter = appDataService.getCurrentFilteredProducts(appDataService.getCurrentCategory());
+
         //Load the various products
         DatabaseService.selectProducts(product_ids, function (products) {
           for (var x = 0; x < products.rows.length; x++) {
             $scope.products.push(products.rows.item(x));
-             var uid = $scope.products[x].uid;
+            console.log('uids being pushed ', products.rows.item(x).uid);
+            //To uid to save file path
+            var uid = $scope.products[x].uid;
             if (!$rootScope.internet && localStorageService.productImageDownloaded(uid)) {
               $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
 
@@ -180,6 +183,20 @@ angular.module('app.controllers', [])
               downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
             }
           }
+          //Check if product should be filtered
+          toFilter.forEach(function (product) {
+            console.log('looping over the product', product.uid);
+            //If it's in filtered products, should set the filter value to be true
+            for (var i = 0; i < $scope.products.length; i++) {
+              if ($scope.products[i].uid == product.uid) {
+                console.log('product included');
+                $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': true});
+              }//To avoid re-assigning the wrong value
+              else if (!$scope.products[i].hasOwnProperty('filter')) {
+                $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': false});
+              }
+            }
+          });
         }, function (error) {
           //Handle error
           console.log('ERROR', error);
@@ -1064,6 +1081,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                     return product.filter_ids.split(',').indexOf(filter) != -1;
                   });
                 });
+                //Store the filter products
+                appDataService.setCurrentFilteredProducts(category.uid, filteredProducts);
                 //Push in the lengths
                 $scope.counts[category.uid] = filteredProducts.length;
 
@@ -1118,6 +1137,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                     return product.filter_ids.split(',').indexOf(filter) != -1;
                   });
                 });
+                //Store the filter products
+                appDataService.setCurrentFilteredProducts(filteredProducts);
+
                 //Push in the lengths
                 $scope.counts[category.uid] = filteredProducts.length;
                 //Loading
@@ -1161,10 +1183,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       };
 
       //Product Choice
-      $scope.choice_product = function (product_ids, title) {
+      $scope.choice_product = function (product_ids, title, category_id) {
         // If user chooses something with product_ids
         appDataService.setPreviousTitle($scope.title);
         appDataService.setCurrentTitle(title);
+        appDataService.setCurrentCategory(category_id);
         appDataService.setCurrentCategoryIds(product_ids);
         appDataService.addNavigatedCategory(title);
         $state.go('product_overview');
