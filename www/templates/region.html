@@ -5,8 +5,7 @@
         <h3>Ländereinstellungen</h3>
       </div>
       <label class="item item-select" id="countryselect-select2" style="border-radius: 4px;">
-        <select style="font-size: 16px;">
-          <option disabled selected value> -- select an option --</option>
+        <select ng-model="country" ng-change="selectCountry(country)" style="font-size: 16px;">
           <option>Deutschland</option>
           <option>Österreich</option>
         </select>

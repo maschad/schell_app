@@ -49,6 +49,15 @@ angular.module('app.services', [])
     return $localStorage.bookmarked_products;
   };
 
+  var checkBookmarked = function (product) {
+    for (var i = 0; i < $localStorage.bookmarked_products.length; i++) {
+      if ($localStorage.bookmarked_products[i] === product) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   var bookmarkProduct = function (product) {
     for (var i = 0; i < $localStorage.bookmarked_products.length; i++) {
       if ($localStorage.bookmarked_products[i] === product) {
@@ -218,6 +227,7 @@ angular.module('app.services', [])
     getLandscapePath: getLandscapePath,
     setLandscapePath: setLandscapePath,
     getAllVideoPaths : getAllVideoPaths,
+    checkBookmarked: checkBookmarked,
     getVideoPath : getVideoPath,
     setVideoPath : setVideoPath,
     setVideoImagePath: setVideoImagePath,
@@ -302,6 +312,22 @@ angular.module('app.services', [])
 
   };
 
+  //Download Videos
+  var downloadVideoCategories = function (success, error) {
+    var videos = {};
+    firebase.database().ref('/videos_categories/').orderByKey().once('value').then(function (snapshot) {
+      snapshot.forEach(function (video) {
+        videos[video.key] = video.val();
+      });
+      success(videos);
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
+    });
+  };
+
   //Download files from downloads table
   var downloadFiles = function (success,errors) {
     var files = {};
@@ -360,6 +386,7 @@ angular.module('app.services', [])
     goOffline : goOffline,
     getAllProductCategories : getAllProductCategories,
     downloadVideos : downloadVideos,
+    downloadVideoCategories: downloadVideoCategories,
     downloadFiles : downloadFiles,
     downloadProductFilters : downloadProductFilters,
     downloadAllProducts: downloadAllProducts,
@@ -613,7 +640,7 @@ angular.module('app.services', [])
 
     var populateProducts = function(firebaseProductsObject) {
       var preparedStatements = [];
-      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseProductsObject) {
         var filter_ids = firebaseProductsObject[uid]['filter_ids'] ? firebaseProductsObject[uid]['filter_ids'].join() : '' ;
@@ -662,7 +689,9 @@ angular.module('app.services', [])
             firebaseProductsObject[uid]['en_data']['dimension'] ? firebaseProductsObject[uid]['en_data']['dimension'] : '',
             firebaseProductsObject[uid]['en_data']['oberflaeche'] ? firebaseProductsObject[uid]['en_data']['oberflaeche'] : '',
             firebaseProductsObject[uid]['varianten'] ? firebaseProductsObject[uid]['varianten'] : '',
-            firebaseProductsObject[uid]['designpreis'] ? firebaseProductsObject[uid]['designpreis'] : ''
+            firebaseProductsObject[uid]['designpreis'] ? firebaseProductsObject[uid]['designpreis'] : '',
+            firebaseProductsObject[uid]['b_artikel_id'] ? firebaseProductsObject[uid]['b_artikel_id'] : '',
+            firebaseProductsObject[uid]['permalink'] ? firebaseProductsObject[uid]['permalink'] : ''
           ]
         ]);
       }
@@ -774,7 +803,7 @@ angular.module('app.services', [])
     var populateVideos = function(firebaseVideosObject) {
 
       var preparedStatements = [];
-      var BLANK_VIDEO_INSERT_QUERY = 'INSERT INTO videos VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_VIDEO_INSERT_QUERY = 'INSERT INTO videos VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseVideosObject) {
         preparedStatements.push([
@@ -790,7 +819,8 @@ angular.module('app.services', [])
             firebaseVideosObject[uid]['en_data']['information'],
             parseInt(firebaseVideosObject[uid]['filesize']),
             firebaseVideosObject[uid]['de_data']['youtube'],
-            firebaseVideosObject[uid]['en_data']['youtube']
+            firebaseVideosObject[uid]['en_data']['youtube'],
+            parseInt(firebaseVideosObject[uid]['category'])
           ]
         ]);
       }
@@ -801,6 +831,84 @@ angular.module('app.services', [])
         console.log('SQL BATCH ERROR. COULDN\'T POPULATE VIDEOS.' + error.message);
       });
     };
+
+  var populateVideoCategories = function (firebaseVideoCategoriesObject) {
+
+    var preparedStatements = [];
+    var BLANK_VIDEO_CATEGORY_INSERT_QUERY = 'INSERT INTO video_categories VALUES (?,?,?)';
+
+    for (var uid in firebaseVideoCategoriesObject) {
+      preparedStatements.push([
+        BLANK_VIDEO_CATEGORY_INSERT_QUERY,
+        [
+          parseInt(uid),
+          firebaseVideoCategoriesObject[uid]['title_de'],
+          firebaseVideoCategoriesObject[uid]['title_en']
+        ]
+      ])
+    }
+
+    db.sqlBatch(preparedStatements, function () {
+      console.log('Video Categories populated');
+    }, function (error) {
+      console.log('SQL BATCH ERROR. COULDN\'T POPULATE VIDEO CATEGORIES.' + error.message);
+    });
+
+  };
+
+  var populateZubehoer = function (firebaseObject) {
+    var preparedStatements = [];
+    var BLANK_VIDEO_INSERT_QUERY = 'INSERT INTO b_artikel_zubehoer VALUES (?,?,?,?,?,?,?)';
+
+    for (var b_artikel_zubehoer_id in firebaseObject) {
+      preparedStatements.push([
+        BLANK_VIDEO_INSERT_QUERY,
+        [
+          parseInt(b_artikel_zubehoer_id,
+            firebaseObject[b_artikel_zubehoer_id]['b_artikel_id'],
+            firebaseObject[b_artikel_zubehoer_id]['lfdnr'],
+            firebaseObject[b_artikel_zubehoer_id]['status'],
+            firebaseObject[b_artikel_zubehoer_id]['recordstatus'],
+            firebaseObject[b_artikel_zubehoer_id]['pos_b_artikel_id']),
+          firebaseObject[b_artikel_zubehoer_id]['data']
+        ]
+      ]);
+    }
+
+    db.sqlBatch(preparedStatements, function () {
+      console.log('ZUBEHOER populated');
+    }, function (error) {
+      console.log('SQL BATCH ERROR. COULDN\'T POPULATE ZUBEHOER.' + error.message);
+    });
+  };
+
+  var populateCLanguage = function (firebaseObject) {
+    var preparedStatements = [];
+    var BLANK_VIDEO_INSERT_QUERY = 'INSERT INTO c_language VALUES (?,?,?,?,?,?,?)';
+
+    for (var c_language_id in firebaseObject) {
+      preparedStatements.push([
+        BLANK_VIDEO_INSERT_QUERY,
+        [
+          parseInt(c_language_id,
+            firebaseObject[c_language_id]['recordstatus'],
+            firebaseObject[c_language_id]['table_id'],
+            firebaseObject[c_language_id]['tablename'],
+            firebaseObject[c_language_id]['fieldname'],
+            firebaseObject[c_language_id]['langcode']),
+          firebaseObject[c_language_id]['content']
+        ]
+      ]);
+    }
+
+    db.sqlBatch(preparedStatements, function () {
+      console.log('C_LANGUAGE populated');
+    }, function (error) {
+      console.log('SQL BATCH ERROR. COULDN\'T POPULATE C_LANGUAGE.' + error.message);
+    });
+  };
+
+
 
     var selectTopCategories = function(success, error) {
       db.executeSql('SELECT * from product_categories where elternelement = 0;', [], function(rs) {
@@ -858,6 +966,14 @@ angular.module('app.services', [])
       });
     };
 
+  var selectVideoCategories = function (success, error) {
+    db.executeSql('SELECT * from video_categories;', [], function (rs) {
+      success(rs);
+    }, function (error) {
+      error(error);
+    });
+  };
+
     var selectDownloads = function(download_ids, success, error) {
       db.executeSql('SELECT * from downloads where uid in (' + download_ids + ');', [], function(rs) {
         success(rs);
@@ -883,18 +999,33 @@ angular.module('app.services', [])
     });
   };
 
+  var selectEmpholene = function (product_b_artikel_id, success) {
+    db.executeSql('SELECT b_artikel_zubehoer_id ,status , verknuepfung , data, pos_b_artikel_id FROM b_artikel_zubehoer WHERE recordstatus = 1 ' +
+
+      'AND b_artikel_id = ' + product_b_artikel_id + 'ORDER BY status,lfdnr);', [], function (rs) {
+
+
+    }, function (error) {
+      console.log(error)
+    });
+  };
+
     return {
       populateProducts: populateProducts,
       populateProductCategories: populateProductCategories,
       populateDownloads: populateDownloads,
       populateAwards: populateAwards,
       populateVideos: populateVideos,
+      populateVideoCategories: populateVideoCategories,
+      populateZubehoer: populateZubehoer,
+      populateCLanguage: populateCLanguage,
       selectTopCategories: selectTopCategories,
       selectAllCategories: selectAllCategories,
       selectChildCategories: selectChildCategories,
       selectProducts: selectProducts,
       selectAllProducts: selectAllProducts,
       selectVideos: selectVideos,
+      selectVideoCategories: selectVideoCategories,
       selectAllVideos : selectAllVideos,
       selectDownloads: selectDownloads,
       selectAwards: selectAwards,

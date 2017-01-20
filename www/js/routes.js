@@ -57,12 +57,16 @@ angular.module('app.routes', [])
     cache: false,
     url: '/detail_page',
     templateUrl: 'templates/detailPage.html',
-    controller: 'detailPageCtrl',
-    ncyBreadcrumb: {
-      label: 'Details'
-    }
+    controller: 'detailPageCtrl'
 
   })
+
+    .state('searchPage', {
+      cache: false,
+      url: '/search_page',
+      templateUrl: 'templates/search_page.html',
+      controller: 'searchPageCtrl'
+    })
 
   .state('bookmark', {
     url: 'bookmark',

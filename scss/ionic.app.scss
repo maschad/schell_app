@@ -126,11 +126,11 @@ img {
 // Schell Icons
 @font-face {
   font-family: 'schellicons';
-  src:  url('fonts/schellicons.eot?5178r6');
-  src:  url('fonts/schellicons.eot?5178r6#iefix') format('embedded-opentype'),
-  url('fonts/schellicons.ttf?5178r6') format('truetype'),
-  url('fonts/schellicons.woff?5178r6') format('woff'),
-  url('fonts/schellicons.svg?5178r6#schellicons') format('svg');
+  src: url('fonts/schellicons.eot?usndx');
+  src: url('fonts/schellicons.eot?usndx#iefix') format('embedded-opentype'),
+  url('fonts/schellicons.ttf?usndx') format('truetype'),
+  url('fonts/schellicons.woff?usndx') format('woff'),
+  url('fonts/schellicons.svg?usndx#schellicons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -150,6 +150,9 @@ img {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.schellicon-list:before {
+  content: "\e90d";
+}
 .schellicon-cog:before {
   content: "\e900";
 }
@@ -190,143 +193,6 @@ img {
 .schellicon-reload-sa .path2:before {
   content: "\e90c";
   margin-left: -1em;
-  color: rgb(0, 0, 0);
-}
-.schellicon-download-sa .path1:before {
-  content: "\e90d";
-  color: rgb(0, 0, 0);
-}
-.schellicon-download-sa .path2:before {
-  content: "\e90e";
-  margin-left: -1.3935546875em;
-  color: rgb(198, 198, 198);
-}
-.schellicon-download-sa .path3:before {
-  content: "\e90f";
-  margin-left: -1.3935546875em;
-  color: rgb(198, 198, 198);
-}
-.schellicon-download-sa .path4:before {
-  content: "\e910";
-  margin-left: -1.3935546875em;
-  color: rgb(198, 198, 198);
-}
-.schellicon-file-sa .path1:before {
-  content: "\e911";
-  color: rgb(0, 0, 0);
-}
-.schellicon-file-sa .path2:before {
-  content: "\e912";
-  margin-left: -1.3935546875em;
-  color: rgb(255, 255, 255);
-}
-.schellicon-file-sa .path3:before {
-  content: "\e913";
-  margin-left: -1.3935546875em;
-  color: rgb(255, 255, 255);
-}
-.schellicon-file-sa .path4:before {
-  content: "\e914";
-  margin-left: -1.3935546875em;
-  color: rgb(0, 0, 0);
-}
-.schellicon-file-sa .path5:before {
-  content: "\e915";
-  margin-left: -1.3935546875em;
-  color: rgb(0, 0, 0);
-}
-.schellicon-filter-sa .path1:before {
-  content: "\e916";
-  color: rgb(0, 0, 0);
-}
-.schellicon-filter-sa .path2:before {
-  content: "\e917";
-  margin-left: -1.3935546875em;
-  color: rgb(0, 0, 0);
-}
-.schellicon-filter-sa .path3:before {
-  content: "\e918";
-  margin-left: -1.3935546875em;
-  color: rgb(198, 198, 198);
-}
-.schellicon-filter-active-sa .path1:before {
-  content: "\e919";
-  color: rgb(0, 0, 0);
-}
-.schellicon-filter-active-sa .path2:before {
-  content: "\e91a";
-  margin-left: -1.3935546875em;
-  color: rgb(255, 255, 255);
-}
-.schellicon-filter-active-sa .path3:before {
-  content: "\e91b";
-  margin-left: -1.3935546875em;
-  color: rgb(255, 255, 255);
-}
-.schellicon-filter-active-sa .path4:before {
-  content: "\e91c";
-  margin-left: -1.3935546875em;
-  color: rgb(0, 0, 0);
-}
-.schellicon-home-sa .path1:before {
-  content: "\e91d";
-  color: rgb(0, 0, 0);
-}
-.schellicon-home-sa .path2:before {
-  content: "\e91e";
-  margin-left: -1.3935546875em;
-  color: rgb(0, 0, 0);
-}
-.schellicon-home-sa .path3:before {
-  content: "\e91f";
-  margin-left: -1.3935546875em;
-  color: rgb(0, 0, 0);
-}
-.schellicon-home-sa .path4:before {
-  content: "\e920";
-  margin-left: -1.3935546875em;
-  color: rgb(198, 198, 198);
-}
-.schellicon-mail-sa .path1:before {
-  content: "\e921";
-  color: rgb(0, 0, 0);
-}
-.schellicon-mail-sa .path2:before {
-  content: "\e922";
-  margin-left: -1.3935546875em;
-  color: rgb(0, 0, 0);
-}
-.schellicon-mail-sa .path3:before {
-  content: "\e923";
-  margin-left: -1.3935546875em;
-  color: rgb(0, 0, 0);
-}
-.schellicon-mail-sa .path4:before {
-  content: "\e924";
-  margin-left: -1.3935546875em;
-  color: rgb(198, 198, 198);
-}
-.schellicon-paper-clip-sa .path1:before {
-  content: "\e925";
-  color: rgb(0, 0, 0);
-}
-.schellicon-paper-clip-sa .path2:before {
-  content: "\e926";
-  margin-left: -1.3935546875em;
-  color: rgb(198, 198, 198);
-}
-.schellicon-paper-clip-active-sa .path1:before {
-  content: "\e927";
-  color: rgb(0, 0, 0);
-}
-.schellicon-paper-clip-active-sa .path2:before {
-  content: "\e928";
-  margin-left: -1.3935546875em;
-  color: rgb(255, 255, 255);
-}
-.schellicon-paper-clip-active-sa .path3:before {
-  content: "\e929";
-  margin-left: -1.3935546875em;
   color: rgb(0, 0, 0);
 }
 .schellicon-toggle-off .path1:before {
@@ -380,6 +246,7 @@ img {
   margin-left: -1em;
   color: rgb(24, 23, 22);
 }
+
 // End of icons
 
 .bar-royal .button.back-button.button-clear {
@@ -1889,3 +1756,11 @@ label.menu-item {
   height: auto;
 }
 
+// Floating action menu
+.fab-normal {
+  background-color: #2c2a2b;
+}
+
+ion-floating-item[button-class="fab-assertive"] li {
+  background-color: #9e0a22;
+}

@@ -58,6 +58,9 @@ angular.module('app.controllers', [])
           FirebaseService.downloadVideos(function (results) {
             DatabaseService.populateVideos(results);
           });
+          FirebaseService.downloadVideoCategories(function (results) {
+            DatabaseService.populateVideoCategories(results);
+          });
           FirebaseService.downloadAwards(function (results) {
             DatabaseService.populateAwards(results);
           });
@@ -320,13 +323,6 @@ angular.module('app.controllers', [])
         loadCategories();
       };
 
-      //When user chooses a product
-      $scope.choiceProduct = function (product, nummer) {
-        appDataService.setCurrentTitle(nummer);
-        appDataService.setPreviousTitle('PRODUKTKATEGORIEN');
-        appDataService.setCurrentProduct(product);
-        $state.go('detailPage');
-      };
 
     //The category chosen by the user
     $scope.choice = function (child_ids, title,filter_ids) {
@@ -339,31 +335,6 @@ angular.module('app.controllers', [])
       $state.go('product_lines');
     };
 
-    //The filter/search bar using ionic filter bar plugin
-    $scope.showFilterBar = function () {
-      var products = [];
-      $scope.filterOn = true;
-      DatabaseService.selectAllProducts(function (results) {
-        for (var x = 0; x < results.rows.length; x++) {
-          products.push(results.rows.item(x));
-        }
-        var filterBarInstance = $ionicFilterBar.show({
-          items: products,
-          cancelText: 'Abbrechen',
-          cancel: function () {
-            $scope.filterOn = false;
-            loadCategories();
-            $state.reload();
-          },
-          expression: function (filterText, value, index, array) {
-            return value.nummer.includes(filterText) || value.produktbezeichnung_de.includes(filterText.toUpperCase()) || value.produktbezeichnung_de.includes(filterText) || value.beschreibung_de.includes(filterText);
-          },
-          update: function (filteredItems, filterText) {
-            $scope.products = filteredItems;
-          }
-        });
-      });
-    };
 
       //Function to count the total number of artikels in category below
       function countArtikels() {
@@ -532,6 +503,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
+
       //Loading functions
       $scope.show = function () {
         $ionicLoading.show({
@@ -561,8 +533,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $scope.show();
         //Check for internet
         appDataService.checkInternet();
-        //Load bookmarked products
-        $scope.bookmarked = localStorageService.getBookmarkedProducts();
+
+        //Whether to a product is bookmarked
+        $scope.showBookmark = false;
 
         //Get various labels
         $scope.title = appDataService.getCurrentTitle();
@@ -573,8 +546,29 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //Set details
         $scope.details = appDataService.getCurrentProduct();
 
+        //Once there are products bookmarked
+        if (localStorageService.getBookmarkedProducts().length > 0) {
+          $scope.showBookmark = true;
+        }
+
+        //If product bookmarked
+        if (localStorageService.checkBookmarked($scope.details)) {
+          console.log('product bookmarked');
+          //Apply CSS
+          var famItem = angular.element(document.querySelector('#bookmark-fab'));
+          famItem.attr('button-class', "fab-assertive");
+        }
+
         //Whether this product has been downloaded
         $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
+
+        //Color the downloaded item
+        if ($scope.productDownloaded) {
+          console.log('product downloaded');
+          //Apply CSS
+          var fabItem = angular.element(document.querySelector('#downloaded-fab'));
+          fabItem.attr('button-class', "fab-assertive");
+        }
 
         if (!$rootScope.internet && $scope.productDownloaded) {
           //If no internet load these files
@@ -702,7 +696,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       loadProduct();
 
 
-
       $scope.goBack = function () {
         appDataService.removeNavigatedCategory();
         $ionicHistory.goBack();
@@ -720,17 +713,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           title: 'Seite bookmarkiert',
           cssClass: 'bookmark-popup'
         });
+        $scope.showBookmark = true;
+        var famItem = angular.element(document.querySelector('#bookmark-fab'));
+        famItem.attr('button-class', "fab-assertive");
       }
-    };
-
-    //Download Function
-    $scope.download = function ($event) {
-      $ionicPopup.alert({
-        title: 'Möchten Sie diesen Artikel offline speichern?',
-        cssClass: 'download-popup',
-        okText: 'Offline verfügbar machen'
-      });
-      // localStorageService.downloadProduct($scope.details);
     };
 
     //Download PDF
@@ -801,10 +787,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.downloadProduct = function () {
         if ($rootScope.internet && !$scope.productDownloaded) {
           $ionicPopup.alert({
-            title: 'downloading product',
+            title: 'Möchten Sie diesen Artikel offline speichern?',
             cssClass: 'download-popup',
             okText: 'Offline verfügbar machen'
           }).then(function () {
+            //Apply CSS
+            var fabItem = angular.element(document.querySelector('#downloaded-fab'));
+            fabItem.attr('button-class', "fab-assertive");
             //Whether this product has been downloaded
             $scope.productDownloaded = true;
 
@@ -860,12 +849,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
   });
 
   $scope.sendEmail = function () {
-    var navigatedCategories = appDataService.getNavigatedCategories();
-    var link = 'http://www.schell.eu/deutschland-de/produkte/';
-    for (var x = 0; x < navigatedCategories.length; x++) {
-      link = link.concat(navigatedCategories[x] + '/');
-    }
-    link = link.concat('details/artikel/' + $scope.details.nummer + '.html');
+    var link = $scope.details.permalink;
 
     var bodyText = 'Product nummer ' .concat($scope.details.nummer)
       + '  ' + 'Referenzartikel ' + '   '.concat($scope.details.referenzartikel)
@@ -1693,18 +1677,74 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
   }])
 
-  .controller('regionCtrl', ['$scope', '$ionicSideMenuDelegate', '$ionicHistory', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('regionCtrl', ['$scope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', 'localStorageService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicSideMenuDelegate, $ionicHistory) {
+    function ($scope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, localStorageService) {
       //Side Menu deactivated
       $ionicSideMenuDelegate.canDragContent(false);
+
+      //Set the country
+      $scope.country = localStorageService.getCountry();
+
+      //Update selected Country
+      $scope.selectCountry = function (country) {
+        $scope.country = country;
+        localStorageService.setCountry(country);
+        $ionicPopup.alert({
+          title: 'Einstellungen gespeichert',
+          cssClass: 'bookmark-popup'
+        });
+      };
 
       $scope.goBack = function () {
         $ionicHistory.goBack();
       };
 
 }])
+
+  .controller('searchPageCtrl', ['$scope', '$state', '$ionicFilterBar', 'DatabaseService', 'appDataService', function ($scope, $state, $ionicFilterBar, DatabaseService, appDataService) {
+
+    //Initalize products
+    $scope.products = [];
+
+
+    //The filter/search bar using ionic filter bar plugin
+    $scope.showFilterBar = function () {
+      var products = [];
+      $scope.filterOn = true;
+      DatabaseService.selectAllProducts(function (results) {
+        for (var x = 0; x < results.rows.length; x++) {
+          products.push(results.rows.item(x));
+        }
+        var filterBarInstance = $ionicFilterBar.show({
+          items: products,
+          cancelText: 'Abbrechen',
+          cancel: function () {
+            $scope.filterOn = false;
+            loadCategories();
+            $state.reload();
+          },
+          expression: function (filterText, value, index, array) {
+            return value.nummer.includes(filterText) || value.produktbezeichnung_de.includes(filterText.toUpperCase()) || value.produktbezeichnung_de.includes(filterText) || value.beschreibung_de.includes(filterText);
+          },
+          update: function (filteredItems, filterText) {
+            $scope.products = filteredItems;
+          }
+        });
+      });
+    };
+
+    //When user chooses a product
+    $scope.choiceProduct = function (product, nummer) {
+      appDataService.setCurrentTitle(nummer);
+      appDataService.setPreviousTitle('PRODUKTKATEGORIEN');
+      appDataService.setCurrentProduct(product);
+      $state.go('detailPage');
+    };
+
+
+  }])
 
   .controller('MenuCtrl', ['$scope', '$rootScope', '$ionicHistory', 'FirebaseService', 'localStorageService', 'appDataService',
     function ($scope, $rootScope, $ionicHistory, FirebaseService, localStorageService, appDataService) {
