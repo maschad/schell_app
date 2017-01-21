@@ -57,7 +57,8 @@
               </div>
             </div>
             <!-- Product ID-->
-            <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids" ng-click="choice_product(categories[$index + 1].product_ids,categories[$index + 1].title_de)">
+            <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids"
+                 ng-click="choice_product(categories[$index + 1].product_ids,categories[$index + 1].title_de, categories[$index + 1].uid)">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 1].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
@@ -91,7 +92,8 @@
             </div>
 
             <!--Product Ids-->
-            <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].product_ids" ng-click="choice_product(categories[$index + 2].product_ids,categories[$index + 2].title_de)">
+            <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].product_ids"
+                 ng-click="choice_product(categories[$index + 2].product_ids,categories[$index + 2].title_de, categories[$index + 2].uid)">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 2].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">

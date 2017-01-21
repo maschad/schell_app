@@ -170,7 +170,8 @@ angular.module('app.controllers', [])
         $scope.products = [];
 
         //Get the filtered products if any
-        //var toFilter = appDataService.getCurrentFilteredProducts(appDataService.getCurrentCategory());
+        console.log('currrent category', appDataService.getCurrentCategory());
+        var toFilter = appDataService.getCurrentFilteredProducts(appDataService.getCurrentCategory());
 
         //Load the various products
         DatabaseService.selectProducts(product_ids, function (products) {
@@ -186,8 +187,7 @@ angular.module('app.controllers', [])
               downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
             }
           }
-          ;
-          /**
+
           //Check if product should be filtered
           toFilter.forEach(function (product) {
             console.log('looping over the product', product.uid);
@@ -201,7 +201,7 @@ angular.module('app.controllers', [])
                 $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': true});
               }
             }
-          });**/
+          });
         }, function (error) {
           //Handle error
           console.log('ERROR', error);
@@ -1161,7 +1161,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                   });
                 });
                 //Store the filter products
-                appDataService.setCurrentFilteredProducts(filteredProducts);
+                appDataService.setCurrentFilteredProducts(category.uid, filteredProducts);
 
                 //Push in the lengths
                 $scope.counts[category.uid] = filteredProducts.length;
