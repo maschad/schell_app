@@ -193,10 +193,10 @@ angular.module('app.controllers', [])
             for (var i = 0; i < $scope.products.length; i++) {
               if ($scope.products[i].uid == product.uid) {
                 console.log('product included');
-                $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': true});
+                $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': false});
               }//To avoid re-assigning the wrong value
               else if (!$scope.products[i].hasOwnProperty('filter')) {
-                $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': false});
+                $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': true});
               }
             }
           });
@@ -1657,8 +1657,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         });
       }
 
+
     //Function to download videos
-    $scope.downloadVideos = function () {
+      function downloadVideos() {
       //If checked
       if ($scope.preferences[3].download_videos) {
         $scope.preferences[4].last_updated = getDate();
@@ -1673,18 +1674,25 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     };
 
     //Check to download selected category
-    $scope.downloadCategory = function (category, check) {
-      //Download details based on check
-      if (check == true) {
-        $scope.preferences[4].last_updated = getDate();
-        //Update preferences
-        //The product ids to download
-        downloadCategoryFiles(category);
+      function downloadCategory() {
+        for (var x = 0; x < $scope.preferences[2].downloaded_categories.length; x++) {
+          //Download details based on check
+          if ($scope.preferences[2].downloaded_categories[x].checked == true) {
+            console.log('category checked', $scope.preferences[2].downloaded_categories[x].item.title_de);
+            $scope.preferences[4].last_updated = getDate();
+            //Update preferences
+            //The product ids to download
+            downloadCategoryFiles($scope.preferences[2].downloaded_categories[x].item);
+          }
+          //Update preference at selected preference
+          localStorageService.updatePreferences($scope.preferences);
       }
-      //Update preference at selected preference
-      $scope.preferences[2].downloaded_categories[$scope.preferences[2].downloaded_categories.indexOf(category)].checked = check;
-      localStorageService.updatePreferences($scope.preferences);
     };
+
+      $scope.saveSettings = function () {
+        downloadVideos();
+        downloadCategory();
+      };
 
 
 
@@ -1825,8 +1833,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.$on('$stateChangeSuccess',function () {
         var filters = localStorageService.getFilters();
         $scope.groups = getFilterGroups(filters, appDataService.getFilterIds().split(','));
-        }
-      );
+      });
 
       $scope.applyFilter = function (uid, checked) {
         if (checked) {
@@ -1843,4 +1850,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.isGroupShown = function (group) {
         return group.show;
       };
+
+      $scope.reset = function () {
+        appDataService.clearSelectedFilters();
+        $rootScope.$broadcast('new-filter-uid');
+      }
 }]);

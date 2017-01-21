@@ -20,15 +20,14 @@
         <ion-item class="item-divider" id="settings-list-item-divider1"> PRODUKTE </ion-item>
         <hr class="settings-hr">
         <ion-checkbox class="checkbox-settings item-checkbox-right"
-                      ng-repeat="category in preferences[2].downloaded_categories"
-                      ng-change="downloadCategory(category.item,category.checked)" ng-model="category.checked">
+                      ng-repeat="category in preferences[2].downloaded_categories" ng-model="category.checked">
           <strong class="wrap">{{category.item.title_de}} {{fileSizes[category.item.uid] / (1073741824) |
             number:2}} GBs</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
         <hr class="settings-hr">
-        <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="preferences[3].download_videos"
-                      ng-change="downloadVideos()"><strong>Total size<br>{{total_video_size | number:2}} GBs</strong>
+        <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="preferences[3].download_videos"><strong>Total
+          size<br>{{total_video_size | number: 2}} GBs</strong>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider3">SETTINGS</ion-item>
         <hr class="settings-hr">
@@ -41,6 +40,7 @@
           <strong class="wrap">{{preferences[1].text}}</strong>
         </ion-toggle>
       </form>
+      <button class="button button-large button-stable" ng-click="saveSettings()">Einstellungen speichern</button>
     </div>
 
   </ion-content>

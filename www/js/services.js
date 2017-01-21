@@ -566,17 +566,17 @@ angular.module('app.services', [])
       root_title = root;
     };
 
-  var setFilterIds = function (ids) {
-    filter_ids = ids;
-  };
+    var setFilterIds = function (ids) {
+      filter_ids = ids;
+    };
 
-  var getFilterIds = function () {
-    return filter_ids;
-  };
+    var getFilterIds = function () {
+      return filter_ids;
+    };
 
-  var addCurrentSelectedFiltersIds = function (filter_uid) {
-    current_selected_filters.push(filter_uid);
-  };
+    var addCurrentSelectedFiltersIds = function (filter_uid) {
+      current_selected_filters.push(filter_uid);
+    };
 
   var removeCurrentSelectedFilterId = function (filter_uid) {
     current_selected_filters.splice(current_selected_filters.indexOf(filter_uid), 1);
@@ -597,6 +597,10 @@ angular.module('app.services', [])
   var getCurrentSelectedFilterIds = function () {
     return current_selected_filters;
   };
+
+    var clearSelectedFilters = function () {
+      current_selected_filters = [];
+    };
 
     var checkInternet = function () {
       //Check for internet
@@ -636,6 +640,7 @@ angular.module('app.services', [])
       addCurrentSelectedFilterIds: addCurrentSelectedFiltersIds,
       removeCurrentSelectFilterId: removeCurrentSelectedFilterId,
       getCurrentSelectedFilterIds: getCurrentSelectedFilterIds,
+      clearSelectedFilters: clearSelectedFilters,
       setCurrentFilteredProducts: setCurrentFilteredProducts,
       getCurrentFilteredProducts: getCurrentFilteredProducts
     }
