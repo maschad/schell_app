@@ -248,9 +248,6 @@ angular.module('app.controllers', [])
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
-      //Filter bar is not clicked
-      $scope.filterOn = false;
-
       //Initialize as null
       $scope.categories = [];
 
@@ -398,6 +395,39 @@ angular.module('app.controllers', [])
   }])
 
 
+  .controller('videoCategoriesCtrl', ['$scope', '$state', 'DatabaseService', 'appDataService', function ($scope, $state, DatabaseService, appDataService) {
+
+    function loadCategories() {
+      console.log('loading categories');
+      $scope.categories = [];
+
+      DatabaseService.selectVideoCategories(function (results) {
+        for (var x = 0; x < results.rows.length; x++) {
+          $scope.categories.push(results.rows.item(x));
+          console.log('title', results.rows.item(x).title_de);
+        }
+      });
+    }
+
+    loadCategories();
+
+    $scope.choice = function (uid) {
+      //Video ids to select
+      var video_ids = [];
+      DatabaseService.selectAllVideos(function (results) {
+        for (var y = 0; y < results.rows.length; y++) {
+          if (uid === results.rows.item(y).category) {
+            //push them into array to select correct videos
+            video_ids.push(results.rows.item(y).uid);
+          }
+        }
+        appDataService.setVideoId(video_ids);
+        $state.go('video');
+      })
+    }
+  }])
+
+
   .controller('videoCtrl', ['$scope', '$rootScope', '$sce', '$ionicSideMenuDelegate', 'appDataService', 'FirebaseService', 'FileService', '$ionicLoading', '$ionicPopup', 'localStorageService', 'DatabaseService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
@@ -423,7 +453,8 @@ angular.module('app.controllers', [])
     $scope.show();
     //Check for internet
     appDataService.checkInternet();
-    DatabaseService.selectAllVideos(function (videos) {
+    var video_ids = appDataService.getVideoIds();
+    DatabaseService.selectVideos(video_ids, function (videos) {
       for (var x = 0; x < videos.rows.length; x++) {
         $scope.videos.push(videos.rows.item(x));
       }
@@ -439,10 +470,13 @@ angular.module('app.controllers', [])
             var index = $scope.videos.findIndex(function (video) {
               return video.uid == key;
             });
-            console.log('image video path in local storage', vids[key].startimage_de);
-            $scope.videos[index].startimage_de = vids[key].startimage_de;
-            console.log('video path in local storage', vids[key].videofile_de);
-            $scope.videos[index].videofile_de = vids[key].videofile_de;
+            //Check for invalid paths
+            if (index != -1) {
+              console.log('image video path in local storage', vids[key].startimage_de);
+              $scope.videos[index].startimage_de = vids[key].startimage_de;
+              console.log('video path in local storage', vids[key].videofile_de);
+              $scope.videos[index].videofile_de = vids[key].videofile_de;
+            }
           }
         }
       }
@@ -552,9 +586,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
 
         //If product bookmarked
-        if (localStorageService.checkBookmarked($scope.details)) {
-          console.log('product bookmarked');
+        if (!localStorageService.checkBookmarked($scope.details)) {
           //Apply CSS
+          var famItem = angular.element(document.querySelector('#bookmark-fab'));
+          famItem.attr('button-class', 'fab-normal');
+        } else {
+          console.log('product bookmarked');
           var famItem = angular.element(document.querySelector('#bookmark-fab'));
           famItem.attr('button-class', "fab-assertive");
         }
@@ -1712,7 +1749,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //The filter/search bar using ionic filter bar plugin
     $scope.showFilterBar = function () {
       var products = [];
-      $scope.filterOn = true;
       DatabaseService.selectAllProducts(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
           products.push(results.rows.item(x));
@@ -1721,7 +1757,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           items: products,
           cancelText: 'Abbrechen',
           cancel: function () {
-            $scope.filterOn = false;
             loadCategories();
             $state.reload();
           },

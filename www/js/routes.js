@@ -33,6 +33,12 @@ angular.module('app.routes', [])
     controller: 'videoCtrl'
   })
 
+    .state('videoCategories', {
+      url: '/video_categories',
+      templateUrl: 'templates/video_categories.html',
+      controller: 'videoCategoriesCtrl'
+    })
+
   .state('settings', {
     cache: false,
     url: '/settings',

@@ -22,8 +22,8 @@
           einen Blick. Bitte wählen Sie eine Kategorie</p>
       </div>
     </div>
-    <!-- Products -->
-    <div ng-repeat="category in categories" ng-if="$index%2 == 0" class="row responsive-sm" ng-show="filterOn == false">
+    <!-- Categories -->
+    <div ng-repeat="category in categories" ng-if="$index%2 == 0" class="row responsive-sm">
         <div class="col col-50" ng-click="choice(categories[$index].child_ids,categories[$index].title_de,categories[$index].filter_ids)">
           <div class="product-tile">
             <div class="row">

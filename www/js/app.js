@@ -86,7 +86,7 @@ function createTables(db, $cordovaSQLite) {
 
   $cordovaSQLite.execute(db, "CREATE TABLE videos (uid INTEGER PRIMARY KEY, title TEXT, startimage_de TEXT, videofile_de TEXT, information_de TEXT, startimage_en TEXT,	videofile_en TEXT, information_en TEXT, filesize INTEGER, youtube_de TEXT, youtube_en TEXT, category INTEGER)");
 
-  $cordovaSQLite.execute(db, "CREATA TABLE video_categories (uid INTEGER PRIMARY KEY, title_de TEXT, title_en TEXT)");
+  $cordovaSQLite.execute(db, "CREATE TABLE video_categories (uid INTEGER PRIMARY KEY, title_de TEXT, title_en TEXT)");
 
   $cordovaSQLite.execute(db, "CREATE TABLE awards (uid INTEGER PRIMARY KEY, titel TEXT,	logo TEXT)");
 

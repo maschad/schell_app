@@ -315,7 +315,7 @@ angular.module('app.services', [])
   //Download Videos
   var downloadVideoCategories = function (success, error) {
     var videos = {};
-    firebase.database().ref('/videos_categories/').orderByKey().once('value').then(function (snapshot) {
+    firebase.database().ref('/video_categories/').orderByKey().once('value').then(function (snapshot) {
       snapshot.forEach(function (video) {
         videos[video.key] = video.val();
       });
@@ -482,6 +482,7 @@ angular.module('app.services', [])
 //Service for storing in app Data to be shared between controllers
   .factory('appDataService', ['$rootScope', function ($rootScope) {
     var current_category_child_ids = '';
+    var video_ids = [];
     var current_filtered_products = {};
     var current_product = {};
     var current_category = 0;
@@ -491,6 +492,15 @@ angular.module('app.services', [])
     var root_title = '';
     var filter_ids = '';
     var current_selected_filters = [];
+
+
+    var setVideoId = function (ids) {
+      video_ids = ids;
+    };
+
+    var getVideoIds = function () {
+      return video_ids;
+    };
 
     var getCurrentCategoryIds = function () {
       return current_category_child_ids;
@@ -602,6 +612,8 @@ angular.module('app.services', [])
 
 
     return {
+      getVideoIds: getVideoIds,
+      setVideoId: setVideoId,
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
       setCurrentProduct : setCurrentProduct,
