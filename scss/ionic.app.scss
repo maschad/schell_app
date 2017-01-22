@@ -457,15 +457,22 @@ img {
   }
 }
 
+.filter-reset-btn {
+  padding: 6px;
+  margin-left: 20px;
+  width: 120px;
+  text-align: center;
+  font-size: 14px;
+}
 .filter-close {
   background: none;
   color: #fff;
   font-size: 20px;
   border: none;
-  position: absolute;
-  bottom: 24px;
-  left: 12px;
+  bottom: -50px;
+  left: 10px;
 }
+
 .filter-close.activated {
   background-color: transparent;
 }

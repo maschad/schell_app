@@ -331,6 +331,7 @@ angular.module('app.controllers', [])
       appDataService.setCurrentCategoryIds(child_ids);
       appDataService.addNavigatedCategory(title);
       appDataService.setFilterIds(filter_ids);
+      $scope.$emit('updateFilters');
       $state.go('product_lines');
     };
 
@@ -818,6 +819,16 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           title : 'VIDEO',
           show: false,
           hasData: $scope.details.video_ids
+        },
+        {
+          title: 'VERBINDUNG',
+          show: false,
+          hasData: ''
+        },
+        {
+          title: 'NOTWENDIGE ZUGEHÖRIGE',
+          show: false,
+          hasData: ''
         }
 
       ]);
@@ -1202,6 +1213,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         appDataService.setCurrentTitle(title);
         appDataService.addNavigatedCategory(title);
         loadSubCategories(child_ids);
+        $scope.$emit('updateFilters');
         $state.reload();
       };
 
@@ -1548,10 +1560,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Download the files for the respective category and store the file paths in local storage
     function downloadCategoryFiles(category) {
+      //Total video sizes
+      $rootScope.total += $scope.fileSizes[category.uid];
       //Product ids to download
       var product_ids_toDownload = [];
       //Actual products to download
-
       var products = [];
       //All categories
       var allCategories = [];
@@ -1601,6 +1614,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         currentCategories.forEach(function (categoryWithProductIds) {
           product_ids_toDownload = product_ids_toDownload.concat(categoryWithProductIds.product_ids.split(','));
         });
+
         //Get the products with the info to download
          DatabaseService.selectProducts(product_ids_toDownload, function (results) {
            for (var x = 0; x < results.rows.length; x++) {
@@ -1640,6 +1654,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Recursive functions to download videos and the corresponding thumbnail
       //This avoids Large queues for downloading Files
       function downloadVideoImage(videos) {
+        $rootScope.total += $scope.total_video_size;
+        console.log('total', $rootScope.total);
         FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
           localStorageService.setVideoImagePath(videos[0].uid, result);
           videos.shift();
@@ -1662,6 +1678,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Function to download videos
       function downloadVideos() {
+        $scope.hide();
       //If checked
       if ($scope.preferences[3].download_videos) {
         $scope.preferences[4].last_updated = getDate();
@@ -1673,7 +1690,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       } else {
         localStorageService.updatePreferences($scope.preferences);
       }
-    };
+      }
 
     //Check to download selected category
       function downloadCategory() {
@@ -1689,9 +1706,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           //Update preference at selected preference
           localStorageService.updatePreferences($scope.preferences);
       }
-    };
+      }
 
       $scope.saveSettings = function () {
+        $scope.show();
         downloadVideos();
         downloadCategory();
       };
@@ -1832,7 +1850,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       }
 
       // Update the groups
-      $scope.$on('$stateChangeSuccess',function () {
+      $scope.$on('updateFilters', function () {
         var filters = localStorageService.getFilters();
         $scope.groups = getFilterGroups(filters, appDataService.getFilterIds().split(','));
       });

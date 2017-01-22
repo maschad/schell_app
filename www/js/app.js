@@ -22,6 +22,8 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
 .run(function($ionicPlatform, $cordovaSQLite,$ionicPopup,$rootScope,$state,localStorageService) {
   //Set internet to true
   $rootScope.internet = true;
+  //Set Total file size to zero
+  $rootScope.total = 0;
 
 
   $ionicPlatform.ready(function() {
