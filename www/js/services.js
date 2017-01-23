@@ -397,26 +397,19 @@ angular.module('app.services', [])
 
 //Service for managing Files
   .factory('FileService', ['$cordovaFileTransfer', '$rootScope', '$ionicLoading', function ($cordovaFileTransfer, $rootScope, $ionicLoading) {
-
     //Loading functions
     var downloadShow = function () {
       $ionicLoading.show({
         scope: $rootScope,
-        template: '<p>Downloading Data...{{download_status}}%</p><ion-spinner></ion-spinner>',
+        template: '<p>Downloading Data... {{download_status}}%</p><ion-spinner></ion-spinner>',
         animation: 'fade-in',
         showBackdrop: true
       });
     };
-    //Hide
-    var downloadHide = function () {
+
+    //Hide function
+    var hide = function () {
       $ionicLoading.hide();
-    };
-
-
-    var cordovaDownload = function (url, filename, dirName) {
-      var targetPath = cordova.file.dataDirectory + '/' + dirName + '/' + filename;
-      url = encodeURI(url);
-      return $cordovaFileTransfer.download(url, targetPath, {}, true);
     };
 
     var originalDownload = function (url, filename, dirName, success) {
@@ -442,7 +435,6 @@ angular.module('app.services', [])
                     p,
                     function (entry) {
                       success(entry.toURL());
-                      downloadHide();
                     },
                     function (error) {
                       console.log(error);
@@ -451,9 +443,14 @@ angular.module('app.services', [])
                     null
                   );
                   ft.onprogress = function (progressEvent) {
-                    downloadShow();
-                    if (progressEvent.lengthComputable) {
-                      $rootScope.download_status = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                    if (progressEvent.lengthComputable && $rootScope.showDownload) {
+                      downloadShow();
+                      $rootScope.loaded += progressEvent.loaded;
+                      $rootScope.download_status = Math.round(($rootScope.loaded / $rootScope.total) * 100);
+                      console.log('download status', $rootScope.download_status);
+                      if ($rootScope.download_status >= 100) {
+                        hide();
+                      }
                     } else {
                       $rootScope.download_status += 1;
                     }
@@ -473,7 +470,6 @@ angular.module('app.services', [])
 
 
   return{
-    cordovaDownload: cordovaDownload,
     originalDownload: originalDownload
   }
 

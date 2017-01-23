@@ -136,14 +136,14 @@ angular.module('app.controllers', [])
     function ($scope, $rootScope, $ionicLoading, $ionicHistory, $state, appDataService, FileService, DatabaseService, localStorageService, $ionicPopover) {
 
       //Loading functions
-      $scope.showLoad = function () {
+      $scope.show = function () {
         $ionicLoading.show({
           template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
           animation: 'fade-in',
           showBackdrop: true
         });
       };
-      $scope.hideLoad = function () {
+      $scope.hide = function () {
         $ionicLoading.hide();
       };
 
@@ -157,6 +157,8 @@ angular.module('app.controllers', [])
 
       //Function to load the products for this category
       function getProducts(product_ids) {
+        //Show loading
+        $scope.show();
 
         //Get Titles
         $scope.prev = appDataService.getPreviousTitle();
@@ -166,11 +168,21 @@ angular.module('app.controllers', [])
         //Check for internet
         appDataService.checkInternet();
 
+
+        //Whether to a product is bookmarked
+        $scope.showBookmark = false;
+
+
+        //Once there are products bookmarked
+        if (localStorageService.getBookmarkedProducts().length > 0) {
+          $scope.showBookmark = true;
+        }
+
         //Initialize products to empty
         $scope.products = [];
 
         //Get the filtered products if any
-        console.log('currrent category', appDataService.getCurrentCategory());
+        console.log('current category', appDataService.getCurrentCategory());
         var toFilter = appDataService.getCurrentFilteredProducts(appDataService.getCurrentCategory());
 
         //Load the various products
@@ -188,6 +200,10 @@ angular.module('app.controllers', [])
             }
           }
 
+          //Hide the loading screen
+          $scope.hide();
+
+
           //Check if product should be filtered
           toFilter.forEach(function (product) {
             console.log('looping over the product', product.uid);
@@ -202,6 +218,7 @@ angular.module('app.controllers', [])
               }
             }
           });
+
         }, function (error) {
           //Handle error
           console.log('ERROR', error);
@@ -288,6 +305,18 @@ angular.module('app.controllers', [])
       $scope.showLoad();
       //Check for internet
       appDataService.checkInternet();
+
+
+      //Whether to a product is bookmarked
+      $scope.showBookmark = false;
+
+
+      //Once there are products bookmarked
+      if (localStorageService.getBookmarkedProducts().length > 0) {
+        $scope.showBookmark = true;
+      }
+
+
       DatabaseService.selectTopCategories(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
           $scope.categories.push(results.rows.item(x));
@@ -989,6 +1018,16 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.show();
       //Check for internet
       appDataService.checkInternet();
+
+      //Whether to a product is bookmarked
+      $scope.showBookmark = false;
+
+
+      //Once there are products bookmarked
+      if (localStorageService.getBookmarkedProducts().length > 0) {
+        $scope.showBookmark = true;
+      }
+
       //Load the child ids from db
       DatabaseService.selectChildCategories(child_ids,function (categories) {
         for(var x = 0; x < categories.rows.length; x++){
@@ -1316,7 +1355,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $rootScope, $ionicLoading, $ionicHistory, FirebaseService, localStorageService, DatabaseService, FileService, $ionicSideMenuDelegate, $ionicPopup) {
 
-    //Disable Side Menu
+
+
+      //Disable Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
 
 
@@ -1332,6 +1373,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Category file sizes
     $scope.fileSizes = {};
 
+      //Set totals for downloading files
+      $scope.$on('$ionicView.afterEnter', function () {
+        //Set Total file size to zero
+        $rootScope.total = 0;
+        $rootScope.loaded = 0;
+      });
 
     //Loading functions
     $scope.show = function() {
@@ -1341,6 +1388,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         showBackdrop:true
       });
     };
+
     //Hide function
     $scope.hide = function(){
       $ionicLoading.hide();
@@ -1350,6 +1398,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.goBack = function () {
         $ionicHistory.goBack();
       };
+
       //Function to get today's date
       function getDate() {
         var today = new Date();
@@ -1654,8 +1703,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Recursive functions to download videos and the corresponding thumbnail
       //This avoids Large queues for downloading Files
       function downloadVideoImage(videos) {
-        $rootScope.total += $scope.total_video_size;
-        console.log('total', $rootScope.total);
         FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
           localStorageService.setVideoImagePath(videos[0].uid, result);
           videos.shift();
@@ -1678,9 +1725,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Function to download videos
       function downloadVideos() {
-        $scope.hide();
       //If checked
       if ($scope.preferences[3].download_videos) {
+        $rootScope.total += ($scope.total_video_size * 1073741824000);
         $scope.preferences[4].last_updated = getDate();
         var images = $scope.videos.slice();
         var videos = $scope.videos.slice();
@@ -1698,8 +1745,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           //Download details based on check
           if ($scope.preferences[2].downloaded_categories[x].checked == true) {
             console.log('category checked', $scope.preferences[2].downloaded_categories[x].item.title_de);
-            $scope.preferences[4].last_updated = getDate();
             //Update preferences
+            $scope.preferences[4].last_updated = getDate();
             //The product ids to download
             downloadCategoryFiles($scope.preferences[2].downloaded_categories[x].item);
           }
@@ -1709,7 +1756,14 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       }
 
       $scope.saveSettings = function () {
-        $scope.show();
+        //Preparing for Download
+        $ionicLoading.show({
+          template: '<p>Vorbereitung Download...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
+        //Set the video file size and Re-multiply to get accurate byte size
+        $rootScope.showDownload = true;
         downloadVideos();
         downloadCategory();
       };
@@ -1874,5 +1928,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.reset = function () {
         appDataService.clearSelectedFilters();
         $rootScope.$broadcast('new-filter-uid');
+        $rootScope.$broadcast('updateFilters');
       }
 }]);
