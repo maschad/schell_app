@@ -20,10 +20,6 @@
   </ion-nav-buttons>
 
   <ion-content padding="false" class="has-header">
-    <!-- For refreshing items -->
-    <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="refreshItems()">
-    </ion-refresher>
-
     <div class="row responsive-sm marg-top-30">
       <div class="col col-40">
         <img ng-src="{{details.image_landscape}}" class="product-img">
@@ -39,7 +35,9 @@
               <ion-item class="description-item" ng-click="toggleGroup(list)"
                         ng-class="{active: isGroupShown(list)}">
                 <div class="item-icon-right">
-                  {{list.title}}
+                  <div class="wrap">
+                    {{list.title}}
+                  </div>
                   <i class="icon" ng-class="isGroupShown(list) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
                 </div>
               </ion-item>

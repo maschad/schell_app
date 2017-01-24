@@ -138,6 +138,11 @@ angular.module('app.controllers', [])
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $rootScope, $ionicLoading, $ionicHistory, $state, appDataService, FileService, DatabaseService, localStorageService, $ionicPopover) {
 
+      //History function
+      $scope.$on('go-back', function () {
+        $ionicHistory.goBack();
+      });
+
       //Loading functions
       $scope.show = function () {
         $ionicLoading.show({
@@ -264,11 +269,18 @@ angular.module('app.controllers', [])
 
   }])
 
-  .controller('product_areasCtrl', ['$scope', '$rootScope', '$state', '$ionicFilterBar', 'FileService', 'FirebaseService', 'appDataService', 'DatabaseService', 'localStorageService', '$ionicPopover', '$ionicLoading', '$ionicSideMenuDelegate',
-    function ($scope, $rootScope, $state, $ionicFilterBar, FileService, FirebaseService, appDataService, DatabaseService, localStorageService, $ionicPopover, $ionicLoading, $ionicSideMenuDelegate) {
+  .controller('product_areasCtrl', ['$scope', '$rootScope', '$state', '$ionicFilterBar', '$ionicHistory', 'FileService', 'FirebaseService', 'appDataService', 'DatabaseService', 'localStorageService', '$ionicPopover', '$ionicLoading', '$ionicSideMenuDelegate',
+    function ($scope, $rootScope, $state, $ionicFilterBar, $ionicHistory, FileService, FirebaseService, appDataService, DatabaseService, localStorageService, $ionicPopover, $ionicLoading, $ionicSideMenuDelegate) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
+
+
+      //History function
+      $scope.$on('go-back', function () {
+        $ionicHistory.goBack();
+      });
+
 
       //Initialize as null
       $scope.categories = [];
@@ -430,7 +442,12 @@ angular.module('app.controllers', [])
   }])
 
 
-  .controller('videoCategoriesCtrl', ['$scope', '$state', 'DatabaseService', 'appDataService', function ($scope, $state, DatabaseService, appDataService) {
+  .controller('videoCategoriesCtrl', ['$scope', '$state', '$ionicHistory', 'DatabaseService', 'appDataService', function ($scope, $state, $ionicHistory, DatabaseService, appDataService) {
+
+    //History function
+    $scope.$on('go-back', function () {
+      $ionicHistory.goBack();
+    });
 
     function loadCategories() {
       console.log('loading categories');
@@ -463,12 +480,17 @@ angular.module('app.controllers', [])
   }])
 
 
-  .controller('videoCtrl', ['$scope', '$rootScope', '$sce', '$ionicSideMenuDelegate', 'appDataService', 'FirebaseService', 'FileService', '$ionicLoading', '$ionicPopup', 'localStorageService', 'DatabaseService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('videoCtrl', ['$scope', '$rootScope', '$sce', '$ionicHistory', '$ionicSideMenuDelegate', 'appDataService', 'FirebaseService', 'FileService', '$ionicLoading', '$ionicPopup', 'localStorageService', 'DatabaseService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $rootScope, $sce, $ionicSideMenuDelegate, appDataService, FirebaseService, FileService, $ionicLoading, $ionicPopup, localStorageService, DatabaseService) {
+    function ($scope, $rootScope, $sce, $ionicHistory, $ionicSideMenuDelegate, appDataService, FirebaseService, FileService, $ionicLoading, $ionicPopup, localStorageService, DatabaseService) {
     //Initialize empty array
   $scope.videos = [];
+
+      //History function
+      $scope.$on('go-back', function () {
+        $ionicHistory.goBack();
+      });
 
   //Loading functions
   $scope.show = function() {
@@ -536,9 +558,11 @@ angular.module('app.controllers', [])
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $stateParams, $ionicHistory) {
-      $scope.goBack = function () {
+      //History function
+      $scope.$on('go-back', function () {
         $ionicHistory.goBack();
-      };
+      });
+
 
 }])
 
@@ -571,6 +595,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
+
+      //History function
+      $scope.$on('go-back', function () {
+        $ionicHistory.goBack();
+      });
 
 
       //Loading functions
@@ -689,7 +718,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //For Each item, we change the status, and check the verknuepfung field to determine what to pull
         DatabaseService.selectAccessories(artikel_id, 0, function (results) {
           for (var i = 0; i < results.rows.length; i++) {
-            console.log('verkuepfung', results.rows.item(i).verknuepfung);
+            console.log('ver field', results.rows.item(i).verknuepfung);
             if (results.rows.item(i).verknuepfung == 1) {
               DatabaseService.selectProducts(results.rows.item(i).pos_b_artikel_id, function (products) {
                 for (var a = 0; a < products.rows.length; a++) {
@@ -1038,6 +1067,21 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Whether to show the filter or not
     $scope.showFilter = false;
 
+      //History function
+      $scope.$on('go-back', function () {
+        $scope.title = appDataService.getPreviousTitle();
+        var child_ids = appDataService.getPreviousChildIds();
+        console.log('child_ids', child_ids);
+        if (child_ids == false) {
+          $state.go('products');
+        } else {
+          loadSubCategories(child_ids);
+          $scope.$emit('updateFilters');
+          $state.reload();
+        }
+
+      });
+
 
 
     //Loading functions
@@ -1049,15 +1093,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       });
     };
 
-    //Hide function
-    $scope.hide = function(){
-      $ionicLoading.hide();
-    };
-
-      $scope.goBack = function () {
-        appDataService.removeNavigatedCategory();
-        $ionicHistory.goBack();
+      //Hide function
+      $scope.hide = function () {
+        $ionicLoading.hide();
       };
+
 
       //Function to download Image file
       function downloadImage(uid, url, filename) {
@@ -1303,7 +1343,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Get the correct childIds and then load them from database
     var child_ids = appDataService.getCurrentCategoryIds();
-    //Load the sub categories to display
+
+      //Set the previous Child ids
+      appDataService.setPreviousChildIds(child_ids);
+
+      //Load the sub categories to display
     loadSubCategories(child_ids);
 
 
@@ -1345,9 +1389,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $state.go('start-screen');
       };
 
-      $scope.goBack = function () {
-        $ionicHistory.goBack();
-      };
 
 
     //When user selects new filter
@@ -1368,6 +1409,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
+
+      //History function
+      $scope.$on('go-back', function () {
+        $ionicHistory.goBack();
+      });
 
 
   //Download bookmarks
@@ -1428,7 +1474,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $rootScope, $ionicLoading, $ionicHistory, FirebaseService, localStorageService, DatabaseService, FileService, $ionicSideMenuDelegate, $ionicPopup) {
 
-
+      //History function
+      $scope.$on('go-back', function () {
+        $ionicHistory.goBack();
+      });
 
       //Disable Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
@@ -1439,6 +1488,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Initialize as empty
     $scope.videos = [];
+
+      $scope.counts = {};
 
     //Preferences as empty
     $scope.preferences = [];
@@ -1519,6 +1570,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
         //Calculate category file sizes
         items.forEach(function (category) {
+          console.log('category being passed', category.title_de);
           sumFileSizes(category);
         });
       }, function (error) {
@@ -1533,6 +1585,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Sum FileSizes
     function sumFileSizes(category) {
+      //Total amount of artikels
+      var count = 0;
       //Product ids to download
       var product_ids_toDownload = [];
       //Actual products to download
@@ -1598,6 +1652,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           products.forEach(function (product) {
             var downloads = [];
             var videos = [];
+            //Amount of artikels
+            count += 1;
+            console.log('looping over category ', category.title_de);
 
             //Add images and technical drawings
             filesize += product.image_landscape_filesize;
@@ -1648,7 +1705,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               });
             }
           });
-
+          //Assign the count
+          $scope.counts[category.uid] = count;
         });
       });
 
@@ -1876,6 +1934,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Side Menu deactivated
       $ionicSideMenuDelegate.canDragContent(false);
 
+      //History function
+      $scope.$on('go-back', function () {
+        $ionicHistory.goBack();
+      });
+
       //Set the country
       $scope.country = localStorageService.getCountry();
 
@@ -1895,7 +1958,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('searchPageCtrl', ['$scope', '$state', '$ionicFilterBar', 'DatabaseService', 'appDataService', function ($scope, $state, $ionicFilterBar, DatabaseService, appDataService) {
+  .controller('searchPageCtrl', ['$scope', '$state', '$ionicFilterBar', '$ionicHistory', 'DatabaseService', 'appDataService', function ($scope, $state, $ionicFilterBar, $ionicHistory, DatabaseService, appDataService) {
 
     //Initalize products
     $scope.products = [];
@@ -1925,6 +1988,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       });
     };
 
+
+    //History function
+    $scope.$on('go-back', function () {
+      $ionicHistory.goBack();
+    });
+
     //When user chooses a product
     $scope.choiceProduct = function (product, nummer) {
       appDataService.setCurrentTitle(nummer);
@@ -1940,8 +2009,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     function ($scope, $rootScope, $ionicHistory, FirebaseService, localStorageService, appDataService) {
 
       $scope.goBack = function () {
-        appDataService.removeNavigatedCategory();
-        $ionicHistory.goBack();
+        $rootScope.$broadcast('go-back');
       };
 
       function getFilterGroups(filter_headings, filter_ids) {

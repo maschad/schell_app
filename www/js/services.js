@@ -494,8 +494,9 @@ angular.module('app.services', [])
 
 //Service for storing in app Data to be shared between controllers
   .factory('appDataService', ['$rootScope', function ($rootScope) {
-    var current_category_child_ids = '';
+    var current_category_child_ids = [];
     var video_ids = [];
+    var previous_category_child_ids = [];
     var current_filtered_products = {};
     var current_product = {};
     var current_category = 0;
@@ -517,6 +518,18 @@ angular.module('app.services', [])
 
     var getCurrentCategoryIds = function () {
       return current_category_child_ids;
+    };
+
+    var getPreviousChildIds = function () {
+      if (previous_category_child_ids.length > 0) {
+        return previous_category_child_ids.pop();
+      } else {
+        return false;
+      }
+    };
+
+    var setPreviousChildIds = function (ids) {
+      previous_category_child_ids.push(ids);
     };
 
     var setCurrentCategory = function (category) {
@@ -633,6 +646,8 @@ angular.module('app.services', [])
       setVideoId: setVideoId,
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
+      getPreviousChildIds: getPreviousChildIds,
+      setPreviousChildIds: setPreviousChildIds,
       setCurrentProduct : setCurrentProduct,
       getCurrentProduct : getCurrentProduct,
       setCurrentCategory: setCurrentCategory,
@@ -1031,6 +1046,7 @@ angular.module('app.services', [])
   };
 
   var selectAccessories = function (product_b_artikel_id, status, success) {
+
     db.executeSql('SELECT b_artikel_zubehoer_id, status, verknuepfung, data, pos_b_artikel_id ' +
       'FROM b_artikel_zubehoer WHERE recordstatus=1 AND b_artikel_id=' + product_b_artikel_id +
       ' AND status=' + status + ' ORDER BY status,lfdnr;', [], function (rs) {
