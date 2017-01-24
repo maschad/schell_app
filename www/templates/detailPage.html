@@ -82,8 +82,13 @@
                 </div>
               </div>
               <div ng-if="list.title == 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL'">
-                <div ng-repeat="file in files">
-                  <p class="wrap"> {{file.referenzartikel}} </p>
+                <div ng-repeat="product in emfolene">
+                  <table style="width: 100%">
+                    <tr class="wrap">
+                      <p class="wrap"> {{product.produktbezeichnung_de}} {{product.zusatz1_de}} </p>
+                    </tr>
+                    <th class="wrap"><a ng-click="selectProductVariations(product.uid)">{{product.nummer}}</a></th>
+                  </table>
                 </div>
               </div>
               <div ng-if="list.title == 'VARIANTEN'">
@@ -92,6 +97,7 @@
                     <tr>
                       <th class="wrap">
                         <div ng-bind-html="product.werkstoff_de"> , {{product.oberflaeche_de}} ,{{product.gewicht_de}}
+                        </div>
                       </th>
                       <th class="wrap"><a ng-click="selectProductVariations(product.uid)">{{product.nummer}}</a></th>
                     </tr>
@@ -99,8 +105,26 @@
                 </div>
               </div>
               <div ng-if="list.title == 'VERBINDUNG'">
+                <div ng-repeat="product in verbindung">
+                  <table style="width: 100%">
+                    <tr class="wrap">
+                      <p class="wrap"> {{product.produktbezeichnung_de}} {{product.zusatz1_de}} </p>
+                    </tr>
+                    <th class="wrap"><a ng-click="selectProductVariations(product.uid)">{{product.nummer}}</a></th>
+                    oder
+                  </table>
+                </div>
               </div>
               <div ng-if="list.title == 'NOTWENDIGE ZUGEHÖRIGE'">
+                <div ng-repeat="product in notwendige">
+                  <table style="width: 100%">
+                    <tr class="wrap">
+                      <p class="wrap"> {{product.produktbezeichnung_de}} {{product.zusatz1_de}} </p>
+                    </tr>
+                    <th class="wrap"><a ng-click="selectProductVariations(product.uid)">{{product.nummer}}</a></th>
+                    oder
+                  </table>
+                </div>
               </div>
               <div ng-if="list.title == 'VIDEO'">
                 <div ng-show="videos">

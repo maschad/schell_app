@@ -32,10 +32,11 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
       cordova.plugins.Keyboard.disableScroll(true);
     }
     if (window.StatusBar) {
+      //Make the app full screen
       // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-      StatusBar.overlaysWebView(false);
-      ionic.Platform.fullScreen(true, true);
+      // StatusBar.styleDefault();
+      // StatusBar.overlaysWebView(false);
+      ionic.Platform.fullScreen(true, false);
     }
 
     //Check for internet
@@ -75,7 +76,6 @@ function clearDatabase(db, $cordovaSQLite) {
   $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS b_artikel_zubehoer");
   $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS c_language");
 }
-
 function createTables(db, $cordovaSQLite) {
   console.log("Creating tables...");
   $cordovaSQLite.execute(db, "CREATE TABLE products (uid INTEGER PRIMARY KEY, nummer TEXT, referenzartikel TEXT, produktbezeichnung_de TEXT, zusatz1_de TEXT, zusatz2_de TEXT, beschreibung_de TEXT, differenzierung_de TEXT,lieferumfang_de TEXT, einsatzbereich_de TEXT, werkstoff_de TEXT, geraeuschklasse_de TEXT, pruefzeichen_de TEXT, dimension_de TEXT,oberflaeche_de TEXT, verpackungseinheit TEXT, gewicht TEXT, image_landscape TEXT, image_landscape_filesize INTEGER, image_portrait TEXT, image_portrait_filesize INTEGER, technical_drawing_link TEXT, technical_drawing_filesize INTEGER, filter_ids TEXT, download_ids TEXT, video_ids TEXT, produktbezeichnung_en TEXT, zusatz1_en TEXT, zusatz2_en TEXT, beschreibung_en TEXT, differenzierung_en TEXT, lieferumfang_en TEXT, einsatzbereich_en TEXT, werkstoff_en TEXT, geraeuschklasse_en TEXT,pruefzeichen_en TEXT,dimension_en TEXT, oberflaeche_en TEXT , varianten TEXT, designpreis TEXT, b_artikel_id INTEGER, permalink TEXT)");
@@ -90,7 +90,7 @@ function createTables(db, $cordovaSQLite) {
 
   $cordovaSQLite.execute(db, "CREATE TABLE awards (uid INTEGER PRIMARY KEY, titel TEXT,	logo TEXT)");
 
-  $cordovaSQLite.execute(db, "CREATE TABLE b_artikel_zubehoer (b_artikel_zubehoer_id INTEGER PRIMARY KEY,  b_artikel_id INTEGER, lfdnr INTEGER, status INTEGER, recordstatus INTEGER, pos_b_artikel_id INTEGER , data TEXT)");
+  $cordovaSQLite.execute(db, "CREATE TABLE b_artikel_zubehoer (b_artikel_zubehoer_id INTEGER PRIMARY KEY,  b_artikel_id INTEGER, lfdnr INTEGER, status INTEGER, recordstatus INTEGER, pos_b_artikel_id INTEGER , verknuepfung INTEGER , data TEXT)");
 
   $cordovaSQLite.execute(db, "CREATE TABLE c_language (c_language_id INTEGER PRIMARY KEY, recordstatus INTEGER, table_id INTEGER, tablename TEXT, fieldname TEXT, langcode TEXT, content TEXT)")
 }

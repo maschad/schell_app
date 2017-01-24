@@ -21,7 +21,8 @@
       <div class="container">
         <h3 class="heading">{{prev}} {{title}}</h3>
         <div ng-repeat="product in products" class="row responsive-sm">
-            <div class="col col-50" ng-if="product.image_portrait" ng-click="choice(product,product.nummer)">
+          <div class="col col-50" ng-if="product.image_portrait"
+               ng-click="product.filter || choice(product,product.nummer)">
               <div class="product-tile" ng-style="{'opacity' : product.filter ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-75">

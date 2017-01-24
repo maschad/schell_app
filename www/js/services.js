@@ -381,6 +381,22 @@ angular.module('app.services', [])
     });
   };
 
+  var downloadZubehoer = function (success, error) {
+    var zubehoer = {};
+
+    firebase.database().ref('/b_artikel_zubehoer/').orderByKey().once('value').then(function (snapshot) {
+      snapshot.forEach(function (zub) {
+        zubehoer[zub.key] = zub.val();
+      });
+      success(zubehoer);
+    }, function (error) {
+      $ionicPopup.confirm({
+        title: "Error Connecting to Database",
+        content: error
+      });
+    });
+  };
+
 
   return {
     goOffline : goOffline,
@@ -390,7 +406,8 @@ angular.module('app.services', [])
     downloadFiles : downloadFiles,
     downloadProductFilters : downloadProductFilters,
     downloadAllProducts: downloadAllProducts,
-    downloadAwards: downloadAwards
+    downloadAwards: downloadAwards,
+    downloadZubehoer: downloadZubehoer
   };
 
 }])
@@ -703,7 +720,7 @@ angular.module('app.services', [])
             firebaseProductsObject[uid]['en_data']['oberflaeche'] ? firebaseProductsObject[uid]['en_data']['oberflaeche'] : '',
             firebaseProductsObject[uid]['varianten'] ? firebaseProductsObject[uid]['varianten'] : '',
             firebaseProductsObject[uid]['designpreis'] ? firebaseProductsObject[uid]['designpreis'] : '',
-            firebaseProductsObject[uid]['b_artikel_id'] ? firebaseProductsObject[uid]['b_artikel_id'] : '',
+            parseInt(firebaseProductsObject[uid]['b_artikel_id']),
             firebaseProductsObject[uid]['permalink'] ? firebaseProductsObject[uid]['permalink'] : ''
           ]
         ]);
@@ -871,18 +888,19 @@ angular.module('app.services', [])
 
   var populateZubehoer = function (firebaseObject) {
     var preparedStatements = [];
-    var BLANK_VIDEO_INSERT_QUERY = 'INSERT INTO b_artikel_zubehoer VALUES (?,?,?,?,?,?,?)';
+    var BLANK_VIDEO_INSERT_QUERY = 'INSERT INTO b_artikel_zubehoer VALUES (?,?,?,?,?,?,?,?)';
 
     for (var b_artikel_zubehoer_id in firebaseObject) {
       preparedStatements.push([
         BLANK_VIDEO_INSERT_QUERY,
         [
-          parseInt(b_artikel_zubehoer_id,
-            firebaseObject[b_artikel_zubehoer_id]['b_artikel_id'],
-            firebaseObject[b_artikel_zubehoer_id]['lfdnr'],
-            firebaseObject[b_artikel_zubehoer_id]['status'],
-            firebaseObject[b_artikel_zubehoer_id]['recordstatus'],
-            firebaseObject[b_artikel_zubehoer_id]['pos_b_artikel_id']),
+          parseInt(b_artikel_zubehoer_id),
+          parseInt(firebaseObject[b_artikel_zubehoer_id]['b_artikel_id']),
+          parseInt(firebaseObject[b_artikel_zubehoer_id]['lfdnr']),
+          parseInt(firebaseObject[b_artikel_zubehoer_id]['status']),
+          parseInt(firebaseObject[b_artikel_zubehoer_id]['recordstatus']),
+          parseInt(firebaseObject[b_artikel_zubehoer_id]['pos_b_artikel_id']),
+          parseInt(firebaseObject[b_artikel_zubehoer_id]['verknuepfung']),
           firebaseObject[b_artikel_zubehoer_id]['data']
         ]
       ]);
@@ -903,12 +921,12 @@ angular.module('app.services', [])
       preparedStatements.push([
         BLANK_VIDEO_INSERT_QUERY,
         [
-          parseInt(c_language_id,
-            firebaseObject[c_language_id]['recordstatus'],
-            firebaseObject[c_language_id]['table_id'],
-            firebaseObject[c_language_id]['tablename'],
-            firebaseObject[c_language_id]['fieldname'],
-            firebaseObject[c_language_id]['langcode']),
+          parseInt(c_language_id),
+          parseInt(firebaseObject[c_language_id]['recordstatus']),
+          parseInt(firebaseObject[c_language_id]['table_id']),
+          firebaseObject[c_language_id]['tablename'],
+          firebaseObject[c_language_id]['fieldname'],
+          firebaseObject[c_language_id]['langcode'],
           firebaseObject[c_language_id]['content']
         ]
       ]);
@@ -1012,14 +1030,13 @@ angular.module('app.services', [])
     });
   };
 
-  var selectEmpholene = function (product_b_artikel_id, success) {
-    db.executeSql('SELECT b_artikel_zubehoer_id ,status , verknuepfung , data, pos_b_artikel_id FROM b_artikel_zubehoer WHERE recordstatus = 1 ' +
-
-      'AND b_artikel_id = ' + product_b_artikel_id + 'ORDER BY status,lfdnr);', [], function (rs) {
-
-
+  var selectAccessories = function (product_b_artikel_id, status, success) {
+    db.executeSql('SELECT b_artikel_zubehoer_id, status, verknuepfung, data, pos_b_artikel_id ' +
+      'FROM b_artikel_zubehoer WHERE recordstatus=1 AND b_artikel_id=' + product_b_artikel_id +
+      ' AND status=' + status + ' ORDER BY status,lfdnr;', [], function (rs) {
+      success(rs);
     }, function (error) {
-      console.log(error)
+      console.log(error);
     });
   };
 
@@ -1042,6 +1059,7 @@ angular.module('app.services', [])
       selectAllVideos : selectAllVideos,
       selectDownloads: selectDownloads,
       selectAwards: selectAwards,
+      selectAccessories: selectAccessories,
       searchProducts: searchProducts
     };
 

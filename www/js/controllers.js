@@ -64,6 +64,9 @@ angular.module('app.controllers', [])
           FirebaseService.downloadAwards(function (results) {
             DatabaseService.populateAwards(results);
           });
+          FirebaseService.downloadZubehoer(function (results) {
+            DatabaseService.populateZubehoer(results);
+          });
           FirebaseService.downloadProductFilters(function (results) {
             localStorageService.setFilters(results);
             $scope.hideLoad();
@@ -657,6 +660,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         if ($scope.details.designpreis != '') {
           getAwards($scope.details.designpreis);
         }
+        if ($scope.details.b_artikel_id != '') {
+          getAccessories($scope.details.b_artikel_id);
+        }
         $scope.hide();
       }
 
@@ -666,10 +672,61 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
         DatabaseService.selectAwards(award_ids, function (results) {
           for (var x = 0; x < results.rows.length; x++) {
-            console.log('award', results.rows.item(x).titel);
             $scope.awards.push(results.rows.item(x));
           }
         });
+      }
+
+      //Load the accessories
+      function getAccessories(artikel_id) {
+        //Initialize as empty
+        $scope.emfolene = [];
+        $scope.verbindung = [];
+        $scope.notwendige = [];
+
+        console.log('loading accessories with artikel id', artikel_id);
+
+        //For Each item, we change the status, and check the verknuepfung field to determine what to pull
+        DatabaseService.selectAccessories(artikel_id, 0, function (results) {
+          for (var i = 0; i < results.rows.length; i++) {
+            console.log('verkuepfung', results.rows.item(i).verknuepfung);
+            if (results.rows.item(i).verknuepfung == 1) {
+              DatabaseService.selectProducts(results.rows.item(i).pos_b_artikel_id, function (products) {
+                for (var a = 0; a < products.rows.length; a++) {
+                  console.log('pushing in product', products.rows.item(a).nummer);
+                  $scope.notwendige.push(products.rows.item(a));
+                }
+              });
+            }
+          }
+        });
+
+        DatabaseService.selectAccessories(artikel_id, 1, function (results) {
+          for (var j = 0; j < results.rows.length; j++) {
+            if (results.rows.item(j).verknuepfung == 1) {
+              DatabaseService.selectProducts(results.rows.item(i).pos_b_artikel_id, function (products) {
+                for (var b = 0; b < products.rows.length; b++) {
+                  console.log('pushing in product', products.rows.item(b).nummer);
+                  $scope.emfolene.push(products.rows.item(b));
+                }
+              });
+            }
+          }
+        });
+
+        DatabaseService.selectAccessories(artikel_id, 2, function (results) {
+          for (var k = 0; k < results.rows.length; k++) {
+            if (results.rows.item(k).verknuepfung == 1) {
+              DatabaseService.selectProducts(results.rows.item(k).pos_b_artikel_id, function (products) {
+                for (var c = 0; c < products.rows.length; c++) {
+                  console.log('pushing in product in verbindung', products.rows.item(c).nummer);
+                  $scope.verbindung.push(products.rows.item(c));
+                }
+              });
+            }
+          }
+        });
+
       }
 
 
@@ -842,7 +899,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         {
           title : 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL',
           show: false,
-          hasData: ''
+          hasData: $scope.emfolene
         },
         {
           title : 'VIDEO',
@@ -852,12 +909,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         {
           title: 'VERBINDUNG',
           show: false,
-          hasData: ''
+          hasData: $scope.verbindung
         },
         {
           title: 'NOTWENDIGE ZUGEHÖRIGE',
           show: false,
-          hasData: ''
+          hasData: $scope.notwendige
         }
 
       ]);
@@ -930,19 +987,20 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
   $scope.sendEmail = function () {
     var link = $scope.details.permalink;
 
-    var bodyText = 'Product nummer ' .concat($scope.details.nummer)
-      + '  ' + 'Referenzartikel ' + '   '.concat($scope.details.referenzartikel)
-      + ' '.concat($scope.details.differenzierung_de)
-      + ' ' + 'Hier ist ein Link ' + '  ' + link;
+    var bodyText = "This article was recommended to you: \n" +
+      "Order number: " + $scope.details.nummer
+      + "\n Headline " + $scope.details.produktbezeichnung_de +
+      "\n\n Link to this product: \n" + link;
+
 
 
     if(window.plugins && window.plugins.emailComposer) {
       window.plugins.emailComposer.showEmailComposerWithCallback(function(result) {
           console.log("Response -> " + result);
         },
-        "Artikel Subject", // Subject
+        "SHELL Article " + $scope.details.nummer, // Subject
         bodyText,                      // Body
-        ["test@example.com"],    // To
+        [" "],    // To
         null,                    // CC
         null,                    // BCC
         false,                   // isHTML
@@ -1118,12 +1176,23 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Re-set array
       $scope.counts = {};
 
+
       //Product ids to download for check
       var product_ids_to_download = [];
 
       // If empty then just add products
       if (applied_filters.length == 0) {
         countArtikels();
+        $scope.categories.forEach(function (category) {
+          var products = [];
+          DatabaseService.selectProducts(category.product_ids, function (results) {
+            for (var y = 0; y < results.rows.length; y++) {
+              products.push(results.rows.item(y));
+            }
+          });
+          console.log('setting category', category.uid);
+          appDataService.setCurrentFilteredProducts(category.uid, products);
+        });
       } else {
         //all Categories
         var allCategories = [];
@@ -1154,6 +1223,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                     return product.filter_ids.split(',').indexOf(filter) != -1;
                   });
                 });
+
+
                 //Store the filter products
                 appDataService.setCurrentFilteredProducts(category.uid, filteredProducts);
                 //Push in the lengths
@@ -1210,6 +1281,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                     return product.filter_ids.split(',').indexOf(filter) != -1;
                   });
                 });
+
+
                 //Store the filter products
                 appDataService.setCurrentFilteredProducts(category.uid, filteredProducts);
 
@@ -1915,6 +1988,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         } else {
           appDataService.removeCurrentSelectFilterId(uid);
         }
+
         $rootScope.$broadcast('new-filter-uid');
       };
 
