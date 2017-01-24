@@ -980,13 +980,21 @@ angular.module('app.services', [])
     })
   };
 
-    var selectProducts = function(product_ids, success, error) {
-      db.executeSql('SELECT * from products where uid in (' + product_ids + ');',[], function(rs) {
-        success(rs);
-      }, function(error) {
-        error(error);
-      });
-    };
+  var selectProducts = function (product_ids, success, error) {
+    db.executeSql('SELECT * from products where uid in (' + product_ids + ');', [], function (rs) {
+      success(rs);
+    }, function (error) {
+      error(error);
+    });
+  };
+
+  var selectProductsByBArtikelId = function (product_ids, success, error) {
+    db.executeSql('SELECT * from products where b_artikel_id in (' + product_ids + ');', [], function (rs) {
+      success(rs);
+    }, function (error) {
+      error(error);
+    });
+  };
 
   var selectAllProducts = function (success, error) {
     db.executeSql('SELECT * from products;', [], function (rs) {
@@ -1046,7 +1054,6 @@ angular.module('app.services', [])
   };
 
   var selectAccessories = function (product_b_artikel_id, status, success) {
-
     db.executeSql('SELECT b_artikel_zubehoer_id, status, verknuepfung, data, pos_b_artikel_id ' +
       'FROM b_artikel_zubehoer WHERE recordstatus=1 AND b_artikel_id=' + product_b_artikel_id +
       ' AND status=' + status + ' ORDER BY status,lfdnr;', [], function (rs) {
@@ -1069,6 +1076,7 @@ angular.module('app.services', [])
       selectAllCategories: selectAllCategories,
       selectChildCategories: selectChildCategories,
       selectProducts: selectProducts,
+      selectProductsByBArtikelId: selectProductsByBArtikelId,
       selectAllProducts: selectAllProducts,
       selectVideos: selectVideos,
       selectVideoCategories: selectVideoCategories,

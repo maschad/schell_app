@@ -692,7 +692,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         if ($scope.details.b_artikel_id != '') {
           getAccessories($scope.details.b_artikel_id);
         }
-        $scope.hide();
       }
 
       //Load the awards images
@@ -718,44 +717,43 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //For Each item, we change the status, and check the verknuepfung field to determine what to pull
         DatabaseService.selectAccessories(artikel_id, 0, function (results) {
           for (var i = 0; i < results.rows.length; i++) {
-            console.log('ver field', results.rows.item(i).verknuepfung);
-            if (results.rows.item(i).verknuepfung == 1) {
-              DatabaseService.selectProducts(results.rows.item(i).pos_b_artikel_id, function (products) {
-                for (var a = 0; a < products.rows.length; a++) {
-                  console.log('pushing in product', products.rows.item(a).nummer);
-                  $scope.notwendige.push(products.rows.item(a));
-                }
-              });
-            }
+            //If oder is true, we ought to store oder
+            var oder = results.rows.item(i).verknuepfung == 1;
+            DatabaseService.selectProductsByBArtikelId(results.rows.item(i).pos_b_artikel_id, function (products) {
+              for (var a = 0; a < products.rows.length; a++) {
+                $scope.notwendige.push({product: products.rows.item(a), oder: oder});
+              }
+            });
           }
         });
 
+        //For Each item, we change the status, and check the verknuepfung field to determine what to pull
         DatabaseService.selectAccessories(artikel_id, 1, function (results) {
           for (var j = 0; j < results.rows.length; j++) {
-            if (results.rows.item(j).verknuepfung == 1) {
-              DatabaseService.selectProducts(results.rows.item(i).pos_b_artikel_id, function (products) {
-                for (var b = 0; b < products.rows.length; b++) {
-                  console.log('pushing in product', products.rows.item(b).nummer);
-                  $scope.emfolene.push(products.rows.item(b));
-                }
-              });
-            }
+            //If oder is true, we ought to store oder
+            var oder = results.rows.item(j).verknuepfung == 1;
+            DatabaseService.selectProductsByBArtikelId(results.rows.item(j).pos_b_artikel_id, function (products) {
+              for (var b = 0; b < products.rows.length; b++) {
+                $scope.emfolene.push({product: products.rows.item(b), oder: oder});
+              }
+            });
           }
         });
 
+        //For Each item, we change the status, and check the verknuepfung field to determine what to pull
         DatabaseService.selectAccessories(artikel_id, 2, function (results) {
           for (var k = 0; k < results.rows.length; k++) {
-            if (results.rows.item(k).verknuepfung == 1) {
-              DatabaseService.selectProducts(results.rows.item(k).pos_b_artikel_id, function (products) {
-                for (var c = 0; c < products.rows.length; c++) {
-                  console.log('pushing in product in verbindung', products.rows.item(c).nummer);
-                  $scope.verbindung.push(products.rows.item(c));
-                }
-              });
-            }
+            //If oder is true, we ought to store oder
+            var oder = results.rows.item(k).verknuepfung == 1;
+            DatabaseService.selectProductsByBArtikelId(results.rows.item(k).pos_b_artikel_id, function (products) {
+              for (var c = 0; c < products.rows.length; c++) {
+                console.log('pushing in product', products.rows.item(c).nummer);
+                $scope.verbindung.push({product: products.rows.item(c), oder: oder});
+              }
+            });
           }
+          $scope.hide();
         });
-
       }
 
 

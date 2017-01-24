@@ -79,16 +79,6 @@
                   </div>
                 </div>
               </div>
-              <div ng-if="list.title == 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL'">
-                <div ng-repeat="product in emfolene">
-                  <table style="width: 100%">
-                    <tr class="wrap">
-                      <p class="wrap"> {{product.produktbezeichnung_de}} {{product.zusatz1_de}} </p>
-                    </tr>
-                    <th class="wrap"><a ng-click="selectProductVariations(product.uid)">{{product.nummer}}</a></th>
-                  </table>
-                </div>
-              </div>
               <div ng-if="list.title == 'VARIANTEN'">
                 <div ng-repeat="product in productVariations">
                   <table style="width: 100%">
@@ -102,25 +92,57 @@
                   </table>
                 </div>
               </div>
-              <div ng-if="list.title == 'VERBINDUNG'">
-                <div ng-repeat="product in verbindung">
+              <div ng-if="list.title == 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL'">
+                <div ng-repeat="accessory in emfolene">
                   <table style="width: 100%">
-                    <tr class="wrap">
-                      <p class="wrap"> {{product.produktbezeichnung_de}} {{product.zusatz1_de}} </p>
+                    <tr>
+                      <th class="wrap">
+                        {{accessory.product.produktbezeichnung_de}},
+                        {{accessory.product.zusatz1_de}}
+                      </th>
+                      <th>
+                        Best.-Nr:<a ng-click="selectProductVariations(accessory.product.uid)">{{accessory.product.nummer}}</a>
+                      </th>
+                      <th>
+                        <p ng-show="accessory.oder">oder</p>
+                      </th>
                     </tr>
-                    <th class="wrap"><a ng-click="selectProductVariations(product.uid)">{{product.nummer}}</a></th>
-                    oder
+                  </table>
+                </div>
+              </div>
+              <div ng-if="list.title == 'VERBINDUNG'">
+                <div ng-repeat="accessory in verbindung">
+                  <table style="width: 100%">
+                    <tr>
+                      <th class="wrap">
+                        {{accessory.product.produktbezeichnung_de}},
+                        {{accessory.product.zusatz1_de}}
+                      </th>
+                      <th>
+                        Best.-Nr:<a ng-click="selectProductVariations(accessory.product.uid)">{{accessory.product.nummer}}</a>
+                      </th>
+                      <th>
+                        <p ng-show="accessory.oder">oder</p>
+                      </th>
+                    </tr>
                   </table>
                 </div>
               </div>
               <div ng-if="list.title == 'NOTWENDIGE ZUGEHÖRIGE'">
-                <div ng-repeat="product in notwendige">
+                <div ng-repeat="accessory in notwendige">
                   <table style="width: 100%">
-                    <tr class="wrap">
-                      <p class="wrap"> {{product.produktbezeichnung_de}} {{product.zusatz1_de}} </p>
+                    <tr>
+                      <th class="wrap">
+                        {{accessory.product.produktbezeichnung_de}},
+                        {{accessory.product.zusatz1_de}}
+                      </th>
+                      <th>
+                        Best.-Nr:<a ng-click="selectProductVariations(accessory.product.uid)">{{accessory.product.nummer}}</a>
+                      </th>
+                      <th>
+                        <p ng-show="accessory.oder">oder</p>
+                      </th>
                     </tr>
-                    <th class="wrap"><a ng-click="selectProductVariations(product.uid)">{{product.nummer}}</a></th>
-                    oder
                   </table>
                 </div>
               </div>
@@ -138,6 +160,7 @@
             </ion-item>
           </div>
         </ion-list>
+
         <div ng-repeat="award in awards">
           <div class="design-awards">
             <img ng-src="{{award.logo}}">
