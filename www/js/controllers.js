@@ -1989,8 +1989,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $scope.country = country;
         localStorageService.setCountry(country);
         $ionicPopup.alert({
-          title: 'Einstellungen gespeichert',
-          cssClass: 'bookmark-popup'
+          title: 'Einstellungen gespeichert'
         });
       };
 
