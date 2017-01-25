@@ -502,7 +502,7 @@ angular.module('app.services', [])
     var current_product = {};
     var current_category = 0;
     var navigated_categories = [];
-    var current_title = '';
+    var previousProduct = {};
     var previous_title = '';
     var root_title = '';
     var filter_ids = '';
@@ -561,24 +561,33 @@ angular.module('app.services', [])
       navigated_categories.push(data);
     };
 
+    var checkCurrentCategory = function () {
+      return navigated_categories[navigated_categories.length - 1];
+    };
+
     var removeNavigatedCategory = function () {
-      return navigated_categories.pop();
+      navigated_categories.pop();
     };
 
     var clearNavigatedCategories = function () {
       navigated_categories = [];
     };
 
-    var getCurrentTitle = function () {
-      return current_title;
-    };
-
-    var setCurrentTitle = function (title) {
-      current_title = title;
-    };
-
     var getPreviousTitle = function () {
       return previous_title;
+    };
+
+    var setPreviousProduct = function (data) {
+      previousProduct = data;
+    };
+
+    var getPreviousProduct = function () {
+      if (previousProduct) {
+        return previousProduct;
+      } else {
+        console.log('object empty');
+        return false;
+      }
     };
 
     var setPreviousTitle = function (prev) {
@@ -650,16 +659,17 @@ angular.module('app.services', [])
       getPreviousChildIds: getPreviousChildIds,
       setPreviousChildIds: setPreviousChildIds,
       setCurrentProduct : setCurrentProduct,
+      setPreviousProduct: setPreviousProduct,
+      getPreviousProduct: getPreviousProduct,
       getCurrentProduct : getCurrentProduct,
       setCurrentCategory: setCurrentCategory,
       getCurrentCategory: getCurrentCategory,
       getNavigatedCategories: getNavigatedCategories,
       checkInternet: checkInternet,
       addNavigatedCategory: addNavigatedCategory,
+      checkCurrentCategory: checkCurrentCategory,
       removeNavigatedCategory: removeNavigatedCategory,
       clearNavigatedCategories: clearNavigatedCategories,
-      getCurrentTitle : getCurrentTitle,
-      setCurrentTitle : setCurrentTitle,
       getPreviousTitle : getPreviousTitle,
       setPreviousTitle : setPreviousTitle,
       getRootTitle : getRootTitle,

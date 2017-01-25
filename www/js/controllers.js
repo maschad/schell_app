@@ -142,6 +142,7 @@ angular.module('app.controllers', [])
 
       //History function
       $scope.$on('go-back', function () {
+        appDataService.removeNavigatedCategory();
         $ionicHistory.goBack();
       });
 
@@ -171,9 +172,9 @@ angular.module('app.controllers', [])
         $scope.show();
 
         //Get Titles
-        $scope.prev = appDataService.getPreviousTitle();
-        $scope.title = appDataService.getCurrentTitle();
-        $scope.root = appDataService.getRootTitle();
+        //$scope.prev = appDataService.getPreviousTitle();
+        $scope.title = appDataService.checkCurrentCategory();
+        //$scope.root = appDataService.getRootTitle();
 
         //Check for internet
         appDataService.checkInternet();
@@ -259,7 +260,7 @@ angular.module('app.controllers', [])
 
 
     $scope.choice = function (product,title) {
-      appDataService.setCurrentTitle(title);
+      appDataService.addNavigatedCategory(title);
       appDataService.setCurrentProduct(product);
       $state.go('detailPage');
     };
@@ -323,6 +324,8 @@ angular.module('app.controllers', [])
       //Check for internet
       appDataService.checkInternet();
 
+      //Set the title
+      appDataService.addNavigatedCategory('PRODUKTKATEGORIEN');
 
       //Whether to a product is bookmarked
       $scope.showBookmark = false;
@@ -371,11 +374,8 @@ angular.module('app.controllers', [])
 
     //The category chosen by the user
     $scope.choice = function (child_ids, title,filter_ids) {
-      appDataService.setRootTitle(title);
-      appDataService.setPreviousTitle('PRODUKTKATEGORIEN');
-      appDataService.setCurrentTitle(title);
-      appDataService.setCurrentCategoryIds(child_ids);
       appDataService.addNavigatedCategory(title);
+      appDataService.setCurrentCategoryIds(child_ids);
       appDataService.setFilterIds(filter_ids);
       $scope.$emit('updateFilters');
       $state.go('product_lines');
@@ -600,7 +600,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       $scope.$on('go-back', function () {
-        $ionicHistory.goBack();
+        appDataService.removeNavigatedCategory();
+        if (appDataService.getPreviousProduct()) {
+          appDataService.setCurrentProduct(appDataService.getPreviousProduct());
+          $state.reload();
+        } else {
+          $ionicHistory.goBack();
+        }
       });
 
 
@@ -641,9 +647,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $scope.bookmarks = localStorageService.getBookmarkedProducts();
 
         //Get various labels
-        $scope.title = appDataService.getCurrentTitle();
-        $scope.prev = appDataService.getPreviousTitle();
-        $scope.root = appDataService.getRootTitle();
+        $scope.title = appDataService.checkCurrentCategory();
         $scope.artikel = $scope.title;
 
         //Set details
@@ -844,11 +848,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       loadProduct();
 
 
-      $scope.goBack = function () {
-        appDataService.removeNavigatedCategory();
-        $ionicHistory.goBack();
-      };
-
     //Bookmark Function
     $scope.bookmark = function () {
       if (!localStorageService.bookmarkProduct($scope.details)) {
@@ -1035,9 +1034,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //For the varianten field, we want to select Product variations
       $scope.selectProductVariations = function (product_id) {
+        appDataService.setPreviousProduct($scope.details);
         DatabaseService.selectProducts(product_id, function (results) {
           appDataService.setCurrentProduct(results.rows.item(0));
-          appDataService.setCurrentTitle(results.rows.item(0).nummer);
+          appDataService.addNavigatedCategory(results.rows.item(0).nummer);
           loadProduct();
           $state.reload();
         });
@@ -1086,8 +1086,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
   .controller('productLinesCtrl', ['$scope', '$state', '$rootScope', '$ionicLoading', '$ionicHistory', '$ionicFilterBar', 'localStorageService', 'FileService', 'DatabaseService', 'appDataService', '$ionicPopover',
     function ($scope, $state, $rootScope, $ionicLoading, $ionicHistory, $ionicFilterBar, localStorageService, FileService, DatabaseService, appDataService, $ionicPopover) {
     //Set the titles and initialize empty array of filters
-    $scope.title = appDataService.getCurrentTitle();
-    $scope.root = appDataService.getRootTitle();
     $scope.filter_ids = [];
 
     //Array storing artikel counts for each category
@@ -1098,7 +1096,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       $scope.$on('go-back', function () {
-        $scope.title = appDataService.removeNavigatedCategory();
+        appDataService.removeNavigatedCategory();
         var child_ids = appDataService.getPreviousChildIds();
         console.log('child_ids', child_ids);
         if (child_ids == false) {
@@ -1141,7 +1139,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Initialize as empty
       $scope.categories = [];
       //Set title
-      $scope.title = appDataService.getCurrentTitle();
+      $scope.title = appDataService.checkCurrentCategory();
+
       $scope.show();
       //Check for internet
       appDataService.checkInternet();
@@ -1394,8 +1393,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Child choice
       $scope.choice = function (child_ids, title) {
         //If user chooses something with child ids
-        appDataService.setPreviousTitle($scope.title);
-        appDataService.setCurrentTitle(title);
         appDataService.addNavigatedCategory(title);
         loadSubCategories(child_ids);
         $scope.$emit('updateFilters');
@@ -1405,8 +1402,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Product Choice
       $scope.choice_product = function (product_ids, title, category_id) {
         // If user chooses something with product_ids
-        appDataService.setPreviousTitle($scope.title);
-        appDataService.setCurrentTitle(title);
         appDataService.setCurrentCategory(category_id);
         appDataService.setCurrentCategoryIds(product_ids);
         appDataService.addNavigatedCategory(title);
@@ -1459,7 +1454,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     $scope.showDetails = function (product) {
       appDataService.setCurrentProduct(product);
-      appDataService.setCurrentTitle(product.nummer);
+      appDataService.addNavigatedCategory(product.nummer);
       $state.go('detailPage');
     };
 
@@ -1900,7 +1895,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       function downloadVideos() {
       //If checked
       if ($scope.preferences[3].download_videos) {
-        $rootScope.total += ($scope.total_video_size * 1073741824);
+        $rootScope.total += ($scope.total_video_size * 1073741824000);
         $scope.preferences[4].last_updated = getDate();
         var images = $scope.videos.slice();
         var videos = $scope.videos.slice();
@@ -2037,8 +2032,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //When user chooses a product
     $scope.choiceProduct = function (product, nummer) {
-      appDataService.setCurrentTitle(nummer);
-      appDataService.setPreviousTitle('PRODUKTKATEGORIEN');
+      appDataService.addNavigatedCategory(nummer);
       appDataService.setCurrentProduct(product);
       $state.go('detailPage');
     };
