@@ -753,7 +753,7 @@ angular.module('app.services', [])
     var populateProductCategories = function(firebaseProductCategoriesObject) {
 
       var preparedStatements = [];
-      var BLANK_CATEGORY_INSERT_QUERY = 'INSERT INTO product_categories VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_CATEGORY_INSERT_QUERY = 'INSERT INTO product_categories VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
       for (var uid in firebaseProductCategoriesObject) {
 
         var filter_ids = firebaseProductCategoriesObject[uid]['filter_ids'] ? firebaseProductCategoriesObject[uid]['filter_ids'].join() : '';
@@ -771,6 +771,7 @@ angular.module('app.services', [])
             firebaseProductCategoriesObject[uid]['bild'],
             firebaseProductCategoriesObject[uid]['downloads'],
             child_ids,
+            parseInt(firebaseProductCategoriesObject[uid]['sorting']),
             product_ids,
             filter_ids,
             download_ids,
@@ -959,7 +960,7 @@ angular.module('app.services', [])
 
 
     var selectTopCategories = function(success, error) {
-      db.executeSql('SELECT * from product_categories where elternelement = 0;', [], function(rs) {
+      db.executeSql('SELECT * from product_categories where elternelement = 0 order by sorting;', [], function(rs) {
         success(rs);
       }, function (error) {
         error(error);
@@ -967,7 +968,7 @@ angular.module('app.services', [])
     };
 
     var selectChildCategories = function(child_ids, success, error) {
-      db.executeSql('SELECT * from product_categories where uid in (' + child_ids + ');',[], function(rs) {
+      db.executeSql('SELECT * from product_categories where uid in (' + child_ids + ') order by sorting;',[], function(rs) {
         success(rs);
       }, function(error) {
         error(error);
@@ -975,7 +976,7 @@ angular.module('app.services', [])
     };
 
   var selectAllCategories = function (success, error) {
-    db.executeSql('SELECT * from product_categories;', [], function (rs) {
+    db.executeSql('SELECT * from product_categories order by sorting;', [], function (rs) {
       success(rs);
     }, function (error) {
       error(error);
