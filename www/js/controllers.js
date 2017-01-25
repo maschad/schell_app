@@ -24,9 +24,9 @@ angular.module('app.controllers', [])
       };
 
       //Helper function to cache slider images
-      function downloadImages(url, fileName, dirName) {
+      function downloadImages(number, url, fileName, dirName) {
         FileService.originalDownload(url, fileName, dirName, function (path) {
-          localStorageService.setCarouselPath(path)
+          localStorageService.setCarouselPath(number, path)
         });
       }
 
@@ -73,13 +73,14 @@ angular.module('app.controllers', [])
             //If internet grab those images
             var url = 'http://www.schell.eu/fileadmin/app/slider/slider';
             for (var i = 1; i < 5; i++) {
-              downloadImages(url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
+              downloadImages(i, url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
             }
           });
 
         } else {
           //#TODO: Handle DB offline
           $scope.images = localStorageService.getCarouselPaths();
+          console.log('images', $scope.images);
         }
       }
 
@@ -124,10 +125,11 @@ angular.module('app.controllers', [])
         if ($rootScope.internet) {
           var url = 'http://www.schell.eu/fileadmin/app/slider/slider';
           for (var i = 1; i < 5; i++) {
-            downloadImages(url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
+            downloadImages(i, url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
           }
         } else {
           $scope.images = localStorageService.getCarouselPaths();
+          console.log('images', $scope.images);
         }
       };
 
@@ -588,13 +590,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('detailPageCtrl', ['$scope', '$state', '$rootScope', '$ionicPopover', '$ionicHistory', '$sce', 'FileService', 'FirebaseService', 'appDataService', 'localStorageService', 'DatabaseService', '$ionicSideMenuDelegate', '$ionicLoading', '$ionicPopup', '$cordovaInAppBrowser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('detailPageCtrl', ['$scope', '$state', '$rootScope', '$ionicModal', '$ionicPopover', '$ionicHistory', '$sce', 'FileService', 'FirebaseService', 'appDataService', 'localStorageService', 'DatabaseService', '$ionicSideMenuDelegate', '$ionicLoading', '$ionicPopup', '$cordovaInAppBrowser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $state, $rootScope, $ionicPopover, $ionicHistory, $sce, FileService, FirebaseService, appDataService, localStorageService, DatabaseService, $ionicSideMenuDelegate, $ionicLoading, $ionicPopup, $cordovaInAppBrowser) {
+    function ($scope, $state, $rootScope, $ionicModal, $ionicPopover, $ionicHistory, $sce, FileService, FirebaseService, appDataService, localStorageService, DatabaseService, $ionicSideMenuDelegate, $ionicLoading, $ionicPopup, $cordovaInAppBrowser) {
 
-    //Side Menu
-    $ionicSideMenuDelegate.canDragContent(false);
+      //Side Menu
+      $ionicSideMenuDelegate.canDragContent(false);
 
       //History function
       $scope.$on('go-back', function () {
@@ -633,7 +635,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         appDataService.checkInternet();
 
         //Whether to a product is bookmarked
-        $scope.showBookmark = false;
+        $scope.bookmarked = false;
+
+        //Load the bookmarks
+        $scope.bookmarks = localStorageService.getBookmarkedProducts();
 
         //Get various labels
         $scope.title = appDataService.getCurrentTitle();
@@ -644,20 +649,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //Set details
         $scope.details = appDataService.getCurrentProduct();
 
-        //Once there are products bookmarked
-        if (localStorageService.getBookmarkedProducts().length > 0) {
-          $scope.showBookmark = true;
-        }
 
         //If product bookmarked
         if (!localStorageService.checkBookmarked($scope.details)) {
-          //Apply CSS
-          var famItem = angular.element(document.querySelector('#bookmark-fab'));
-          famItem.attr('button-class', 'fab-normal');
-        } else {
-          console.log('product bookmarked');
-          var famItem = angular.element(document.querySelector('#bookmark-fab'));
-          famItem.attr('button-class', "fab-assertive");
+          $scope.bookmarked = true;
         }
 
         //Whether this product has been downloaded
@@ -866,7 +861,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           title: 'Seite bookmarkiert',
           cssClass: 'bookmark-popup'
         });
-        $scope.showBookmark = true;
+        $scope.bookmarked = true;
         var famItem = angular.element(document.querySelector('#bookmark-fab'));
         famItem.attr('button-class', "fab-assertive");
       }
@@ -1048,6 +1043,43 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         });
       };
 
+      // Product Image Modal
+      $ionicModal.fromTemplateUrl('product-image.html', {
+        id: '1', // We need to use an ID to identify the modal that is firing the event!
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function (modal) {
+        $scope.modal1 = modal;
+      });
+
+      // Technical Drawing Modal
+      $ionicModal.fromTemplateUrl('technical-drawing.html', {
+        id: '2', // We need to use an ID to identify the modal that is firing the event!
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function (modal) {
+        $scope.modal2 = modal;
+      });
+
+      $scope.openModal = function (index) {
+        if (index == 1) $scope.modal1.show();
+        else $scope.modal2.show();
+      };
+
+      $scope.closeModal = function (index) {
+        if (index == 1) $scope.modal1.hide();
+        else $scope.modal2.hide();
+      };
+
+      // Listen for broadcasted messages
+
+      $scope.$on('modal.shown', function (event, modal) {
+        console.log('Modal ' + modal.id + ' is shown!');
+      });
+
+      $scope.$on('modal.hidden', function (event, modal) {
+        console.log('Modal ' + modal.id + ' is hidden!');
+      });
 
 }])
 
@@ -1055,7 +1087,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     function ($scope, $state, $rootScope, $ionicLoading, $ionicHistory, $ionicFilterBar, localStorageService, FileService, DatabaseService, appDataService, $ionicPopover) {
     //Set the titles and initialize empty array of filters
     $scope.title = appDataService.getCurrentTitle();
-
     $scope.root = appDataService.getRootTitle();
     $scope.filter_ids = [];
 
@@ -1067,7 +1098,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       $scope.$on('go-back', function () {
-        $scope.title = appDataService.getPreviousTitle();
+        $scope.title = appDataService.removeNavigatedCategory();
         var child_ids = appDataService.getPreviousChildIds();
         console.log('child_ids', child_ids);
         if (child_ids == false) {
@@ -1800,6 +1831,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
            }
            products.forEach(function (product) {
              var downloads = [];
+             var vids = [];
              //Store images and technical drawings
              FileService.originalDownload(product.image_landscape, product.nummer.concat('_landscape.png'), 'images', function (path) {
                localStorageService.setLandscapePath(product.uid, path);
@@ -1818,6 +1850,18 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                    downloadPDFFiles(product.uid, file.datei_de, product.nummer.concat(index));
                    downloadPDFFiles(product.uid, file.thumbnail, product.nummer.concat(index));
                  });
+               });
+             }
+             if (product.video_ids != '') {
+               DatabaseService.selectVideos(product.video_ids, function (results) {
+                 for (var y = 0; y < results.rows.length; y++) {
+                   vids.push(results.rows.item(y));
+                 }
+                 var images = vids.slice();
+                 var videos = vids.slice();
+
+                 downloadVideoImage(images);
+                 downloadVideo(videos);
                });
              }
            });
@@ -1856,7 +1900,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       function downloadVideos() {
       //If checked
       if ($scope.preferences[3].download_videos) {
-        $rootScope.total += ($scope.total_video_size * 1073741824000);
+        $rootScope.total += ($scope.total_video_size * 1073741824);
         $scope.preferences[4].last_updated = getDate();
         var images = $scope.videos.slice();
         var videos = $scope.videos.slice();

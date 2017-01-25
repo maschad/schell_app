@@ -10,7 +10,7 @@ angular.module('app.services', [])
     bookmarked_products: [],
     category_files: {},
     product_files: {},
-    carousel_images: [],
+    carousel_images: {},
     video_files: {},
     download_files: [],
     offlinePreferences:[
@@ -158,8 +158,9 @@ angular.module('app.services', [])
     return $localStorage.category_files[category_id].bild;
   };
 
-  var setCarouselPath = function (path) {
-    $localStorage.carousel_images.push(path);
+  var setCarouselPath = function (number, path) {
+    $localStorage.carousel_images[number] = path;
+
   };
 
   var getCarouselPaths = function () {
@@ -561,7 +562,7 @@ angular.module('app.services', [])
     };
 
     var removeNavigatedCategory = function () {
-      navigated_categories.pop();
+      return navigated_categories.pop();
     };
 
     var clearNavigatedCategories = function () {
@@ -789,7 +790,7 @@ angular.module('app.services', [])
     var populateDownloads = function(firebaseDownloadsObject) {
 
       var preparedStatements = [];
-      var BLANK_DOWNLOAD_INSERT_QUERY = 'INSERT INTO downloads VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_DOWNLOAD_INSERT_QUERY = 'INSERT INTO downloads VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseDownloadsObject) {
 
@@ -799,16 +800,17 @@ angular.module('app.services', [])
             parseInt(uid),
             firebaseDownloadsObject[uid]['thumbnail'],
             firebaseDownloadsObject[uid]['de_data']['artikelnummer'],
-            firebaseDownloadsObject[uid]['de_data']['broschuerentitel'],
+            firebaseDownloadsObject[uid]['de_data']['broschurentitel'],
             firebaseDownloadsObject[uid]['de_data']['zusatzinformation'],
             firebaseDownloadsObject[uid]['de_data']['datei'],
             firebaseDownloadsObject[uid]['produziert_bis'],
             firebaseDownloadsObject[uid]['en_data']['artikelnummer'],
-            firebaseDownloadsObject[uid]['en_data']['broschuerentitel'],
+            firebaseDownloadsObject[uid]['en_data']['broschurentitel'],
             firebaseDownloadsObject[uid]['en_data']['zusatzinformation'],
             firebaseDownloadsObject[uid]['en_data']['datei'],
             parseInt(firebaseDownloadsObject[uid]['filesize']),
-            firebaseDownloadsObject[uid]['title']
+            firebaseDownloadsObject[uid]['title'],
+            firebaseDownloadsObject[uid]['de_data']['category']
           ]
         ]);
       }
