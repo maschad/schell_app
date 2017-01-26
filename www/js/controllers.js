@@ -139,12 +139,38 @@ angular.module('app.controllers', [])
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $rootScope, $ionicLoading, $ionicHistory, $state, appDataService, FileService, DatabaseService, localStorageService, $ionicPopover) {
+      //Breadcrumb state changer
+      $scope.goState = function (index) {
+        switch (index) {
+          case 0:
+            $state.go('products');
+            break;
+
+          case 1:
+            $state.go('product_lines');
+            break;
+
+          case 2:
+            $state.go('product_lines');
+            break;
+        }
+
+      };
 
       //History function
       $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
         $ionicHistory.goBack();
       });
+
+      $scope.arrowStyle = function (index, length) {
+        var indent = 18 * index;
+        if (index == length - 1) {
+          return {'text-indent': indent + 'px', 'background-color': '#000000'};
+        } else {
+          return {'text-indent': indent + 'px'};
+        }
+      };
 
       //Loading functions
       $scope.show = function () {
@@ -193,14 +219,12 @@ angular.module('app.controllers', [])
         $scope.products = [];
 
         //Get the filtered products if any
-        console.log('current category', appDataService.getCurrentCategory());
         var toFilter = appDataService.getCurrentFilteredProducts(appDataService.getCurrentCategory());
 
         //Load the various products
         DatabaseService.selectProducts(product_ids, function (products) {
           for (var x = 0; x < products.rows.length; x++) {
             $scope.products.push(products.rows.item(x));
-            console.log('uids being pushed ', products.rows.item(x).uid);
             //To uid to save file path
             var uid = $scope.products[x].uid;
             if (!$rootScope.internet && localStorageService.productImageDownloaded(uid)) {
@@ -285,6 +309,16 @@ angular.module('app.controllers', [])
       });
 
 
+      $scope.arrowStyle = function (index, length) {
+        var indent = 18 * index;
+        if (index == length - 1) {
+          return {'text-indent': indent + 'px', 'background-color': '#000000'};
+        } else {
+          return {'text-indent': indent + 'px'};
+        }
+      };
+
+
       //Initialize as null
       $scope.categories = [];
 
@@ -303,9 +337,6 @@ angular.module('app.controllers', [])
         $ionicLoading.hide();
       };
 
-      //Clear array when at home
-      appDataService.clearNavigatedCategories();
-
 
     //Call the function to populate categories
     loadCategories();
@@ -323,6 +354,9 @@ angular.module('app.controllers', [])
       $scope.showLoad();
       //Check for internet
       appDataService.checkInternet();
+
+      //Clear categories
+      appDataService.clearNavigatedCategories();
 
       //Set the title
       appDataService.addNavigatedCategory('PRODUKTKATEGORIEN');
@@ -383,8 +417,7 @@ angular.module('app.controllers', [])
 
       function countArtikelProduct(category, allCategories) {
         if (category.child_ids == '') {
-          console.log('Category', category.title_de);
-          console.log('product ids', category.product_ids);
+
           return category.product_ids.split(',').length;
         } else {
 
@@ -493,13 +526,11 @@ angular.module('app.controllers', [])
     });
 
     function loadCategories() {
-      console.log('loading categories');
       $scope.categories = [];
 
       DatabaseService.selectVideoCategories(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
           $scope.categories.push(results.rows.item(x));
-          console.log('title', results.rows.item(x).title_de);
         }
       });
     }
@@ -636,8 +667,40 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $state, $rootScope, $ionicModal, $ionicPopover, $ionicHistory, $sce, FileService, FirebaseService, appDataService, localStorageService, DatabaseService, $ionicSideMenuDelegate, $ionicLoading, $ionicPopup, $cordovaInAppBrowser) {
 
+
+      //Breadcrumb state changer
+      $scope.goState = function (index) {
+        switch (index) {
+          case 0:
+            $state.go('products');
+            break;
+
+          case 1:
+            $state.go('product_lines');
+            break;
+
+          case 2:
+            $state.go('product_lines');
+            break;
+
+          case 3:
+            $state.go('product_overview');
+            break;
+        }
+      };
+
+
       //Side Menu
       $ionicSideMenuDelegate.canDragContent(false);
+
+      $scope.arrowStyle = function (index, length) {
+        var indent = 18 * index;
+        if (index == length - 1) {
+          return {'text-indent': indent + 'px', 'background-color': '#000000'};
+        } else {
+          return {'text-indent': indent + 'px'};
+        }
+      };
 
       //History function
       $scope.$on('go-back', function () {
@@ -704,13 +767,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //Whether this product has been downloaded
         $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
 
-        //Color the downloaded item
-        if ($scope.productDownloaded) {
-          console.log('product downloaded');
-          //Apply CSS
-          var fabItem = angular.element(document.querySelector('#downloaded-fab'));
-          fabItem.attr('button-class', "fab-assertive");
-        }
 
         if (!$rootScope.internet && $scope.productDownloaded) {
           //If no internet load these files
@@ -753,7 +809,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $scope.verbindung = [];
         $scope.notwendige = [];
 
-        console.log('loading accessories with artikel id', artikel_id);
 
         //For Each item, we change the status, and check the verknuepfung field to determine what to pull
         DatabaseService.selectAccessories(artikel_id, 0, function (results) {
@@ -788,7 +843,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             var oder = results.rows.item(k).verknuepfung == 1;
             DatabaseService.selectProductsByBArtikelId(results.rows.item(k).pos_b_artikel_id, function (products) {
               for (var c = 0; c < products.rows.length; c++) {
-                console.log('pushing in product', products.rows.item(c).nummer);
                 $scope.verbindung.push({product: products.rows.item(c), oder: oder});
               }
             });
@@ -1047,6 +1101,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     document.body.classList.add('platform-android');
   });
 
+
   $scope.sendEmail = function () {
     var link = $scope.details.permalink;
 
@@ -1135,6 +1190,26 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Whether to show the filter or not
     $scope.showFilter = false;
+
+      $scope.goState = function (index) {
+        switch (index) {
+          case 0:
+            $state.go('products');
+            break;
+
+          case 1:
+            $state.go('product_lines');
+        }
+      };
+
+      $scope.arrowStyle = function (index, length) {
+        var indent = 18 * index;
+        if (index == length - 1) {
+          return {'text-indent': indent + 'px', 'background-color': '#000000'};
+        } else {
+          return {'text-indent': indent + 'px'};
+        }
+      };
 
       //History function
       $scope.$on('go-back', function () {
@@ -1648,7 +1723,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         });
       }
 
-
       //Function to load the data on the screen
     function loadData() {
       //Initiate load
@@ -1681,7 +1755,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
         //Calculate category file sizes
         items.forEach(function (category) {
-          console.log('category being passed', category.title_de);
           sumFileSizes(category);
         });
       }, function (error) {
@@ -1735,6 +1808,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               product_ids_toDownload = product_ids_toDownload.concat(currentCat.product_ids.split(','));
               if (currentCat.download_ids != '') {
                 categoryDownloadIds = categoryDownloadIds.concat(currentCat.download_ids.split(','));
+
               }
             }
             atBottomLevel = atBottomLevel && currentCat.product_ids != '';

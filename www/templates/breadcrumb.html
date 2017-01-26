@@ -1,25 +1,28 @@
 <ion-popover-view class="fit" style="background-color: #750017; border-radius: 0px;">
   <ion-content>
     <div class="breadcrumb" ng-click="popover.hide()">
-      <div ui-sref="products" ui-sref-active="breadcrumb-active">
-        <div class="item">
-          <img src="img/icons/dropdown-arrow.png"> Produktkategorien
+      <div ng-repeat="category in navigated_categories">
+        <div ng-click="goState($index)">
+          <div class="item" ng-style="arrowStyle($index, navigated_categories.length)">
+            <img src="img/icons/dropdown-arrow.png"> {{category}}
+          </div>
         </div>
-      </div>
-      <div ng-if="root" ui-sref="product_lines" ui-sref-active="breadcrumb-active">
-        <div class="item" style="text-indent: 18px;">
-          <img src="img/icons/dropdown-arrow.png"> {{root}}
+        <!--
+        <div ng-if="navigated_categories[$index + 1]" ui-sref="product_lines" ui-sref-active="breadcrumb-active">
+          <div class="item" style="text-indent: 18px;">
+            <img src="img/icons/dropdown-arrow.png"> {{navigated_categories[$index + 1]}}
+          </div>
         </div>
-      </div>
-      <div ng-if="prev" ui-sref="product_overview" ui-sref-active="breadcrumb-active">
-        <div class="item" style="text-indent: 36px;">
-          <img src="img/icons/dropdown-arrow.png"> {{prev}}
+        <div ng-if="navigated_categories[$index + 2]" ui-sref="product_overview" ui-sref-active="breadcrumb-active">
+          <div class="item" style="text-indent: 36px;">
+            <img src="img/icons/dropdown-arrow.png"> {{navigated_categories[$index + 2]}}
+          </div>
         </div>
-      </div>
-      <div ng-if="artikel">
-        <div class="item" style="background-color: #000000; text-indent: 54px;">
-          <img src="img/icons/dropdown-arrow.png"> {{artikel}}
-        </div>
+        <div ng-if="navigated_categories[$index + 3]">
+          <div class="item" style="background-color: #000000; text-indent: 54px;">
+            <img src="img/icons/dropdown-arrow.png"> {{navigated_categories[$index + 3]}}
+          </div>
+        </div>-->
       </div>
     </div>
   </ion-content>

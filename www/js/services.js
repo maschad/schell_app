@@ -501,7 +501,7 @@ angular.module('app.services', [])
     var current_filtered_products = {};
     var current_product = {};
     var current_category = 0;
-    var navigated_categories = [];
+    $rootScope.navigated_categories = [];
     var previousProduct = [];
     var previous_title = '';
     var root_title = '';
@@ -554,23 +554,23 @@ angular.module('app.services', [])
     };
 
     var getNavigatedCategories = function () {
-      return navigated_categories;
+      return $rootScope.navigated_categories;
     };
 
     var addNavigatedCategory = function (data) {
-      navigated_categories.push(data);
+      $rootScope.navigated_categories.push(data);
     };
 
     var checkCurrentCategory = function () {
-      return navigated_categories[navigated_categories.length - 1];
+      return $rootScope.navigated_categories[$rootScope.navigated_categories.length - 1];
     };
 
     var removeNavigatedCategory = function () {
-      navigated_categories.pop();
+      $rootScope.navigated_categories.pop();
     };
 
     var clearNavigatedCategories = function () {
-      navigated_categories = [];
+      $rootScope.navigated_categories = [];
     };
 
     var getPreviousTitle = function () {
