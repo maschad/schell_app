@@ -381,9 +381,49 @@ angular.module('app.controllers', [])
       $state.go('product_lines');
     };
 
+      function countArtikelProduct(category, allCategories) {
+        if (category.child_ids == '') {
+          console.log('Category', category.title_de);
+          console.log('product ids', category.product_ids);
+          return category.product_ids.split(',').length;
+        } else {
+
+          var count = 0;
+          var childCategories = allCategories.filter(function (cat) {
+            return cat.elternelement == category.uid;
+          });
+          childCategories.forEach(function (childCategory) {
+            count += countArtikelProduct(childCategory, allCategories);
+          });
+
+          return count;
+        }
+
+      }
 
       //Function to count the total number of artikels in category below
       function countArtikels() {
+
+        var allCats = [];
+        var topCats = [];
+
+        DatabaseService.selectTopCategories(function (topCategories) {
+          for (var x = 0; x < topCategories.rows.length; x++) {
+            topCats.push(topCategories.rows.item(x));
+          }
+          DatabaseService.selectAllCategories(function (allCategories) {
+            for (var z = 0; z < allCategories.rows.length; z++) {
+              allCats.push(allCategories.rows.item(z));
+            }
+            topCats.forEach(function (topCategory) {
+              var count = countArtikelProduct(topCategory, allCats);
+              $scope.counts[topCategory.uid] = count;
+            });
+          });
+        });
+
+        /**
+
         //all Categories
         var allCategories = [];
 
@@ -438,6 +478,7 @@ angular.module('app.controllers', [])
             }
           });
         });
+         **/
       }
 
 
@@ -601,11 +642,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //History function
       $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
-        if (appDataService.getPreviousProduct()) {
-          appDataService.setCurrentProduct(appDataService.getPreviousProduct());
-          $state.reload();
-        } else {
+        var product = appDataService.getPreviousProduct();
+        if (!product) {
           $ionicHistory.goBack();
+        } else {
+          appDataService.setCurrentProduct(product);
+          $state.reload();
         }
       });
 
@@ -1179,6 +1221,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Function to count the total number of artikels in category below
     function countArtikels() {
+
       //all Categories
       var allCategories = [];
 
@@ -1565,10 +1608,54 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         return today;
       }
 
-    //Function to load the data on the screen
+      function countArtikelProduct(category, allCategories) {
+        if (category.child_ids == '') {
+          return category.product_ids.split(',').length;
+        } else {
+
+          var count = 0;
+          var childCategories = allCategories.filter(function (cat) {
+            return cat.elternelement == category.uid;
+          });
+          childCategories.forEach(function (childCategory) {
+            count += countArtikelProduct(childCategory, allCategories);
+          });
+
+          return count;
+        }
+
+      }
+
+      //Function to count the total number of artikels in category below
+      function countArtikels() {
+
+        var allCats = [];
+        var topCats = [];
+
+        DatabaseService.selectTopCategories(function (topCategories) {
+          for (var x = 0; x < topCategories.rows.length; x++) {
+            topCats.push(topCategories.rows.item(x));
+          }
+          DatabaseService.selectAllCategories(function (allCategories) {
+            for (var z = 0; z < allCategories.rows.length; z++) {
+              allCats.push(allCategories.rows.item(z));
+            }
+            topCats.forEach(function (topCategory) {
+              var count = countArtikelProduct(topCategory, allCats);
+              $scope.counts[topCategory.uid] = count;
+            });
+          });
+        });
+      }
+
+
+      //Function to load the data on the screen
     function loadData() {
       //Initiate load
       $scope.show();
+      //Count artikels
+      countArtikels();
+
       DatabaseService.selectAllVideos(function (videos) {
         var mbTotal = 0;
         for (var x = 0; x < videos.rows.length; x++) {
@@ -1609,8 +1696,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Sum FileSizes
     function sumFileSizes(category) {
-      //Total amount of artikels
-      var count = 0;
       //Product ids to download
       var product_ids_toDownload = [];
       //Actual products to download
@@ -1676,9 +1761,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           products.forEach(function (product) {
             var downloads = [];
             var videos = [];
-            //Amount of artikels
-            count += 1;
-            console.log('looping over category ', category.title_de);
 
             //Add images and technical drawings
             filesize += product.image_landscape_filesize;
@@ -1729,8 +1811,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               });
             }
           });
-          //Assign the count
-          $scope.counts[category.uid] = count;
+
         });
       });
 

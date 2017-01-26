@@ -502,7 +502,7 @@ angular.module('app.services', [])
     var current_product = {};
     var current_category = 0;
     var navigated_categories = [];
-    var previousProduct = {};
+    var previousProduct = [];
     var previous_title = '';
     var root_title = '';
     var filter_ids = '';
@@ -578,14 +578,13 @@ angular.module('app.services', [])
     };
 
     var setPreviousProduct = function (data) {
-      previousProduct = data;
+      previousProduct.push(data);
     };
 
     var getPreviousProduct = function () {
-      if (previousProduct) {
-        return previousProduct;
+      if (previousProduct.length > 0) {
+        return previousProduct.pop();
       } else {
-        console.log('object empty');
         return false;
       }
     };
@@ -696,7 +695,7 @@ angular.module('app.services', [])
 
     var populateProducts = function(firebaseProductsObject) {
       var preparedStatements = [];
-      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+      var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseProductsObject) {
         var filter_ids = firebaseProductsObject[uid]['filter_ids'] ? firebaseProductsObject[uid]['filter_ids'].join() : '' ;
@@ -747,7 +746,9 @@ angular.module('app.services', [])
             firebaseProductsObject[uid]['varianten'] ? firebaseProductsObject[uid]['varianten'] : '',
             firebaseProductsObject[uid]['designpreis'] ? firebaseProductsObject[uid]['designpreis'] : '',
             parseInt(firebaseProductsObject[uid]['b_artikel_id']),
-            firebaseProductsObject[uid]['permalink'] ? firebaseProductsObject[uid]['permalink'] : ''
+            firebaseProductsObject[uid]['permalink'] ? firebaseProductsObject[uid]['permalink'] : '',
+            firebaseProductsObject[uid]['hinweise_notes'] ? firebaseProductsObject[uid]['hinweise_notes'] : '',
+
           ]
         ]);
       }
