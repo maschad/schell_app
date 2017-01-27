@@ -1666,17 +1666,23 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Sum FileSizes
     function sumFileSizes(category) {
+      console.log('summing file sizes');
       //Array of download ids for this specific category,
       // to be calculated to avoid repetitions
       var download_ids = [];
       //Array of video_ids for this specific category
       var video_ids = [];
       //Bottom level categories
-      var bottomCategories = [];
+      var bottomLevelCategories = [];
+      //Initialize array to store all categories
+      var allCategories = [];
+      //Initialize empty array of product ids
+      var product_ids = [];
+
 
       //Retrieve all of the bottom level categories
       function helper(category, allCategories) {
-        if (category.child_ids == '') {
+        if (category.product_ids != '') {
           return [category];
         } else {
 
@@ -1693,10 +1699,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
       }
 
-      var allCats = [];
       DatabaseService.selectAllCategories(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
-          allCategories.push(results.item(x));
+          allCategories.push(results.rows.item(x));
         }
 
         bottomLevelCategories = helper(category, allCategories);
@@ -1713,7 +1718,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         });
 
         // Go through all the products and get their downloads, videos and filesizes
-        var filesisze = 0;
+        var filesize = 0;
         DatabaseService.selectProducts(product_ids, function(results) {
           for (var x = 0; x < results.rows.length; x++) {
             filesize += results.rows.item(x).technical_drawing_filesize;
@@ -1731,137 +1736,23 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             for (var x = 0; x < results.rows.length; x++) {
               filesize += results.rows.item(x).filesize;
             }
-            DatabaseService.selectVideos(video_ids, function(results) {
-              for (var x = 0; x < results.rows.length; x++) {
-                filesize += results.rows.item(x).filesize;
-              }
+            if (video_ids.length > 0) {
+              DatabaseService.selectVideos(video_ids, function (results) {
+                for (var x = 0; x < results.rows.length; x++) {
+                  filesize += results.rows.item(x).filesize;
+                }
+                $scope.fileSizes[category.uid] = filesize;
+                $scope.hide();
+              });
+            } else {
               $scope.fileSizes[category.uid] = filesize;
               $scope.hide();
-            });
+            }
           });
         });
 
       });
     }
-
-      /**
-      //Product ids to download
-      var product_ids_toDownload = [];
-      //Actual products to download
-      var products = [];
-      //All categories
-      var allCategories = [];
-      //Sum the file sizes
-      var filesize = 0;
-      //Download ids for category
-      var categoryDownloadIds = [];
-      //First current category
-      DatabaseService.selectAllCategories(function (results) {
-        for (var x = 0; x < results.rows.length; x++) {
-          allCategories.push(results.rows.item(x));
-        }
-        //to See if we are at the bottom level
-        var atBottomLevel = false;
-        //SubCategories
-        var currentCategories = [category];
-        while (!atBottomLevel) {
-          var tempCurrentCategories = currentCategories.slice();
-          currentCategories = [];
-          // 2. get all the subcategories of [{category..}]
-          tempCurrentCategories.forEach(function (temp) {
-            allCategories.forEach(function (cat) {
-              if (cat.elternelement == temp.uid) {
-                currentCategories.push(cat);
-              }
-            });
-          });
-          atBottomLevel = true;
-          // 3. if the first subcategory has product_ids
-          currentCategories.forEach(function (currentCat) {
-            //Some categories may have two levels of sub categories
-            // and so we also have to traverse that branch
-            if (currentCat.product_ids != '') {
-              product_ids_toDownload = product_ids_toDownload.concat(currentCat.product_ids.split(','));
-              if (currentCat.download_ids != '') {
-                categoryDownloadIds = categoryDownloadIds.concat(currentCat.download_ids.split(','));
-
-              }
-            }
-            atBottomLevel = atBottomLevel && currentCat.product_ids != '';
-          });
-          //Filter out sub categories with product ids
-          // and traverse next branch
-          currentCategories.filter(function (currentCat) {
-            return currentCat.product_ids != '';
-          });
-        }
-        //Categories with respective product_ids
-        currentCategories.forEach(function (categoryWithProductIds) {
-          product_ids_toDownload = product_ids_toDownload.concat(categoryWithProductIds.product_ids.split(','));
-          if (categoryWithProductIds.download_ids != '') {
-            categoryDownloadIds = categoryDownloadIds.concat(categoryWithProductIds.download_ids.split(','));
-          }
-        });
-        //Get the products with the info to download
-        DatabaseService.selectProducts(product_ids_toDownload, function (results) {
-          for (var x = 0; x < results.rows.length; x++) {
-            products.push(results.rows.item(x));
-          }
-          products.forEach(function (product) {
-
-            //Add images and technical drawings
-            filesize += product.image_landscape_filesize;
-            filesize += product.image_portrait_filesize;
-            filesize += product.technical_drawing_filesize;
-
-            //Get associated downloads
-            if (product.download_ids != '') {
-
-               DatabaseService.selectDownloads(product.download_ids, function (results) {
-                for (var x = 0; x < results.rows.length; x++) {
-                  downloads.push(results.rows.item(x));
-                }
-
-                downloads.forEach(function (file) {
-                  filesize += file.filesize;
-                });
-              download_ids = download_ids.concat(product.download_ids.split(','));
-            }
-            //If product has videos
-            if (product.video_ids != '') {
-
-                  DatabaseService.selectVideos(product.video_ids, function (results) {
-                    for (var x = 0; x < results.rows.length; x++) {
-                      videos.push(results.rows.item(x));
-                    }
-
-                    videos.forEach(function (file) {
-                      filesize += file.filesize;
-                    });
-
-                    DatabaseService.selectDownloads(categoryDownloadIds, function (results) {
-                      for (var x = 0; x < results.rows.length; x++) {
-                        filesize += results.rows.item(x).filesize;
-                      }
-              video_ids = video_ids.concat(product.video_ids.split(','));
-
-            } else {
-                DatabaseService.selectDownloads(categoryDownloadIds, function (results) {
-                  for (var x = 0; x < results.rows.length; x++) {
-                    filesize += results.rows.item(x).filesize;
-                  }
-                  //Push in the file size
-                  $scope.fileSizes[category.uid] = filesize;
-                  $scope.hide();
-                });
-            }
-
-          });
-
-        });
-      });
-            **/
-
 
 
       function downloadPDFFiles(uid, url, filename) {
