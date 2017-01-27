@@ -1039,10 +1039,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
   $scope.sendEmail = function () {
     var link = $scope.details.permalink;
 
-    var bodyText = "This article was recommended to you: \n" +
-      "Order number: " + $scope.details.nummer
-      + "\n Headline " + $scope.details.produktbezeichnung_de +
-      "\n\n Link to this product: \n" + link;
+    var bodyText = "Dieser Artikel wurde Ihnen empfohlen: \n" +
+      "Bestellnummer: " + $scope.details.nummer.toString().split(' ', 4)
+      + "\n" + $scope.details.produktbezeichnung_de +
+      "\n\n Link zum Produkt: \n" + link +
+      "\nKennen Sie schon die SCHELL App?" +
+      "\nAlle Produkte auf Ihrem Smartphone oder Tablet jetzt im App Store verfügbar.";
 
 
 
@@ -1050,7 +1052,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       window.plugins.emailComposer.showEmailComposerWithCallback(function(result) {
           console.log("Response -> " + result);
         },
-        "SHELL Article " + $scope.details.nummer, // Subject
+        "SCHELL Artikel " + $scope.details.nummer.toString().split(' ', 4), // Subject
         bodyText,                      // Body
         [" "],    // To
         null,                    // CC
