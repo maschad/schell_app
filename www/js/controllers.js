@@ -14,7 +14,7 @@ angular.module('app.controllers', [])
       //Loading functions
       $scope.showLoad = function () {
         $ionicLoading.show({
-          template: '<p>Aktualisierung lokaler Daten...</p><ion-spinner></ion-spinner>',
+          template: '<p>Suche nach Updates...</p><ion-spinner></ion-spinner>',
           animation: 'fade-in',
           showBackdrop: true
         });
