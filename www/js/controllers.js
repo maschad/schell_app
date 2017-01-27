@@ -118,7 +118,9 @@ angular.module('app.controllers', [])
         } else {
           //#TODO: Handle DB offline
           $scope.images = localStorageService.getCarouselPaths();
-          console.log('images', $scope.images);
+          for (var image in $scope.images) {
+            console.log('image', image);
+          }
         }
       }
 
@@ -167,7 +169,9 @@ angular.module('app.controllers', [])
           }
         } else {
           $scope.images = localStorageService.getCarouselPaths();
-          console.log('images', $scope.images);
+          for (var image in $scope.images) {
+            console.log('image', image);
+          }
         }
       };
 
