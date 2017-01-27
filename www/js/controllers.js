@@ -891,8 +891,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           cssClass: 'bookmark-popup'
         });
         $scope.bookmarked = true;
-        var famItem = angular.element(document.querySelector('#bookmark-fab'));
-        famItem.attr('button-class', "fab-assertive");
       }
     };
 
@@ -978,9 +976,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             cssClass: 'download-popup',
             okText: 'Offline verfügbar machen'
           }).then(function () {
-            //Apply CSS
-            var fabItem = angular.element(document.querySelector('#downloaded-fab'));
-            fabItem.attr('button-class', "fab-assertive");
             //Whether this product has been downloaded
             $scope.productDownloaded = true;
 
