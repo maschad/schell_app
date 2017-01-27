@@ -22,11 +22,9 @@
                 {{counts[category.item.uid]}} Produkte Verfügbar
               </div>
             </div>
-            <div class="col">
               <div style="text-align: right;">
-                {{fileSizes[category.item.uid] / (1073741824) | number:2}} GBs
+                {{fileSizes[category.item.uid] / (1048576) | number: 0}} MBs
               </div>
-            </div>
           </div>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>

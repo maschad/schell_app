@@ -731,7 +731,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           }
           if (!$rootScope.internet && $scope.productDownloaded) {
             $scope.awards[x].logo = localStorageService.getAwardPath($scope.details.uid, x);
-            ;
+
           }
         });
       }
@@ -1666,126 +1666,92 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Sum FileSizes
     function sumFileSizes(category) {
-      //Product ids to download
-      var product_ids_toDownload = [];
-      //Actual products to download
-      var products = [];
-      //All categories
+      console.log('summing file sizes');
+      //Array of download ids for this specific category,
+      // to be calculated to avoid repetitions
+      var download_ids = [];
+      //Array of video_ids for this specific category
+      var video_ids = [];
+      //Bottom level categories
+      var bottomLevelCategories = [];
+      //Initialize array to store all categories
       var allCategories = [];
-      //Sum the file sizes
-      var filesize = 0;
-      //Download ids for category
-      var categoryDownloadIds = [];
-      //First current category
+      //Initialize empty array of product ids
+      var product_ids = [];
+
+
+      //Retrieve all of the bottom level categories
+      function helper(category, allCategories) {
+        if (category.product_ids != '') {
+          return [category];
+        } else {
+
+          var categories = [];
+
+          var childCategories = allCategories.filter(function (cat) {
+            return cat.elternelement == category.uid;
+          });
+          childCategories.forEach(function (childCategory) {
+            categories = categories.concat(helper(childCategory, allCategories));
+          });
+
+          return categories;
+        }
+      }
+
       DatabaseService.selectAllCategories(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
           allCategories.push(results.rows.item(x));
         }
-        //to See if we are at the bottom level
-        var atBottomLevel = false;
-        //SubCategories
-        var currentCategories = [category];
-        while (!atBottomLevel) {
-          var tempCurrentCategories = currentCategories.slice();
-          currentCategories = [];
-          // 2. get all the subcategories of [{category..}]
-          tempCurrentCategories.forEach(function (temp) {
-            allCategories.forEach(function (cat) {
-              if (cat.elternelement == temp.uid) {
-                currentCategories.push(cat);
-              }
-            });
-          });
-          atBottomLevel = true;
-          // 3. if the first subcategory has product_ids
-          currentCategories.forEach(function (currentCat) {
-            //Some categories may have two levels of sub categories
-            // and so we also have to traverse that branch
-            if (currentCat.product_ids != '') {
-              product_ids_toDownload = product_ids_toDownload.concat(currentCat.product_ids.split(','));
-              if (currentCat.download_ids != '') {
-                categoryDownloadIds = categoryDownloadIds.concat(currentCat.download_ids.split(','));
 
-              }
-            }
-            atBottomLevel = atBottomLevel && currentCat.product_ids != '';
-          });
-          //Filter out sub categories with product ids
-          // and traverse next branch
-          currentCategories.filter(function (currentCat) {
-            return currentCat.product_ids != '';
-          });
-        }
-        //Categories with respective product_ids
-        currentCategories.forEach(function (categoryWithProductIds) {
-          product_ids_toDownload = product_ids_toDownload.concat(categoryWithProductIds.product_ids.split(','));
-          if (categoryWithProductIds.download_ids != '') {
-            categoryDownloadIds = categoryDownloadIds.concat(categoryWithProductIds.download_ids.split(','));
+        bottomLevelCategories = helper(category, allCategories);
+        console.log('bottom level categories of ' + category.title_de + ' are :' );
+
+        bottomLevelCategories.forEach(function(bottomLevelCategory) {
+          console.log(bottomLevelCategory.title_de);
+          if (bottomLevelCategory.download_ids !== '') {
+            //We get all of the category downloads...
+            download_ids = download_ids.concat(bottomLevelCategory.download_ids.split(','));
           }
-
+          //Get all the products...
+          product_ids = product_ids.concat(bottomLevelCategory.product_ids.split(','));
         });
-        //Get the products with the info to download
-        DatabaseService.selectProducts(product_ids_toDownload, function (results) {
+
+        // Go through all the products and get their downloads, videos and filesizes
+        var filesize = 0;
+        DatabaseService.selectProducts(product_ids, function(results) {
           for (var x = 0; x < results.rows.length; x++) {
-            products.push(results.rows.item(x));
+            filesize += results.rows.item(x).technical_drawing_filesize;
+            filesize += results.rows.item(x).image_landscape_filesize;
+            filesize += results.rows.item(x).image_portrait_filesize;
+            if (results.rows.item(x).video_ids !== '') {
+              video_ids = video_ids.concat(results.rows.item(x).video_ids.split(','));
+            }
+            if (results.rows.item(x).download_ids !== '') {
+              download_ids = download_ids.concat(results.rows.item(x).download_ids.split(','));
+            }
           }
-          products.forEach(function (product) {
-            var downloads = [];
-            var videos = [];
-
-            //Add images and technical drawings
-            filesize += product.image_landscape_filesize;
-            filesize += product.image_portrait_filesize;
-            filesize += product.technical_drawing_filesize;
-
-            //Get associated downloads
-            if (product.download_ids != '') {
-              DatabaseService.selectDownloads(product.download_ids, function (results) {
+          // Now we have all downloads and videos, we can download them and sum filesizes.
+          DatabaseService.selectDownloads(download_ids, function(results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              filesize += results.rows.item(x).filesize;
+            }
+            if (video_ids.length > 0) {
+              DatabaseService.selectVideos(video_ids, function (results) {
                 for (var x = 0; x < results.rows.length; x++) {
-                  downloads.push(results.rows.item(x));
+                  filesize += results.rows.item(x).filesize;
                 }
-
-                downloads.forEach(function (file) {
-                  filesize += file.filesize;
-                });
-
-                //If product has videos
-                if (product.video_ids != '') {
-                  DatabaseService.selectVideos(product.video_ids, function (results) {
-                    for (var x = 0; x < results.rows.length; x++) {
-                      videos.push(results.rows.item(x));
-                    }
-
-                    videos.forEach(function (file) {
-                      filesize += file.filesize;
-                    });
-
-                    DatabaseService.selectDownloads(categoryDownloadIds, function (results) {
-                      for (var x = 0; x < results.rows.length; x++) {
-                        filesize += results.rows.item(x).filesize;
-                      }
-                      //Push in the file size
-                      $scope.fileSizes[category.uid] = filesize;
-                      $scope.hide();
-                    });
-                  });
-                } else {
-                  DatabaseService.selectDownloads(categoryDownloadIds, function (results) {
-                    for (var x = 0; x < results.rows.length; x++) {
-                      filesize += results.rows.item(x).filesize;
-                    }
-                    //Push in the file size
-                    $scope.fileSizes[category.uid] = filesize;
-                    $scope.hide();
-                  });
-                }
+                $scope.fileSizes[category.uid] = filesize;
+                $scope.hide();
               });
+            } else {
+              $scope.fileSizes[category.uid] = filesize;
+              $scope.hide();
             }
           });
-
         });
-      });
 
+      });
     }
 
 
