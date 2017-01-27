@@ -1693,13 +1693,55 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
       }
 
+      var allCats = [];
       DatabaseService.selectAllCategories(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
-
+          allCategories.push(results.item(x));
         }
-      })
 
+        bottomLevelCategories = helper(category, allCategories);
+        console.log('bottom level categories of ' + category.title_de + ' are :' );
 
+        bottomLevelCategories.forEach(function(bottomLevelCategory) {
+          console.log(bottomLevelCategory.title_de);
+          if (bottomLevelCategory.download_ids !== '') {
+            //We get all of the category downloads...
+            download_ids = download_ids.concat(bottomLevelCategory.download_ids.split(','));
+          }
+          //Get all the products...
+          product_ids = product_ids.concat(bottomLevelCategory.product_ids.split(','));
+        });
+
+        // Go through all the products and get their downloads, videos and filesizes
+        var filesisze = 0;
+        DatabaseService.selectProducts(product_ids, function(results) {
+          for (var x = 0; x < results.rows.length; x++) {
+            filesize += results.rows.item(x).technical_drawing_filesize;
+            filesize += results.rows.item(x).image_landscape_filesize;
+            filesize += results.rows.item(x).image_portrait_filesize;
+            if (results.rows.item(x).video_ids !== '') {
+              video_ids = video_ids.concat(results.rows.item(x).video_ids.split(','));
+            }
+            if (results.rows.item(x).download_ids !== '') {
+              download_ids = download_ids.concat(results.rows.item(x).download_ids.split(','));
+            }
+          }
+          // Now we have all downloads and videos, we can download them and sum filesizes.
+          DatabaseService.selectDownloads(download_ids, function(results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              filesize += results.rows.item(x).filesize;
+            }
+            DatabaseService.selectVideos(video_ids, function(results) {
+              for (var x = 0; x < results.rows.length; x++) {
+                filesize += results.rows.item(x).filesize;
+              }
+              $scope.fileSizes[category.uid] = filesize;
+              $scope.hide();
+            });
+          });
+        });
+
+      });
     }
 
       /**
