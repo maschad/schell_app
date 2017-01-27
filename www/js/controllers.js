@@ -168,6 +168,12 @@ angular.module('app.controllers', [])
             downloadImages(i, url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
           }
         } else {
+          $ionicPopup.alert({
+            title: 'Internet getrennt',
+            template: 'Einstellungen werden deaktiviert,' +
+            ' und alle Materialien, ' +
+            'die nicht heruntergeladen wurden'
+          });
           $scope.images = localStorageService.getCarouselPaths();
           for (var image in $scope.images) {
             console.log('image', image);
@@ -331,10 +337,6 @@ angular.module('app.controllers', [])
       $state.go('detailPage');
     };
 
-      //For refreshing the page
-      $scope.refreshItems = function () {
-        getProducts(appDataService.getCurrentCategoryIds());
-      };
 
   }])
 
@@ -437,11 +439,6 @@ angular.module('app.controllers', [])
       document.body.classList.remove('platform-ios');
       document.body.classList.add('platform-android');
     });
-
-      //Refresh the items
-      $scope.refreshItems = function () {
-        loadCategories();
-      };
 
 
     //The category chosen by the user
@@ -670,11 +667,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Array of Bookmarked Products
       $scope.bookmarked = [];
 
-      //Refresh page
-      $scope.refreshItems = function () {
-        loadProduct();
-        $state.reload();
-      };
 
 
       //Load the product information
