@@ -13,27 +13,39 @@
         <hr class="settings-hr">
         <ion-checkbox class="checkbox-settings item-checkbox-right"
                       ng-repeat="category in preferences[2].downloaded_categories" ng-model="category.checked">
-          <div class="wrap">
-            <strong>{{category.item.title_de}}</strong>
-          </div>
-          <div class="wrap">
-            {{counts[category.item.uid]}} Produkte Verfügbar
-          </div>
-          <div style="text-align: right;">
-            {{fileSizes[category.item.uid] / (1073741824) | number:2}} GBs
+          <div class="row">
+            <div class="col col-75">
+              <div class="wrap">
+                <strong>{{category.item.title_de}}</strong>
+              </div>
+              <div class="wrap">
+                {{counts[category.item.uid]}} Produkte Verfügbar
+              </div>
+            </div>
+            <div class="col">
+              <div style="text-align: right;">
+                {{fileSizes[category.item.uid] / (1073741824) | number:2}} GBs
+              </div>
+            </div>
           </div>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
         <hr class="settings-hr">
         <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="preferences[3].download_videos">
-          <div class="wrap">
-            <strong>Videos</strong>
-          </div>
-          <div class="wrap">
-            {{videos.length}} Videos Verfügbar
-          </div>
-          <div style="text-align: right;">
-            {{total_video_size | number: 2}} GBs
+          <div class="row">
+            <div class="col col-75">
+              <div class="wrap">
+                <strong>Videos</strong>
+              </div>
+              <div class="wrap">
+                {{videos.length}} Videos Verfügbar
+              </div>
+            </div>
+            <div class="col">
+              <div style="text-align: right;">
+                {{total_video_size | number: 2}} GBs
+              </div>
+            </div>
           </div>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider3">SETTINGS</ion-item>

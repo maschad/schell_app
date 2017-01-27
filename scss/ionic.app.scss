@@ -583,6 +583,7 @@ img {
   top: -11px;
   margin-left: 16px;
   font-size: 16px;
+  color: #fff;
 }
 #product-overview-body .product-tile {
   /* height: 26vw; */
@@ -980,6 +981,10 @@ h1.slogan {
   border-width: 0px;
 }
 
+.item p {
+  color: #444;
+}
+
 .item-icon-left .icon:before, .item-icon-right .icon:before {
   font-size: 10px;
 }
@@ -1067,7 +1072,7 @@ h1.slogan {
   background-color: #ffffff;
   width: 100%;
   height: auto;
-  padding: 20px;
+  padding: 10px;
 }
 .item-divider {
   background-color: transparent;
@@ -1135,6 +1140,9 @@ h1.slogan {
 }
 
 //
+#offline label.checkbox-settings {
+  padding-left: 0;
+}
 .checkbox-settings input:after, .checkbox-icon:after {
   height: 6px;
   width: 12px;
@@ -1146,9 +1154,13 @@ h1.slogan {
   background: #ffffff;
   border-color: #ffffff;
 }
+#offline .item-checkbox .checkbox {
+  top: 40%;
+}
 #offline .item,
 .item-checkbox.item-checkbox-right {
   padding-left: 6px;
+  padding-right: 36px;
 }
 .checkbox-settings input, .checkbox-icon {
   width: 22px;
@@ -1253,6 +1265,10 @@ ion-popover-view.fit ion-content {
   font-size: 24px !important;
   line-height: 58px;
 }
+#floating-menu .icon.menu-icon.ion-ios-search-strong {
+  font-size: 32px !important;
+  line-height: 70px;
+}
 
 .no-results {
   color: gray;
@@ -1283,7 +1299,9 @@ ion-popover-view.fit ion-content {
   margin-top: 10px;
   margin-bottom: 60px;
 }
-
+.design-awards img {
+  max-height: 90px;
+}
 
 
 /* Swiper Slider */
@@ -1478,7 +1496,6 @@ ion-floating-item[button-class="fab-assertive"] li {
 .modal .bar.bar-header {
   background: none;
 }
-
 .modal img {
   max-width: 100%;
   max-height: 100%;
@@ -1489,5 +1506,4 @@ ion-floating-item[button-class="fab-assertive"] li {
   border: 1px solid #9e0a22;
   padding: 5px;
   margin: 15px 0;
-
 }
