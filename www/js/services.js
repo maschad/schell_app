@@ -12,6 +12,7 @@ angular.module('app.services', [])
     category_files: {},
     product_files: {},
     carousel_images: {},
+    awards: {},
     video_files: {},
     download_files: [],
     offlinePreferences:[
@@ -139,6 +140,24 @@ angular.module('app.services', [])
     console.log('length of thumbnail array', $localStorage.product_files[product_id].thumbnail.length);
   };
 
+  var setAwardPath = function (product_id, path) {
+    if ($localStorage.awards.hasOwnProperty(product_id.toString())) {
+      if ($localStorage.awards[product_id].hasOwnProperty('logo')) {
+        $localStorage.awards[product_id].logo.push(path);
+      } else {
+        $localStorage.awards[product_id] = Object.assign({}, $localStorage.awards[product_id], {'logo': []});
+        $localStorage.awards[product_id].logo.push(path);
+      }
+    } else {
+      $localStorage.awards[product_id] = Object.assign({}, $localStorage.awards[product_id], {'logo': []});
+      $localStorage.awards[product_id].logo.push(path);
+    }
+  };
+
+  var getAwardPath = function (product_id, index) {
+    return $localStorage.awards[product_id].logo[index];
+  };
+
   var getThumbnailPath = function (product_id, index) {
     return $localStorage.product_files[product_id].thumbnail[index];
   };
@@ -233,6 +252,8 @@ angular.module('app.services', [])
     getOfflinePreferences : getOfflinePreferences,
     updatePreferences : updatePreferences,
     getLandscapePath: getLandscapePath,
+    setAwardPath: setAwardPath,
+    getAwardPath: getAwardPath,
     setLandscapePath: setLandscapePath,
     getAllVideoPaths : getAllVideoPaths,
     checkBookmarked: checkBookmarked,
