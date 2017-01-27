@@ -1253,6 +1253,10 @@ ion-popover-view.fit ion-content {
   font-size: 24px !important;
   line-height: 58px;
 }
+#floating-menu .icon.menu-icon.ion-ios-search-strong {
+  font-size: 32px !important;
+  line-height: 70px;
+}
 
 .no-results {
   color: gray;
@@ -1283,7 +1287,9 @@ ion-popover-view.fit ion-content {
   margin-top: 10px;
   margin-bottom: 60px;
 }
-
+.design-awards img {
+  max-height: 90px;
+}
 
 
 /* Swiper Slider */
@@ -1478,7 +1484,6 @@ ion-floating-item[button-class="fab-assertive"] li {
 .modal .bar.bar-header {
   background: none;
 }
-
 .modal img {
   max-width: 100%;
   max-height: 100%;
@@ -1489,5 +1494,4 @@ ion-floating-item[button-class="fab-assertive"] li {
   border: 1px solid #9e0a22;
   padding: 5px;
   margin: 15px 0;
-
 }
