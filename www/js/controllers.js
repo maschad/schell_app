@@ -2088,10 +2088,14 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Initalize products
     $scope.products = [];
 
+    //Whether filter has been activated.
+    $scope.showFilter = false;
+
 
     //The filter/search bar using ionic filter bar plugin
     $scope.showFilterBar = function () {
       var products = [];
+      $scope.showFilter = true;
       DatabaseService.selectAllProducts(function (results) {
         for (var x = 0; x < results.rows.length; x++) {
           products.push(results.rows.item(x));
