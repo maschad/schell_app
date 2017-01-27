@@ -337,10 +337,6 @@ angular.module('app.controllers', [])
       $state.go('detailPage');
     };
 
-      //For refreshing the page
-      $scope.refreshItems = function () {
-        getProducts(appDataService.getCurrentCategoryIds());
-      };
 
   }])
 
@@ -443,11 +439,6 @@ angular.module('app.controllers', [])
       document.body.classList.remove('platform-ios');
       document.body.classList.add('platform-android');
     });
-
-      //Refresh the items
-      $scope.refreshItems = function () {
-        loadCategories();
-      };
 
 
     //The category chosen by the user
@@ -676,11 +667,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Array of Bookmarked Products
       $scope.bookmarked = [];
 
-      //Refresh page
-      $scope.refreshItems = function () {
-        loadProduct();
-        $state.reload();
-      };
 
 
       //Load the product information
