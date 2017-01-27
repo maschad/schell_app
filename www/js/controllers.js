@@ -731,7 +731,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           }
           if (!$rootScope.internet && $scope.productDownloaded) {
             $scope.awards[x].logo = localStorageService.getAwardPath($scope.details.uid, x);
-            ;
+
           }
         });
       }
@@ -1666,6 +1666,43 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Sum FileSizes
     function sumFileSizes(category) {
+      //Array of download ids for this specific category,
+      // to be calculated to avoid repetitions
+      var download_ids = [];
+      //Array of video_ids for this specific category
+      var video_ids = [];
+      //Bottom level categories
+      var bottomCategories = [];
+
+      //Retrieve all of the bottom level categories
+      function helper(category, allCategories) {
+        if (category.child_ids == '') {
+          return [category];
+        } else {
+
+          var categories = [];
+
+          var childCategories = allCategories.filter(function (cat) {
+            return cat.elternelement == category.uid;
+          });
+          childCategories.forEach(function (childCategory) {
+            categories = categories.concat(helper(childCategory, allCategories));
+          });
+
+          return categories;
+        }
+      }
+
+      DatabaseService.selectAllCategories(function (results) {
+        for (var x = 0; x < results.rows.length; x++) {
+
+        }
+      })
+
+
+    }
+
+      /**
       //Product ids to download
       var product_ids_toDownload = [];
       //Actual products to download
@@ -1722,7 +1759,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           if (categoryWithProductIds.download_ids != '') {
             categoryDownloadIds = categoryDownloadIds.concat(categoryWithProductIds.download_ids.split(','));
           }
-
         });
         //Get the products with the info to download
         DatabaseService.selectProducts(product_ids_toDownload, function (results) {
@@ -1730,8 +1766,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             products.push(results.rows.item(x));
           }
           products.forEach(function (product) {
-            var downloads = [];
-            var videos = [];
 
             //Add images and technical drawings
             filesize += product.image_landscape_filesize;
@@ -1740,7 +1774,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
             //Get associated downloads
             if (product.download_ids != '') {
-              DatabaseService.selectDownloads(product.download_ids, function (results) {
+
+               DatabaseService.selectDownloads(product.download_ids, function (results) {
                 for (var x = 0; x < results.rows.length; x++) {
                   downloads.push(results.rows.item(x));
                 }
@@ -1748,9 +1783,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                 downloads.forEach(function (file) {
                   filesize += file.filesize;
                 });
+              download_ids = download_ids.concat(product.download_ids.split(','));
+            }
+            //If product has videos
+            if (product.video_ids != '') {
 
-                //If product has videos
-                if (product.video_ids != '') {
                   DatabaseService.selectVideos(product.video_ids, function (results) {
                     for (var x = 0; x < results.rows.length; x++) {
                       videos.push(results.rows.item(x));
@@ -1764,29 +1801,25 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                       for (var x = 0; x < results.rows.length; x++) {
                         filesize += results.rows.item(x).filesize;
                       }
-                      //Push in the file size
-                      $scope.fileSizes[category.uid] = filesize;
-                      $scope.hide();
-                    });
-                  });
-                } else {
-                  DatabaseService.selectDownloads(categoryDownloadIds, function (results) {
-                    for (var x = 0; x < results.rows.length; x++) {
-                      filesize += results.rows.item(x).filesize;
-                    }
-                    //Push in the file size
-                    $scope.fileSizes[category.uid] = filesize;
-                    $scope.hide();
-                  });
-                }
-              });
+              video_ids = video_ids.concat(product.video_ids.split(','));
+
+            } else {
+                DatabaseService.selectDownloads(categoryDownloadIds, function (results) {
+                  for (var x = 0; x < results.rows.length; x++) {
+                    filesize += results.rows.item(x).filesize;
+                  }
+                  //Push in the file size
+                  $scope.fileSizes[category.uid] = filesize;
+                  $scope.hide();
+                });
             }
+
           });
 
         });
       });
+            **/
 
-    }
 
 
       function downloadPDFFiles(uid, url, filename) {
