@@ -7,6 +7,7 @@ angular.module('app.services', [])
   //Local storage using ngStorage, for trivial persistence
   $localStorage = $localStorage.$default({
     country: '',
+    productCounts: {}, // Store product counts by category
     bookmarked_products: [],
     category_files: {},
     product_files: {},
@@ -215,7 +216,13 @@ angular.module('app.services', [])
     return $localStorage.filters;
   };
 
+  var setProductCount = function(uid, count) {
+    $localStorage.productCounts[uid] = count;
+  };
 
+  var getProductCounts = function() {
+    return $localStorage.productCounts;
+  };
 
   return {
     getCountry : getCountry,
@@ -250,7 +257,9 @@ angular.module('app.services', [])
     setCarouselPath: setCarouselPath,
     getCarouselPaths: getCarouselPaths,
     setPortraitPath: setPortraitPath,
-    getPortraitPath: getPortraitPath
+    getPortraitPath: getPortraitPath,
+    setProductCount: setProductCount,
+    getProductCounts: getProductCounts
   };
 
 
