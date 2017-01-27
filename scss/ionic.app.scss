@@ -583,6 +583,7 @@ img {
   top: -11px;
   margin-left: 16px;
   font-size: 16px;
+  color: #fff;
 }
 #product-overview-body .product-tile {
   /* height: 26vw; */
@@ -1071,7 +1072,7 @@ h1.slogan {
   background-color: #ffffff;
   width: 100%;
   height: auto;
-  padding: 20px;
+  padding: 10px;
 }
 .item-divider {
   background-color: transparent;
@@ -1139,6 +1140,9 @@ h1.slogan {
 }
 
 //
+#offline label.checkbox-settings {
+  padding-left: 0;
+}
 .checkbox-settings input:after, .checkbox-icon:after {
   height: 6px;
   width: 12px;
@@ -1150,9 +1154,13 @@ h1.slogan {
   background: #ffffff;
   border-color: #ffffff;
 }
+#offline .item-checkbox .checkbox {
+  top: 40%;
+}
 #offline .item,
 .item-checkbox.item-checkbox-right {
   padding-left: 6px;
+  padding-right: 36px;
 }
 .checkbox-settings input, .checkbox-icon {
   width: 22px;
