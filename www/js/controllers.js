@@ -168,6 +168,12 @@ angular.module('app.controllers', [])
             downloadImages(i, url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
           }
         } else {
+          $ionicPopup.alert({
+            title: 'Internet getrennt',
+            template: 'Einstellungen werden deaktiviert,' +
+            ' und alle Materialien, ' +
+            'die nicht heruntergeladen wurden'
+          });
           $scope.images = localStorageService.getCarouselPaths();
           for (var image in $scope.images) {
             console.log('image', image);
