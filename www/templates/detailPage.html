@@ -127,18 +127,18 @@
               <div ng-if="list.title == 'DETAILS'">
                 <ul>
                   <li><strong>Werkstoff:</strong>
-                    <div ng-bind-html="details.werkstoff_de" class="wrap"></div>
+                    <span ng-bind-html="details.werkstoff_de" class="wrap"></span>
                   </li>
                   <li><strong>Prüfzeichen:</strong>
-                    <p ng-bind-html="details.pruefzeichen_de" class="wrap"></p></li>
+                    <span ng-bind-html="details.pruefzeichen_de" class="wrap"></span></li>
                   <li><strong>Geräuschklasse:</strong>
-                    <p ng-bind-html="details.geraeuschklasse_de" class="wrap"></p></li>
+                    <span ng-bind-html="details.geraeuschklasse_de" class="wrap"></span></li>
                   <li><strong>Oberfläche:</strong>
-                    <p ng-bind-html="details.oberflaeche_de" class="wrap"></p></li>
+                    <span ng-bind-html="details.oberflaeche_de" class="wrap"></span></li>
                   <li><strong>Gewicht:</strong>
-                    <p ng-bind-html="details.gewicht" class="wrap"></p></li>
+                    <span ng-bind-html="details.gewicht" class="wrap"></span></li>
                   <li><strong>Verpackungseinheit:</strong>
-                    <p ng-bind-html="details.verpackungseinheit" class="wrap"></p></li>
+                    <span ng-bind-html="details.verpackungseinheit" class="wrap"></span></li>
                 </ul>
               </div>
               <div ng-if="list.title == 'DOWNLOADS'">
@@ -147,6 +147,8 @@
                     <div class="col col-20">
                       <img ng-src="{{file.thumbnail}}" style="border: 1px solid #000; width: 70px; height: 100px;"
                            ng-click="downloadPDF(file,$index)"><!-- #TODO: put in download button -->
+                    </div>
+                    <div class="col">
                       <div class="wrap">
                         {{file.category}},
                         {{file.broschurentitel_de}}
@@ -162,68 +164,60 @@
                       <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(product.uid)"
                                                                    style="color: darkred;">{{product.nummer}}</a></strong>
                       </p>
-                      <div class="wrap" ng-bind-html="product.werkstoff_de">,</div>
-                      <p class="wrap">{{product.oberflaeche_de}},</p>
-                      <p class="wrap">{{product.gewicht}}</p>
+                      <div class="wrap" ng-bind-html="product.werkstoff_de">, 
+                      </div>
+                      <p><span class="wrap">{{product.oberflaeche_de}},</span>
+                      <span class="wrap">{{product.gewicht}}</span></p>
                     </div>
                   </div>
                 </div>
               </div>
               <div ng-if="list.title == 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL'">
                 <div ng-repeat="accessory in emfolene">
-                  <table style="width: 100%">
-                    <tr>
-                      <th class="wrap">
-                        {{accessory.product.produktbezeichnung_de}},
-                        {{accessory.product.zusatz1_de}}
-                      </th>
-                      <th>
-                        <strong style="color: #000;">Best.-Nr:</strong><a style="color: darkred;"
-                                                                          ng-click="selectProductVariations(accessory.product.uid)">{{accessory.product.nummer}}</a>
-                      </th>
-                      <th>
-                        <p ng-show="accessory.oder">oder</p>
-                      </th>
-                    </tr>
-                  </table>
+                  <div class="row" style="padding: 0 0 10px;">
+                    <div class="col" style="padding: 0;">
+                      <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(accessory.product.uid)"
+                                                                   style="color: darkred;">{{accessory.product.nummer}}</a></strong>
+                      </p>
+                      <div class="wrap">
+                        <span class="wrap">{{accessory.product.produktbezeichnung_de}},
+                        {{accessory.product.zusatz1_de}}</span>
+                      </div>
+                      <span class="wrap" ng-show="accessory.oder">oder</span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div ng-if="list.title == 'VERBINDUNG'">
                 <div ng-repeat="accessory in verbindung">
-                  <table style="width: 100%">
-                    <tr>
-                      <th class="wrap">
-                        {{accessory.product.produktbezeichnung_de}},
-                        {{accessory.product.zusatz1_de}}
-                      </th>
-                      <th>
-                        <strong style="color:#000;">Best.-Nr:</strong><a style="color: darkred;"
-                                                                         ng-click="selectProductVariations(accessory.product.uid)">{{accessory.product.nummer}}</a>
-                      </th>
-                      <th>
-                        <p ng-show="accessory.oder">oder</p>
-                      </th>
-                    </tr>
-                  </table>
+                  <div class="row" style="padding: 0 0 10px;">
+                    <div class="col" style="padding: 0;">
+                      <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(accessory.product.uid)"
+                                                                   style="color: darkred;">{{accessory.product.nummer}}</a></strong>
+                      </p>
+                      <div class="wrap">
+                        <span class="wrap">{{accessory.product.produktbezeichnung_de}},
+                        {{accessory.product.zusatz1_de}}</span>
+                      </div>
+                      <span class="wrap" ng-show="accessory.oder">oder</span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div ng-if="list.title == 'NOTWENDIGE ZUGEHÖRIGE'">
                 <div ng-repeat="accessory in notwendige">
-                  <table style="width: 100%">
-                    <tr>
-                      <th class="wrap">
-                        {{accessory.product.produktbezeichnung_de}},
-                        {{accessory.product.zusatz1_de}}
-                      </th>
-                      <th>
-                        <strong style="color: #000;">Best.-Nr: </strong><a style="color: darkred;"
-                                                                           ng-click="selectProductVariations(accessory.product.uid)">{{accessory.product.nummer}}</a>
-                      </th>
-                      <th>
-                        <p ng-show="accessory.oder">oder</p>
-                      </th>
-                    </tr>
-                  </table>
+                  <div class="row" style="padding: 0 0 10px;">
+                    <div class="col" style="padding: 0;">
+                      <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(accessory.product.uid)"
+                                                                   style="color: darkred;">{{accessory.product.nummer}}</a></strong>
+                      </p>
+                      <div class="wrap">
+                        <span class="wrap">{{accessory.product.produktbezeichnung_de}},
+                        {{accessory.product.zusatz1_de}}</span>
+                      </div>
+                      <span class="wrap" ng-show="accessory.oder">oder</span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div ng-if="list.title == 'VIDEO'">

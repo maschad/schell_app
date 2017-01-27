@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.schellapp336515" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>schell-app</name>
-  <description>&#xD;&#xD;
-        A Schell application.&#xD;&#xD;
+  <description>&#xD;&#xD;&#xD;
+        A Schell application.&#xD;&#xD;&#xD;
     </description>
-  <author email="chad@knightfoxapps.com" href="http://example.com.com/">&#xD;&#xD;
-      Chad Nehemiah&#xD;&#xD;
+  <author email="chad@knightfoxapps.com" href="http://example.com.com/">&#xD;&#xD;&#xD;
+      Chad Nehemiah&#xD;&#xD;&#xD;
     </author>
   <content src="index.html"/>
   <access origin="*"/>

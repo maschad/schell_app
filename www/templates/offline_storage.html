@@ -14,14 +14,14 @@
         <ion-checkbox class="checkbox-settings item-checkbox-right"
                       ng-repeat="category in preferences[2].downloaded_categories" ng-model="category.checked">
           <div class="wrap">
-            <strong>{{category.item.title_de}}</strong>
+            <strong>{{category.item.title_de}}</strong><span style="text-align: right;">{{fileSizes[category.item.uid] / (1073741824) | number:2}} GBs</span>
           </div>
           <div class="wrap">
             {{counts[category.item.uid]}} Produkte Verfügbar
           </div>
-          <div style="text-align: right;">
+          <!-- <div style="text-align: right;">
             {{fileSizes[category.item.uid] / (1073741824) | number:2}} GBs
-          </div>
+          </div> -->
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
         <hr class="settings-hr">
