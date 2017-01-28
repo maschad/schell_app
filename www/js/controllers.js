@@ -664,8 +664,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //The products to be show in collapsible list
       $scope.files = [];
+      //Possible awards
+      $scope.awards = [];
       //Array of Bookmarked Products
       $scope.bookmarked = [];
+      //Videos for that corresponding product
+      $scope.videos = [];
 
 
 
@@ -723,7 +727,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //Load the awards images
       function getAwards(award_ids) {
-        $scope.awards = [];
 
         DatabaseService.selectAwards(award_ids, function (results) {
           for (var x = 0; x < results.rows.length; x++) {
@@ -814,9 +817,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     }
 
     function getVideos(video_ids) {
-      //Videos for that corresponding product
-      $scope.videos = [];
-
       DatabaseService.selectVideos(video_ids, function(videos){
         for(var x = 0; x < videos.rows.length; x++){
           $scope.videos.push(videos.rows.item(x));
@@ -829,42 +829,95 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       });
     }
 
-      function downloadPDFFiles(uid, url, filename) {
-        //Check whether pdf or zip for PDF file
-        switch (url.substr(url.length - 3)) {
-          case 'pdf':
-            FileService.originalDownload(url, filename.concat('_booklet.pdf'), 'pdfs', function (path) {
-              localStorageService.setPDFPath(uid, path);
+      function downloadPDFFiles(pdfFiles) {
+        if (pdfFiles.length == 0) {
+          console.log('calling PDF Files');
+          var videoImages = $scope.videos.slice();
+          downloadVideoImage(videoImages);
+        } else {
+          console.log('calling PDF Files else');
+          if (pdfFiles[0].datei_de == '' || pdfFiles[0].datei_de.substr(pdfFiles[0].datei_de.length - 3) == 'zip') {
+            pdfFiles.shift();
+            downloadPDFFiles(pdfFiles);
+          } else {
+            FileService.originalDownload(pdfFiles[0].datei_de, pdfFiles[0].title.concat('_booklet.pdf'), 'pdfs', function (path) {
+              localStorageService.setPDFPath(pdfFiles[0].uid, path);
+              pdfFiles.shift();
+              downloadPDFFiles(pdfFiles);
+            });
+          }
 
-            });
-            break;
-          case 'jpg':
-            FileService.originalDownload(url, filename.concat('_thumbnail.jpg'), 'pdfs', function (path) {
-              localStorageService.setThumbnailPath(uid, path);
-            });
-            break;
-
-          case 'png':
-            FileService.originalDownload(url, filename.concat('_booklet.png'), 'pdfs', function (path) {
-              localStorageService.setThumbnailPath(uid, path);
-            });
-            break;
         }
       }
 
-      function downloadAwards(uid, url, filename) {
-        switch (url.substr(url.length - 3)) {
-          case 'jpg':
-            FileService.originalDownload(url, filename.concat('_award.jpg'), 'imgs', function (path) {
-              localStorageService.setAwardPath(uid, path);
-            });
-            break;
+      function downloadPDFImages(pdfFiles) {
+        console.log('pdf files length', pdfFiles.length);
+        if (pdfFiles.length == 0) {
+          console.log('calling PDF Images');
+          var filez = $scope.files.slice();
+          downloadPDFFiles(filez);
+        } else {
+          console.log('calling else PDF Images');
+          if (pdfFiles[0].thumbnail == '') {
+            pdfFiles.shift();
+            downloadPDFImages(pdfFiles);
+          } else {
+            //Check whether pdf or zip for PDF file
+            switch (pdfFiles[0].thumbnail.substr(pdfFiles[0].thumbnail.length - 3)) {
+              case 'jpg':
+                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.jpg'), 'pdfs', function (path) {
+                  localStorageService.setThumbnailPath(pdfFiles[0].uid, path);
+                  pdfFiles.shift();
+                  downloadPDFImages(pdfFiles);
+                });
+                break;
 
-          case 'png':
-            FileService.originalDownload(url, filename.concat('_award.png'), 'imgs', function (path) {
-              localStorageService.setAwardPath(uid, path);
-            });
-            break;
+              case 'png':
+                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.png'), 'pdfs', function (path) {
+                  localStorageService.setThumbnailPath(pdfFiles[0].uid, path);
+                  pdfFiles.shift();
+                  downloadPDFImages(pdfFiles);
+                });
+                break;
+
+              case 'gif':
+                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.gif'), 'pdfs', function (path) {
+                  localStorageService.setThumbnailPath(pdfFiles[0].uid, path);
+                  pdfFiles.shift();
+                  downloadPDFImages(pdfFiles);
+                });
+                break;
+            }
+          }
+
+        }
+
+      }
+
+      function downloadAwards(awards) {
+        if (awards.length == 0) {
+          var pdfImages = $scope.files.slice();
+          downloadPDFImages(pdfImages);
+        } else {
+          switch (awards[0].logo.substr(awards[0].logo.length - 3)) {
+            case 'jpg':
+              FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.jpg'), 'awards', function (path) {
+                localStorageService.setAwardPath(awards[0].uid, path);
+                awards.shift();
+                downloadAwards(awards);
+              });
+              break;
+
+            case 'png':
+              FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.png'), 'awards', function (path) {
+                localStorageService.setAwardPath(awards[0].uid, path);
+                awards.shift();
+                if (awards.length > 0) {
+                  downloadAwards(awards);
+                }
+              });
+              break;
+          }
         }
 
       }
@@ -872,23 +925,36 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Recursive functions to download videos and the corresponding thumbnail
       //This avoids Large queues for downloading Files
       function downloadVideoImage(videos) {
-        FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
-          localStorageService.setVideoImagePath(videos[0].uid, result);
-          videos.shift();
-          if (videos.length > 0) {
+        if (videos.length == 0) {
+          console.log('calling video images ');
+          var video_files = $scope.videos.slice();
+          downloadVideo(video_files);
+        } else {
+          console.log('calling video images  else');
+          FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
+            localStorageService.setVideoImagePath(videos[0].uid, result);
+            videos.shift();
             downloadVideoImage(videos);
-          }
-        });
+          });
+        }
+
       }
 
       function downloadVideo(videos) {
-        FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
-          localStorageService.setVideoPath(videos[0].uid, result);
-          videos.shift();
-          if (videos.length > 0) {
+        if (videos.length == 0) {
+          $scope.hide();
+          $ionicPopup.alert({
+            title: 'Downloads abgeschlossen'
+          });
+        } else {
+          console.log('calling videos else');
+          FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
+            localStorageService.setVideoPath(videos[0].uid, result);
+            videos.shift();
             downloadVideo(videos);
-          }
-        });
+          });
+        }
+
       }
 
       //Load the product
@@ -995,27 +1061,17 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           }).then(function () {
             //Whether this product has been downloaded
             $scope.productDownloaded = true;
+            $scope.show();
 
             FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
               localStorageService.setLandscapePath($scope.details.uid, path);
+
+              FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
+                localStorageService.setTechnicalPath($scope.details.uid, path);
+              });
+              var awards = $scope.awards.slice();
+              downloadAwards(awards);
             });
-            FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
-              localStorageService.setTechnicalPath($scope.details.uid, path);
-            });
-            for (var y = 0; y < $scope.files.length; y++) {
-              downloadPDFFiles($scope.details.uid, $scope.files[y].datei_de, $scope.details.nummer.concat(y));
-              downloadPDFFiles($scope.details.uid, $scope.files[y].thumbnail, $scope.details.nummer.concat(y));
-            }
-            for (var z = 0; z < $scope.awards.length; z++) {
-              downloadAwards($scope.details.uid, $scope.awards[z].logo, $scope.details.nummer.concat(z));
-            }
-            //Check for videos
-            if ($scope.videos.length > 0) {
-              var videos = $scope.videos.slice();
-              var images = $scope.videos.slice();
-              downloadVideoImage(images);
-              downloadVideo(videos);
-            }
           });
         } else if ($scope.productDownloaded) {
           $ionicPopup.alert({
