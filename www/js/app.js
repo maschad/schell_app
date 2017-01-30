@@ -10,7 +10,7 @@
 var db = null;
 
 
-angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorage','ion-floating-menu', 'ksSwiper','ngCordova', 'app.controllers', 'app.routes', 'app.directives', 'app.services'])
+angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorage','ion-floating-menu', 'ksSwiper','ngCordova', 'app.controllers', 'app.filters', 'app.routes', 'app.directives', 'app.services'])
 
 .config(function($ionicConfigProvider, $sceDelegateProvider,$ionicFilterBarConfigProvider){
   $ionicConfigProvider.backButton.previousTitleText(false).text('');

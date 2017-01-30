@@ -23,7 +23,7 @@
               <div class="product-tile" ng-style="{'opacity' : product.filter ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-75">
-                    <p class="item-number">{{product.nummer}}</p>
+                    <p class="item-number">{{product.nummer | split}}</p>
                     <p class="item-title">{{product.produktbezeichnung_de}}</p>
                     <p class="item-name">{{product.zusatz1_de}}</p>
                     <p>{{product.zusatz2_de}}</p>

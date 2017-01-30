@@ -6,7 +6,7 @@
           <div class="product-tile">
             <div class="row" ng-click="showDetails(bookmark)">
               <div class="col col-75">
-                <p class="item-number">{{bookmark.nummer}}</p>
+                <p class="item-number">{{bookmark.nummer | split}}</p>
                 <p class="item-title">{{bookmark.produktbezeichnung_de}}</p>
                 <p class="item-name" ng-bind-html="bookmark.werkstoff_de"></p>
                 <p>{{bookmark.zusatz2_de}}</p>

@@ -1,5 +1,5 @@
 <ion-view  style="background-color:white;">
-  <ion-nav-title style="text-transform: uppercase;">{{title}}</ion-nav-title>
+  <ion-nav-title style="text-transform: uppercase;">{{title | split}}</ion-nav-title>
 
 
   <!-- Breadcrumb ionic -->
@@ -96,7 +96,7 @@
         <img ng-src="{{details.image_landscape}}" class="product-img" ng-click="openModal(1)">
       </div>
       <div id="detailPage-markdown3" class="col">
-        <p id="detailPage-heading4" class="product-order-number">Bestellnummer: {{details.nummer}}</p>
+        <p id="detailPage-heading4" class="product-order-number">Bestellnummer: {{details.nummer | split}}</p>
         <p id="detailPage-heading3" class="product-name"> {{details.produktbezeichnung_de}} {{details.zusatz1_de}} </p>
         <p class="product-noted"> {{details.zusatz2_de}}</p>
         <div class="product-summary" ng-bind-html="details.beschreibung_de"></div>
@@ -162,7 +162,7 @@
                   <div class="row" style="padding: 0 0 20px;">
                     <div class="col" style="padding: 0;">
                       <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(product.uid)"
-                                                                   style="color: darkred;">{{product.nummer}}</a></strong>
+                                                                   style="color: darkred;">{{product.nummer | split}}</a></strong>
                       </p>
                       <div class="wrap" ng-bind-html="product.werkstoff_de">, 
                       </div>
@@ -177,7 +177,7 @@
                   <div class="row" style="padding: 0 0 10px;">
                     <div class="col" style="padding: 0;">
                       <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(accessory.product.uid)"
-                                                                   style="color: darkred;">{{accessory.product.nummer}}</a></strong>
+                                                                   style="color: darkred;">{{accessory.product.nummer | split}}</a></strong>
                       </p>
                       <div class="wrap">
                         <span class="wrap">{{accessory.product.produktbezeichnung_de}},
@@ -193,7 +193,7 @@
                   <div class="row" style="padding: 0 0 10px;">
                     <div class="col" style="padding: 0;">
                       <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(accessory.product.uid)"
-                                                                   style="color: darkred;">{{accessory.product.nummer}}</a></strong>
+                                                                   style="color: darkred;">{{accessory.product.nummer | split}}</a></strong>
                       </p>
                       <div class="wrap">
                         <span class="wrap">{{accessory.product.produktbezeichnung_de}},
@@ -209,7 +209,7 @@
                   <div class="row" style="padding: 0 0 10px;">
                     <div class="col" style="padding: 0;">
                       <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(accessory.product.uid)"
-                                                                   style="color: darkred;">{{accessory.product.nummer}}</a></strong>
+                                                                   style="color: darkred;">{{accessory.product.nummer | split}}</a></strong>
                       </p>
                       <div class="wrap">
                         <span class="wrap">{{accessory.product.produktbezeichnung_de}},

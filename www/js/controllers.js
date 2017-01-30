@@ -2193,3 +2193,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $rootScope.$broadcast('updateFilters');
       }
 }]);
+
+
+// Setup the filter
+angular.module('app.filters', [])
+
+  .filter('split', function() {
+
+    // Create the return function
+    return function(input) {
+      return input.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+    }
+  });
