@@ -1206,7 +1206,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
   .controller('productLinesCtrl', ['$scope', '$state', '$rootScope', '$ionicLoading', '$ionicHistory', '$ionicFilterBar', 'localStorageService', 'FileService', 'DatabaseService', 'appDataService', '$ionicPopover',
     function ($scope, $state, $rootScope, $ionicLoading, $ionicHistory, $ionicFilterBar, localStorageService, FileService, DatabaseService, appDataService, $ionicPopover) {
     //Set the titles and initialize empty array of filters
-    $scope.filter_ids = [];
+    $scope.filter_ids = appDataService.getFilterIds();
 
     //Array storing artikel counts for each category
     $scope.counts = localStorageService.getProductCounts();
