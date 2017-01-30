@@ -12,7 +12,7 @@
             <div class="product-tile">
               <div class="row">
                 <div class="col col-75">
-                  <p class="item-number">{{product.nummer}}</p>
+                  <p class="item-number">{{product.nummer | split}}</p>
                   <p class="item-title">{{product.produktbezeichnung_de}}</p>
                   <p class="item-name" ng-bind-html="product.werkstoff_de"></p>
                   <p>{{product.zusatz2_de}}</p>
