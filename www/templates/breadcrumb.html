@@ -1,10 +1,10 @@
-<ion-popover-view class="fit" style="background-color: #750017; border-radius: 0px;">
+<ion-popover-view class="fit" style="background-color:#810a18; border-radius: 0px;">
   <ion-content>
     <div class="breadcrumb" ng-click="popover.hide()">
       <div ng-repeat="category in navigated_categories">
         <div ng-click="goState($index)">
           <div class="item" ng-style="arrowStyle($index, navigated_categories.length)">
-            <img src="img/icons/dropdown-arrow.png"> {{category}}
+            <img src="img/icons/dropdown-arrow.png"> {{category | split}}
           </div>
         </div>
       </div>
