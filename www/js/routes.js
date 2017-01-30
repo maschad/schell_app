@@ -69,7 +69,6 @@ angular.module('app.routes', [])
   })
 
     .state('searchPage', {
-      cache: false,
       url: '/search_page',
       templateUrl: 'templates/search_page.html',
       controller: 'searchPageCtrl'

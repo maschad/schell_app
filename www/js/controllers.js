@@ -820,7 +820,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       DatabaseService.selectVideos(video_ids, function(videos){
         for(var x = 0; x < videos.rows.length; x++){
           $scope.videos.push(videos.rows.item(x));
-          if (!$rootScope.internet && localStorageService.productDownloaded($scope.videos[x].uid)) {
+          if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
+            console.log('videofile', $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid));
             $scope.videos[x].startimage_de = localStorageService.getVideoImagePath($scope.videos[x].uid);
             $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
           }
@@ -841,7 +842,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             downloadPDFFiles(pdfFiles);
           } else {
             FileService.originalDownload(pdfFiles[0].datei_de, pdfFiles[0].title.concat('_booklet.pdf'), 'pdfs', function (path) {
-              localStorageService.setPDFPath(pdfFiles[0].uid, path);
+              localStorageService.setPDFPath($scope.details.uid, path);
               pdfFiles.shift();
               downloadPDFFiles(pdfFiles);
             });
@@ -866,7 +867,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             switch (pdfFiles[0].thumbnail.substr(pdfFiles[0].thumbnail.length - 3)) {
               case 'jpg':
                 FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.jpg'), 'pdfs', function (path) {
-                  localStorageService.setThumbnailPath(pdfFiles[0].uid, path);
+                  localStorageService.setThumbnailPath($scope.details.uid, path);
                   pdfFiles.shift();
                   downloadPDFImages(pdfFiles);
                 });
@@ -874,7 +875,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
               case 'png':
                 FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.png'), 'pdfs', function (path) {
-                  localStorageService.setThumbnailPath(pdfFiles[0].uid, path);
+                  localStorageService.setThumbnailPath($scope.details.uid, path);
                   pdfFiles.shift();
                   downloadPDFImages(pdfFiles);
                 });
@@ -882,7 +883,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
               case 'gif':
                 FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.gif'), 'pdfs', function (path) {
-                  localStorageService.setThumbnailPath(pdfFiles[0].uid, path);
+                  localStorageService.setThumbnailPath($scope.details.uid, path);
                   pdfFiles.shift();
                   downloadPDFImages(pdfFiles);
                 });
@@ -902,7 +903,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           switch (awards[0].logo.substr(awards[0].logo.length - 3)) {
             case 'jpg':
               FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.jpg'), 'awards', function (path) {
-                localStorageService.setAwardPath(awards[0].uid, path);
+                localStorageService.setAwardPath($scope.details.uid, path);
                 awards.shift();
                 downloadAwards(awards);
               });
@@ -910,7 +911,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
             case 'png':
               FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.png'), 'awards', function (path) {
-                localStorageService.setAwardPath(awards[0].uid, path);
+                localStorageService.setAwardPath($scope.details.uid, path);
                 awards.shift();
                 if (awards.length > 0) {
                   downloadAwards(awards);
@@ -983,8 +984,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       appDataService.checkInternet();
       if ($rootScope.internet) {
         $scope.pdfUrl = file.datei_de;
+        console.log('pdf url', $scope.pdfUrl);
       } else {
         $scope.pdfUrl = localStorageService.getPDFPath($scope.details.uid, 'de', index);
+        console.log('pdf url', $scope.pdfUrl);
       }
       $scope.showPDF = true;
       var options = {
