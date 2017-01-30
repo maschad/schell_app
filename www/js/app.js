@@ -44,9 +44,8 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
       if (navigator.connection.type == Connection.NONE) {
         //Set internet Variable to false
         $rootScope.internet = false;
-        $ionicPopup.confirm({
-          title: "Internet Disconnected",
-          content: "The internet is disconnected on your device. Settings will be disabled"
+        $ionicPopup.alert({
+          title: "Es besteht keine Verbindung zum Internet. Produktinformationen sind nur Offline verfügbar und ggf. nicht aktuell."
         });
         //#TODO: Handle DB loading.
       }else{
