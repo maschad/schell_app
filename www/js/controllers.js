@@ -1079,7 +1079,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           });
         } else {
           $ionicPopup.alert({
-            title: 'keine Internetverbindung'
+            title: 'Download nicht möglich! Es besteht keine Insternetverbindung'
           });
         }
       };
