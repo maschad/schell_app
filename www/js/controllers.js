@@ -805,7 +805,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     function getFiles(download_ids) {
       DatabaseService.selectDownloads(download_ids, function (downloads) {
         for(var x = 0; x < downloads.rows.length; x++){
-          $scope.files.push(downloads.rows.item(x));
+          if (downloads.rows.item(x).datei_de.includes('pdf')) {
+            $scope.files.push(downloads.rows.item(x));
+          }
         }
         //If no internet load local path
         if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
