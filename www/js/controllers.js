@@ -223,6 +223,10 @@ angular.module('app.controllers', [])
       $scope.filter_ids = appDataService.getFilterIds();
 
       $scope.$on('new-filter-uid', function() {
+        updateProductsWithFilters();
+      });
+
+      function updateProductsWithFilters() {
         var currentFilterIds = appDataService.getCurrentSelectedFilterIds();
 
         for (var i = 0; i < $scope.products.length; i++) {
@@ -233,10 +237,8 @@ angular.module('app.controllers', [])
           }
           var shouldBeFiltered = !hasAllFilters;
           $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': shouldBeFiltered});
-          console.log($scope.products[i].nummer + ' filter value: ' + $scope.products[i].filter);
         }
-
-        });
+      }
 
       //Loading functions
       $scope.show = function () {
@@ -284,9 +286,6 @@ angular.module('app.controllers', [])
         //Initialize products to empty
         $scope.products = [];
 
-        //Get the filtered products if any
-        var toFilter = appDataService.getCurrentFilteredProducts(appDataService.getCurrentCategory());
-
         //Load the various products
         DatabaseService.selectProducts(product_ids, function (products) {
           for (var x = 0; x < products.rows.length; x++) {
@@ -301,24 +300,10 @@ angular.module('app.controllers', [])
             }
           }
 
+          updateProductsWithFilters();
+
           //Hide the loading screen
           $scope.hide();
-
-
-          //Check if product should be filtered
-          toFilter.forEach(function (product) {
-            console.log('looping over the product', product.uid);
-            //If it's in filtered products, should set the filter value to be true
-            for (var i = 0; i < $scope.products.length; i++) {
-              if ($scope.products[i].uid == product.uid) {
-                console.log('product included');
-                $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': false});
-              }//To avoid re-assigning the wrong value
-              else if (!$scope.products[i].hasOwnProperty('filter')) {
-                $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': true});
-              }
-            }
-          });
 
         }, function (error) {
           //Handle error
