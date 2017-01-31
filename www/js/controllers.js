@@ -220,6 +220,24 @@ angular.module('app.controllers', [])
         }
       };
 
+      $scope.filter_ids = appDataService.getFilterIds();
+
+      $scope.$on('new-filter-uid', function() {
+        var currentFilterIds = appDataService.getCurrentSelectedFilterIds();
+
+        for (var i = 0; i < $scope.products.length; i++) {
+          var filtered = false;
+          for (var j = 0; j < currentFilterIds.length; j++) {
+            if ($scope.products[i].filter_ids.split(',').indexOf(currentFilterIds[j]) !== -1) {
+              filtered = true;
+            }
+          }
+          $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': filtered});
+          console.log($scope.products[i].nummer + ' filter value: ' + $scope.products[i].filter);
+        }
+
+        });
+
       //Loading functions
       $scope.show = function () {
         $ionicLoading.show({
