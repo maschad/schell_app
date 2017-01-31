@@ -226,13 +226,13 @@ angular.module('app.controllers', [])
         var currentFilterIds = appDataService.getCurrentSelectedFilterIds();
 
         for (var i = 0; i < $scope.products.length; i++) {
-          var filtered = false;
+          // A product should not be shown unless it has all of the current clicked filters
+          var hasAllFilters = true;
           for (var j = 0; j < currentFilterIds.length; j++) {
-            if ($scope.products[i].filter_ids.split(',').indexOf(currentFilterIds[j]) !== -1) {
-              filtered = true;
-            }
+            hasAllFilters = hasAllFilters && ($scope.products[i].filter_ids.split(',').indexOf(currentFilterIds[j]) !== -1);
           }
-          $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': filtered});
+          var shouldBeFiltered = !hasAllFilters;
+          $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': shouldBeFiltered});
           console.log($scope.products[i].nummer + ' filter value: ' + $scope.products[i].filter);
         }
 
