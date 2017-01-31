@@ -249,6 +249,9 @@ img {
   margin-right: 0;
   width: 50px;
 }
+.bar-royal .button.active, .bar-royal .button.activated {
+  background-color: transparent;
+}
 
 .start-screen-button {
   position: absolute;
@@ -1255,6 +1258,7 @@ ion-popover-view.fit ion-content {
 #floating-menu li span.label-container {
   text-align: left !important;
   left: 75px;
+  width: 80px !important;
 }
 #floating-menu li span.label {
   color: #fff !important;
@@ -1510,4 +1514,11 @@ ion-floating-item[button-class="fab-assertive"] li {
 
 .normalize {
   text-transform: initial;
+}
+
+.breadcrumb .item:before {
+  content: url(../img/icons/dropdown-arrow.png);
+  height: 20px;
+  width: 20px;
+  padding-right: 5px;
 }

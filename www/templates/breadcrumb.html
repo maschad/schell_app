@@ -3,8 +3,7 @@
     <div class="breadcrumb" ng-click="popover.hide()">
       <div ng-repeat="category in navigated_categories">
         <div ng-click="goState($index)">
-          <div class="item" ng-style="arrowStyle($index, navigated_categories.length)">
-            <img src="img/icons/dropdown-arrow.png"> {{category | split | normalize}}
+          <div class="item" ng-style="arrowStyle($index, navigated_categories.length)" ng-bind-html="category | split | normalize">
           </div>
         </div>
       </div>
