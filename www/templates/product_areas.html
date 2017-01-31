@@ -34,7 +34,7 @@
                 <img src="{{categories[$index].bild}}" class="center">
               </div>
               <div class="col col-center">
-                <h3 class="product-type">{{categories[$index].title_de}}</h3>
+                <h3 class="product-type" ng-bind-html="categories[$index].title_de | normalize"></h3>
               </div>
             </div>
           </div>
@@ -49,7 +49,7 @@
                 <img src="{{categories[$index + 1].bild}}" class="center">
               </div>
               <div class="col col-center">
-                <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
+                <h3 class="product-type" ng-bind-html="categories[$index + 1].title_de | normalize"></h3>
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 <ion-view  id="page4" style="background-color:#9e0a22;" xmlns="http://www.w3.org/1999/html">
-  <ion-nav-title style="text-transform: uppercase;">{{title}}</ion-nav-title>
+  <ion-nav-title style="text-transform: uppercase;" ng-bind-html="title | normalize"></ion-nav-title>
   <!-- FAB Menu -->
   <ion-floating-menu menu-color="#2c2a2b" menu-open-color="#2c2a2b" backdrop="true">
     <ion-floating-item icon="schellicon-home" ui-sref="start-screen" button-color="#2c2a2b" text="Home" icon-color="#fff" ></ion-floating-item>
@@ -34,7 +34,7 @@
                     <div class="product-counter">
                       <p><strong>{{counts[categories[$index].uid]}} Artikel</strong></p>
                     </div>
-                    <h3 class="product-type">{{categories[$index].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index].bild}}" style="float: right;">
@@ -52,7 +52,7 @@
                     <div class="product-counter">
                       <p><strong>{{counts[categories[$index].uid]}} Artikel</strong></p>
                     </div>
-                    <h3 class="product-type">{{categories[$index].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index].bild}}" style="float: right;">
@@ -69,7 +69,7 @@
                     <div class="product-counter">
                       <p><strong>{{counts[categories[$index + 1].uid]}} Artikel</strong></p>
                     </div>
-                    <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index + 1].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index + 1].bild}}" style="float: right;">
@@ -87,7 +87,7 @@
                     <div class="product-counter">
                       <p><strong>{{counts[categories[$index + 1].uid]}} Artikel</strong></p>
                     </div>
-                    <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index + 1].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index + 1].bild}}" style="float: right;">
@@ -105,7 +105,7 @@
                     <div class="product-counter">
                       <p><strong>{{counts[categories[$index + 2].uid]}} Artikel</strong></p>
                     </div>
-                    <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index + 2].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index + 2].bild}}" style="float: right;">
@@ -122,7 +122,7 @@
                     <div class="product-counter">
                       <p><strong>{{counts[categories[$index + 2].uid]}} Artikel</strong></p>
                     </div>
-                    <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index + 2].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index + 2].bild}}" style="float: right;">

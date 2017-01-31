@@ -4,7 +4,7 @@
       <div ng-repeat="category in navigated_categories">
         <div ng-click="goState($index)">
           <div class="item" ng-style="arrowStyle($index, navigated_categories.length)">
-            <img src="img/icons/dropdown-arrow.png"> {{category | split}}
+            <img src="img/icons/dropdown-arrow.png"> {{category | split | normalize}}
           </div>
         </div>
       </div>
