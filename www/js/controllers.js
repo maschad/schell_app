@@ -2094,8 +2094,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $scope.selectCountry = function (country) {
         $scope.country = country;
         localStorageService.setCountry(country);
-        $ionicPopup.alert({
-          title: 'Einstellungen gespeichert'
+        $ionicPopup.confirm({
+          title: 'ACHTUNG!',
+          template: 'Alle persönlichen Einstellungen (Merkzettel, Offline gesicherte Artikel) müssen nach Veränderung der Länderversion erneut geladen werden.',
+          buttons: [
+            { text: 'Abbrechen' },
+            { text: 'Akzeptieren' }
+          ]
         });
       };
 

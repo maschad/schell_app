@@ -1292,6 +1292,9 @@ ion-popover-view.fit ion-content {
   font-size: 18px;
   line-height: 50px;
 }
+.platform-ios .bar .title {
+  right: 3px !important;
+}
 .bar .title + .buttons {
   position: absolute;
   top: 0px;
