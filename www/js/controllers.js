@@ -975,9 +975,18 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Bookmark Function
     $scope.bookmark = function () {
       if (!localStorageService.bookmarkProduct($scope.details)) {
-        $ionicPopup.alert({
-          title: 'bereits vorgemerkt',
-          cssClass: 'bookmark-popup'
+        var confirmPopup = $ionicPopup.confirm({
+          title: 'Artikel befindet sich bereits in der Merkliste.',
+          cssClass: 'bookmark-popup',
+          cancelText: 'Abbrechen',
+          okText: 'Merkliste öffnen'
+        });
+        confirmPopup.then(function(res) {
+          if(res) {
+            $state.go('bookmark');
+          } else {
+            console.log('Still on product detail page');
+          }
         });
       } else {
         $ionicPopup.alert({
@@ -1505,7 +1514,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     $scope.deleteBookmark = function (bookmark) {
       localStorageService.removeBookmarkedProduct(bookmark);
       $ionicPopup.alert({
-        title: 'Artikel Entfernt'
+        title: 'Artikel wurde entfernt'
       });
       $state.reload();
     };
@@ -2037,10 +2046,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $ionicPopup.confirm({
           title: 'ACHTUNG!',
           template: 'Alle persönlichen Einstellungen (Merkzettel, Offline gesicherte Artikel) müssen nach Veränderung der Länderversion erneut geladen werden.',
-          buttons: [
-            { text: 'Abbrechen' },
-            { text: 'Akzeptieren' }
-          ]
+          cancelText: 'Abbrechen',
+          okText: 'Akzeptieren'
         });
       };
 
