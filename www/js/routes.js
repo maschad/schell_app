@@ -15,6 +15,7 @@ angular.module('app.routes', [])
     })
 
     .state('products', {
+      cache: false,
       url: '/product_areas',
       templateUrl: 'templates/product_areas.html',
       controller: 'product_areasCtrl'
@@ -51,6 +52,7 @@ angular.module('app.routes', [])
   })
 
   .state('product_lines', {
+    cache: false,
     url: '/product_lines',
     templateUrl: 'templates/product_lines.html',
     controller: 'productLinesCtrl'
@@ -74,29 +76,20 @@ angular.module('app.routes', [])
   .state('bookmark', {
     url: 'bookmark',
     templateUrl: 'templates/bookmark.html',
-    controller: 'bookmarkCtrl',
-    ncyBreadcrumb: {
-      label: 'Bookmark'
-    }
+    controller: 'bookmarkCtrl'
   })
 
   .state('offline_storage', {
     cache: false,
     url: 'offlineStorage',
     templateUrl: 'templates/offline_storage.html',
-    controller: 'offlineStorageCtrl',
-    ncyBreadcrumb: {
-      label: 'Offline Settings'
-    }
+    controller: 'offlineStorageCtrl'
    })
 
   .state('region', {
     url: 'region',
     templateUrl: 'templates/region.html',
-    controller: 'regionCtrl',
-    ncyBreadcrumb: {
-      label: 'Regional Settings'
-    }
+    controller: 'regionCtrl'
   });
 
 $urlRouterProvider.otherwise('/country_select')
