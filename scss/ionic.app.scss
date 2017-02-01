@@ -249,6 +249,9 @@ img {
   margin-right: 0;
   width: 50px;
 }
+.bar-royal .button.active, .bar-royal .button.activated {
+  background-color: transparent;
+}
 
 .start-screen-button {
   position: absolute;
@@ -1255,6 +1258,7 @@ ion-popover-view.fit ion-content {
 #floating-menu li span.label-container {
   text-align: left !important;
   left: 75px;
+  width: 80px !important;
 }
 #floating-menu li span.label {
   color: #fff !important;
@@ -1287,6 +1291,9 @@ ion-popover-view.fit ion-content {
 .platform-android .bar .title {
   font-size: 18px;
   line-height: 50px;
+}
+.platform-ios .bar .title {
+  right: 3px !important;
 }
 .bar .title + .buttons {
   position: absolute;
@@ -1506,4 +1513,15 @@ ion-floating-item[button-class="fab-assertive"] li {
   border: 1px solid #9e0a22;
   padding: 5px;
   margin: 15px 0;
+}
+
+.normalize {
+  text-transform: initial;
+}
+
+.breadcrumb .item:before {
+  content: url(../img/icons/dropdown-arrow.png);
+  height: 20px;
+  width: 20px;
+  padding-right: 5px;
 }
