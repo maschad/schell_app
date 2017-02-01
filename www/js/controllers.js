@@ -300,7 +300,7 @@ angular.module('app.controllers', [])
               $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
 
             } else if ($rootScope.internet) {
-              //#TODO: remebr to uncomment downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
+              downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
             }
           }
 
@@ -427,8 +427,7 @@ angular.module('app.controllers', [])
             $scope.categories[x].bild = localStorageService.getBildPath(uid);
 
           } else if ($rootScope.internet) {
-            //#TODO: remember to uncomment
-            // downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
+            downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
           }
         }
         $scope.hideLoad();

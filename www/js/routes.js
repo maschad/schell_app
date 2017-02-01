@@ -20,6 +20,7 @@ angular.module('app.routes', [])
       templateUrl: 'templates/product_areas.html',
       controller: 'product_areasCtrl'
     })
+
     .state('product_overview', {
       url: '/product_overview',
       templateUrl: 'templates/product_overview.html',
