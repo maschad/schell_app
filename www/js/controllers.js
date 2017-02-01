@@ -38,6 +38,10 @@ angular.module('app.controllers', [])
         //Check for internet
         appDataService.checkInternet();
 
+
+        //Clear categories
+        appDataService.clearNavigatedCategories();
+
         //Whether anything is bookmarked
         $scope.bookmarks = [];
 
@@ -208,7 +212,7 @@ angular.module('app.controllers', [])
       //History function
       $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
-        $ionicHistory.goBack();
+        $state.go('product_lines');
       });
 
       $scope.arrowStyle = function (index, length) {
@@ -268,9 +272,7 @@ angular.module('app.controllers', [])
         $scope.show();
 
         //Get Titles
-        //$scope.prev = appDataService.getPreviousTitle();
         $scope.title = appDataService.checkCurrentCategory();
-        //$scope.root = appDataService.getRootTitle();
 
         //Check for internet
         appDataService.checkInternet();
@@ -298,7 +300,7 @@ angular.module('app.controllers', [])
               $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
 
             } else if ($rootScope.internet) {
-              downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
+              //#TODO: remebr to uncomment downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
             }
           }
 
@@ -425,7 +427,8 @@ angular.module('app.controllers', [])
             $scope.categories[x].bild = localStorageService.getBildPath(uid);
 
           } else if ($rootScope.internet) {
-            downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
+            //#TODO: remember to uncomment
+            // downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
           }
         }
         $scope.hideLoad();
@@ -1106,6 +1109,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
   $scope.isGroupShown = function (group) {
     return group.show;
   };
+
   //Popover function
   $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
     scope: $scope
@@ -1245,13 +1249,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       $scope.$on('go-back', function () {
+        console.log('called');
         appDataService.removeNavigatedCategory();
-        var child_ids = appDataService.getPreviousChildIds();
+        var child_ids = appDataService.getCurrentCategoryIds();
         console.log('child_ids', child_ids);
-        if (child_ids == false) {
+        if (appDataService.checkCurrentCategoryIds() == false) {
           $state.go('products');
         } else {
-          loadSubCategories(child_ids);
           $scope.$emit('updateFilters');
           $state.reload();
         }
@@ -1310,15 +1314,17 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
               $scope.categories[x].bild = localStorageService.getBildPath(uid);
             } else if ($rootScope.internet) {
-              downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
+              //downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
             }
           }
         }
+        $scope.hide();
       }, function (error) {
         //Handle error
         console.log('ERROR',error);
       });
     }
+
 
     $scope.counts = {};
 
@@ -1412,14 +1418,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       }
     }
 
+
     //Get the correct childIds and then load them from database
-    var child_ids = appDataService.getCurrentCategoryIds();
+    var child_ids = appDataService.checkCurrentCategoryIds();
 
-    //Set the previous Child ids
-    appDataService.setPreviousChildIds(child_ids);
-
-    //Load the sub categories to display
     loadSubCategories(child_ids);
+
 
     //Popover function
     $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
@@ -1436,7 +1440,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     $scope.choice = function (child_ids, title) {
       //If user chooses something with child ids
       appDataService.addNavigatedCategory(title);
-      loadSubCategories(child_ids);
+      //Set the current category Ids
+      appDataService.setCurrentCategoryIds(child_ids);
       $scope.$emit('updateFilters');
       $state.reload();
     };
@@ -1496,30 +1501,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $state.go('detailPage');
     };
 
-    $scope.email = function (bookmark) {
-      var link = bookmark.email_link;
-      var bodyText = 'Product nummer ' .concat($scope.details.nummer)
-        + ' ' + 'Referenzartikel ' + ' ' .concat($scope.details.referenzartikel)
-        + ' ' .concat($scope.details.de_data.differenzierung)
-        + '' + 'Hier ist ein Link' + ' ' + link;
-
-
-      if(window.plugins && window.plugins.emailComposer) {
-        window.plugins.emailComposer.showEmailComposerWithCallback(function(result) {
-            console.log("Response -> " + result);
-          },
-          "Artikel Subject", // Subject
-          bodyText,                      // Body
-          ["test@example.com"],    // To
-          null,                    // CC
-          null,                    // BCC
-          false,                   // isHTML
-          null,                    // Attachments
-          null);                   // Attachment Data
-      }else{
-        console.log('could not open');
-      }
-    };
 
     $scope.deleteBookmark = function (bookmark) {
       localStorageService.removeBookmarkedProduct(bookmark);
