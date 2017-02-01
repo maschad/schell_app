@@ -227,16 +227,18 @@ angular.module('app.controllers', [])
       });
 
       function updateProductsWithFilters() {
-        var currentFilterIds = appDataService.getCurrentSelectedFilterIds();
+        if ($scope.filter_ids !== ''){
+          var currentFilterIds = appDataService.getCurrentSelectedFilterIds();
 
-        for (var i = 0; i < $scope.products.length; i++) {
-          // A product should not be shown unless it has all of the current clicked filters
-          var hasAllFilters = true;
-          for (var j = 0; j < currentFilterIds.length; j++) {
-            hasAllFilters = hasAllFilters && ($scope.products[i].filter_ids.split(',').indexOf(currentFilterIds[j]) !== -1);
+          for (var i = 0; i < $scope.products.length; i++) {
+            // A product should not be shown unless it has all of the current clicked filters
+            var hasAllFilters = true;
+            for (var j = 0; j < currentFilterIds.length; j++) {
+              hasAllFilters = hasAllFilters && ($scope.products[i].filter_ids.split(',').indexOf(currentFilterIds[j]) !== -1);
+            }
+            var shouldBeFiltered = !hasAllFilters;
+            $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': shouldBeFiltered});
           }
-          var shouldBeFiltered = !hasAllFilters;
-          $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': shouldBeFiltered});
         }
       }
 
@@ -1208,25 +1210,29 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
   .controller('productLinesCtrl', ['$scope', '$state', '$rootScope', '$ionicLoading', '$ionicHistory', '$ionicFilterBar', 'localStorageService', 'FileService', 'DatabaseService', 'appDataService', '$ionicPopover',
     function ($scope, $state, $rootScope, $ionicLoading, $ionicHistory, $ionicFilterBar, localStorageService, FileService, DatabaseService, appDataService, $ionicPopover) {
+
+    $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+      //Kinda hacky way to make sure filters stay current
+      if (toState.name === 'product_lines') {
+        //Get the filter ids for current category
+        var filter_ids = appDataService.getCurrentSelectedFilterIds();
+        //Apply the filter
+        applyFilter(filter_ids);
+      }
+    });
     //Set the titles and initialize empty array of filters
     $scope.filter_ids = appDataService.getFilterIds();
 
-    //Array storing artikel counts for each category
-    $scope.counts = localStorageService.getProductCounts();
+    $scope.goState = function (index) {
+      switch (index) {
+        case 0:
+          $state.go('products');
+          break;
 
-    //Whether to show the filter or not
-    $scope.showFilter = false;
-
-      $scope.goState = function (index) {
-        switch (index) {
-          case 0:
-            $state.go('products');
-            break;
-
-          case 1:
-            $state.go('product_lines');
-        }
-      };
+        case 1:
+          $state.go('product_lines');
+      }
+    };
 
       $scope.arrowStyle = function (index, length) {
         var indent = 18 * index;
@@ -1289,7 +1295,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Whether to a product is bookmarked
       $scope.showBookmark = false;
 
-
       //Once there are products bookmarked
       if (localStorageService.getBookmarkedProducts().length > 0) {
         $scope.showBookmark = true;
@@ -1309,159 +1314,114 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             }
           }
         }
-        //Add up the artikels
-        $scope.hide();
       }, function (error) {
         //Handle error
         console.log('ERROR',error);
       });
     }
 
+    $scope.counts = {};
+
     //Function to apply the filter
     function applyFilter(applied_filters) {
-      //Initialize totals to empty
-      $scope.total_filter = 0;
-      $scope.total_products = 0;
-      //Re-set array
-      $scope.counts = {};
 
+      if (Object.keys($scope.counts).length === 0) {
+        $scope.counts = localStorageService.getProductCounts();
+      }
 
-      //Product ids to download for check
-      var product_ids_to_download = [];
+      function getBottomLevelCategoriesHelper(category, allCategories) {
+        if (category.product_ids != '') {
+          return [category];
+        } else {
+          var categories = [];
+          var childCategories = allCategories.filter(function (cat) {
+            return cat.elternelement == category.uid;
+          });
+          childCategories.forEach(function (childCategory) {
+            categories = categories.concat(getBottomLevelCategoriesHelper(childCategory, allCategories));
+          });
 
-      // If empty then just add products
-      if (applied_filters.length == 0) {
+          return categories;
+        }
+      }
+
+      // If no filters applied or category has no filters, then just add products
+      if (applied_filters.length === 0 || $scope.filter_ids === '') {
+        $scope.showFilter = false;
         $scope.counts = localStorageService.getProductCounts();
         $scope.hide();
-        $scope.categories.forEach(function (category) {
-          var products = [];
-          DatabaseService.selectProducts(category.product_ids, function (results) {
-            for (var y = 0; y < results.rows.length; y++) {
-              products.push(results.rows.item(y));
-            }
-          });
-          console.log('setting category', category.uid);
-          appDataService.setCurrentFilteredProducts(category.uid, products);
-        });
       } else {
-        //all Categories
-        var allCategories = [];
+        $scope.show();
 
         //Get all categories
+        var allCategories = [];
         DatabaseService.selectAllCategories(function (results) {
           for (var x = 0; x < results.rows.length; x++) {
             allCategories.push(results.rows.item(x));
           }
-          $scope.categories.forEach(function (category) {
-            //Store the products and then crosscheck with filters
-            var products = [];
 
-            var atBottomLevel = category.product_ids != '';
-            // 2. If we are at the bottom level category
-            // Get the products and sum the #
-            if (atBottomLevel) {
-              DatabaseService.selectProducts(category.product_ids, function (results) {
-                for (var x = 0; x < results.rows.length; x++) {
-                  products.push(results.rows.item(x));
-                }
-                //Filtered products
-                var filteredProducts = products.slice();
-                //Loop over filters
-                applied_filters.forEach(function (filter) {
-                  //Filter the products
-                  filteredProducts = filteredProducts.filter(function (product) {
-                    return product.filter_ids.split(',').indexOf(filter) != -1;
-                  });
-                });
+          //Get all product ids from bottom level categories.
+          var categoriesWithAllProductIds = {};
+          $scope.categories.forEach(function (scopedCategory) {
+            var bottomLevelCategories = getBottomLevelCategoriesHelper(scopedCategory, allCategories);
+            categoriesWithAllProductIds[scopedCategory.uid] = [];
+            bottomLevelCategories.forEach(function(bottomLevelCategory){
+              categoriesWithAllProductIds[scopedCategory.uid] = categoriesWithAllProductIds[scopedCategory.uid].concat(bottomLevelCategory.product_ids.split(','));
+            });
+          });
 
-
-                //Store the filter products
-                appDataService.setCurrentFilteredProducts(category.uid, filteredProducts);
-                //Push in the lengths
-                $scope.counts[category.uid] = filteredProducts.length;
-
-                //Add them up
-                $scope.total_filter += filteredProducts.length;
-                $scope.total_products += products.length;
-              });
+          function getAllCategoryCounts(catsWithProducts, counts, totalFiltered, totalProducts) {
+            if (Object.keys(catsWithProducts).length === 0) {
+              $scope.counts = counts;
+              $scope.total_filter = totalFiltered;
+              $scope.total_products = totalProducts;
+              $scope.showFilter = true;
+              $scope.hide();
             } else {
-              var currentCategories = [category];
-              // 3. If we aren't at the bottom level,
-              // query all the child_ids until we get to the bottom level.
-              while (!atBottomLevel) {
-                // We copy over the current categories so we can reuse currentCategories
-                var tempCurrentCategories = currentCategories.slice();
-                currentCategories = [];
-                tempCurrentCategories.forEach(function (temp) {
-                  allCategories.forEach(function (cat) {
-                    if (cat.elternelement == temp.uid) {
-                      currentCategories.push(cat);
-                    }
-                  });
-                });
-                atBottomLevel = true;
-                // 3. if the first subcategory has product_ids
-                currentCategories.forEach(function (currentCat) {
-                  //Some categories may have two levels of sub categories
-                  // and so we also have to traverse that branch
-                  if (currentCat.product_ids != '') {
-                    product_ids_to_download = product_ids_to_download.concat(currentCat.product_ids.split(','));
-                  }
-                  atBottomLevel = atBottomLevel && currentCat.product_ids != '';
-                });
-                //Filter out sub categories with product ids
-                // and traverse next branch
-                currentCategories.filter(function (currentCat) {
-                  return currentCat.product_ids != '';
-                });
-              }
-              currentCategories.forEach(function (category) {
-                product_ids_to_download = product_ids_to_download.concat(category.product_ids);
-              });
-              DatabaseService.selectProducts(product_ids_to_download, function (results) {
+              $scope.showFilter = false;
+              var categoryToCount = Object.keys(catsWithProducts)[0];
+              var product_ids = catsWithProducts[categoryToCount];
+              var products = [];
+              DatabaseService.selectProducts(product_ids, function(results) {
                 for (var x = 0; x < results.rows.length; x++) {
                   products.push(results.rows.item(x));
                 }
-                //Filtered products
                 var filteredProducts = products.slice();
                 //Loop over filters
                 applied_filters.forEach(function (filter) {
                   //Filter the products
                   filteredProducts = filteredProducts.filter(function (product) {
-                    return product.filter_ids.split(',').indexOf(filter) != -1;
+                    return product.filter_ids.split(',').indexOf(filter) !== -1;
                   });
                 });
+                counts[categoryToCount] = filteredProducts.length;
 
-
-                //Store the filter products
-                appDataService.setCurrentFilteredProducts(category.uid, filteredProducts);
-
-                //Push in the lengths
-                $scope.counts[category.uid] = filteredProducts.length;
-                //Loading
-                $scope.hide();
                 //Add them up
-                $scope.total_filter += filteredProducts.length;
-                $scope.total_products += products.length;
+                totalFiltered += filteredProducts.length;
+                totalProducts += products.length;
+
+                delete catsWithProducts[categoryToCount];
+                getAllCategoryCounts(catsWithProducts, counts, totalFiltered, totalProducts);
               });
             }
-          });
+          }
+
+          var counts = Object.assign({}, $scope.counts);
+          getAllCategoryCounts(categoriesWithAllProductIds, counts, 0, 0);
         });
       }
-
     }
 
     //Get the correct childIds and then load them from database
     var child_ids = appDataService.getCurrentCategoryIds();
 
-      //Set the previous Child ids
-      appDataService.setPreviousChildIds(child_ids);
+    //Set the previous Child ids
+    appDataService.setPreviousChildIds(child_ids);
 
-      //Load the sub categories to display
+    //Load the sub categories to display
     loadSubCategories(child_ids);
 
-
-      //Popover function
+    //Popover function
     $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
       scope: $scope
     }).then(function (popover) {
@@ -1472,31 +1432,30 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     });
 
 
-      //Child choice
-      $scope.choice = function (child_ids, title) {
-        //If user chooses something with child ids
-        appDataService.addNavigatedCategory(title);
-        loadSubCategories(child_ids);
-        $scope.$emit('updateFilters');
-        $state.reload();
-      };
+    //Child choice
+    $scope.choice = function (child_ids, title) {
+      //If user chooses something with child ids
+      appDataService.addNavigatedCategory(title);
+      loadSubCategories(child_ids);
+      $scope.$emit('updateFilters');
+      $state.reload();
+    };
 
-      //Product Choice
-      $scope.choice_product = function (product_ids, title, category_id) {
-        // If user chooses something with product_ids
-        appDataService.setCurrentCategory(category_id);
-        appDataService.setCurrentCategoryIds(product_ids);
-        appDataService.addNavigatedCategory(title);
-        $state.go('product_overview');
-      };
+    //Product Choice
+    $scope.choice_product = function (product_ids, title, category_id) {
+      // If user chooses something with product_ids
+      appDataService.setCurrentCategory(category_id);
+      appDataService.setCurrentCategoryIds(product_ids);
+      appDataService.addNavigatedCategory(title);
+      $state.go('product_overview');
+    };
 
-      $scope.myEvent = function () {
-        $state.go('start-screen');
-      };
+    $scope.myEvent = function () {
+      $state.go('start-screen');
+    };
 
     //When user selects new filter
     $scope.$on('new-filter-uid', function () {
-      $scope.showFilter = true;
       //Get the filter ids for current category
       var filter_ids = appDataService.getCurrentSelectedFilterIds();
       //Apply the filter
@@ -2169,7 +2128,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       function getFilterGroups(filter_headings, filter_ids) {
         var groups = [];
-
+        var currentSelectedFilterIDs = appDataService.getCurrentSelectedFilterIds();
 
         filter_headings.forEach(function (filter_heading) {
           if (filter_heading.filters != null) {
@@ -2182,7 +2141,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               content.push({
                 uid: current_keys[i],
                 filter_content: filter_heading.filters[current_keys[i]],
-                checked: false
+                checked: currentSelectedFilterIDs.indexOf(current_keys[i]) !== -1
               });
             }
             if (content.length != 0) {

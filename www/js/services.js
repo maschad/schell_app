@@ -528,7 +528,6 @@ angular.module('app.services', [])
     var current_category_child_ids = [];
     var video_ids = [];
     var previous_category_child_ids = [];
-    var current_filtered_products = {};
     var current_product = {};
     var current_category = 0;
     $rootScope.navigated_categories = [];
@@ -647,18 +646,6 @@ angular.module('app.services', [])
     current_selected_filters.splice(current_selected_filters.indexOf(filter_uid), 1);
   };
 
-    var setCurrentFilteredProducts = function (category_id, data) {
-      current_filtered_products[category_id] = data;
-    };
-
-    var getCurrentFilteredProducts = function (category_id) {
-      if (current_filtered_products.hasOwnProperty(category_id.toString())) {
-        return current_filtered_products[category_id];
-      } else {
-        return false;
-      }
-    };
-
   var getCurrentSelectedFilterIds = function () {
     return current_selected_filters;
   };
@@ -708,9 +695,7 @@ angular.module('app.services', [])
       addCurrentSelectedFilterIds: addCurrentSelectedFiltersIds,
       removeCurrentSelectFilterId: removeCurrentSelectedFilterId,
       getCurrentSelectedFilterIds: getCurrentSelectedFilterIds,
-      clearSelectedFilters: clearSelectedFilters,
-      setCurrentFilteredProducts: setCurrentFilteredProducts,
-      getCurrentFilteredProducts: getCurrentFilteredProducts
+      clearSelectedFilters: clearSelectedFilters
     }
 
 
