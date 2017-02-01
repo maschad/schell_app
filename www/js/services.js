@@ -525,9 +525,8 @@ angular.module('app.services', [])
 
 //Service for storing in app Data to be shared between controllers
   .factory('appDataService', ['$rootScope', function ($rootScope) {
-    var current_category_child_ids = [];
+    var current_category_ids = [];
     var video_ids = [];
-    var previous_category_child_ids = [];
     var current_product = {};
     var current_category = 0;
     $rootScope.navigated_categories = [];
@@ -547,20 +546,21 @@ angular.module('app.services', [])
     };
 
     var getCurrentCategoryIds = function () {
-      return current_category_child_ids;
-    };
-
-    var getPreviousChildIds = function () {
-      if (previous_category_child_ids.length > 0) {
-        return previous_category_child_ids.pop();
+      if (current_category_ids.length > 0) {
+        return current_category_ids.pop();
       } else {
         return false;
       }
     };
 
-    var setPreviousChildIds = function (ids) {
-      previous_category_child_ids.push(ids);
+    var checkCurrentCategoryIds = function () {
+      if (current_category_ids.length > 0) {
+        return current_category_ids[current_category_ids.length - 1];
+      } else {
+        return false;
+      }
     };
+
 
     var setCurrentCategory = function (category) {
       current_category = category;
@@ -571,7 +571,7 @@ angular.module('app.services', [])
     };
 
     var setCurrentCategoryIds = function (category) {
-      current_category_child_ids = category;
+      current_category_ids.push(category);
     };
 
     var setCurrentProduct = function (data) {
@@ -600,6 +600,7 @@ angular.module('app.services', [])
 
     var clearNavigatedCategories = function () {
       $rootScope.navigated_categories = [];
+      current_category_ids = [];
     };
 
     var getPreviousTitle = function () {
@@ -672,8 +673,7 @@ angular.module('app.services', [])
       setVideoId: setVideoId,
       getCurrentCategoryIds : getCurrentCategoryIds,
       setCurrentCategoryIds : setCurrentCategoryIds,
-      getPreviousChildIds: getPreviousChildIds,
-      setPreviousChildIds: setPreviousChildIds,
+      checkCurrentCategoryIds: checkCurrentCategoryIds,
       setCurrentProduct : setCurrentProduct,
       setPreviousProduct: setPreviousProduct,
       getPreviousProduct: getPreviousProduct,
