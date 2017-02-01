@@ -15,20 +15,17 @@ angular.module('app.routes', [])
     })
 
     .state('products', {
-      cache: false,
       url: '/product_areas',
       templateUrl: 'templates/product_areas.html',
       controller: 'product_areasCtrl'
     })
     .state('product_overview', {
-      cache: false,
       url: '/product_overview',
       templateUrl: 'templates/product_overview.html',
       controller: 'productOverviewCtrl'
     })
 
   .state('video', {
-    cache: false,
     url: '/video',
     templateUrl: 'templates/video.html',
     controller: 'videoCtrl'
