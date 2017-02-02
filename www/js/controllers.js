@@ -196,9 +196,6 @@ angular.module('app.controllers', [])
         //Have to pop the until we reach the index the user has selected
         for (var i = length - 1; i > index; i--) {
           appDataService.removeNavigatedCategory();
-        }
-        //For some reason this is smaller
-        for (var j = length - 2; j > index; j--) {
           appDataService.getCurrentCategoryIds();
         }
 
@@ -220,6 +217,7 @@ angular.module('app.controllers', [])
       //History function
       $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
+        var pop = appDataService.getCurrentCategoryIds();
         $state.go('product_lines');
       });
 
@@ -326,13 +324,8 @@ angular.module('app.controllers', [])
 
 
     //load Products
-    getProducts(appDataService.getCurrentCategoryIds());
+      getProducts(appDataService.checkCurrentCategoryIds());
 
-      //History function
-      $scope.goBack = function () {
-        appDataService.removeNavigatedCategory();
-        $ionicHistory.goBack();
-      };
 
 
     //Popover function
@@ -348,6 +341,7 @@ angular.module('app.controllers', [])
 
     $scope.choice = function (product,title) {
       appDataService.addNavigatedCategory(title);
+      appDataService.setCurrentCategoryIds(product.uid);
       appDataService.setCurrentProduct(product);
       $state.go('detailPage');
     };
@@ -416,6 +410,8 @@ angular.module('app.controllers', [])
 
       //Set the title
       appDataService.addNavigatedCategory('PRODUKTE');
+      //To keep stacks in line
+      appDataService.setCurrentCategoryIds('');
 
       //Whether to a product is bookmarked
       $scope.showBookmark = false;
@@ -623,11 +619,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //Have to pop the until we reach the index the user has selected
         for (var i = length - 1; i > index; i--) {
           appDataService.removeNavigatedCategory();
-        }
-        //For some reason this is smaller
-        for (var j = length - 3; j > index; j--) {
           appDataService.getCurrentCategoryIds();
         }
+
         switch (index) {
           case 0:
             $state.go('products');
@@ -640,11 +634,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               $state.go('product_lines');
             }
             break;
-          case 3:
-            $state.go('product_overview');
-            break;
 
           case length - 1:
+            break;
+
+          case length - 2:
+            $state.go('product_overview');
             break;
 
           default:
@@ -669,6 +664,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //History function
       $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
+        var pop = appDataService.getCurrentCategoryIds();
         var product = appDataService.getPreviousProduct();
         if (!product) {
           $ionicHistory.goBack();
@@ -1288,19 +1284,18 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       };
 
       //History function
-      $scope.$on('go-back', function () {
-        console.log('called');
+      var goback = $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
         var child_ids = appDataService.getCurrentCategoryIds();
-        console.log('child_ids', child_ids);
-        if (appDataService.checkCurrentCategoryIds() == false) {
+        if (appDataService.checkCurrentCategoryIds() == '') {
           $state.go('products');
         } else {
           $scope.$emit('updateFilters');
           $state.reload();
         }
-
       });
+
+      $scope.$on('$destroy', goback);
 
     //Loading functions
     $scope.show = function() {
@@ -1489,7 +1484,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Product Choice
     $scope.choice_product = function (product_ids, title, category_id) {
       // If user chooses something with product_ids
-      appDataService.setCurrentCategory(category_id);
       appDataService.setCurrentCategoryIds(product_ids);
       appDataService.addNavigatedCategory(title);
       $state.go('product_overview');
@@ -1749,7 +1743,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
 
         bottomLevelCategories = helper(category, allCategories);
-        console.log('bottom level categories of ' + category.title_de + ' are :' );
 
         bottomLevelCategories.forEach(function(bottomLevelCategory) {
           console.log(bottomLevelCategory.title_de);

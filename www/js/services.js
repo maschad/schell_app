@@ -528,7 +528,6 @@ angular.module('app.services', [])
     var current_category_ids = [];
     var video_ids = [];
     var current_product = {};
-    var current_category = 0;
     $rootScope.navigated_categories = [];
     var previousProduct = [];
     var previous_title = '';
@@ -561,13 +560,8 @@ angular.module('app.services', [])
       }
     };
 
-
-    var setCurrentCategory = function (category) {
-      current_category = category;
-    };
-
-    var getCurrentCategory = function () {
-      return current_category;
+    var categoryids = function () {
+      return current_category_ids;
     };
 
     var setCurrentCategoryIds = function (category) {
@@ -672,14 +666,13 @@ angular.module('app.services', [])
       getVideoIds: getVideoIds,
       setVideoId: setVideoId,
       getCurrentCategoryIds : getCurrentCategoryIds,
+      categoryids: categoryids,
       setCurrentCategoryIds : setCurrentCategoryIds,
       checkCurrentCategoryIds: checkCurrentCategoryIds,
       setCurrentProduct : setCurrentProduct,
       setPreviousProduct: setPreviousProduct,
       getPreviousProduct: getPreviousProduct,
       getCurrentProduct : getCurrentProduct,
-      setCurrentCategory: setCurrentCategory,
-      getCurrentCategory: getCurrentCategory,
       getNavigatedCategories: getNavigatedCategories,
       checkInternet: checkInternet,
       addNavigatedCategory: addNavigatedCategory,
