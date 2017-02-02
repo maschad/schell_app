@@ -192,17 +192,22 @@ angular.module('app.controllers', [])
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $rootScope, $ionicLoading, $ionicHistory, $state, appDataService, FileService, DatabaseService, localStorageService, $ionicPopover) {
       //Breadcrumb state changer
-      $scope.goState = function (index) {
+      $scope.goState = function (index, length) {
+        //Have to pop the until we reach the index the user has selected
+        for (var i = length - 1; i > index; i--) {
+          appDataService.removeNavigatedCategory();
+          appDataService.getCurrentCategoryIds();
+        }
+
         switch (index) {
           case 0:
             $state.go('products');
             break;
 
-          case 1:
-            $state.go('product_lines');
+          case length - 1:
             break;
 
-          case 2:
+          default:
             $state.go('product_lines');
             break;
         }
@@ -212,6 +217,7 @@ angular.module('app.controllers', [])
       //History function
       $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
+        var pop = appDataService.getCurrentCategoryIds();
         $state.go('product_lines');
       });
 
@@ -300,7 +306,7 @@ angular.module('app.controllers', [])
               $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
 
             } else if ($rootScope.internet) {
-              //#TODO: remebr to uncomment downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
+              downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
             }
           }
 
@@ -318,13 +324,8 @@ angular.module('app.controllers', [])
 
 
     //load Products
-    getProducts(appDataService.getCurrentCategoryIds());
+      getProducts(appDataService.checkCurrentCategoryIds());
 
-      //History function
-      $scope.goBack = function () {
-        appDataService.removeNavigatedCategory();
-        $ionicHistory.goBack();
-      };
 
 
     //Popover function
@@ -340,6 +341,7 @@ angular.module('app.controllers', [])
 
     $scope.choice = function (product,title) {
       appDataService.addNavigatedCategory(title);
+      appDataService.setCurrentCategoryIds(product.uid);
       appDataService.setCurrentProduct(product);
       $state.go('detailPage');
     };
@@ -408,6 +410,8 @@ angular.module('app.controllers', [])
 
       //Set the title
       appDataService.addNavigatedCategory('PRODUKTE');
+      //To keep stacks in line
+      appDataService.setCurrentCategoryIds('');
 
       //Whether to a product is bookmarked
       $scope.showBookmark = false;
@@ -427,8 +431,7 @@ angular.module('app.controllers', [])
             $scope.categories[x].bild = localStorageService.getBildPath(uid);
 
           } else if ($rootScope.internet) {
-            //#TODO: remember to uncomment
-            // downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
+            downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
           }
         }
         $scope.hideLoad();
@@ -612,22 +615,35 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 
       //Breadcrumb state changer
-      $scope.goState = function (index) {
+      $scope.goState = function (index, length) {
+        //Have to pop the until we reach the index the user has selected
+        for (var i = length - 1; i > index; i--) {
+          appDataService.removeNavigatedCategory();
+          appDataService.getCurrentCategoryIds();
+        }
+
         switch (index) {
           case 0:
             $state.go('products');
             break;
 
           case 1:
-            $state.go('product_lines');
+            if ($rootScope.navigated_categories.includes('SUCHE')) {
+              $state.go('searchPage');
+            } else {
+              $state.go('product_lines');
+            }
             break;
 
-          case 2:
-            $state.go('product_lines');
+          case length - 1:
             break;
 
-          case 3:
+          case length - 2:
             $state.go('product_overview');
+            break;
+
+          default:
+            $state.go('product_lines');
             break;
         }
       };
@@ -648,6 +664,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //History function
       $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
+        var pop = appDataService.getCurrentCategoryIds();
         var product = appDataService.getPreviousProduct();
         if (!product) {
           $ionicHistory.goBack();
@@ -661,7 +678,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Loading functions
       $scope.show = function () {
         $ionicLoading.show({
-          template: '<p>Downloading Data...</p><ion-spinner></ion-spinner>',
+          template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
           animation: 'fade-in',
           showBackdrop: true
         });
@@ -1236,14 +1253,24 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Set the titles and initialize empty array of filters
     $scope.filter_ids = appDataService.getFilterIds();
 
-    $scope.goState = function (index) {
-      switch (index) {
+      $scope.goState = function (index, length) {
+        //Have to pop the until we reach the index the user has selected
+        for (var i = length - 1; i > index; i--) {
+          appDataService.removeNavigatedCategory();
+          appDataService.getCurrentCategoryIds();
+        }
+
+        switch (index) {
         case 0:
           $state.go('products');
           break;
 
-        case 1:
-          $state.go('product_lines');
+          case length - 1:
+          break;
+
+        default:
+          $state.reload();
+          break;
       }
     };
 
@@ -1257,19 +1284,18 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       };
 
       //History function
-      $scope.$on('go-back', function () {
-        console.log('called');
+      var goback = $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
         var child_ids = appDataService.getCurrentCategoryIds();
-        console.log('child_ids', child_ids);
-        if (appDataService.checkCurrentCategoryIds() == false) {
+        if (appDataService.checkCurrentCategoryIds() == '') {
           $state.go('products');
         } else {
           $scope.$emit('updateFilters');
           $state.reload();
         }
-
       });
+
+      $scope.$on('$destroy', goback);
 
     //Loading functions
     $scope.show = function() {
@@ -1323,7 +1349,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
               $scope.categories[x].bild = localStorageService.getBildPath(uid);
             } else if ($rootScope.internet) {
-              //downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
+              downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
             }
           }
         }
@@ -1458,7 +1484,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Product Choice
     $scope.choice_product = function (product_ids, title, category_id) {
       // If user chooses something with product_ids
-      appDataService.setCurrentCategory(category_id);
       appDataService.setCurrentCategoryIds(product_ids);
       appDataService.addNavigatedCategory(title);
       $state.go('product_overview');
@@ -1718,7 +1743,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
 
         bottomLevelCategories = helper(category, allCategories);
-        console.log('bottom level categories of ' + category.title_de + ' are :' );
 
         bottomLevelCategories.forEach(function(bottomLevelCategory) {
           console.log(bottomLevelCategory.title_de);
@@ -2065,6 +2089,16 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Whether filter has been activated.
     $scope.showFilter = false;
 
+    //When navigating here just clear the categories
+    $scope.$on('$ionicView.afterEnter', function () {
+      appDataService.clearNavigatedCategories();
+      //Add Home as default
+      appDataService.addNavigatedCategory('PRODUKTE');
+      //Add search to navigated categories.
+      appDataService.addNavigatedCategory('SUCHE');
+
+    });
+
 
     //The filter/search bar using ionic filter bar plugin
     $scope.showFilterBar = function () {
@@ -2077,6 +2111,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         var filterBarInstance = $ionicFilterBar.show({
           items: products,
           cancelText: 'Abbrechen',
+          debounce: true,
+          delay: 1000,
           cancel: function () {
             loadCategories();
             $state.reload();
@@ -2094,7 +2130,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //History function
     $scope.$on('go-back', function () {
-      $ionicHistory.goBack();
+      $state.go('products');
     });
 
     //When user chooses a product
