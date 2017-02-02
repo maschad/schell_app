@@ -3,7 +3,7 @@
     <!-- Filter search bar -
     <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
     </button> -->
-    <input ng-model="searchText" ng-keypress="search">
+    <input type="search" ng-model="searchText" ng-keypress="search($event)">
   </ion-nav-buttons>
   <ion-content padding="false" class="has-header">
     <div id="product-overview-body">

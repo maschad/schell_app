@@ -2128,7 +2128,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Initalize products
     $scope.products = [];
-      $scope.searchText = '';
+    $scope.searchText = '';
 
 
     //Whether filter has been activated.
@@ -2155,17 +2155,16 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $ionicLoading.hide();
       };
 
-      $scope.search = function (keyEvent) {
-        console.log('function called');
-        if (keyEvent.keyCode == 13) {
-          console.log('enter key pressed');
-          console.log('search text', $scope.searchText);
-          DatabaseService.searchProducts($scope.searchText, function (results) {
-            for (var x = 0; x < results.rows.length; x++) {
-              $scope.products.push(results.rows.item(x));
-            }
-          });
-        }
+      $scope.search = function($event) {
+        var searchText = $event.target.value;
+        $scope.show();
+        $scope.products = [];
+        DatabaseService.searchProducts(searchText, function (results) {
+          for (var x = 0; x < results.rows.length; x++) {
+            $scope.products.push(results.rows.item(x));
+          }
+          $scope.hide();
+        });
       };
 
 
