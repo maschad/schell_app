@@ -2128,6 +2128,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Initalize products
     $scope.products = [];
+      $scope.searchText = '';
+
 
     //Whether filter has been activated.
     $scope.showFilter = false;
@@ -2153,9 +2155,24 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $ionicLoading.hide();
       };
 
-      function loadProducts(start, end) {
-        $scope.show();
+      $scope.search = function (keyEvent) {
+        console.log('function called');
+        if (keyEvent.keyCode == 13) {
+          console.log('enter key pressed');
+          console.log('search text', $scope.searchText);
+          DatabaseService.searchProducts($scope.searchText, function (results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              $scope.products.push(results.rows.item(x));
+            }
+          });
+        }
+      };
 
+
+      /**
+
+       function loadProducts(start, end) {
+        $scope.show();
         DatabaseService.selectAllProducts(function (results) {
           if (end > results.rows.length) {
             return false;
@@ -2168,14 +2185,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         });
       }
 
-      //Load the products.
-      loadProducts(0, 10);
+       //Load the products.
+       loadProducts(0, 10);
 
 
     //The filter/search bar using ionic filter bar plugin
     $scope.showFilterBar = function () {
-      var start = 0;
-      var end = 10;
       $scope.showFilter = true;
       var filterBarInstance = $ionicFilterBar.show({
         items: $scope.products,
@@ -2186,19 +2201,19 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           return value.nummer.includes(filterText) || value.produktbezeichnung_de.includes(filterText.toUpperCase()) || value.produktbezeichnung_de.includes(filterText) || value.beschreibung_de.includes(filterText);
         },
         update: function (filteredItems, filterText) {
+          console.log('start', start);
+          console.log('end', end);
           if (filteredItems.length == 0) {
             if (!loadProducts(start, end)) {
               $scope.products = [];
             } else {
-              loadProducts(start, end);
-              start += 10;
-              end += 10;
+              loadProducts(start+10, end+10);
             }
           }
           $scope.products = filteredItems;
         }
       });
-    };
+    };**/
 
 
     //History function
