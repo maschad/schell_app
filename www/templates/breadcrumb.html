@@ -2,7 +2,7 @@
   <ion-content>
     <div class="breadcrumb" ng-click="popover.hide()">
       <div ng-repeat="category in navigated_categories">
-        <div ng-click="goState($index)">
+        <div ng-click="goState($index, navigated_categories.length)">
           <div class="item" ng-style="arrowStyle($index, navigated_categories.length)" ng-bind-html="category | split | normalize">
           </div>
         </div>

@@ -192,7 +192,16 @@ angular.module('app.controllers', [])
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $rootScope, $ionicLoading, $ionicHistory, $state, appDataService, FileService, DatabaseService, localStorageService, $ionicPopover) {
       //Breadcrumb state changer
-      $scope.goState = function (index) {
+      $scope.goState = function (index, length) {
+        //Have to pop the until we reach the index the user has selected
+        for (var i = length - 1; i > index; i--) {
+          appDataService.removeNavigatedCategory();
+        }
+        //For some reason this is smaller
+        for (var j = length - 2; j > index; j--) {
+          appDataService.getCurrentCategoryIds();
+        }
+
         switch (index) {
           case 0:
             $state.go('products');
@@ -202,7 +211,7 @@ angular.module('app.controllers', [])
             $state.go('product_lines');
             break;
 
-          case 2:
+          default:
             $state.go('product_lines');
             break;
         }
@@ -611,7 +620,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 
       //Breadcrumb state changer
-      $scope.goState = function (index) {
+      $scope.goState = function (index, length) {
+        //Have to pop the until we reach the index the user has selected
+        for (var i = length - 1; i > index; i--) {
+          appDataService.removeNavigatedCategory();
+        }
+        //For some reason this is smaller
+        for (var j = length - 3; j > index; j--) {
+          appDataService.getCurrentCategoryIds();
+        }
         switch (index) {
           case 0:
             $state.go('products');
@@ -624,13 +641,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               $state.go('product_lines');
             }
             break;
-
-          case 2:
-            $state.go('product_lines');
-            break;
-
           case 3:
             $state.go('product_overview');
+            break;
+
+          default:
+            $state.go('product_lines');
             break;
         }
       };
@@ -1239,14 +1255,27 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Set the titles and initialize empty array of filters
     $scope.filter_ids = appDataService.getFilterIds();
 
-    $scope.goState = function (index) {
+      $scope.goState = function (index, length) {
+        //Have to pop the until we reach the index the user has selected
+        for (var i = length - 1; i > index; i--) {
+          appDataService.removeNavigatedCategory();
+        }
+        //For some reason this is smaller
+        for (var j = length - 2; j > index; j--) {
+          appDataService.getCurrentCategoryIds();
+        }
       switch (index) {
         case 0:
           $state.go('products');
           break;
 
         case 1:
-          $state.go('product_lines');
+          $state.reload();
+          break;
+
+        default:
+          $state.reload();
+          break;
       }
     };
 
