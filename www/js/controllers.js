@@ -1259,12 +1259,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //Have to pop the until we reach the index the user has selected
         for (var i = length - 1; i > index; i--) {
           appDataService.removeNavigatedCategory();
-        }
-        //For some reason this is smaller
-        for (var j = length - 2; j > index; j--) {
           appDataService.getCurrentCategoryIds();
         }
-      switch (index) {
+
+
+        switch (index) {
         case 0:
           $state.go('products');
           break;
