@@ -21,6 +21,7 @@ angular.module('app.routes', [])
       controller: 'product_areasCtrl'
     })
     .state('product_overview', {
+      cache: false,
       url: '/product_overview',
       templateUrl: 'templates/product_overview.html',
       controller: 'productOverviewCtrl'
