@@ -2070,11 +2070,14 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     $scope.showFilter = false;
 
     //When navigating here just clear the categories
-    appDataService.clearNavigatedCategories();
-    //Add Home as default
-    appDataService.addNavigatedCategory('PRODUKTE');
-    //Add search to navigated categories.
-    appDataService.addNavigatedCategory('SUCHE');
+    $scope.$on('$ionicView.afterEnter', function () {
+      appDataService.clearNavigatedCategories();
+      //Add Home as default
+      appDataService.addNavigatedCategory('PRODUKTE');
+      //Add search to navigated categories.
+      appDataService.addNavigatedCategory('SUCHE');
+
+    });
 
 
     //The filter/search bar using ionic filter bar plugin
