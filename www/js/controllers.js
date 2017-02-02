@@ -732,130 +732,153 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           $scope.details.image_landscape = localStorageService.getLandscapePath($scope.details.uid);
           $scope.details.technical_drawing_link = localStorageService.getTechnicalPath($scope.details.uid);
         }
-        //Load Downloads and videos
-        if ($scope.details.download_ids != '') {
-          getFiles($scope.details.download_ids);
+
+
+        getFiles($scope.details.download_ids); //Downloads PDFs then goes to videos...
+      }
+
+      //Function to load files
+      function getFiles(download_ids) {
+        if (download_ids === '') {
+          getVideos($scope.details.video_ids); // Downloads videos then gets varianten
+        } else {
+          DatabaseService.selectDownloads(download_ids, function (downloads) {
+            for(var x = 0; x < downloads.rows.length; x++){
+              if (downloads.rows.item(x).datei_de.includes('pdf')) {
+                $scope.files.push(downloads.rows.item(x));
+              }
+            }
+            //If no internet load local path
+            if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
+              $scope.files.forEach(function (file, index) {
+                file.thumbnail = localStorageService.getThumbnailPath($scope.detail.uid, index);
+              });
+            }
+            getVideos($scope.details.video_ids);
+          });
         }
-        if ($scope.details.video_ids != '') {
-          getVideos($scope.details.video_ids);
+      }
+
+      function getVideos(video_ids) {
+        if (video_ids === '') {
+          getProductVariations($scope.details.varianten); //Downloads varianten then goes to awards...
+        } else {
+          DatabaseService.selectVideos(video_ids, function(videos){
+            for(var x = 0; x < videos.rows.length; x++){
+              $scope.videos.push(videos.rows.item(x));
+              if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
+                console.log('videofile', $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid));
+                $scope.videos[x].startimage_de = localStorageService.getVideoImagePath($scope.videos[x].uid);
+                $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
+              }
+            }
+            getProductVariations($scope.details.varianten);
+          });
         }
-        if ($scope.details.varianten != '') {
-          getProductVariations($scope.details.varianten);
-        }
-        if ($scope.details.designpreis != '') {
-          getAwards($scope.details.designpreis);
-        }
-        if ($scope.details.b_artikel_id != '') {
-          getAccessories($scope.details.b_artikel_id);
+      }
+
+      //Load the varianten field for products
+      function getProductVariations(uids) {
+        if (uids === '') {
+          getAwards($scope.details.designpreis); //Downloads awards then goes to accessories
+        } else {
+          //Initialize empty array
+          $scope.productVariations = [];
+          //Populate array
+          DatabaseService.selectProducts(uids, function (results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              $scope.productVariations.push(results.rows.item(x));
+            }
+            getAwards($scope.details.designpreis);
+          });
         }
       }
 
       //Load the awards images
       function getAwards(award_ids) {
-
-        DatabaseService.selectAwards(award_ids, function (results) {
-          for (var x = 0; x < results.rows.length; x++) {
-            $scope.awards.push(results.rows.item(x));
-          }
-          if (!$rootScope.internet && $scope.productDownloaded) {
-            $scope.awards[x].logo = localStorageService.getAwardPath($scope.details.uid, x);
-
-          }
-        });
-      }
-
-      //Load the accessories
-      function getAccessories(artikel_id) {
-        //Initialize as empty
-        $scope.emfolene = [];
-        $scope.verbindung = [];
-        $scope.notwendige = [];
-
-
-        //For Each item, we change the status, and check the verknuepfung field to determine what to pull
-        DatabaseService.selectAccessories(artikel_id, 0, function (results) {
-          for (var i = 0; i < results.rows.length; i++) {
-            //If oder is true, we ought to store oder
-            var oder = results.rows.item(i).verknuepfung == 1;
-            DatabaseService.selectProductsByBArtikelId(results.rows.item(i).pos_b_artikel_id, function (products) {
-              for (var a = 0; a < products.rows.length; a++) {
-                $scope.notwendige.push({product: products.rows.item(a), oder: oder});
-              }
-            });
-          }
-        });
-
-        //For Each item, we change the status, and check the verknuepfung field to determine what to pull
-        DatabaseService.selectAccessories(artikel_id, 1, function (results) {
-          for (var j = 0; j < results.rows.length; j++) {
-            //If oder is true, we ought to store oder
-            var oder = results.rows.item(j).verknuepfung == 1;
-            DatabaseService.selectProductsByBArtikelId(results.rows.item(j).pos_b_artikel_id, function (products) {
-              for (var b = 0; b < products.rows.length; b++) {
-                $scope.emfolene.push({product: products.rows.item(b), oder: oder});
-              }
-            });
-          }
-        });
-
-        //For Each item, we change the status, and check the verknuepfung field to determine what to pull
-        DatabaseService.selectAccessories(artikel_id, 2, function (results) {
-          for (var k = 0; k < results.rows.length; k++) {
-            //If oder is true, we ought to store oder
-            var oder = results.rows.item(k).verknuepfung == 1;
-            DatabaseService.selectProductsByBArtikelId(results.rows.item(k).pos_b_artikel_id, function (products) {
-              for (var c = 0; c < products.rows.length; c++) {
-                $scope.verbindung.push({product: products.rows.item(c), oder: oder});
-              }
-            });
-          }
-          $scope.hide();
-        });
-      }
-
-
-      //Load the varianten field for products
-      function getProductVariations(uids) {
-        //Initialize empty array
-        $scope.productVariations = [];
-        //Populate array
-        DatabaseService.selectProducts(uids, function (results) {
-          for (var x = 0; x < results.rows.length; x++) {
-            $scope.productVariations.push(results.rows.item(x));
-          }
-        })
-      }
-
-    //Function to load files
-    function getFiles(download_ids) {
-      DatabaseService.selectDownloads(download_ids, function (downloads) {
-        for(var x = 0; x < downloads.rows.length; x++){
-          if (downloads.rows.item(x).datei_de.includes('pdf')) {
-            $scope.files.push(downloads.rows.item(x));
-          }
-        }
-        //If no internet load local path
-        if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
-          $scope.files.forEach(function (file, index) {
-            file.thumbnail = localStorageService.getThumbnailPath($scope.detail.uid, index);
+        if (award_ids === '') {
+          getNotwendige($scope.details.b_artikel_id); //Downloads Notwendige then gets Emfolene
+        } else {
+          DatabaseService.selectAwards(award_ids, function (results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              $scope.awards.push(results.rows.item(x));
+            }
+            if (!$rootScope.internet && $scope.productDownloaded) {
+              $scope.awards[x].logo = localStorageService.getAwardPath($scope.details.uid, x);
+            }
+            getNotwendige($scope.details.b_artikel_id); //Downloads Notwendige then gets Emfolene
           });
         }
-      })
-    }
+      }
 
-    function getVideos(video_ids) {
-      DatabaseService.selectVideos(video_ids, function(videos){
-        for(var x = 0; x < videos.rows.length; x++){
-          $scope.videos.push(videos.rows.item(x));
-          if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
-            console.log('videofile', $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid));
-            $scope.videos[x].startimage_de = localStorageService.getVideoImagePath($scope.videos[x].uid);
-            $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
+      function getNotwendige(artikel_id) {
+        $scope.notwendige = [];
+        DatabaseService.selectAccessories(artikel_id, 0, function (results) {
+          if (results.rows.length === 0) {
+            getEmfolene(artikel_id); //Gets Emfolene then gets In Verbindung
+          } else {
+            var oder = {}; //Stores whether a product is "oder" or not
+            for (var i = 0; i < results.rows.length; i++) {
+              oder[results.rows.item(i).pos_b_artikel_id] = results.rows.item(i).verknuepfung == 1;
+            }
+            //The keys of oder are the b_artikel_ids we can use to query the products.
+            var notwendige_ids = Object.keys(oder); //Keeps track of all the pos_b_artikel_ids;
+            DatabaseService.selectProductsByBArtikelId(notwendige_ids, function (products) {
+              for (var a = 0; a < products.rows.length; a++) {
+                $scope.notwendige.push({product: products.rows.item(a), oder: oder[products.rows.item(a).b_artikel_id]});
+              }
+              getEmfolene(artikel_id); //Gets Emfolene then gets In Verbindung
+            });
           }
-        }
+        });
+      }
 
-      });
-    }
+      function getEmfolene(artikel_id) {
+        $scope.emfolene = [];
+        DatabaseService.selectAccessories(artikel_id, 1, function (results) {
+          if (results.rows.length === 0) {
+            getVerbindung(artikel_id); //Gets Verbindung then hides loading screen
+          } else {
+            var oder = {}; //Stores whether a product is "oder" or not
+            for (var i = 0; i < results.rows.length; i++) {
+              oder[results.rows.item(i).pos_b_artikel_id] = results.rows.item(i).verknuepfung == 1;
+            }
+            //The keys of oder are the b_artikel_ids we can use to query the products.
+            var emfolene_ids = Object.keys(oder); //Keeps track of all the pos_b_artikel_ids;
+            DatabaseService.selectProductsByBArtikelId(emfolene_ids, function (products) {
+              for (var a = 0; a < products.rows.length; a++) {
+                $scope.emfolene.push({product: products.rows.item(a), oder: oder[products.rows.item(a).b_artikel_id]});
+              }
+              getVerbindung(artikel_id); //Gets Verbindung then hides loading screen
+            });
+          }
+        });
+      }
+
+      function getVerbindung(artikel_id) {
+        $scope.verbindung = [];
+        DatabaseService.selectAccessories(artikel_id, 2, function (results) {
+          if (results.rows.length === 0) {
+            console.log("emfolene length " + $scope.emfolene.length);
+            console.log("verbindung length " + $scope.verbindung.length);
+            console.log("notwendige length " + $scope.notwendige.length);
+            $scope.hide();
+          } else {
+            var oder = {}; //Stores whether a product is "oder" or not
+            for (var i = 0; i < results.rows.length; i++) {
+              oder[results.rows.item(i).pos_b_artikel_id] = results.rows.item(i).verknuepfung == 1;
+            }
+            //The keys of oder are the b_artikel_ids we can use to query the products.
+            var verbindung_ids = Object.keys(oder); //Keeps track of all the pos_b_artikel_ids;
+            DatabaseService.selectProductsByBArtikelId(verbindung_ids, function (products) {
+              for (var a = 0; a < products.rows.length; a++) {
+                $scope.verbindung.push({product: products.rows.item(a), oder: oder[products.rows.item(a).b_artikel_id]});
+              }
+              $scope.hide();
+            });
+          }
+        });
+      }
 
       function downloadPDFFiles(pdfFiles) {
         if (pdfFiles.length == 0) {
@@ -989,104 +1012,124 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       loadProduct();
 
 
-    //Bookmark Function
-    $scope.bookmark = function () {
-      if (!localStorageService.bookmarkProduct($scope.details)) {
-        var confirmPopup = $ionicPopup.confirm({
-          title: 'Artikel befindet sich bereits in der Merkliste.',
-          cssClass: 'bookmark-popup',
-          cancelText: 'Abbrechen',
-          okText: 'Merkliste öffnen'
-        });
-        confirmPopup.then(function(res) {
-          if(res) {
-            $state.go('bookmark');
-          } else {
-            console.log('Still on product detail page');
-          }
-        });
-      } else {
-        $ionicPopup.alert({
-          title: 'Seite bookmarkiert',
-          cssClass: 'bookmark-popup'
-        });
-        $scope.bookmarked = true;
-      }
-    };
-
-    //Download PDF
-    $scope.showPDF = false;
-      $scope.downloadPDF = function (file, index) {
-      appDataService.checkInternet();
-      if ($rootScope.internet) {
-        $scope.pdfUrl = file.datei_de;
-        console.log('pdf url', $scope.pdfUrl);
-      } else {
-        $scope.pdfUrl = localStorageService.getPDFPath($scope.details.uid, 'de', index);
-        console.log('pdf url', $scope.pdfUrl);
-      }
-      $scope.showPDF = true;
-      var options = {
-        location: 'no',
-        clearcache: 'yes',
-        toolbar: 'yes',
-        closebuttoncaption: 'Close',
-        enableViewportScale: 'yes'
+      //Bookmark Function
+      $scope.bookmark = function () {
+        if (!localStorageService.bookmarkProduct($scope.details)) {
+          var confirmPopup = $ionicPopup.confirm({
+            title: 'Artikel befindet sich bereits in der Merkliste.',
+            cssClass: 'bookmark-popup',
+            cancelText: 'Abbrechen',
+            okText: 'Merkliste öffnen'
+          });
+          confirmPopup.then(function(res) {
+            if(res) {
+              $state.go('bookmark');
+            } else {
+              console.log('Still on product detail page');
+            }
+          });
+        } else {
+          $ionicPopup.alert({
+            title: 'Seite bookmarkiert',
+            cssClass: 'bookmark-popup'
+          });
+          $scope.bookmarked = true;
+        }
       };
-      $cordovaInAppBrowser.open($scope.pdfUrl, '_blank',options);
-    };
+
+      //Download PDF
+      $scope.showPDF = false;
+      $scope.downloadPDF = function (file, index) {
+        appDataService.checkInternet();
+        if ($rootScope.internet) {
+          $scope.pdfUrl = file.datei_de;
+          console.log('pdf url', $scope.pdfUrl);
+        } else {
+          $scope.pdfUrl = localStorageService.getPDFPath($scope.details.uid, 'de', index);
+          console.log('pdf url', $scope.pdfUrl);
+        }
+        $scope.showPDF = true;
+        var options = {
+          location: 'no',
+          clearcache: 'yes',
+          toolbar: 'yes',
+          closebuttoncaption: 'Close',
+          enableViewportScale: 'yes'
+        };
+        $cordovaInAppBrowser.open($scope.pdfUrl, '_blank',options);
+      };
 
       $scope.listData = ([
-        {
-          title : 'TECHNISCHE ZEICHNUNG',
-          show: false,
-          hasData: $scope.details.technical_drawing_link
-        },
-        {
-          title : 'LIEFERUMFANG',
-          show: false,
-          hasData: $scope.details.lieferumfang_de
-        },
-        {
-          title : 'EINSATZBEREICH / TECHNISCHE DATEN',
-          show: false,
-          hasData: $scope.details.einsatzbereich_de
-        },
-        {
-          title : 'DETAILS',
-          show: false,
-          hasData: $scope.details.werkstoff_de
-        },
-        {
-          title : 'DOWNLOADS',
-          show: false,
-          hasData: $scope.details.download_ids
-        },
-        {
-          title : 'VARIANTEN',
-          show: false,
-          hasData: $scope.details.varianten
-        },
-        {
-          title : 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL',
-          show: false,
-          hasData: $scope.emfolene
-        },
-        {
-          title : 'VIDEO',
-          show: false,
-          hasData: $scope.details.video_ids
-        },
-        {
-          title: 'VERBINDUNG',
-          show: false,
-          hasData: $scope.verbindung
-        },
-        {
-          title: 'NOTWENDIGE ZUGEHÖRIGE',
-          show: false,
-          hasData: $scope.notwendige
-        }
+          {
+            title : 'TECHNISCHE ZEICHNUNG',
+            show: false,
+            hasData: function() {
+              return $scope.details.technical_drawing_link !== '';
+            }
+          },
+          {
+            title : 'LIEFERUMFANG',
+            show: false,
+            hasData: function () {
+              return $scope.details.lieferumfang_de !== '';
+            }
+          },
+          {
+            title : 'EINSATZBEREICH / TECHNISCHE DATEN',
+            show: false,
+            hasData: function() {
+              return $scope.details.einsatzbereich_de !== '';
+            }
+          },
+          {
+            title : 'DETAILS',
+            show: false,
+            hasData: function() {
+              return $scope.details.werkstoff_de !== '';
+            }
+          },
+          {
+            title : 'DOWNLOADS',
+            show: false,
+            hasData: function() {
+              return $scope.details.download_ids !== '';
+            }
+          },
+          {
+            title : 'VARIANTEN',
+            show: false,
+            hasData: function() {
+              return $scope.details.varianten !== '';
+            }
+          },
+          {
+            title : 'EMPFOHLENE ZUGEHÖRIGE ARTIKEL',
+            show: false,
+            hasData: function() {
+              return typeof $scope.emfolene !== "undefined" && $scope.emfolene.length > 0;
+            }
+          },
+          {
+            title : 'VIDEO',
+            show: false,
+            hasData: function() {
+              return $scope.details.video_ids !== '';
+            }
+          },
+          {
+            title: 'VERBINDUNG',
+            show: false,
+            hasData: function() {
+              return typeof $scope.verbindung !== "undefined" && $scope.verbindung.length > 0;
+            }
+          },
+          {
+            title: 'NOTWENDIGE ZUGEHÖRIGE',
+            show: false,
+            hasData: function() {
+              return typeof $scope.notwendige !== "undefined" && $scope.notwendige.length > 0;
+            }
+          }
 
       ]);
 
@@ -1123,69 +1166,68 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         }
       };
 
-  //return trusted external links
-  $scope.trustSrc = function (src) {
-    return $sce.trustAsResourceUrl(src);
-  };
-  //Toggle collapsable list
-  $scope.toggleGroup = function (group) {
-    group.show = !group.show;
-  };
-  //Which product to show for collapsable list
-  $scope.isGroupShown = function (group) {
-    return group.show;
-  };
+      //return trusted external links
+      $scope.trustSrc = function (src) {
+        return $sce.trustAsResourceUrl(src);
+      };
+      //Toggle collapsable list
+      $scope.toggleGroup = function (group) {
+        group.show = !group.show;
+      };
+      //Which product to show for collapsable list
+      $scope.isGroupShown = function (group) {
+        return group.show;
+      };
 
-  //Popover function
-  $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
-    scope: $scope
-  }).then(function (popover) {
-    $scope.popover = popover;
-    //Ensure popover is android
-    document.body.classList.remove('platform-ios');
-    document.body.classList.add('platform-android');
-  });
+      //Popover function
+      $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
+        scope: $scope
+      }).then(function (popover) {
+        $scope.popover = popover;
+        //Ensure popover is android
+        document.body.classList.remove('platform-ios');
+        document.body.classList.add('platform-android');
+      });
 
+      $scope.sendEmail = function () {
+        var link = $scope.details.permalink;
+        var number = '';
+        var nummerString = $scope.details.nummer.toString();
 
-  $scope.sendEmail = function () {
-    var link = $scope.details.permalink;
-    var number = '';
-    var nummerString = $scope.details.nummer.toString();
+        for (var i = 0; i < nummerString.length; i++) {
+          if (i == 2 || i == 5 || i == 7 || i == 9) {
+            number = number.concat(" " + nummerString[i]);
 
-    for (var i = 0; i < nummerString.length; i++) {
-      if (i == 2 || i == 5 || i == 7 || i == 9) {
-        number = number.concat(" " + nummerString[i]);
+          } else {
+            number = number.concat(nummerString[i]);
+          }
+        }
 
-      } else {
-        number = number.concat(nummerString[i]);
-      }
-    }
-
-    var bodyText = "Dieser Artikel wurde Ihnen empfohlen: \n\n" +
-      "Bestellnummer: " + number
-      + "\n" + $scope.details.produktbezeichnung_de +
-      "\n\n Link zum Produkt: \n" + link +
-      "\n\n\nKennen Sie schon die SCHELL App?" +
-      "\nAlle Produkte auf Ihrem Smartphone oder Tablet jetzt im App Store verfügbar.";
-
+        var bodyText = "Dieser Artikel wurde Ihnen empfohlen: \n\n" +
+          "Bestellnummer: " + number
+          + "\n" + $scope.details.produktbezeichnung_de +
+          "\n\n Link zum Produkt: \n" + link +
+          "\n\n\nKennen Sie schon die SCHELL App?" +
+          "\nAlle Produkte auf Ihrem Smartphone oder Tablet jetzt im App Store verfügbar.";
 
 
-    if(window.plugins && window.plugins.emailComposer) {
-      window.plugins.emailComposer.showEmailComposerWithCallback(function(result) {
-          console.log("Response -> " + result);
-        },
-        "SCHELL Artikel " + number, // Subject
-        bodyText,                      // Body
-        [" "],    // To
-        null,                    // CC
-        null,                    // BCC
-        false,                   // isHTML
-        null,                    // Attachments
-        null);                   // Attachment Data
-    }else{
-      console.log('could not open');
-    }
-  };
+
+        if(window.plugins && window.plugins.emailComposer) {
+          window.plugins.emailComposer.showEmailComposerWithCallback(function(result) {
+            console.log("Response -> " + result);
+          },
+          "SCHELL Artikel " + number, // Subject
+          bodyText,                      // Body
+          [" "],    // To
+          null,                    // CC
+          null,                    // BCC
+          false,                   // isHTML
+          null,                    // Attachments
+          null);                   // Attachment Data
+        }else{
+          console.log('could not open');
+        }
+      };
 
       //For the varianten field, we want to select Product variations
       $scope.selectProductVariations = function (product_id) {

@@ -102,7 +102,7 @@
         <div class="product-summary" ng-bind-html="details.beschreibung_de"></div>
         <ion-list>
           <div ng-repeat="list in listData">
-            <div ng-show="list.hasData != '' ">
+            <div ng-show="list.hasData()">
               <ion-item class="description-item" ng-click="toggleGroup(list)"
                         ng-class="{active: isGroupShown(list)}">
                 <div class="item-icon-right">
@@ -164,7 +164,7 @@
                       <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(product.uid)"
                                                                    style="color: darkred;">{{product.nummer | split}}</a></strong>
                       </p>
-                      <div class="wrap" ng-bind-html="product.werkstoff_de">, 
+                      <div class="wrap" ng-bind-html="product.werkstoff_de">,
                       </div>
                       <p><span class="wrap">{{product.oberflaeche_de}},</span>
                       <span class="wrap">{{product.gewicht}}</span></p>
