@@ -619,7 +619,11 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             break;
 
           case 1:
-            $state.go('product_lines');
+            if ($rootScope.navigated_categories.includes('SUCHE')) {
+              $state.go('searchPage');
+            } else {
+              $state.go('product_lines');
+            }
             break;
 
           case 2:
@@ -661,7 +665,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Loading functions
       $scope.show = function () {
         $ionicLoading.show({
-          template: '<p>Downloading Data...</p><ion-spinner></ion-spinner>',
+          template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
           animation: 'fade-in',
           showBackdrop: true
         });
@@ -2065,6 +2069,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Whether filter has been activated.
     $scope.showFilter = false;
 
+    //When navigating here just clear the categories
+    appDataService.clearNavigatedCategories();
+    //Add Home as default
+    appDataService.addNavigatedCategory('PRODUKTE');
+    //Add search to navigated categories.
+    appDataService.addNavigatedCategory('SUCHE');
+
 
     //The filter/search bar using ionic filter bar plugin
     $scope.showFilterBar = function () {
@@ -2077,6 +2088,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         var filterBarInstance = $ionicFilterBar.show({
           items: products,
           cancelText: 'Abbrechen',
+          debounce: true,
+          delay: 1000,
           cancel: function () {
             loadCategories();
             $state.reload();
@@ -2094,7 +2107,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //History function
     $scope.$on('go-back', function () {
-      $ionicHistory.goBack();
+      $state.go('products');
     });
 
     //When user chooses a product
