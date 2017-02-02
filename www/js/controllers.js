@@ -207,8 +207,7 @@ angular.module('app.controllers', [])
             $state.go('products');
             break;
 
-          case 1:
-            $state.go('product_lines');
+          case length - 1:
             break;
 
           default:
@@ -643,6 +642,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             break;
           case 3:
             $state.go('product_overview');
+            break;
+
+          case length - 1:
             break;
 
           default:
@@ -1262,14 +1264,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           appDataService.getCurrentCategoryIds();
         }
 
-
         switch (index) {
         case 0:
           $state.go('products');
           break;
 
-        case 1:
-          $state.reload();
+          case length - 1:
           break;
 
         default:
