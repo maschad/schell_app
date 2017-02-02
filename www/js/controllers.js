@@ -2123,7 +2123,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('searchPageCtrl', ['$scope', '$state', '$ionicFilterBar', '$ionicHistory', 'DatabaseService', 'appDataService', function ($scope, $state, $ionicFilterBar, $ionicHistory, DatabaseService, appDataService) {
+  .controller('searchPageCtrl', ['$scope', '$state', '$ionicLoading', '$ionicFilterBar', '$ionicHistory', 'DatabaseService', 'appDataService',
+    function ($scope, $state, $ionicLoading, $ionicFilterBar, $ionicHistory, DatabaseService, appDataService) {
 
     //Initalize products
     $scope.products = [];
@@ -2140,32 +2141,62 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       appDataService.addNavigatedCategory('SUCHE');
 
     });
+      //Loading functions
+      $scope.show = function () {
+        $ionicLoading.show({
+          template: '<p>Loading Product information...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
+      };
+      $scope.hide = function () {
+        $ionicLoading.hide();
+      };
+
+      function loadProducts(start, end) {
+        $scope.show();
+
+        DatabaseService.selectAllProducts(function (results) {
+          if (end > results.rows.length) {
+            return false;
+          }
+          for (var x = start; x < end; x++) {
+            $scope.products.push(results.rows.item(x));
+          }
+          $scope.hide();
+          return true;
+        });
+      }
+
+      //Load the products.
+      loadProducts(0, 10);
 
 
     //The filter/search bar using ionic filter bar plugin
     $scope.showFilterBar = function () {
-      var products = [];
+      var start = 0;
+      var end = 10;
       $scope.showFilter = true;
-      DatabaseService.selectAllProducts(function (results) {
-        for (var x = 0; x < results.rows.length; x++) {
-          products.push(results.rows.item(x));
-        }
-        var filterBarInstance = $ionicFilterBar.show({
-          items: products,
-          cancelText: 'Abbrechen',
-          debounce: true,
-          delay: 1000,
-          cancel: function () {
-            loadCategories();
-            $state.reload();
-          },
-          expression: function (filterText, value, index, array) {
-            return value.nummer.includes(filterText) || value.produktbezeichnung_de.includes(filterText.toUpperCase()) || value.produktbezeichnung_de.includes(filterText) || value.beschreibung_de.includes(filterText);
-          },
-          update: function (filteredItems, filterText) {
-            $scope.products = filteredItems;
+      var filterBarInstance = $ionicFilterBar.show({
+        items: $scope.products,
+        cancelText: 'Abbrechen',
+        debounce: true,
+        delay: 1000,
+        expression: function (filterText, value, index, array) {
+          return value.nummer.includes(filterText) || value.produktbezeichnung_de.includes(filterText.toUpperCase()) || value.produktbezeichnung_de.includes(filterText) || value.beschreibung_de.includes(filterText);
+        },
+        update: function (filteredItems, filterText) {
+          if (filteredItems.length == 0) {
+            if (!loadProducts(start, end)) {
+              $scope.products = [];
+            } else {
+              loadProducts(start, end);
+              start += 10;
+              end += 10;
+            }
           }
-        });
+          $scope.products = filteredItems;
+        }
       });
     };
 
