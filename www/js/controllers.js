@@ -1355,7 +1355,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
               $scope.categories[x].bild = localStorageService.getBildPath(uid);
             } else if ($rootScope.internet) {
-              //downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
+              downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
             }
           }
         }
