@@ -1060,7 +1060,7 @@ angular.module('app.services', [])
     };
 
     var searchProducts = function(search_term, success, error) {
-      db.executeSql('SELECT * from products where nummer LIKE %' + search_term + '% OR beschreibung_de LIKE %' + search_term + '% OR produktbezeichnung_de LIKE %' + search_term + ';', [], function(rs) {
+      db.executeSql('SELECT * from products where nummer LIKE "%' + search_term + '%" OR beschreibung_de LIKE "%' + search_term + '%" OR produktbezeichnung_de LIKE "%' + search_term + '%";', [], function(rs) {
         success(rs);
       }, function(error) {
         error(error);

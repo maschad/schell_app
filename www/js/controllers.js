@@ -2123,10 +2123,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('searchPageCtrl', ['$scope', '$state', '$ionicFilterBar', '$ionicHistory', 'DatabaseService', 'appDataService', function ($scope, $state, $ionicFilterBar, $ionicHistory, DatabaseService, appDataService) {
+  .controller('searchPageCtrl', ['$scope', '$state', '$ionicLoading', '$ionicFilterBar', '$ionicHistory', 'DatabaseService', 'appDataService',
+    function ($scope, $state, $ionicLoading, $ionicFilterBar, $ionicHistory, DatabaseService, appDataService) {
 
     //Initalize products
     $scope.products = [];
+    $scope.searchText = '';
+
 
     //Whether filter has been activated.
     $scope.showFilter = false;
@@ -2140,34 +2143,33 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       appDataService.addNavigatedCategory('SUCHE');
 
     });
-
-
-    //The filter/search bar using ionic filter bar plugin
-    $scope.showFilterBar = function () {
-      var products = [];
-      $scope.showFilter = true;
-      DatabaseService.selectAllProducts(function (results) {
-        for (var x = 0; x < results.rows.length; x++) {
-          products.push(results.rows.item(x));
-        }
-        var filterBarInstance = $ionicFilterBar.show({
-          items: products,
-          cancelText: 'Abbrechen',
-          debounce: true,
-          delay: 1000,
-          cancel: function () {
-            loadCategories();
-            $state.reload();
-          },
-          expression: function (filterText, value, index, array) {
-            return value.nummer.includes(filterText) || value.produktbezeichnung_de.includes(filterText.toUpperCase()) || value.produktbezeichnung_de.includes(filterText) || value.beschreibung_de.includes(filterText);
-          },
-          update: function (filteredItems, filterText) {
-            $scope.products = filteredItems;
-          }
+      //Loading functions
+      $scope.show = function () {
+        $ionicLoading.show({
+          template: '<p>Loading Product information...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
         });
-      });
-    };
+      };
+      $scope.hide = function () {
+        $ionicLoading.hide();
+      };
+
+      $scope.search = function (event) {
+        if (event.keyCode == 13) {
+          $scope.products = [];
+          $scope.showFilter = true;
+          cordova.plugins.Keyboard.close();
+          $scope.show();
+          console.log('searchText', event.target.value);
+          DatabaseService.searchProducts(event.target.value, function (results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              $scope.products.push(results.rows.item(x));
+            }
+            $scope.hide();
+          });
+        }
+      };
 
 
     //History function
