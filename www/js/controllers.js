@@ -2155,64 +2155,21 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $ionicLoading.hide();
       };
 
-      $scope.search = function($event) {
-        var searchText = $event.target.value;
-        $scope.show();
-        $scope.products = [];
-        DatabaseService.searchProducts(searchText, function (results) {
-          for (var x = 0; x < results.rows.length; x++) {
-            $scope.products.push(results.rows.item(x));
-          }
-          $scope.hide();
-        });
-      };
-
-
-      /**
-
-       function loadProducts(start, end) {
-        $scope.show();
-        DatabaseService.selectAllProducts(function (results) {
-          if (end > results.rows.length) {
-            return false;
-          }
-          for (var x = start; x < end; x++) {
-            $scope.products.push(results.rows.item(x));
-          }
-          $scope.hide();
-          return true;
-        });
-      }
-
-       //Load the products.
-       loadProducts(0, 10);
-
-
-    //The filter/search bar using ionic filter bar plugin
-    $scope.showFilterBar = function () {
-      $scope.showFilter = true;
-      var filterBarInstance = $ionicFilterBar.show({
-        items: $scope.products,
-        cancelText: 'Abbrechen',
-        debounce: true,
-        delay: 1000,
-        expression: function (filterText, value, index, array) {
-          return value.nummer.includes(filterText) || value.produktbezeichnung_de.includes(filterText.toUpperCase()) || value.produktbezeichnung_de.includes(filterText) || value.beschreibung_de.includes(filterText);
-        },
-        update: function (filteredItems, filterText) {
-          console.log('start', start);
-          console.log('end', end);
-          if (filteredItems.length == 0) {
-            if (!loadProducts(start, end)) {
-              $scope.products = [];
-            } else {
-              loadProducts(start+10, end+10);
+      $scope.search = function (event) {
+        if (event.keyCode == 13) {
+          $scope.products = [];
+          $scope.showFilter = true;
+          cordova.plugins.Keyboard.close();
+          $scope.show();
+          console.log('searchText', event.target.value);
+          DatabaseService.searchProducts(event.target.value, function (results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              $scope.products.push(results.rows.item(x));
             }
-          }
-          $scope.products = filteredItems;
+            $scope.hide();
+          });
         }
-      });
-    };**/
+      };
 
 
     //History function
