@@ -683,6 +683,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           showBackdrop: true
         });
       };
+
+      //Loading functions
+      $scope.showDownload = function () {
+        $ionicLoading.show({
+          template: '<p>Downloading Data...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
+      };
       $scope.hide = function () {
         $ionicLoading.hide();
       };
@@ -751,7 +760,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             //If no internet load local path
             if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
               $scope.files.forEach(function (file, index) {
-                file.thumbnail = localStorageService.getThumbnailPath($scope.detail.uid, index);
+                file.thumbnail = localStorageService.getThumbnailPath($scope.details.uid, index);
               });
             }
             getVideos($scope.details.video_ids);
@@ -1143,7 +1152,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           }).then(function () {
             //Whether this product has been downloaded
             $scope.productDownloaded = true;
-            $scope.show();
+            $scope.showDownload();
 
             FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
               localStorageService.setLandscapePath($scope.details.uid, path);
