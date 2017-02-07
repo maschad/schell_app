@@ -33,7 +33,6 @@ angular.module('app.controllers', [])
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
 
-
       function loadPage() {
         //Check for internet
         appDataService.checkInternet();
@@ -117,10 +116,7 @@ angular.module('app.controllers', [])
             return count;
           }
         }
-
-
         } else {
-          //#TODO: Handle DB offline
           $scope.images = localStorageService.getCarouselPaths();
           for (var image in $scope.images) {
             console.log('image', image);
