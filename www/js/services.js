@@ -504,7 +504,9 @@ angular.module('app.services', [])
                   ft.onprogress = function (progressEvent) {
                     if (progressEvent.lengthComputable && $rootScope.showDownload) {
                       downloadShow();
-                      $rootScope.loaded += progressEvent.loaded;
+                      if (progressEvent.loaded == progressEvent.total) {
+                        $rootScope.loaded += progressEvent.loaded;
+                      }
                       $rootScope.download_status = Math.round(($rootScope.loaded / $rootScope.total) * 100);
                       console.log('download status', $rootScope.download_status);
                       if ($rootScope.download_status >= 100) {
