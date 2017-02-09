@@ -902,7 +902,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             pdfFiles.shift();
             downloadPDFFiles(pdfFiles);
           } else {
-            FileService.originalDownload(pdfFiles[0].datei_de, pdfFiles[0].title.concat('_booklet.pdf'), 'pdfs', function (path) {
+            FileService.originalDownload(pdfFiles[0].datei_de, pdfFiles[0].uid.toString().concat('_booklet.pdf'), 'pdfs', function (path) {
               localStorageService.setPDFPath($scope.details.uid, path);
               pdfFiles.shift();
               downloadPDFFiles(pdfFiles);
@@ -927,7 +927,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             //Check whether pdf or zip for PDF file
             switch (pdfFiles[0].thumbnail.substr(pdfFiles[0].thumbnail.length - 3)) {
               case 'jpg':
-                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.jpg'), 'pdfs', function (path) {
+                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].uid.toString().concat('_thumbnail.jpg'), 'pdfs', function (path) {
                   localStorageService.setThumbnailPath($scope.details.uid, path);
                   pdfFiles.shift();
                   downloadPDFImages(pdfFiles);
@@ -935,7 +935,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                 break;
 
               case 'png':
-                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.png'), 'pdfs', function (path) {
+                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].uid.toString().concat('_thumbnail.png'), 'pdfs', function (path) {
                   localStorageService.setThumbnailPath($scope.details.uid, path);
                   pdfFiles.shift();
                   downloadPDFImages(pdfFiles);
@@ -943,7 +943,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                 break;
 
               case 'gif':
-                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.gif'), 'pdfs', function (path) {
+                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].uid.toString().concat('_thumbnail.gif'), 'pdfs', function (path) {
                   localStorageService.setThumbnailPath($scope.details.uid, path);
                   pdfFiles.shift();
                   downloadPDFImages(pdfFiles);
@@ -1846,8 +1846,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Download the files for the respective category and store the file paths in local storage
     function downloadCategoryFiles(category) {
-      //Total video sizes
-      $rootScope.total += $scope.fileSizes[category.uid];
       //Product ids to download
       var product_ids_toDownload = [];
       //All categories
@@ -1904,6 +1902,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           for (var x = 0; x < results.rows.length; x++) {
             $scope.products.push(results.rows.item(x));
           }
+          //Total video sizes
+          $rootScope.total += $scope.products.length;
           downloadProducts();
         });
       });
@@ -1960,6 +1960,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         if (product.video_ids != '') {
           DatabaseService.selectVideos(product.video_ids, function (results) {
             for (var x = 0; x < results.rows.length; x++) {
+              console.log('pushing video id');
+              console.log(results.rows.item(x).uid);
               $scope.individual_videos.push(results.rows.item(x));
             }
             getLandscapeFile(product);
@@ -1985,124 +1987,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         } else {
           downloadAwards($scope.awards, product.uid);
         }
-      }
-
-
-      //Recursive functions to download videos and the corresponding thumbnail
-      //This avoids Large queues for downloading Files
-      function downloadVideoImage(videos) {
-        if (videos.length == 0) {
-          console.log('calling video images ');
-          var video_files = $scope.videos.slice();
-          downloadVideo(video_files);
-        } else {
-          console.log('calling video images  else');
-          FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
-            localStorageService.setVideoImagePath(videos[0].uid, result);
-            videos.shift();
-            downloadVideoImage(videos);
-          });
-        }
-
-      }
-
-      //This seperate function is for downloading individual videos...
-      //When a user selects download categories, this is distinct from
-      //when a user downloads mass videos
-      //This avoids Large queues for downloading Files
-      function downloadSingleVideoImage(videos) {
-        if (videos.length == 0) {
-          console.log('calling video images ');
-          var video_files = $scope.individual_videos.slice();
-          downloadVideo(video_files);
-        } else {
-          console.log('calling video images  else');
-          FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
-            localStorageService.setVideoImagePath(videos[0].uid, result);
-            videos.shift();
-            downloadVideoImage(videos);
-          });
-        }
-
-      }
-
-      function downloadVideo(videos) {
-        if (videos.length > 0) {
-          FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
-            localStorageService.setVideoPath(videos[0].uid, result);
-            videos.shift();
-            downloadVideo(videos);
-          });
-        } else {
-          $scope.products.shift();
-          downloadProducts();
-        }
-      }
-
-
-      function downloadPDFFiles(pdfFiles, uid) {
-        if (pdfFiles.length == 0) {
-          console.log('calling PDF Files');
-          var videoImages = $scope.individual_videos.slice();
-          downloadSingleVideoImage(videoImages);
-        } else {
-          console.log('calling PDF Files else');
-          if (pdfFiles[0].datei_de == '' || pdfFiles[0].datei_de.substr(pdfFiles[0].datei_de.length - 3) == 'zip') {
-            pdfFiles.shift();
-            downloadPDFFiles(pdfFiles, uid);
-          } else {
-            FileService.originalDownload(pdfFiles[0].datei_de, pdfFiles[0].title.concat('_booklet.pdf'), 'pdfs', function (path) {
-              localStorageService.setPDFPath(uid, path);
-              pdfFiles.shift();
-              downloadPDFFiles(pdfFiles, uid);
-            });
-          }
-
-        }
-      }
-
-      function downloadPDFImages(pdfFiles, uid) {
-        console.log('pdf files length', pdfFiles.length);
-        if (pdfFiles.length == 0) {
-          console.log('calling PDF Images');
-          var filez = $scope.files.slice();
-          downloadPDFFiles(filez, uid);
-        } else {
-          console.log('calling else PDF Images');
-          if (pdfFiles[0].thumbnail == '') {
-            pdfFiles.shift();
-            downloadPDFImages(pdfFiles, uid);
-          } else {
-            //Check whether pdf or zip for PDF file
-            switch (pdfFiles[0].thumbnail.substr(pdfFiles[0].thumbnail.length - 3)) {
-              case 'jpg':
-                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.jpg'), 'pdfs', function (path) {
-                  localStorageService.setThumbnailPath(uid, path);
-                  pdfFiles.shift();
-                  downloadPDFImages(pdfFiles, uid);
-                });
-                break;
-
-              case 'png':
-                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.png'), 'pdfs', function (path) {
-                  localStorageService.setThumbnailPath(uid, path);
-                  pdfFiles.shift();
-                  downloadPDFImages(pdfFiles, uid);
-                });
-                break;
-
-              case 'gif':
-                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].title.concat('_thumbnail.gif'), 'pdfs', function (path) {
-                  localStorageService.setThumbnailPath(uid, path);
-                  pdfFiles.shift();
-                  downloadPDFImages(pdfFiles, uid);
-                });
-                break;
-            }
-          }
-
-        }
-
       }
 
       function downloadAwards(awards, uid) {
@@ -2133,11 +2017,131 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       }
 
+      function downloadPDFImages(pdfFiles, uid) {
+        console.log('pdf files length', pdfFiles.length);
+        if (pdfFiles.length == 0) {
+          console.log('calling PDF Images');
+          var filez = $scope.files.slice();
+          downloadPDFFiles(filez, uid);
+        } else {
+          console.log('calling else PDF Images');
+          if (pdfFiles[0].thumbnail == '') {
+            pdfFiles.shift();
+            downloadPDFImages(pdfFiles, uid);
+          } else {
+            //Check whether pdf or zip for PDF file
+            switch (pdfFiles[0].thumbnail.substr(pdfFiles[0].thumbnail.length - 3)) {
+              case 'jpg':
+                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].uid.toString().concat('_thumbnail.jpg'), 'pdfs', function (path) {
+                  localStorageService.setThumbnailPath(uid, path);
+                  pdfFiles.shift();
+                  downloadPDFImages(pdfFiles, uid);
+                });
+                break;
+
+              case 'png':
+                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].uid.toString().concat('_thumbnail.png'), 'pdfs', function (path) {
+                  localStorageService.setThumbnailPath(uid, path);
+                  pdfFiles.shift();
+                  downloadPDFImages(pdfFiles, uid);
+                });
+                break;
+
+              case 'gif':
+                FileService.originalDownload(pdfFiles[0].thumbnail, pdfFiles[0].uid.toString().concat('_thumbnail.gif'), 'pdfs', function (path) {
+                  localStorageService.setThumbnailPath(uid, path);
+                  pdfFiles.shift();
+                  downloadPDFImages(pdfFiles, uid);
+                });
+                break;
+            }
+          }
+
+        }
+
+      }
+
+      function downloadPDFFiles(pdfFiles, uid) {
+        if (pdfFiles.length == 0) {
+          console.log('calling PDF Files');
+          var videoImages = $scope.individual_videos.slice();
+          downloadSingleVideoImage(videoImages);
+        } else {
+          console.log('calling PDF Files else');
+          if (pdfFiles[0].datei_de == '' || pdfFiles[0].datei_de.substr(pdfFiles[0].datei_de.length - 3) == 'zip') {
+            pdfFiles.shift();
+            downloadPDFFiles(pdfFiles, uid);
+          } else {
+            FileService.originalDownload(pdfFiles[0].datei_de, pdfFiles[0].uid.toString().concat('_booklet.pdf'), 'pdfs', function (path) {
+              localStorageService.setPDFPath(uid, path);
+              pdfFiles.shift();
+              downloadPDFFiles(pdfFiles, uid);
+            });
+          }
+
+        }
+      }
+
+      //This seperate function is for downloading individual videos...
+      //When a user selects download categories, this is distinct from
+      //when a user downloads mass videos
+      //This avoids Large queues for downloading Files
+      function downloadSingleVideoImage(videos) {
+        if (videos.length == 0) {
+          console.log('calling single video images ');
+          var video_files = $scope.individual_videos.slice();
+          downloadVideo(video_files);
+        } else {
+          console.log('calling video images  else');
+          FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
+            localStorageService.setVideoImagePath(videos[0].uid, result);
+            videos.shift();
+            downloadSingleVideoImage(videos);
+          });
+        }
+
+      }
+
+
+      //Recursive functions to download videos and the corresponding thumbnail
+      //This avoids Large queues for downloading Files
+      function downloadVideoImage(videos) {
+        if (videos.length == 0) {
+          console.log('calling video images ');
+          var video_files = $scope.videos.slice();
+          downloadVideo(video_files);
+        } else {
+          console.log('calling video images  else');
+          FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
+            localStorageService.setVideoImagePath(videos[0].uid, result);
+            videos.shift();
+            downloadVideoImage(videos);
+          });
+        }
+
+      }
+
+      function downloadVideo(videos) {
+        if (videos.length > 0) {
+          FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
+            localStorageService.setVideoPath(videos[0].uid, result);
+            videos.shift();
+            downloadVideo(videos);
+          });
+        } else {
+          //Add amount loaded
+          $rootScope.loaded += 1;
+          $scope.products.shift();
+          downloadProducts();
+        }
+      }
+
 
     //Function to download videos
       function downloadVideos() {
       //If checked
       if ($scope.preferences[3].download_videos) {
+        console.log('checked');
         $rootScope.total += $scope.total_video_size;
         $scope.preferences[4].last_updated = getDate();
         var images = $scope.videos.slice();

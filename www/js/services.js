@@ -94,7 +94,7 @@ angular.module('app.services', [])
 
   var productDownloaded = function (uid) {
     if ($localStorage.product_files.hasOwnProperty(uid.toString())) {
-      return $localStorage.product_files[uid].hasOwnProperty('technical_drawing_link');
+      return $localStorage.product_files[uid].hasOwnProperty('image_landscape');
     }
 
     return false;
@@ -504,9 +504,6 @@ angular.module('app.services', [])
                   ft.onprogress = function (progressEvent) {
                     if (progressEvent.lengthComputable && $rootScope.showDownload) {
                       downloadShow();
-                      if (progressEvent.loaded == progressEvent.total) {
-                        $rootScope.loaded += progressEvent.loaded;
-                      }
                       $rootScope.download_status = Math.round(($rootScope.loaded / $rootScope.total) * 100);
                       if ($rootScope.download_status >= 100) {
                         hide();
