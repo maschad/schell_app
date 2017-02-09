@@ -1903,7 +1903,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             $scope.products.push(results.rows.item(x));
           }
           //Total video sizes
-          $rootScope.total += $scope.products.length;
+          $rootScope.total += ($scope.products.length - 1);
           downloadProducts();
         });
       });
@@ -2142,7 +2142,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //If checked
       if ($scope.preferences[3].download_videos) {
         console.log('checked');
-        $rootScope.total += $scope.total_video_size;
+        $rootScope.total += $scope.videos.length;
         $scope.preferences[4].last_updated = getDate();
         var images = $scope.videos.slice();
         downloadVideoImage(images);
