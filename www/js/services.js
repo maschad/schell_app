@@ -6,6 +6,7 @@ angular.module('app.services', [])
 
   //Local storage using ngStorage, for trivial persistence
   $localStorage = $localStorage.$default({
+    lastUpdate: null,
     country: '',
     productCounts: {}, // Store product counts by category
     bookmarked_products: [],
@@ -38,6 +39,14 @@ angular.module('app.services', [])
   });
 
   // Getters and Setters
+
+  var getLastUpdated = function() {
+    return $localStorage.lastUpdate;
+  };
+
+  var setLastUpdated = function(newLastUpdated) {
+    $localStorage.lastUpdate = newLastUpdated;
+  };
 
   var getCountry = function () {
     return $localStorage.country;
@@ -280,7 +289,9 @@ angular.module('app.services', [])
     setPortraitPath: setPortraitPath,
     getPortraitPath: getPortraitPath,
     setProductCount: setProductCount,
-    getProductCounts: getProductCounts
+    getProductCounts: getProductCounts,
+    getLastUpdated: getLastUpdated,
+    setLastUpdated: setLastUpdated
   };
 
 

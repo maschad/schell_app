@@ -51,8 +51,16 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
       }else{
         //Update all of DB
         db = $cordovaSQLite.openDB({"name" : "schell.db", "location" : "default"});
-        clearDatabase(db, $cordovaSQLite);
-        createTables(db, $cordovaSQLite);
+        var lastUpdated = localStorageService.getLastUpdated();
+        if (lastUpdated) {
+          var shouldUpdate = (Date.now() - lastUpdated) > 86400000 //We should update if we haven't in more than 24 hours..
+        } else {
+          var shouldUpdate = true;
+        }
+        if (shouldUpdate) {
+          clearDatabase(db, $cordovaSQLite);
+          createTables(db, $cordovaSQLite);
+        }
       }
     }
 
