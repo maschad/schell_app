@@ -47,7 +47,15 @@ angular.module('app.controllers', [])
         //load bookmarked
         $scope.bookmarks = localStorageService.getBookmarkedProducts();
         //If there is internet, populate the DB with latest data, else, work with what is in database
-        if ($rootScope.internet) {
+        var lastUpdated = localStorageService.getLastUpdated();
+        if (lastUpdated) {
+          console.log('Database last updated at: ' + lastUpdated);
+          var shouldUpdate = (Date.now() - lastUpdated) > 86400000 //We should update if we haven't in more than 24 hours..
+        } else {
+          console.log('Fresh installation, should update database.');
+          var shouldUpdate = true;
+        }
+        if ($rootScope.internet && shouldUpdate) {
           $scope.showLoad();
           FirebaseService.downloadAllProducts(function (results) {
             DatabaseService.populateProducts(results);
@@ -116,6 +124,7 @@ angular.module('app.controllers', [])
             return count;
           }
         }
+          localStorageService.setLastUpdated(Date.now());
         } else {
           $scope.images = localStorageService.getCarouselPaths();
           for (var image in $scope.images) {
