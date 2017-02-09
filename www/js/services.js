@@ -508,7 +508,6 @@ angular.module('app.services', [])
                         $rootScope.loaded += progressEvent.loaded;
                       }
                       $rootScope.download_status = Math.round(($rootScope.loaded / $rootScope.total) * 100);
-                      console.log('download status', $rootScope.download_status);
                       if ($rootScope.download_status >= 100) {
                         hide();
                       }

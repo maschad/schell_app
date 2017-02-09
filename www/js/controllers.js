@@ -1619,6 +1619,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Initialize as empty
     $scope.videos = [];
       $scope.counts = {};
+      //Actual products to download
+      $scope.products = [];
 
     //Preferences as empty
     $scope.preferences = [];
@@ -1848,8 +1850,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       $rootScope.total += $scope.fileSizes[category.uid];
       //Product ids to download
       var product_ids_toDownload = [];
-      //Actual products to download
-      var products = [];
       //All categories
       var allCategories = [];
       //Categories have download ids
@@ -1902,9 +1902,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         //Get the products with the info to download
         DatabaseService.selectProducts(product_ids_toDownload, function (results) {
           for (var x = 0; x < results.rows.length; x++) {
-            products.push(results.rows.item(x));
+            $scope.products.push(results.rows.item(x));
           }
-          downloadProducts(products);
+          downloadProducts();
         });
       });
     }
@@ -1912,56 +1912,78 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Call the function on startup
     loadData();
 
-
-      function downloadProducts(products) {
+      //These functions
+      function downloadProducts() {
         //These variables should be made empty on each iteration to avoid
         //Repeat downloads for the same product
-        var awards = [];
+        $scope.awards = [];
         $scope.files = [];
         $scope.individual_videos = [];
 
-        console.log('downloading products');
 
+        if ($scope.products.length > 0) {
+          console.log('downloading products');
+          getAwards($scope.products[0]);
+        }
+      }
 
-        if (products.length > 0) {
-          if (products[0].designpreis != '') {
-            DatabaseService.selectAwards(products[0].designpreis, function (results) {
-              for (var x = 0; x < results.rows.length; x++) {
-                awards.push(results.rows.item(x));
-              }
-            });
-          }
-          if (products[0].download_ids != '') {
-            DatabaseService.selectDownloads(products[0].download_ids, function (results) {
-              for (var x = 0; x < results.rows.length; x++) {
-                $scope.files.push(results.rows.item(x));
-              }
-            });
-          }
-          if (products[0].video_ids != '') {
-            DatabaseService.selectVideos(products[0].video_ids, function (results) {
-              for (var x = 0; x < results.rows.length; x++) {
-                $scope.individual_videos.push(results.rows.item(x));
-              }
-            });
-          }
-
-          FileService.originalDownload(products[0].image_landscape, products[0].nummer.concat('_landscape.png'), 'img', function (path) {
-            localStorageService.setLandscapePath(products[0].uid, path);
-            if (products[0].technical_drawing_link != '') {
-              FileService.originalDownload(products[0].technical_drawing_link, products[0].nummer.concat('_technical_drawing.png'), 'img', function (path) {
-                localStorageService.setTechnicalPath(products[0].uid, path);
-                downloadAwards(awards, products[0].uid);
-                products.shift();
-                downloadProducts(products);
-              });
-            } else {
-              downloadAwards(awards, products[0].uid);
-              products.shift();
-              downloadProducts(products);
+      function getAwards(product) {
+        console.log('getting awards');
+        if (product.designpreis != '') {
+          DatabaseService.selectAwards(products.designpreis, function (results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              $scope.awards.push(results.rows.item(x));
             }
+            getFiles(product);
           });
+        } else {
+          getFiles(product);
+        }
+      }
 
+      function getFiles(product) {
+        if (product.download_ids != '') {
+          DatabaseService.selectDownloads(product.download_ids, function (results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              $scope.files.push(results.rows.item(x));
+              console.log('getting files');
+            }
+            getVideos(product);
+          });
+        } else {
+          getVideos(product);
+        }
+      }
+
+      function getVideos(product) {
+        console.log('getting videos');
+        if (product.video_ids != '') {
+          DatabaseService.selectVideos(product.video_ids, function (results) {
+            for (var x = 0; x < results.rows.length; x++) {
+              $scope.individual_videos.push(results.rows.item(x));
+            }
+            getLandscapeFile(product);
+          });
+        } else {
+          getLandscapeFile(product);
+        }
+      }
+
+      function getLandscapeFile(product) {
+        FileService.originalDownload(product.image_landscape, product.nummer.concat('_landscape.png'), 'img', function (path) {
+          localStorageService.setLandscapePath(product.uid, path);
+          getTechnicalFile(product);
+        });
+      }
+
+      function getTechnicalFile(product) {
+        if (product.technical_drawing_link != '') {
+          FileService.originalDownload(product.technical_drawing_link, product.nummer.concat('_technical_drawing.png'), 'img', function (path) {
+            localStorageService.setTechnicalPath(product.uid, path);
+            downloadAwards($scope.awards, product.uid);
+          });
+        } else {
+          downloadAwards($scope.awards, product.uid);
         }
       }
 
@@ -2011,6 +2033,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             videos.shift();
             downloadVideo(videos);
           });
+        } else {
+          $scope.products.shift();
+          downloadProducts();
         }
       }
 
