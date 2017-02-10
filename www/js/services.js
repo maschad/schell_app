@@ -298,7 +298,7 @@ angular.module('app.services', [])
 }])
 
   //Service for managing firebase queries
-.factory('FirebaseService', ['$ionicPopup', function(){
+  .factory('FirebaseService', ['localStorageService', '$ionicPopup', function (localStorageService, $ionicPopup) {
 
   var goOffline = function () {
     firebase.database().goOffline();
@@ -439,6 +439,15 @@ angular.module('app.services', [])
     });
   };
 
+    var checkBookmark = function (bookmarkedProducts) {
+      for (var product in bookmarkedProducts) {
+        firebase.database().ref('/products/' + product.uid).once('value').then(function (snapshot) {
+          if (snapshot.val() == '') {
+            localStorageService.removeBookmarkedProduct(product);
+          }
+        });
+      }
+    };
 
   return {
     goOffline : goOffline,
@@ -449,7 +458,8 @@ angular.module('app.services', [])
     downloadProductFilters : downloadProductFilters,
     downloadAllProducts: downloadAllProducts,
     downloadAwards: downloadAwards,
-    downloadZubehoer: downloadZubehoer
+    downloadZubehoer: downloadZubehoer,
+    checkBookmark: checkBookmark
   };
 
 }])
