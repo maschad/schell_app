@@ -2201,8 +2201,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
   }])
 
-  .controller('MenuCtrl', ['$scope', '$rootScope', '$ionicHistory', 'FirebaseService', 'localStorageService', 'appDataService',
-    function ($scope, $rootScope, $ionicHistory, FirebaseService, localStorageService, appDataService) {
+  .controller('MenuCtrl', ['$scope', '$ionicScrollDelegate', '$rootScope', '$ionicHistory', 'FirebaseService', 'localStorageService', 'appDataService',
+    function ($scope, $ionicScrollDelegate, $rootScope, $ionicHistory, FirebaseService, localStorageService, appDataService) {
 
       $scope.goBack = function () {
         $rootScope.$broadcast('go-back');
@@ -2267,6 +2267,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         appDataService.clearSelectedFilters();
         $rootScope.$broadcast('new-filter-uid');
         $rootScope.$broadcast('updateFilters');
+        $ionicScrollDelegate.scrollTop();
       }
 }]);
 
