@@ -610,17 +610,6 @@ angular.module('app.services', [])
       return previous_title;
     };
 
-    var setPreviousProduct = function (data) {
-      previousProduct.push(data);
-    };
-
-    var getPreviousProduct = function () {
-      if (previousProduct.length > 0) {
-        return previousProduct.pop();
-      } else {
-        return false;
-      }
-    };
 
     var setPreviousTitle = function (prev) {
       previous_title = prev;
@@ -679,8 +668,6 @@ angular.module('app.services', [])
       setCurrentCategoryIds : setCurrentCategoryIds,
       checkCurrentCategoryIds: checkCurrentCategoryIds,
       setCurrentProduct : setCurrentProduct,
-      setPreviousProduct: setPreviousProduct,
-      getPreviousProduct: getPreviousProduct,
       getCurrentProduct : getCurrentProduct,
       getNavigatedCategories: getNavigatedCategories,
       checkInternet: checkInternet,
