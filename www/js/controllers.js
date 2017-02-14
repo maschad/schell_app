@@ -667,17 +667,14 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       };
 
       //History function
-      $scope.$on('go-back', function () {
+      var goback = $scope.$on('go-back', function () {
         appDataService.removeNavigatedCategory();
         var pop = appDataService.getCurrentCategoryIds();
-        var product = appDataService.getPreviousProduct();
-        if (!product) {
-          $ionicHistory.goBack();
-        } else {
-          appDataService.setCurrentProduct(product);
-          $state.reload();
-        }
+        $state.go('product_overview');
       });
+
+      $scope.$on('$destroy', goback);
+
 
 
       //Loading functions
@@ -1242,11 +1239,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //For the varianten field, we want to select Product variations
       $scope.selectProductVariations = function (product_id) {
-        appDataService.setPreviousProduct($scope.details);
         DatabaseService.selectProducts(product_id, function (results) {
           appDataService.setCurrentProduct(results.rows.item(0));
+          var pop = appDataService.getCurrentCategoryIds();
+          appDataService.removeNavigatedCategory();
+          appDataService.setCurrentCategoryIds(results.rows.item(0).uid);
           appDataService.addNavigatedCategory(results.rows.item(0).nummer);
-          loadProduct();
           $state.reload();
         });
       };
