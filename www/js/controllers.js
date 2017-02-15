@@ -635,6 +635,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           case 1:
             if ($rootScope.navigated_categories.includes('SUCHE')) {
               $state.go('searchPage');
+            } else if ($rootScope.navigated_categories.includes('MERKZETTEL')) {
+              $state.go('bookmark');
             } else {
               $state.go('product_lines');
             }
@@ -668,9 +670,14 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       var goback = $scope.$on('go-back', function () {
+
         appDataService.removeNavigatedCategory();
         var pop = appDataService.getCurrentCategoryIds();
-        $state.go('product_overview');
+        if ($rootScope.navigated_categories.includes('MERKZETTEL') || $rootScope.navigated_categories.includes('SUCHE')) {
+          $ionicHistory.goBack();
+        } else {
+          $state.go('product_overview');
+        }
       });
 
       $scope.$on('$destroy', goback);
@@ -1554,22 +1561,34 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('bookmarkCtrl', ['$scope', '$state', '$ionicPopup', '$ionicHistory', '$ionicSideMenuDelegate', 'localStorageService', 'appDataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('bookmarkCtrl', ['$scope', '$rootScope', '$state', '$ionicPopup', '$ionicHistory', '$ionicSideMenuDelegate', 'localStorageService', 'appDataService', 'FirebaseService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $state, $ionicPopup, $ionicHistory, $ionicSideMenuDelegate, localStorageService, appDataService) {
+    function ($scope, $rootScope, $state, $ionicPopup, $ionicHistory, $ionicSideMenuDelegate, localStorageService, appDataService, FirebaseService) {
 
-  //Side Menu
-  $ionicSideMenuDelegate.canDragContent(false);
+      //Side Menu
+      $ionicSideMenuDelegate.canDragContent(false);
 
       //History function
       $scope.$on('go-back', function () {
         $ionicHistory.goBack();
       });
 
+      //Add Home as default
+      appDataService.addNavigatedCategory('PRODUKTE');
+      //Add search to navigated categories.
+      appDataService.addNavigatedCategory('MERKZETTEL');
 
-  //Download bookmarks
-    $scope.bookmarks = localStorageService.getBookmarkedProducts();
+      //Check to see if any bookmark products should be removed.
+      appDataService.checkInternet();
+      if ($rootScope.internet) {
+        FirebaseService.checkBookmark(localStorageService.getBookmarkedProducts());
+      }
+
+
+      //Download bookmarks
+      $scope.bookmarks = localStorageService.getBookmarkedProducts();
+
     if($scope.bookmarks == null){
       $ionicPopup.alert({
         title: 'No Artikels'
