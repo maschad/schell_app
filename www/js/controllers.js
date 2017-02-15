@@ -670,9 +670,14 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       var goback = $scope.$on('go-back', function () {
+
         appDataService.removeNavigatedCategory();
         var pop = appDataService.getCurrentCategoryIds();
-        $state.go('product_overview');
+        if ($rootScope.navigated_categories.includes('MERKZETTEL') || $rootScope.navigated_categories.includes('SUCHE')) {
+          $ionicHistory.goBack();
+        } else {
+          $state.go('product_overview');
+        }
       });
 
       $scope.$on('$destroy', goback);
@@ -1581,7 +1586,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       }
 
 
-  //Download bookmarks
+      //Download bookmarks
       $scope.bookmarks = localStorageService.getBookmarkedProducts();
 
     if($scope.bookmarks == null){

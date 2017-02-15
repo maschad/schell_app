@@ -76,6 +76,7 @@ angular.module('app.routes', [])
     })
 
   .state('bookmark', {
+    cache: false,
     url: 'bookmark',
     templateUrl: 'templates/bookmark.html',
     controller: 'bookmarkCtrl'
