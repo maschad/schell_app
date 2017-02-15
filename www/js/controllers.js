@@ -1638,8 +1638,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     //Initialize as empty
     $scope.videos = [];
     $scope.counts = localStorageService.getProductCounts();
-      //Actual products to download
-      $scope.products = [];
 
     //Preferences as empty
     $scope.preferences = [];
@@ -1823,6 +1821,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Download the files for the respective category and store the file paths in local storage
     function downloadCategoryFiles(category) {
+      //Actual products to download
+      $scope.products = [];
       //Product ids to download
       var product_ids_toDownload = [];
       //All categories
@@ -1907,7 +1907,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       function getAwards(product) {
         console.log('getting awards');
         if (product.designpreis != '') {
-          DatabaseService.selectAwards(products.designpreis, function (results) {
+          DatabaseService.selectAwards(product.designpreis, function (results) {
             for (var x = 0; x < results.rows.length; x++) {
               $scope.awards.push(results.rows.item(x));
             }
@@ -1991,9 +1991,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.png'), 'awards', function (path) {
                 localStorageService.setAwardPath(uid, path);
                 awards.shift();
-                if (awards.length > 0) {
-                  downloadAwards(awards, uid);
-                }
+                downloadAwards(awards, uid);
+              });
+              break;
+
+            case 'gif':
+              FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.gif'), 'awards', function (path) {
+                localStorageService.setAwardPath(uid, path);
+                awards.shift();
+                downloadAwards(awards, uid);
               });
               break;
           }
@@ -2114,6 +2120,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           });
         } else {
           //Add amount loaded
+          console.log('file downloaded');
           $rootScope.loaded += 1;
           $scope.products.shift();
           downloadProducts();
