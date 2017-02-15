@@ -741,6 +741,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           $scope.bookmarked = true;
         }
 
+
         //Whether this product has been downloaded
         $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
 
@@ -748,6 +749,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         if (!$rootScope.internet && $scope.productDownloaded) {
           //If no internet load these files
           $scope.details.image_landscape = localStorageService.getLandscapePath($scope.details.uid);
+          $scope.details.image_portrait = localStorageService.getPortraitPath($scope.details.uid);
           $scope.details.technical_drawing_link = localStorageService.getTechnicalPath($scope.details.uid);
         }
 
@@ -1079,7 +1081,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             title : 'TECHNISCHE ZEICHNUNG',
             show: false,
             hasData: function() {
-              return $scope.details.technical_drawing_link !== '';
+              return typeof $scope.details.technical_drawing_link !== "undefined" && $scope.details.technical_drawing_link !== '';
             }
           },
           {
@@ -1635,9 +1637,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Initialize as empty
     $scope.videos = [];
-      $scope.counts = {};
-      //Actual products to download
-      $scope.products = [];
+    $scope.counts = localStorageService.getProductCounts();
 
     //Preferences as empty
     $scope.preferences = [];
@@ -1689,52 +1689,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         return today;
       }
 
-      function countArtikelProduct(category, allCategories) {
-        if (category.child_ids == '') {
-          return category.product_ids.split(',').length;
-        } else {
-
-          var count = 0;
-          var childCategories = allCategories.filter(function (cat) {
-            return cat.elternelement == category.uid;
-          });
-          childCategories.forEach(function (childCategory) {
-            count += countArtikelProduct(childCategory, allCategories);
-          });
-
-          return count;
-        }
-
-      }
-
-      //Function to count the total number of artikels in category below
-      function countArtikels() {
-
-        var allCats = [];
-        var topCats = [];
-
-        DatabaseService.selectTopCategories(function (topCategories) {
-          for (var x = 0; x < topCategories.rows.length; x++) {
-            topCats.push(topCategories.rows.item(x));
-          }
-          DatabaseService.selectAllCategories(function (allCategories) {
-            for (var z = 0; z < allCategories.rows.length; z++) {
-              allCats.push(allCategories.rows.item(z));
-            }
-            topCats.forEach(function (topCategory) {
-              var count = countArtikelProduct(topCategory, allCats);
-              $scope.counts[topCategory.uid] = count;
-            });
-          });
-        });
-      }
-
       //Function to load the data on the screen
     function loadData() {
       //Initiate load
       $scope.show();
-      //Count artikels
-      countArtikels();
 
       DatabaseService.selectAllVideos(function (videos) {
         var mbTotal = 0;
@@ -1863,6 +1821,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
     //Download the files for the respective category and store the file paths in local storage
     function downloadCategoryFiles(category) {
+      //Actual products to download
+      $scope.products = [];
       //Product ids to download
       var product_ids_toDownload = [];
       //All categories
@@ -1947,7 +1907,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       function getAwards(product) {
         console.log('getting awards');
         if (product.designpreis != '') {
-          DatabaseService.selectAwards(products.designpreis, function (results) {
+          DatabaseService.selectAwards(product.designpreis, function (results) {
             for (var x = 0; x < results.rows.length; x++) {
               $scope.awards.push(results.rows.item(x));
             }
@@ -1991,6 +1951,13 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       function getLandscapeFile(product) {
         FileService.originalDownload(product.image_landscape, product.nummer.concat('_landscape.png'), 'img', function (path) {
           localStorageService.setLandscapePath(product.uid, path);
+          getPortraitFile(product);
+        });
+      }
+
+      function getPortraitFile(product) {
+        FileService.originalDownload(product.image_portrait, product.nummer.concat('_portrait.png'), 'img', function (path) {
+          localStorageService.setPortraitPath(product.uid, path);
           getTechnicalFile(product);
         });
       }
@@ -2024,9 +1991,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.png'), 'awards', function (path) {
                 localStorageService.setAwardPath(uid, path);
                 awards.shift();
-                if (awards.length > 0) {
-                  downloadAwards(awards, uid);
-                }
+                downloadAwards(awards, uid);
+              });
+              break;
+
+            case 'gif':
+              FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.gif'), 'awards', function (path) {
+                localStorageService.setAwardPath(uid, path);
+                awards.shift();
+                downloadAwards(awards, uid);
               });
               break;
           }
@@ -2147,6 +2120,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           });
         } else {
           //Add amount loaded
+          console.log('file downloaded');
           $rootScope.loaded += 1;
           $scope.products.shift();
           downloadProducts();
