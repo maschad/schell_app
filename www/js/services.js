@@ -440,10 +440,11 @@ angular.module('app.services', [])
   };
 
     var checkBookmark = function (bookmarkedProducts) {
-      for (var product in bookmarkedProducts) {
-        firebase.database().ref('/products/' + product.uid).once('value').then(function (snapshot) {
-          if (snapshot.val() == '') {
-            localStorageService.removeBookmarkedProduct(product);
+      for (var key in bookmarkedProducts) {
+        console.log('checking bookmark ', bookmarkedProducts[key].uid);
+        firebase.database().ref('/products/' + bookmarkedProducts[key].uid).once('value').then(function (snapshot) {
+          if (snapshot.val() == null) {
+            localStorageService.removeBookmarkedProduct(bookmarkedProducts[key]);
           }
         });
       }
