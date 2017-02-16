@@ -1141,7 +1141,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             }
           },
           {
-            title: 'NOTWENDIGE ZUGEHÖRIGE',
+            title: 'NOTWENDIGE ZUGEHÖRIGE ARTIKEL',
             show: false,
             hasData: function() {
               return typeof $scope.notwendige !== "undefined" && $scope.notwendige.length > 0;
