@@ -23,6 +23,7 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
   //Set internet to true
   $rootScope.internet = true;
   $rootScope.showDownload = false;
+  $rootScope.updated_products = [];
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

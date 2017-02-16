@@ -298,7 +298,7 @@ angular.module('app.services', [])
 }])
 
   //Service for managing firebase queries
-  .factory('FirebaseService', ['localStorageService', '$ionicPopup', function (localStorageService, $ionicPopup) {
+  .factory('FirebaseService', ['localStorageService', '$ionicPopup', '$rootScope', function (localStorageService, $ionicPopup, $rootScope) {
 
   var goOffline = function () {
     firebase.database().goOffline();
@@ -445,6 +445,16 @@ angular.module('app.services', [])
         firebase.database().ref('/products/' + bookmarkedProducts[key].uid).once('value').then(function (snapshot) {
           if (snapshot.val() == null) {
             localStorageService.removeBookmarkedProduct(bookmarkedProducts[key]);
+          }
+        });
+      }
+    };
+
+    var checkUpdateProducts = function (currentProducts) {
+      for (var key in currentProducts) {
+        firebase.database().ref('/products/' + currentProducts[key].uid).once('value').then(function (snapshot) {
+          if (snapshot.val() != currentProducts[key]) {
+            $rootScope.updated_products.push(currentProducts[key]);
           }
         });
       }
