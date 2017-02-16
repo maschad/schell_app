@@ -50,7 +50,7 @@ angular.module('app.controllers', [])
         var lastUpdated = localStorageService.getLastUpdated();
         if (lastUpdated) {
           console.log('Database last updated at: ' + lastUpdated);
-          var shouldUpdate = (Date.now() - lastUpdated) > 86400000 //We should update if we haven't in more than 24 hours..
+          var shouldUpdate = (Date.now() - lastUpdated) > 86400000; //We should update if we haven't in more than 24 hours..
         } else {
           console.log('Fresh installation, should update database.');
           var shouldUpdate = true;
