@@ -123,7 +123,7 @@ angular.module('app.controllers', [])
             localStorageService.setProductCount(category.uid, count);
             return count;
           }
-        }
+        };
           localStorageService.setLastUpdated(Date.now());
         } else {
           $scope.images = localStorageService.getCarouselPaths();

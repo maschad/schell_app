@@ -18,7 +18,8 @@
     <div id="product-overview-body">
       <div class="container">
         <h3 class="heading">{{title}}</h3>
-        <div ng-show="total_filtered_products > 0" style="color: white; font-size: larger;"> {{total_filtered_products}}
+        <div ng-show="total_filtered_products > 0" style="color: white; font-size: larger;">{{products.length -
+          total_filtered_products}}
           / {{products.length}} Artikels
         </div>
         <div ng-repeat="product in products" class="row responsive-sm">
