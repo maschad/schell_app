@@ -1642,7 +1642,16 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       $scope.$on('go-back', function () {
-        $ionicHistory.goBack();
+        var confirmPopup = $ionicPopup.confirm({
+          title: 'Einstellungen speichern?',
+          template: 'Möchten Sie Ihre Einstellungen speichern?'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            saveSettings();
+          }
+          $ionicHistory.goBack();
+        });
       });
 
       //Disable Side Menu
@@ -2176,7 +2185,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       }
       }
 
-      $scope.saveSettings = function () {
+      function saveSettings() {
         //Preparing for Download
         $ionicLoading.show({
           template: '<p>Vorbereitung Download...</p><ion-spinner></ion-spinner>',
