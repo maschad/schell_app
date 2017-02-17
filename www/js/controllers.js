@@ -312,7 +312,13 @@ angular.module('app.controllers', [])
         //Load the various products
         DatabaseService.selectProducts(product_ids, function (products) {
           for (var x = 0; x < products.rows.length; x++) {
-            $scope.products.push(products.rows.item(x));
+            // Remove "SCHELL" from title
+            var product = products.rows.item(x);
+            if (product.produktbezeichnung_de.indexOf("SCHELL ") === 0) {
+              product.produktbezeichnung_de = product.produktbezeichnung_de.substr(7);
+            }
+
+            $scope.products.push(product);
             //To uid to save file path
             var uid = $scope.products[x].uid;
             if (!$rootScope.internet && localStorageService.productImageDownloaded(uid)) {
@@ -742,7 +748,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
         //Set details
         $scope.details = appDataService.getCurrentProduct();
-
+        //Remove SCHELL from title
+        if ($scope.details.produktbezeichnung_de.indexOf("SCHELL ") === 0) {
+          $scope.details.produktbezeichnung_de = $scope.details.produktbezeichnung_de.substr(7);
+        }
 
         //If product bookmarked
         if (!localStorageService.checkBookmarked($scope.details)) {
@@ -2281,7 +2290,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           $scope.show();
           DatabaseService.searchProducts(event.target.value, function (results) {
             for (var x = 0; x < results.rows.length; x++) {
-              $scope.products.push(results.rows.item(x));
+              //Remove SCHELL from title
+              var product = results.rows.item(x);
+              if (product.produktbezeichnung_de.indexOf("SCHELL ") === 0) {
+                product.produktbezeichnung_de = product.produktbezeichnung_de.substr(7);
+              }
+              $scope.products.push(product);
             }
             $scope.hide();
           });
