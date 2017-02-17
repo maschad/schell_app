@@ -17,7 +17,11 @@
   <ion-content>
     <div id="product-overview-body">
       <div class="container">
-        <h3 class="heading">{{prev}} {{title}}</h3>
+        <h3 class="heading">{{title}}</h3>
+        <div ng-show="total_filtered_products > 0" style="color: white; font-size: larger;">{{products.length -
+          total_filtered_products}}
+          / {{products.length}} Artikels
+        </div>
         <div ng-repeat="product in products" class="row responsive-sm">
           <div class="col col-50" ng-if="product.image_portrait"
                ng-click="product.filter || choice(product,product.nummer)">

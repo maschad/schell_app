@@ -14,6 +14,7 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
 
 .config(function($ionicConfigProvider, $sceDelegateProvider,$ionicFilterBarConfigProvider){
   $ionicConfigProvider.backButton.previousTitleText(false).text('');
+  $ionicConfigProvider.views.swipeBackEnabled(false);
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
   $ionicFilterBarConfigProvider.theme('light');
 

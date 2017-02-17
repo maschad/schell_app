@@ -123,7 +123,7 @@ angular.module('app.controllers', [])
             localStorageService.setProductCount(category.uid, count);
             return count;
           }
-        }
+        };
           localStorageService.setLastUpdated(Date.now());
         } else {
           $scope.images = localStorageService.getCarouselPaths();
@@ -196,6 +196,8 @@ angular.module('app.controllers', [])
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $rootScope, $ionicLoading, $ionicHistory, $state, appDataService, FileService, DatabaseService, localStorageService, $ionicPopover) {
+
+
       //Breadcrumb state changer
       $scope.goState = function (index, length) {
         //Have to pop the until we reach the index the user has selected
@@ -242,6 +244,9 @@ angular.module('app.controllers', [])
       });
 
       function updateProductsWithFilters() {
+        //Total amount of filtered products
+        $scope.total_filtered_products = 0;
+
         if ($scope.filter_ids !== ''){
           var currentFilterIds = appDataService.getCurrentSelectedFilterIds();
 
@@ -252,6 +257,9 @@ angular.module('app.controllers', [])
               hasAllFilters = hasAllFilters && ($scope.products[i].filter_ids.split(',').indexOf(currentFilterIds[j]) !== -1);
             }
             var shouldBeFiltered = !hasAllFilters;
+            if (shouldBeFiltered) {
+              $scope.total_filtered_products++;
+            }
             $scope.products[i] = Object.assign({}, $scope.products[i], {'filter': shouldBeFiltered});
           }
         }
@@ -1141,7 +1149,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
             }
           },
           {
-            title: 'NOTWENDIGE ZUGEHÖRIGE',
+            title: 'NOTWENDIGE ZUGEHÖRIGE ARTIKEL',
             show: false,
             hasData: function() {
               return typeof $scope.notwendige !== "undefined" && $scope.notwendige.length > 0;
