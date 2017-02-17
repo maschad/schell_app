@@ -816,7 +816,7 @@ span.badge.badge-hide.badge-assertive {
 #custom-overlay img {
   display: block;
   margin: 0 auto;
-  width: 80%;
+  width: 74%;
   height: auto;
 }
 
@@ -964,10 +964,11 @@ h1.slogan {
 }
 
 .item-select select {
-  left: 0;
+  left: 4px;
   background: transparent;
   padding: 0;
   width: 100%;
+  direction: inherit;
 }
 
 .item-number {
@@ -1225,8 +1226,7 @@ h1.slogan {
 }
 @media (min-width: 300px) {
   .popover {
-    // height: 246px;
-    height: 254px;
+    height: 222px;
     width: 220px;
   }
 }
@@ -1442,7 +1442,7 @@ label.menu-item {
 .filter-reset-btn {
   padding: 6px;
   margin-left: 20px;
-  width: 120px;
+  width: 140px;
   text-align: center;
   font-size: 14px;
 }
