@@ -127,9 +127,7 @@ angular.module('app.controllers', [])
           localStorageService.setLastUpdated(Date.now());
         } else {
           $scope.images = localStorageService.getCarouselPaths();
-          for (var image in $scope.images) {
-            console.log('image', image);
-          }
+
         }
       }
 
