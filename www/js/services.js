@@ -18,11 +18,11 @@ angular.module('app.services', [])
     download_files: [],
     offlinePreferences:[
       {
-        text: 'Automatischer Sync deaktivieren',
+        text: 'Automatischer Sync aktivieren',
         checked: false
       },
       {
-        text: 'Mobiler Sync deaktivieren',
+        text: 'Mobiler Sync aktivieren',
         checked: false
       },
       {
