@@ -553,14 +553,20 @@ angular.module('app.controllers', [])
         $scope.videos.push(videos.rows.item(x));
       }
       if (!$rootScope.internet) {
+        console.log('no internet');
         var vids = localStorageService.getAllVideoPaths();
-        if (vids == null) {
+        console.log('vids', vids);
+        if (angular.equals(vids, {})) {
           $ionicPopup.alert({
             title: 'Keine Videos heruntergeladen'
           });
+          //Set undownloaded images to default path
+          console.log('not downloaded');
+          for (var i = 0; i < $scope.videos.length; i++) {
+            $scope.videos[i].startimage_de = 'img/logo.png';
+          }
         } else {
           for (var key in vids) {
-
             var index = $scope.videos.findIndex(function (video) {
               return video.uid == key;
             });
@@ -570,6 +576,10 @@ angular.module('app.controllers', [])
               $scope.videos[index].startimage_de = vids[key].startimage_de;
               console.log('video path in local storage', vids[key].videofile_de);
               $scope.videos[index].videofile_de = vids[key].videofile_de;
+            } else {
+              //Set undownloaded images to default path
+              console.log('not downloaded');
+              $scope.videos[index].startimage_de = 'img/logo.png';
             }
           }
         }
