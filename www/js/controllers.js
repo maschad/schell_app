@@ -610,7 +610,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
 
-
   $scope.$on('$ionicView.afterEnter', function(){
     setTimeout(function(){
       document.getElementById("custom-overlay").style.display = "none";
@@ -620,7 +619,6 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
   $scope.selection = function (country) {
     localStorageService.setCountry(country);
-
   }
 
 }])
