@@ -1643,8 +1643,9 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //History function
       $scope.$on('go-back', function () {
         var confirmPopup = $ionicPopup.confirm({
-          title: 'Einstellungen speichern?',
-          template: 'Möchten Sie Ihre Einstellungen speichern?'
+          template: 'Möchten Sie Ihre Einstellungen speichern?',
+          cancelText: 'Nein',
+          okText: 'Ja'
         });
         confirmPopup.then(function (res) {
           if (res) {
@@ -2188,7 +2189,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       function saveSettings() {
         //Preparing for Download
         $ionicLoading.show({
-          template: '<p>Vorbereitung Download...</p><ion-spinner></ion-spinner>',
+          template: '<p>Anwendung...</p><ion-spinner></ion-spinner>',
           animation: 'fade-in',
           showBackdrop: true
         });
