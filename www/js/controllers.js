@@ -319,8 +319,12 @@ angular.module('app.controllers', [])
             $scope.products.push(product);
             //To uid to save file path
             var uid = $scope.products[x].uid;
-            if (!$rootScope.internet && localStorageService.productImageDownloaded(uid)) {
-              $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
+            if (!$rootScope.internet) {
+              if (localStorageService.productImageDownloaded(uid)) {
+                $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
+              } else {
+                $scope.products[x].image_portrait = 'img/logo.png';
+              }
 
             } else if ($rootScope.internet) {
               downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
@@ -444,8 +448,13 @@ angular.module('app.controllers', [])
         for (var x = 0; x < results.rows.length; x++) {
           $scope.categories.push(results.rows.item(x));
           var uid = $scope.categories[x].uid;
-          if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
-            $scope.categories[x].bild = localStorageService.getBildPath(uid);
+          if (!$rootScope.internet) {
+            if (localStorageService.categoryDownloaded(uid)) {
+              $scope.categories[x].bild = localStorageService.getBildPath(uid);
+
+            } else {
+              $scope.categories[x].bild = 'img/logo.png';
+            }
 
           } else if ($rootScope.internet) {
             downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
@@ -1435,8 +1444,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           //Grab the images or load them in offline mode
           var uid = $scope.categories[x].uid;
           if ($scope.categories[x].bild != '') {
-            if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
-              $scope.categories[x].bild = localStorageService.getBildPath(uid);
+            if (!$rootScope.internet) {
+              if (localStorageService.categoryDownloaded(uid)) {
+                $scope.categories[x].bild = localStorageService.getBildPath(uid);
+              } else {
+                $scope.categories[x].bild = 'img/logo.png';
+              }
             } else if ($rootScope.internet) {
               downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
             }
