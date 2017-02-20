@@ -2407,4 +2407,12 @@ angular.module('app.filters', [])
       return input.replace(/eSCHELL/g, '<span class="normalize">eSCHELL</span>');
     }
 
+  })
+
+  .filter('hide', function() {
+
+    return function(input) {
+      return input.replace(/(Wassermanagement-System)/g, '<span class="hidden">$1</span>');
+    }
+
   });

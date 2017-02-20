@@ -4,17 +4,17 @@ in ionic's _variables.scss file.
 
 For example, you might change some of the default colors:
 */
-$light:                           #fff !default;
+$light:                           #ffffff !default;
 $stable:                          #f8f8f8 !default;
 $positive:                        #387ef5 !default;
 $balanced:                        #33cd5f !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #9e0a22 !default;
-$royal: #810a18 !default;
-$dark: #000000 !default;
-$black: #000000 !default;
-$opace: transparentize($black, 0.6);
-$calm: transparentize($dark, 0.3) !default;
+$royal:                           #810a18 !default;
+$dark:                            #000000 !default;
+$black:                           #000000 !default;
+$opace:                           transparentize($black, 0.6);
+$calm:                            transparentize($dark, 0.3) !default;
 
 
 // The path for our ionicons font files, relative to the built CSS in www/css
@@ -27,7 +27,7 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 //Fonts
 body, .ionic-body {
-  font-family: SyntaxLTStd-Roman,sans-serif;
+  font-family: SyntaxLTStd-Roman, sans-serif;
   font-weight: normal;
   font-style: normal;
 }
@@ -62,6 +62,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-size: 14px;
   white-space: normal;
   line-height: initial;
+}
+.hidden {
+  display: none;
 }
 
 // Ensure images fit inside columns
@@ -993,6 +996,9 @@ h1.slogan {
 .item p {
   color: #444;
 }
+.item p.wrap {
+  white-space: normal;
+}
 
 .item-icon-left .icon:before, .item-icon-right .icon:before {
   font-size: 10px;
@@ -1083,14 +1089,27 @@ h1.slogan {
   height: auto;
   padding: 10px;
 }
+.reload {
+  background-color: #dfdfdf;
+  border-radius: 50%;
+  min-height: 46px;
+  min-width: 46px;
+  float: right;
+}
+.item p.settings-category {
+  font-size: 16px;
+  font-weight: bold;
+}
 .item-divider {
   background-color: transparent;
   font-size: 14px;
+  padding-top: 36px;
+  margin-bottom: -24px;
 }
 .settings-hr {
   width: 76%;
   position: relative;
-  top: -26px;
+  top: -4px;
   border: none;
   border-top: 1px solid #000000;
   z-index: 3;
@@ -1102,8 +1121,8 @@ h1.slogan {
     margin-left: 40%;
   }
 }
-.item-toggle .toggle {
-  right: 14px;
+.toggle-small.item-toggle .toggle {
+  top: 10px;
 }
 
 // ios checkbox
@@ -1151,6 +1170,8 @@ h1.slogan {
 //
 #offline label.checkbox-settings {
   padding-left: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .checkbox-settings input:after, .checkbox-icon:after {
   height: 6px;
@@ -1174,6 +1195,7 @@ h1.slogan {
 .checkbox-settings input, .checkbox-icon {
   width: 22px;
   height: 22px;
+  top: -6px;
 }
 .checkbox input:before, .checkbox-icon:before {
   border-width: 2px;
@@ -1226,7 +1248,7 @@ h1.slogan {
 }
 @media (min-width: 300px) {
   .popover {
-    height: 222px;
+    height: 214px;
     width: 220px;
   }
 }
@@ -1277,6 +1299,10 @@ ion-popover-view.fit ion-content {
 #floating-menu .icon.menu-icon.ion-ios-search-strong {
   font-size: 32px !important;
   line-height: 68px;
+}
+.menu-button.icon.menu-icon.ion-plus,
+.menu-button.icon.menu-icon.ion-minus {
+  line-height: 68px !important;
 }
 
 .no-results {
