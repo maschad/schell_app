@@ -1168,24 +1168,30 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
       //Function to download product
       $scope.downloadProduct = function () {
         if ($rootScope.internet && !$scope.productDownloaded) {
-          $ionicPopup.alert({
+          var confirmPopup = $ionicPopup.confirm({
             title: 'Möchten Sie diesen Artikel offline speichern?',
             cssClass: 'download-popup',
-            okText: 'Offline verfügbar machen'
-          }).then(function () {
-            //Whether this product has been downloaded
-            $scope.productDownloaded = true;
-            $scope.showDownload();
+            okText: 'Offline verfügbar machen',
+            cancelText: 'Abbrechen'
+          });
+          confirmPopup.then(function(res) {
+            if(res) {
+              //Whether this product has been downloaded
+              $scope.productDownloaded = true;
+              $scope.showDownload();
 
-            FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
-              localStorageService.setLandscapePath($scope.details.uid, path);
+              FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
+                localStorageService.setLandscapePath($scope.details.uid, path);
 
-              FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
-                localStorageService.setTechnicalPath($scope.details.uid, path);
+                FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
+                  localStorageService.setTechnicalPath($scope.details.uid, path);
+                });
+                var awards = $scope.awards.slice();
+                downloadAwards(awards);
               });
-              var awards = $scope.awards.slice();
-              downloadAwards(awards);
-            });
+            } else {
+              console.log('Still on product detail page');
+            }
           });
         } else if ($scope.productDownloaded) {
           $ionicPopup.alert({

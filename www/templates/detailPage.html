@@ -61,15 +61,11 @@
 
     <script id="product-image.html" type="text/ng-template">
       <ion-modal-view>
+        <ion-header-bar>
+          <div class="ion-android-close close-modal" ng-click="closeModal(1)"></div>
+        </ion-header-bar>
         <ion-content>
-          <img ng-src="{{details.image_landscape}}" ng-click="closeModal(1)">
-          <div class="row">
-            <div class="col">
-              <button class="button button-block button-dark" ng-click="closeModal(1)" style="color: #fff;">
-                Zurück
-              </button>
-            </div>
-          </div>
+          <img ng-src="{{details.image_landscape}}">
         </ion-content>
       </ion-modal-view>
     </script>
@@ -77,16 +73,10 @@
     <script id="technical-drawing.html" type="text/ng-template">
       <ion-modal-view>
         <ion-header-bar>
+          <div class="ion-android-close close-modal" ng-click="closeModal(2)"></div>
         </ion-header-bar>
         <ion-content>
           <img ng-src="{{details.technical_drawing_link}}">
-          <div class="row">
-            <div class="col">
-              <button class="button button-block button-dark" ng-click="closeModal(2)" style="color: #fff;">
-                Zurück
-              </button>
-            </div>
-          </div>
         </ion-content>
       </ion-modal-view>
     </script>
