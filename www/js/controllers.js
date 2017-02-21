@@ -323,7 +323,7 @@ angular.module('app.controllers', [])
               if (localStorageService.productImageDownloaded(uid)) {
                 $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
               } else {
-                $scope.products[x].image_portrait = 'img/logo.png';
+                $scope.products[x].image_portrait = 'img/placeholder.png';
               }
 
             } else if ($rootScope.internet) {
@@ -453,7 +453,7 @@ angular.module('app.controllers', [])
               $scope.categories[x].bild = localStorageService.getBildPath(uid);
 
             } else {
-              $scope.categories[x].bild = 'img/logo.png';
+              $scope.categories[x].bild = 'img/placeholder.png';
             }
 
           } else if ($rootScope.internet) {
@@ -572,7 +572,7 @@ angular.module('app.controllers', [])
           //Set undownloaded images to default path
           console.log('not downloaded');
           for (var i = 0; i < $scope.videos.length; i++) {
-            $scope.videos[i].startimage_de = 'img/logo.png';
+            $scope.videos[i].startimage_de = 'img/placeholder.png';
           }
         } else {
           for (var key in vids) {
@@ -588,7 +588,7 @@ angular.module('app.controllers', [])
             } else {
               //Set undownloaded images to default path
               console.log('not downloaded');
-              $scope.videos[index].startimage_de = 'img/logo.png';
+              $scope.videos[index].startimage_de = 'img/placeholder.png';
             }
           }
         }
@@ -1448,7 +1448,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
               if (localStorageService.categoryDownloaded(uid)) {
                 $scope.categories[x].bild = localStorageService.getBildPath(uid);
               } else {
-                $scope.categories[x].bild = 'img/logo.png';
+                $scope.categories[x].bild = 'img/placeholder.png';
               }
             } else if ($rootScope.internet) {
               downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
