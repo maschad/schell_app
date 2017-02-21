@@ -46,6 +46,9 @@ angular.module('app.controllers', [])
 
         //load bookmarked
         $scope.bookmarks = localStorageService.getBookmarkedProducts();
+        //See if products require an update
+        FirebaseService.checkUpdateProducts(localStorageService.getDownloadedProducts());
+
         //If there is internet, populate the DB with latest data, else, work with what is in database
         var lastUpdated = localStorageService.getLastUpdated();
         if (lastUpdated) {
@@ -773,6 +776,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         $scope.show();
         //Check for internet
         appDataService.checkInternet();
+        //Set to false originally
+        $scope.updatedProduct = false;
 
         //Whether to a product is bookmarked
         $scope.bookmarked = false;
@@ -799,6 +804,9 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
         //Whether this product has been downloaded
         $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
+
+        //If this product requires an updated
+        $scope.updatedProduct = $rootScope.updated_products.includes($scope.details);
 
 
         if (!$rootScope.internet) {

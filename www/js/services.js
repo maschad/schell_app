@@ -485,10 +485,15 @@ angular.module('app.services', [])
 
     var checkUpdateProducts = function (currentProducts) {
       for (var key in currentProducts) {
-        firebase.database().ref('/products/' + currentProducts[key].uid).once('value').then(function (snapshot) {
-          if (snapshot.val() != currentProducts[key]) {
-            $rootScope.updated_products.push(currentProducts[key]);
-          }
+        console.log('updating products');
+        firebase.database().ref('/products/' + currentProducts[key].uid).on('value', function (snapshot) {
+          $rootScope.updated_products.push(currentProducts[key]);
+        });
+        firebase.database().ref('/downloads/' + currentProducts[key].download_ids).on('value', function (snapshot) {
+          $rootScope.updated_products.push(currentProducts[key]);
+        });
+        firebase.database().ref('/videos/' + currentProducts[key].video_ids).on('value', function (snapshot) {
+          $rootScope.updated_products.push(currentProducts[key]);
         });
       }
     };
@@ -503,7 +508,8 @@ angular.module('app.services', [])
     downloadAllProducts: downloadAllProducts,
     downloadAwards: downloadAwards,
     downloadZubehoer: downloadZubehoer,
-    checkBookmark: checkBookmark
+    checkBookmark: checkBookmark,
+    checkUpdateProducts: checkUpdateProducts
   };
 
 }])
