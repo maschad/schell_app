@@ -840,6 +840,17 @@ span.badge.badge-hide.badge-assertive {
   background-color: transparent;
   border-color: transparent;
 }
+.search-text {
+  background-color:#9e0a22; 
+  color: #fff; 
+  margin-top: 94px;
+}
+.search-count {
+  color: #fff; 
+  font-size: larger; 
+  padding-left: 10px; 
+  margin-bottom: 0;
+}
 
 #label {
   width: 62px;
@@ -1190,7 +1201,7 @@ h1.slogan {
 #offline .item,
 .item-checkbox.item-checkbox-right {
   padding-left: 6px;
-  padding-right: 36px;
+  padding-right: 80px;
 }
 .checkbox-settings input, .checkbox-icon {
   width: 22px;
@@ -1416,6 +1427,8 @@ ion-popover-view.fit ion-content {
   background-color: #fff;
   color: #000;
   border-radius: 0;
+  padding: 0;
+  font-size: 13px;
 }
 .popup-buttons .button:hover {
   color: #000;
@@ -1514,9 +1527,11 @@ label.menu-item {
   }
 }
 
-.ion-close-round {
+.close-bookmark {
   float: right;
-  font-size: 30px;
+  font-size: 34px;
+  padding-right: 2px;
+  margin-top: -4px;
 }
 
 .swiper-container {
@@ -1540,8 +1555,10 @@ ion-floating-item[button-class="fab-assertive"] li {
   max-height: 100%;
 }
 .close-modal {
-  float: right;
-  font-size: 30px;
+  font-size: 34px;
+  right: 0;
+  position: absolute;
+  padding: 10px 18px;
 }
 
 .hinweise {
