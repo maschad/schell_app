@@ -47,20 +47,6 @@ angular.module('app.controllers', [])
         //load bookmarked
         $scope.bookmarks = localStorageService.getBookmarkedProducts();
 
-        //Check for updates on downloaded products
-        var downloaded_product_info = localStorageService.getDownloadedProducts();
-        var product_ids_to_check = [];
-        for (var key in downloaded_product_info) {
-          console.log('key being pushed', key);
-          product_ids_to_check.push(key);
-        }
-        //See if products require an update
-        DatabaseService.selectProducts(product_ids_to_check, function (results) {
-          for (var x = 0; x < results.rows.length; x++) {
-            FirebaseService.checkUpdateProducts(results.rows.item(x));
-          }
-        });
-
         //If there is internet, populate the DB with latest data, else, work with what is in database
         var lastUpdated = localStorageService.getLastUpdated();
         if (lastUpdated) {
@@ -818,7 +804,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
 
         //If this product requires an updated
-        $scope.updatedProduct = $rootScope.updated_products.includes($scope.details.uid);
+        $scope.updatedProduct = localStorageService.checkProductUpdate($scope.details.uid);
         console.log('value of ', $scope.updatedProduct);
 
 
@@ -1266,11 +1252,21 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               $scope.productDownloaded = true;
               $scope.showDownload();
 
+              if ($scope.updatedProduct) {
+                localStorageService.removeUpdatedProduct($scope.details.uid);
+              }
+
               FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
                 localStorageService.setLandscapePath($scope.details.uid, path);
 
                 FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
                   localStorageService.setTechnicalPath($scope.details.uid, path);
+                });
+                //See if products require an update
+                DatabaseService.selectProducts($scope.details.uid, function (results) {
+                  for (var x = 0; x < results.rows.length; x++) {
+                    FirebaseService.productsToWatch(results.rows.item(x));
+                  }
                 });
                 var awards = $scope.awards.slice();
                 downloadAwards(awards);

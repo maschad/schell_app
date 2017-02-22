@@ -35,7 +35,8 @@ angular.module('app.services', [])
         last_updated: ''
       }
     ],
-    filters: []
+    filters: [],
+    updated_products: []
   });
 
   // Getters and Setters
@@ -137,6 +138,27 @@ angular.module('app.services', [])
 
     return false;
   };
+
+  var watchedProducts = function (uid) {
+    $localStorage.updated_products.push(uid);
+  };
+
+  var checkProductUpdate = function (uid) {
+    var count = 0;
+    for (var x = 0; x < $localStorage.updated_products.length; x++) {
+      if ($localStorage.updated_products[x] == uid) {
+        count++;
+      }
+    }
+    if (count >= 2) {
+      return true;
+    }
+    return false;
+  };
+
+  var removeUpdatedProduct = function (uid) {
+    $localStorage.updated_products.splice($localStorage.updated_products.indexOf(uid), 1);
+  }
 
   var setPDFPath = function (product_id, path) {
     if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
@@ -321,7 +343,10 @@ angular.module('app.services', [])
     setProductCount: setProductCount,
     getProductCounts: getProductCounts,
     getLastUpdated: getLastUpdated,
-    setLastUpdated: setLastUpdated
+    setLastUpdated: setLastUpdated,
+    watchedProducts: watchedProducts,
+    checkProductUpdate: checkProductUpdate,
+    removeUpdatedProduct: removeUpdatedProduct
   };
 
 
@@ -480,19 +505,19 @@ angular.module('app.services', [])
       }
     };
 
-    var checkUpdateProducts = function (currentProduct) {
+    var productsToWatch = function (currentProduct) {
 
       console.log('updating product', currentProduct.uid);
       firebase.database().ref('/products/' + currentProduct.uid).on('value', function () {
         console.log('pushing product', currentProduct.uid);
-        $rootScope.updated_products.push(currentProduct.uid);
+        localStorageService.watchedProducts(currentProduct.uid);
         });
       console.log('updating product with download ids', currentProduct.download_ids);
       firebase.database().ref('/downloads/' + currentProduct.download_ids).on('value', function () {
-        $rootScope.updated_products.push(currentProduct.uid);
+        localStorageService.watchedProducts(currentProduct.uid);
         });
       firebase.database().ref('/videos/' + currentProduct.video_ids).on('value', function () {
-        $rootScope.updated_products.push(currentProduct.uid);
+        localStorageService.watchedProducts(currentProduct.uid);
         });
 
     };
@@ -508,7 +533,7 @@ angular.module('app.services', [])
     downloadAwards: downloadAwards,
     downloadZubehoer: downloadZubehoer,
     checkBookmark: checkBookmark,
-    checkUpdateProducts: checkUpdateProducts
+    productsToWatch: productsToWatch
   };
 
 }])
