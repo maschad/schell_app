@@ -66,6 +66,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .hidden {
   display: none;
 }
+.wrap-tiles {
+  flex-wrap: wrap;
+}
 
 // Ensure images fit inside columns
 img {
@@ -1357,6 +1360,9 @@ ion-popover-view.fit ion-content {
 .swiper-container {
   height: auto;
 }
+.swiper-slide img {
+  width: 1200px;
+}
 .swiper-pagination-bullet-active {
   background-color: #ffffff !important;
 }
@@ -1364,7 +1370,7 @@ ion-popover-view.fit ion-content {
   background-color: #f3f3f3 !important;
 }
 .swiper-container-horizontal>.swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction {
-  bottom: 2px !important;
+  bottom: -4px !important;
 }
 
 // Popup

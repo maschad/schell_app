@@ -24,8 +24,8 @@
         <div class="product-lines">
           <h3 class="heading">{{title}}</h3>
           <!-- Products -->
-          <div ng-repeat="category in categories" ng-if="$index%3 == 0" class="row responsive-sm">
-            <div class="col col-33"
+          <div ng-repeat="category in categories" ng-if="$index%2 == 0" class="row responsive-sm wrap-tiles">
+            <div class="col col-50"
                  ng-click="counts[categories[$index].uid] == 0 || choice_product(categories[$index].product_ids, categories[$index].title_de, categories[$index].uid)"
                  ng-if="categories[$index].product_ids">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index].uid] == 0 ? 0.2 : 1}">
@@ -43,7 +43,7 @@
               </div>
             </div>
             <!-- Check for children -->
-            <div class="col col-33"
+            <div class="col col-50"
                  ng-click="counts[categories[$index].uid] == 0 || choice(categories[$index].child_ids,categories[$index].title_de)"
                  ng-if="categories[$index].child_ids">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index].uid] == 0 ? 0.2 : 1}">
@@ -61,7 +61,7 @@
               </div>
             </div>
             <!-- Product ID-->
-            <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids"
+            <div class="col col-50" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids"
                  ng-click="counts[categories[$index + 1].uid] == 0 || choice_product(categories[$index + 1].product_ids,categories[$index + 1].title_de, categories[$index + 1].uid)">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 1].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
@@ -79,7 +79,7 @@
             </div>
 
             <!--Child Product-->
-            <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].child_ids"
+            <div class="col col-50" ng-if="categories[$index + 1] != undefined && categories[$index + 1].child_ids"
                  ng-click="counts[categories[$index + 1].uid] == 0 || choice(categories[$index + 1].child_ids,categories[$index + 1].title_de)">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 1].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
@@ -97,7 +97,7 @@
             </div>
 
             <!--Product Ids-->
-            <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].product_ids"
+            <!-- <div class="col col-50" ng-if="categories[$index + 2] != undefined && categories[$index + 2].product_ids"
                  ng-click="counts[categories[$index + 2].uid] == 0 || choice_product(categories[$index + 2].product_ids,categories[$index + 2].title_de, categories[$index + 2].uid)">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 2].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
@@ -112,9 +112,9 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
             <!--Child IDs-->
-            <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].child_ids"
+            <!-- <div class="col col-50" ng-if="categories[$index + 2] != undefined && categories[$index + 2].child_ids"
                  ng-click="counts[categories[$index + 2].uid] == 0 || choice(categories[$index + 2].child_ids,categories[$index + 2].title_de)">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 2].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
@@ -129,7 +129,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
