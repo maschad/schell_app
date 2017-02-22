@@ -319,8 +319,12 @@ angular.module('app.controllers', [])
             $scope.products.push(product);
             //To uid to save file path
             var uid = $scope.products[x].uid;
-            if (!$rootScope.internet && localStorageService.productImageDownloaded(uid)) {
-              $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
+            if (!$rootScope.internet) {
+              if (localStorageService.productImageDownloaded(uid)) {
+                $scope.products[x].image_portrait = localStorageService.getPortraitPath(uid);
+              } else {
+                $scope.products[x].image_portrait = 'img/placeholder.png';
+              }
 
             } else if ($rootScope.internet) {
               downloadImage(uid, $scope.products[x].image_portrait, $scope.products[x].nummer.concat('_portrait'));
@@ -444,8 +448,13 @@ angular.module('app.controllers', [])
         for (var x = 0; x < results.rows.length; x++) {
           $scope.categories.push(results.rows.item(x));
           var uid = $scope.categories[x].uid;
-          if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
-            $scope.categories[x].bild = localStorageService.getBildPath(uid);
+          if (!$rootScope.internet) {
+            if (localStorageService.categoryDownloaded(uid)) {
+              $scope.categories[x].bild = localStorageService.getBildPath(uid);
+
+            } else {
+              $scope.categories[x].bild = 'img/placeholder.png';
+            }
 
           } else if ($rootScope.internet) {
             downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
@@ -553,14 +562,20 @@ angular.module('app.controllers', [])
         $scope.videos.push(videos.rows.item(x));
       }
       if (!$rootScope.internet) {
+        console.log('no internet');
         var vids = localStorageService.getAllVideoPaths();
-        if (vids == null) {
+        console.log('vids', vids);
+        if (angular.equals(vids, {})) {
           $ionicPopup.alert({
             title: 'Keine Videos heruntergeladen'
           });
+          //Set undownloaded images to default path
+          console.log('not downloaded');
+          for (var i = 0; i < $scope.videos.length; i++) {
+            $scope.videos[i].startimage_de = 'img/placeholder.png';
+          }
         } else {
           for (var key in vids) {
-
             var index = $scope.videos.findIndex(function (video) {
               return video.uid == key;
             });
@@ -570,6 +585,10 @@ angular.module('app.controllers', [])
               $scope.videos[index].startimage_de = vids[key].startimage_de;
               console.log('video path in local storage', vids[key].videofile_de);
               $scope.videos[index].videofile_de = vids[key].videofile_de;
+            } else {
+              //Set undownloaded images to default path
+              console.log('not downloaded');
+              $scope.videos[index].startimage_de = 'img/placeholder.png';
             }
           }
         }
@@ -759,13 +778,19 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
 
 
-        if (!$rootScope.internet && $scope.productDownloaded) {
-          //If no internet load these files
-          $scope.details.image_landscape = localStorageService.getLandscapePath($scope.details.uid);
-          $scope.details.image_portrait = localStorageService.getPortraitPath($scope.details.uid);
-          $scope.details.technical_drawing_link = localStorageService.getTechnicalPath($scope.details.uid);
+        if (!$rootScope.internet) {
+          if ($scope.productDownloaded) {
+            //If no internet load these files
+            $scope.details.image_landscape = localStorageService.getLandscapePath($scope.details.uid);
+            $scope.details.image_portrait = localStorageService.getPortraitPath($scope.details.uid);
+            $scope.details.technical_drawing_link = localStorageService.getTechnicalPath($scope.details.uid);
+          } else {
+            //If no internet load these files
+            $scope.details.image_landscape = 'img/placeholder.png';
+            $scope.details.image_portrait = 'img/placeholder.png';
+            $scope.details.technical_drawing_link = 'img/placeholder.png';
+          }
         }
-
 
         getFiles($scope.details.download_ids); //Downloads PDFs then goes to videos...
       }
@@ -799,10 +824,14 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           DatabaseService.selectVideos(video_ids, function(videos){
             for(var x = 0; x < videos.rows.length; x++){
               $scope.videos.push(videos.rows.item(x));
-              if (!$rootScope.internet && localStorageService.productDownloaded($scope.details.uid)) {
-                console.log('videofile', $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid));
-                $scope.videos[x].startimage_de = localStorageService.getVideoImagePath($scope.videos[x].uid);
-                $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
+              if (!$rootScope.internet) {
+                if (localStorageService.productDownloaded($scope.details.uid)) {
+                  console.log('videofile', $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid));
+                  $scope.videos[x].startimage_de = localStorageService.getVideoImagePath($scope.videos[x].uid);
+                  $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
+                } else {
+                  $scope.videos[x].startimage_de = 'img/placeholder.png';
+                }
               }
             }
             getProductVariations($scope.details.varianten);
@@ -1425,8 +1454,12 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           //Grab the images or load them in offline mode
           var uid = $scope.categories[x].uid;
           if ($scope.categories[x].bild != '') {
-            if (!$rootScope.internet && localStorageService.categoryDownloaded(uid)) {
-              $scope.categories[x].bild = localStorageService.getBildPath(uid);
+            if (!$rootScope.internet) {
+              if (localStorageService.categoryDownloaded(uid)) {
+                $scope.categories[x].bild = localStorageService.getBildPath(uid);
+              } else {
+                $scope.categories[x].bild = 'img/placeholder.png';
+              }
             } else if ($rootScope.internet) {
               downloadImage(uid, $scope.categories[x].bild, $scope.categories[x].title_de.concat('_bild.png'));
             }
@@ -2262,8 +2295,8 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
 }])
 
-  .controller('searchPageCtrl', ['$scope', '$state', '$ionicLoading', '$ionicFilterBar', '$ionicHistory', 'DatabaseService', 'appDataService',
-    function ($scope, $state, $ionicLoading, $ionicFilterBar, $ionicHistory, DatabaseService, appDataService) {
+  .controller('searchPageCtrl', ['$scope', '$rootScope', '$state', '$ionicLoading', '$ionicFilterBar', '$ionicHistory', 'DatabaseService', 'appDataService', 'localStorageService',
+    function ($scope, $rootScope, $state, $ionicLoading, $ionicFilterBar, $ionicHistory, DatabaseService, appDataService, localStorageService) {
 
     //Initalize products
     $scope.products = [];
@@ -2300,6 +2333,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
           $scope.showFilter = true;
           cordova.plugins.Keyboard.close();
           $scope.show();
+          appDataService.checkInternet();
           DatabaseService.searchProducts(event.target.value, function (results) {
             for (var x = 0; x < results.rows.length; x++) {
               //Remove SCHELL from title
@@ -2308,7 +2342,15 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
                 product.produktbezeichnung_de = product.produktbezeichnung_de.substr(7);
               }
               $scope.products.push(product);
+              if (!$rootScope.internet) {
+                if (localStorageService.productImageDownloaded($scope.products[x].uid)) {
+                  $scope.products[x].image_portrait = localStorageService.getPortraitPath($scope.products[x].uid);
+                } else {
+                  $scope.products[x].image_portrait = 'img/placeholder.png';
+                }
+              }
             }
+
             $scope.hide();
           });
         }
@@ -2328,7 +2370,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     };
 
 
-  }])
+    }])
 
   .controller('MenuCtrl', ['$scope', '$ionicScrollDelegate', '$rootScope', '$ionicHistory', 'FirebaseService', 'localStorageService', 'appDataService',
     function ($scope, $ionicScrollDelegate, $rootScope, $ionicHistory, FirebaseService, localStorageService, appDataService) {
