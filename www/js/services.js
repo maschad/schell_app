@@ -84,12 +84,38 @@ angular.module('app.services', [])
     $localStorage.bookmarked_products.splice($localStorage.bookmarked_products.indexOf(bookmark),1);
   };
 
+  var resetBookmarks = function() {
+    $localStorage.bookmarked_products = [];
+  };
+
   var getOfflinePreferences = function () {
     return $localStorage.offlinePreferences;
   };
 
   var updatePreferences = function (data) {
     $localStorage.offlinePreferences = data;
+  };
+
+  var resetPreferences = function() {
+    $localStorage.offlinePreferences = [
+    {
+      text: 'Automatischer Sync aktivieren',
+      checked: false
+    },
+    {
+      text: 'Mobiler Sync aktivieren',
+      checked: false
+    },
+    {
+      downloaded_categories: []
+    },
+    {
+      download_videos : false
+    },
+    {
+      last_updated: ''
+    }
+    ];
   };
 
   var productDownloaded = function (uid) {
@@ -258,8 +284,10 @@ angular.module('app.services', [])
     getBookmarkedProducts : getBookmarkedProducts,
     bookmarkProduct : bookmarkProduct,
     removeBookmarkedProduct : removeBookmarkedProduct,
+    resetBookmarks: resetBookmarks,
     getOfflinePreferences : getOfflinePreferences,
     updatePreferences : updatePreferences,
+    resetPreferences: resetPreferences,
     getLandscapePath: getLandscapePath,
     setAwardPath: setAwardPath,
     getAwardPath: getAwardPath,
@@ -546,9 +574,34 @@ angular.module('app.services', [])
         });
     };
 
+    var deleteDirectory = function(directory, success) {
+      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+        fs.root.getDirectory(
+            directory,
+            {
+              create: true
+            },
+            function (dirEntry) {
+              dirEntry.removeRecursively(function() {
+                console.log('Directory ' + directory + ' removed successfully.');
+                if (success) {
+                  success();
+                }
+              }, function(failureEvent) {
+                console.log('File system error ' + failureEvent.target.error.code);
+              });
+            },
+            function () {
+              console.log('File system error ' + failureEvent.target.error.code);
+            });
+      }, function() {
+        console.log('File system error ' + failureEvent.target.error.code);
+      });
+    };
 
   return{
-    originalDownload: originalDownload
+    originalDownload: originalDownload,
+    deleteDirectory: deleteDirectory
   }
 
 }])
@@ -707,8 +760,6 @@ angular.module('app.services', [])
       getCurrentSelectedFilterIds: getCurrentSelectedFilterIds,
       clearSelectedFilters: clearSelectedFilters
     }
-
-
   }])
 
 //Database Service
@@ -718,11 +769,21 @@ angular.module('app.services', [])
       "location": "default"
     });
 
-    var populateProducts = function(firebaseProductsObject) {
+    var populateProducts = function(firebaseProductsObject, language, success) {
       var preparedStatements = [];
       var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseProductsObject) {
+        var languages = firebaseProductsObject[uid]['languages'];
+
+        if (language === 'de' && languages && languages.indexOf('18') == -1) {
+          continue; // We skip products that don't have the language code 18 for german
+        }
+
+        if (language === 'en' && languages && languages.indexOf('251') == -1) {
+          continue; // We skip products that don't have the language code 251 for worldwide
+        }
+
         var filter_ids = firebaseProductsObject[uid]['filter_ids'] ? firebaseProductsObject[uid]['filter_ids'].join() : '' ;
         var download_ids = firebaseProductsObject[uid]['media']['download_ids'] ? firebaseProductsObject[uid]['media']['download_ids'].join() : '' ;
         var video_ids = firebaseProductsObject[uid]['media']['video_ids'] ? firebaseProductsObject[uid]['media']['video_ids'].join() : '' ;
@@ -780,17 +841,24 @@ angular.module('app.services', [])
 
       db.sqlBatch(preparedStatements, function() {
         console.log('Products populated');
+        success();
       }, function(error) {
         console.log('SQL BATCH ERROR. COULDN\'T POPULATE PRODUCTS.' + error.message);
       });
 
     };
 
-    var populateProductCategories = function(firebaseProductCategoriesObject) {
+    var populateProductCategories = function(firebaseProductCategoriesObject, language, success) {
 
       var preparedStatements = [];
       var BLANK_CATEGORY_INSERT_QUERY = 'INSERT INTO product_categories VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
       for (var uid in firebaseProductCategoriesObject) {
+
+        if (language === 'en' && parseInt(uid) == 110) {
+          continue;
+          // We skip eSchell (uid = 110)
+          console.log('Skipping eSchell because worldwide...');
+        }
 
         var filter_ids = firebaseProductCategoriesObject[uid]['filter_ids'] ? firebaseProductCategoriesObject[uid]['filter_ids'].join() : '';
         var download_ids = firebaseProductCategoriesObject[uid]['download_ids'] ? firebaseProductCategoriesObject[uid]['download_ids'].join() : '';
@@ -818,6 +886,7 @@ angular.module('app.services', [])
 
       db.sqlBatch(preparedStatements, function() {
         console.log('Categories populated');
+        success();
       }, function(error) {
         console.log('SQL BATCH ERROR. COULDN\'T POPULATE CATEGORIES.' + error.message);
       });
@@ -1102,6 +1171,37 @@ angular.module('app.services', [])
     });
   };
 
+  var clearDatabase = function() {
+    console.log("Deleting tables...");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS products");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS product_categories");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS awards");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS downloads");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS videos");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS video_categories");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS b_artikel_zubehoer");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS c_language");
+  };
+
+  var createTables = function() {
+    console.log("Creating tables...");
+    $cordovaSQLite.execute(db, "CREATE TABLE products (uid INTEGER PRIMARY KEY, nummer TEXT, referenzartikel TEXT, produktbezeichnung_de TEXT, zusatz1_de TEXT, zusatz2_de TEXT, beschreibung_de TEXT, differenzierung_de TEXT,lieferumfang_de TEXT, einsatzbereich_de TEXT, werkstoff_de TEXT, geraeuschklasse_de TEXT, pruefzeichen_de TEXT, dimension_de TEXT,oberflaeche_de TEXT, verpackungseinheit TEXT, gewicht TEXT, image_landscape TEXT, image_landscape_filesize INTEGER, image_portrait TEXT, image_portrait_filesize INTEGER, technical_drawing_link TEXT, technical_drawing_filesize INTEGER, filter_ids TEXT, download_ids TEXT, video_ids TEXT, produktbezeichnung_en TEXT, zusatz1_en TEXT, zusatz2_en TEXT, beschreibung_en TEXT, differenzierung_en TEXT, lieferumfang_en TEXT, einsatzbereich_en TEXT, werkstoff_en TEXT, geraeuschklasse_en TEXT,pruefzeichen_en TEXT,dimension_en TEXT, oberflaeche_en TEXT , varianten TEXT, designpreis TEXT, b_artikel_id INTEGER, permalink TEXT, hinweise_notes TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE product_categories (uid INTEGER PRIMARY KEY,	title_de TEXT, elternelement INTEGER, produkte TEXT, bild TEXT, downloads TEXT, child_ids TEXT, sorting INTEGER, product_ids TEXT, filter_ids TEXT, download_ids TEXT, title_en TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE downloads (uid INTEGER PRIMARY KEY, thumbnail TEXT, 	artikelnummer_de TEXT, broschurentitel_de TEXT, zusatzinformation_de TEXT, datei_de TEXT,	produziert_bis TEXT, artikelnummer_en TEXT, broschurentitel_en TEXT, zusatzinformation_en TEXT, datei_en TEXT, filesize INTEGER, title TEXT, category TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE videos (uid INTEGER PRIMARY KEY, title TEXT, startimage_de TEXT, videofile_de TEXT, information_de TEXT, startimage_en TEXT,	videofile_en TEXT, information_en TEXT, filesize INTEGER, youtube_de TEXT, youtube_en TEXT, category INTEGER)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE video_categories (uid INTEGER PRIMARY KEY, title_de TEXT, title_en TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE awards (uid INTEGER PRIMARY KEY, titel TEXT,	logo TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE b_artikel_zubehoer (b_artikel_zubehoer_id INTEGER PRIMARY KEY,  b_artikel_id INTEGER, lfdnr INTEGER, status INTEGER, recordstatus INTEGER, pos_b_artikel_id INTEGER , verknuepfung INTEGER , data TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE c_language (c_language_id INTEGER PRIMARY KEY, recordstatus INTEGER, table_id INTEGER, tablename TEXT, fieldname TEXT, langcode TEXT, content TEXT)")
+  };
+
     return {
       populateProducts: populateProducts,
       populateProductCategories: populateProductCategories,
@@ -1123,7 +1223,9 @@ angular.module('app.services', [])
       selectDownloads: selectDownloads,
       selectAwards: selectAwards,
       selectAccessories: selectAccessories,
-      searchProducts: searchProducts
+      searchProducts: searchProducts,
+      clearDatabase: clearDatabase,
+      createTables: createTables
     };
 
   }]);
