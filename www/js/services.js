@@ -150,7 +150,6 @@ angular.module('app.services', [])
       $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'datei_de': []});
       $localStorage.product_files[product_id].datei_de.push(path);
     }
-    console.log('length of pdf array', $localStorage.product_files[product_id].datei_de.length);
   };
 
   var getPDFPath = function (product_id, lang, index) {
@@ -164,7 +163,6 @@ angular.module('app.services', [])
   };
 
   var setThumbnailPath = function (product_id, path) {
-    console.log('attempting to download thumbnail');
     if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
       if ($localStorage.product_files[product_id].hasOwnProperty('thumbnail')) {
         $localStorage.product_files[product_id].thumbnail.push(path);
@@ -176,7 +174,6 @@ angular.module('app.services', [])
       $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': []});
       $localStorage.product_files[product_id].thumbnail.push(path);
     }
-    console.log('length of thumbnail array', $localStorage.product_files[product_id].thumbnail.length);
   };
 
   var setAwardPath = function (product_id, path) {
@@ -483,19 +480,21 @@ angular.module('app.services', [])
       }
     };
 
-    var checkUpdateProducts = function (currentProducts) {
-      for (var key in currentProducts) {
-        console.log('updating products');
-        firebase.database().ref('/products/' + currentProducts[key].uid).on('value', function (snapshot) {
-          $rootScope.updated_products.push(currentProducts[key]);
+    var checkUpdateProducts = function (currentProduct) {
+
+      console.log('updating product', currentProduct.uid);
+      firebase.database().ref('/products/' + currentProduct.uid).on('value', function () {
+        console.log('pushing product', currentProduct.uid);
+        $rootScope.updated_products.push(currentProduct.uid);
         });
-        firebase.database().ref('/downloads/' + currentProducts[key].download_ids).on('value', function (snapshot) {
-          $rootScope.updated_products.push(currentProducts[key]);
+      console.log('updating product with download ids', currentProduct.download_ids);
+      firebase.database().ref('/downloads/' + currentProduct.download_ids).on('value', function () {
+        $rootScope.updated_products.push(currentProduct.uid);
         });
-        firebase.database().ref('/videos/' + currentProducts[key].video_ids).on('value', function (snapshot) {
-          $rootScope.updated_products.push(currentProducts[key]);
+      firebase.database().ref('/videos/' + currentProduct.video_ids).on('value', function () {
+        $rootScope.updated_products.push(currentProduct.uid);
         });
-      }
+
     };
 
   return {
