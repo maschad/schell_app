@@ -639,10 +639,10 @@ angular.module('app.controllers', [])
 
 }])
 
-.controller('countryselectCtrl', ['$scope', '$ionicSideMenuDelegate','localStorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('countryselectCtrl', ['$scope', '$state', '$ionicSideMenuDelegate','localStorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $ionicSideMenuDelegate,localStorageService) {
+function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
 
@@ -652,11 +652,16 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     }, 3000);
   });
 
+  $scope.country = 'de';
 
-  $scope.selection = function (country) {
-    console.log('chosen country : ' + country);
-    localStorageService.setCountry(country);
-  }
+  $scope.selection = function(country) {
+     $scope.country = country;
+  };
+
+  $scope.selectCountry = function() {
+    localStorageService.setCountry($scope.country);
+    $state.go('start-screen');
+  };
 
 }])
 
