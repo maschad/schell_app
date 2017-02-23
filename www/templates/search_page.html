@@ -15,22 +15,37 @@
     </div>
   </div>
   <ion-content padding="false" class="has-header" style="margin-top: 94px;">
-    <div id="product-overview-body">
+    <div id="search-page">
       <div class="container">
         <p class="search-count" ng-show="products.length > 0">{{products.length}} Artikels gefunden
         </p>
-        <div ng-repeat="product in products" class="row responsive-sm">
-          <div class="col col-50" ng-if="product.image_portrait" ng-click="choiceProduct(product,product.nummer)">
+        <div ng-repeat="product in products" ng-if="$index%2 == 0" class="row responsive-sm">
+          <div class="col col-50 flex" ng-if="products[$index].image_portrait" ng-click="choiceProduct(products[$index],products[$index].nummer)">
             <div class="product-tile">
               <div class="row">
                 <div class="col col-75">
-                  <p class="item-number">{{product.nummer | split}}</p>
-                  <p class="item-title">{{product.produktbezeichnung_de}}</p>
-                  <p class="item-name" ng-bind-html="product.werkstoff_de"></p>
-                  <p>{{product.zusatz2_de}}</p>
+                  <p class="item-number">{{products[$index].nummer | split}}</p>
+                  <p class="item-title">{{products[$index].produktbezeichnung_de}}</p>
+                  <p class="item-name" ng-bind-html="products[$index].werkstoff_de"></p>
+                  <p>{{products[$index].zusatz2_de}}</p>
                 </div>
                 <div class="col">
-                  <img src="{{product.image_portrait}}" class="center">
+                  <img src="{{products[$index].image_portrait}}" class="center">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-50 flex" ng-if="products[$index + 1].image_portrait" ng-click="choiceProduct(products[$index + 1],products[$index + 1].nummer)">
+            <div class="product-tile">
+              <div class="row">
+                <div class="col col-75">
+                  <p class="item-number">{{products[$index + 1].nummer | split}}</p>
+                  <p class="item-title">{{products[$index + 1].produktbezeichnung_de}}</p>
+                  <p class="item-name" ng-bind-html="products[$index + 1].werkstoff_de"></p>
+                  <p>{{products[$index + 1].zusatz2_de}}</p>
+                </div>
+                <div class="col">
+                  <img src="{{products[$index + 1].image_portrait}}">
                 </div>
               </div>
             </div>
