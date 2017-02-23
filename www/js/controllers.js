@@ -57,25 +57,34 @@ angular.module('app.controllers', [])
         }
         if ($rootScope.internet && shouldUpdate) {
           $scope.showLoad();
+          var country = localStorageService.getCountry();
           FirebaseService.downloadAllProducts(function (results) {
-            DatabaseService.populateProducts(results);
-          });
-          FirebaseService.getAllProductCategories(function (results) {
-            DatabaseService.populateProductCategories(results);
-            var allCats = [];
-            var topCats = [];
-
-            DatabaseService.selectTopCategories(function (topCategories) {
-              for (var x = 0; x < topCategories.rows.length; x++) {
-                topCats.push(topCategories.rows.item(x));
-              }
-              DatabaseService.selectAllCategories(function (allCategories) {
-                for (var z = 0; z < allCategories.rows.length; z++) {
-                  allCats.push(allCategories.rows.item(z));
-                }
-                topCats.forEach(function (topCategory) {
-                  var count = countArtikelProduct(topCategory, allCats);
-                  localStorageService.setProductCount(topCategory.uid, count);
+            DatabaseService.populateProducts(results, country, function() {
+              FirebaseService.getAllProductCategories(function (results) {
+                DatabaseService.populateProductCategories(results, country, function() {
+                  var allCats = [];
+                  var topCats = [];
+                  var allProducts = [];
+                  DatabaseService.selectTopCategories(function (topCategories) {
+                    for (var x = 0; x < topCategories.rows.length; x++) {
+                      topCats.push(topCategories.rows.item(x));
+                    }
+                    DatabaseService.selectAllCategories(function (allCategories) {
+                      for (var z = 0; z < allCategories.rows.length; z++) {
+                        allCats.push(allCategories.rows.item(z));
+                      }
+                      DatabaseService.selectAllProducts(function(productResults) {
+                        for (var y = 0; y < productResults.rows.length; y++) {
+                          allProducts.push(productResults.rows.item(y));
+                        }
+                        topCats.forEach(function (topCategory) {
+                          console.log('counting artikels for ' + topCategory.title_de);
+                          var count = countArtikelProduct(topCategory, allCats, allProducts);
+                          localStorageService.setProductCount(topCategory.uid, count);
+                        });
+                      });
+                    });
+                  });
                 });
               });
             });
@@ -106,20 +115,28 @@ angular.module('app.controllers', [])
           });
 
           // Count Artikels
-        countArtikelProduct = function (category, allCategories) {
-          if (category.child_ids == '') {
-            localStorageService.setProductCount(category.uid, category.product_ids.split(',').length);
-            return category.product_ids.split(',').length;
-          } else {
-
-            var count = 0;
-            var childCategories = allCategories.filter(function (cat) {
-              return cat.elternelement == category.uid;
-            });
-            childCategories.forEach(function (childCategory) {
-              count += countArtikelProduct(childCategory, allCategories);
-            });
-
+          countArtikelProduct = function (category, allCategories, products) {
+            if (category.child_ids == '') {
+              var product_ids = category.product_ids.split(',');
+              product_ids = product_ids.filter(function(product_id) {
+                var productInDatabase = false;
+                products.forEach(function(product) {
+                  if (parseInt(product_id) == product.uid) {
+                    productInDatabase = true;
+                  }
+                });
+                return productInDatabase;
+              });
+              localStorageService.setProductCount(category.uid, product_ids.length);
+              return product_ids.length;
+            } else {
+              var count = 0;
+              var childCategories = allCategories.filter(function (cat) {
+                return cat.elternelement == category.uid;
+              });
+              childCategories.forEach(function (childCategory) {
+                count += countArtikelProduct(childCategory, allCategories, products);
+              });
             localStorageService.setProductCount(category.uid, count);
             return count;
           }
@@ -622,10 +639,10 @@ angular.module('app.controllers', [])
 
 }])
 
-.controller('countryselectCtrl', ['$scope', '$ionicSideMenuDelegate','localStorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('countryselectCtrl', ['$scope', '$state', '$ionicSideMenuDelegate','localStorageService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $ionicSideMenuDelegate,localStorageService) {
+function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
   //Side Menu
   $ionicSideMenuDelegate.canDragContent(false);
 
@@ -635,10 +652,16 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
     }, 3000);
   });
 
+  $scope.country = 'de';
 
-  $scope.selection = function (country) {
-    localStorageService.setCountry(country);
-  }
+  $scope.selection = function(country) {
+     $scope.country = country;
+  };
+
+  $scope.selectCountry = function() {
+    localStorageService.setCountry($scope.country);
+    $state.go('start-screen');
+  };
 
 }])
 
@@ -2232,8 +2255,7 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
         $rootScope.showDownload = true;
         downloadVideos();
         downloadCategory();
-      };
-
+      }
 
 
     //#TODO: Check if product info updated
@@ -2262,10 +2284,10 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
   }])
 
-  .controller('regionCtrl', ['$scope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', 'localStorageService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('regionCtrl', ['$scope', '$rootScope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'localStorageService', 'FirebaseService', 'DatabaseService', 'appDataService', 'FileService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, localStorageService) {
+    function ($scope, $rootScope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, $ionicLoading, localStorageService, FirebaseService, DatabaseService, appDataService, FileService) {
       //Side Menu deactivated
       $ionicSideMenuDelegate.canDragContent(false);
 
@@ -2279,20 +2301,146 @@ function ($scope, $ionicSideMenuDelegate,localStorageService) {
 
       //Update selected Country
       $scope.selectCountry = function (country) {
-        $scope.country = country;
-        localStorageService.setCountry(country);
-        $ionicPopup.confirm({
-          title: 'ACHTUNG!',
-          template: 'Alle persönlichen Einstellungen (Merkzettel, Offline gesicherte Artikel) müssen nach Veränderung der Länderversion erneut geladen werden.',
-          cancelText: 'Abbrechen',
-          okText: 'Akzeptieren'
-        });
+        if (country != $scope.country) {
+          $ionicPopup.confirm({
+            title: 'ACHTUNG!',
+            template: 'Alle persönlichen Einstellungen (Merkzettel, Offline gesicherte Artikel) müssen nach Veränderung der Länderversion erneut geladen werden.',
+            cancelText: 'Abbrechen',
+            okText: 'Akzeptieren'
+          }).then(function(res) {
+            if (res) {
+              appDataService.checkInternet();
+              if ($rootScope.internet) {
+                $scope.country = country;
+                localStorageService.setCountry(country);
+                reloadData();
+              } else {
+                //NO internet!
+              }
+            }
+          });
+        }
       };
 
       $scope.goBack = function () {
         $ionicHistory.goBack();
       };
 
+      $scope.showLoad = function () {
+        $ionicLoading.show({
+          template: '<p>Suche nach Updates...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
+      };
+
+      $scope.hideLoad = function () {
+        $ionicLoading.hide();
+      };
+
+      //Helper function to cache slider images
+      function downloadImages(number, url, fileName, dirName) {
+        FileService.originalDownload(url, fileName, dirName, function (path) {
+          localStorageService.setCarouselPath(number, path);
+        });
+      }
+
+      function reloadData() {
+        $scope.showLoad();
+        FileService.deleteDirectory('imgs', function() {
+          var url = 'http://www.schell.eu/fileadmin/app/slider/slider';
+          for (var i = 1; i < 5; i++) {
+            downloadImages(i, url.concat(i + '.png'), 'slider'.concat(i + '.png'), 'imgs');
+          }
+        });
+        FileService.deleteDirectory('pdfs');
+        FileService.deleteDirectory('videos');
+        FileService.deleteDirectory('awards');
+        DatabaseService.clearDatabase();
+        DatabaseService.createTables();
+        var country = localStorageService.getCountry();
+        FirebaseService.downloadAllProducts(function (results) {
+          DatabaseService.populateProducts(results, country, function() {
+            FirebaseService.getAllProductCategories(function (results) {
+              DatabaseService.populateProductCategories(results, country, function() {
+                var allCats = [];
+                var topCats = [];
+                var allProducts = [];
+                DatabaseService.selectTopCategories(function (topCategories) {
+                  for (var x = 0; x < topCategories.rows.length; x++) {
+                    topCats.push(topCategories.rows.item(x));
+                  }
+                  DatabaseService.selectAllCategories(function (allCategories) {
+                    for (var z = 0; z < allCategories.rows.length; z++) {
+                      allCats.push(allCategories.rows.item(z));
+                    }
+                    DatabaseService.selectAllProducts(function(productResults) {
+                      for (var y = 0; y < productResults.rows.length; y++) {
+                        allProducts.push(productResults.rows.item(y));
+                      }
+                      topCats.forEach(function (topCategory) {
+                        var count = countArtikelProduct(topCategory, allCats, allProducts);
+                        localStorageService.setProductCount(topCategory.uid, count);
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+        localStorageService.resetPreferences();
+        localStorageService.resetBookmarks();
+        FirebaseService.downloadFiles(function (results) {
+          DatabaseService.populateDownloads(results);
+        });
+        FirebaseService.downloadVideos(function (results) {
+          DatabaseService.populateVideos(results);
+        });
+        FirebaseService.downloadVideoCategories(function (results) {
+          DatabaseService.populateVideoCategories(results);
+        });
+        FirebaseService.downloadAwards(function (results) {
+          DatabaseService.populateAwards(results);
+        });
+        FirebaseService.downloadZubehoer(function (results) {
+          DatabaseService.populateZubehoer(results);
+        });
+        FirebaseService.downloadProductFilters(function (results) {
+          localStorageService.setFilters(results);
+          $scope.hideLoad();
+          //If internet grab those images
+        });
+
+        // Count Artikels
+        countArtikelProduct = function (category, allCategories, products) {
+          if (category.child_ids == '') {
+            var product_ids = category.product_ids.split(',');
+            product_ids = product_ids.filter(function(product_id) {
+              var productInDatabase = false;
+              products.forEach(function(product) {
+                if (parseInt(product_id) == product.uid) {
+                  productInDatabase = true;
+                }
+              });
+              return productInDatabase;
+            });
+            localStorageService.setProductCount(category.uid, product_ids.length);
+            return product_ids.length;
+          } else {
+            var count = 0;
+            var childCategories = allCategories.filter(function (cat) {
+              return cat.elternelement == category.uid;
+            });
+            childCategories.forEach(function (childCategory) {
+              count += countArtikelProduct(childCategory, allCategories, products);
+            });
+            localStorageService.setProductCount(category.uid, count);
+            return count;
+          }
+        };
+        localStorageService.setLastUpdated(Date.now());
+      }
 }])
 
   .controller('searchPageCtrl', ['$scope', '$rootScope', '$state', '$ionicLoading', '$ionicFilterBar', '$ionicHistory', 'DatabaseService', 'appDataService', 'localStorageService',
