@@ -1272,7 +1272,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               console.log('Still on product detail page');
             }
           });
-        } else if ($scope.updatedProduct) {
+        } else if ($rootScope.internet && $scope.updatedProduct) {
           var updatePopup = $ionicPopup.confirm({
             title: 'Produkt aktualisieren?',
             cssClass: 'download-popup',
