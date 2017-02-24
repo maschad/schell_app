@@ -126,6 +126,10 @@ angular.module('app.services', [])
     return false;
   };
 
+  var removeProduct = function (uid) {
+    delete $localStorage.product_files[uid];
+  };
+
   var productImageDownloaded = function (uid) {
     if ($localStorage.product_files.hasOwnProperty(uid.toString())) {
       return $localStorage.product_files[uid].hasOwnProperty('image_portrait');
@@ -301,6 +305,7 @@ angular.module('app.services', [])
     getDownloadFiles : getDownloadFiles,
     productDownloaded: productDownloaded,
     productImageDownloaded: productImageDownloaded,
+    removeProduct: removeProduct,
     categoryDownloaded: categoryDownloaded,
     setFilters: setFilters,
     getFilters: getFilters,
@@ -574,6 +579,28 @@ angular.module('app.services', [])
         });
     };
 
+    var deleteFile = function (path, filename) {
+      console.log('path to be deleted', path);
+      console.log('file to be deleted', filename);
+
+      window.resolveLocalFileSystemURL(path, function (dir) {
+          console.log('dir ', dir);
+          dir.getFile(filename, {create: false}, function (fileEntry) {
+            fileEntry.remove(function () {
+              console.log('file removed successfully', filename);
+              // The file has been removed succesfully
+            }, function (error) {
+              // Error deleting the file
+            }, function () {
+              // The file doesn't exist
+            });
+          });
+        },
+        function (error) {
+          console.log('File System error ', error);
+        });
+    };
+
     var deleteDirectory = function(directory, success) {
       window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
         fs.root.getDirectory(
@@ -601,6 +628,7 @@ angular.module('app.services', [])
 
   return{
     originalDownload: originalDownload,
+    deleteFile: deleteFile,
     deleteDirectory: deleteDirectory
   }
 

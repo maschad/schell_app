@@ -1045,9 +1045,16 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.png'), 'awards', function (path) {
                 localStorageService.setAwardPath($scope.details.uid, path);
                 awards.shift();
-                if (awards.length > 0) {
-                  downloadAwards(awards);
-                }
+                downloadAwards(awards);
+
+              });
+              break;
+
+            case 'gif':
+              FileService.originalDownload(awards[0].logo, awards[0].titel.concat('_award.gif'), 'awards', function (path) {
+                localStorageService.setAwardPath($scope.details.uid, path);
+                awards.shift();
+                downloadAwards(awards);
               });
               break;
           }
@@ -1088,6 +1095,14 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           });
         }
 
+      }
+
+      function deleteFilePath(path) {
+        if (path != '') {
+          var filename = path.substr(path.lastIndexOf('/'), path.length - 1);
+          path = path.replace(filename, "");
+          FileService.deleteFile(path, filename.substr(1));
+        }
       }
 
       //Load the product
@@ -1244,8 +1259,31 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
             }
           });
         } else if ($scope.productDownloaded) {
-          $ionicPopup.alert({
-            title: 'Bereits heruntergeladen'
+          var deletePopup = $ionicPopup.confirm({
+            title: 'Bereits heruntergeladen,Würdest du gerne löschen?',
+            cssClass: 'download-popup',
+            okText: 'Daten löschen',
+            cancelText: 'Abbrechen'
+          });
+          deletePopup.then(function (res) {
+            if (res) {
+              var landscape_path = localStorageService.getLandscapePath($scope.details.uid);
+              deleteFilePath(landscape_path);
+              var technical_path = localStorageService.getTechnicalPath($scope.details.uid);
+              deleteFilePath(technical_path);
+              for (var x = 0; x < $scope.awards.length; x++) {
+                var award_path = localStorageService.getAwardPath($scope.details.uid, x);
+                deleteFilePath(award_path);
+              }
+              for (var x = 0; x < $scope.files.length; x++) {
+                var pdf_file_path = localStorageService.getPDFPath($scope.details.uid, 'de', x);
+                deleteFilePath(pdf_file_path);
+                var thumbnail_path = localStorageService.getThumbnailPath($scope.details.uid, x);
+                deleteFilePath(thumbnail_path);
+              }
+              localStorageService.removeProduct($scope.details.uid);
+              $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
+            }
           });
         } else {
           $ionicPopup.alert({
