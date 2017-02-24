@@ -253,7 +253,7 @@ img {
 
 .bar-royal .button.back-button.button-clear {
   margin-right: 0;
-  width: 50px;
+  width: 60px;
 }
 .bar-royal .button.active, .bar-royal .button.activated {
   background-color: transparent;
@@ -296,7 +296,7 @@ img {
   position: absolute;
   top: 6px;
   right: 15px;
-  background-color: #9e0a22;
+  background-color: $assertive;
   border-radius: 10px;
   padding: 0px 3px;
   width: auto;
@@ -314,85 +314,14 @@ img {
 
 /* Breadcrumb */
 .breadcrumb-active .item {
-  background-color: #000000 !important;
+  background-color: $black !important;
   color: #ffffff !important;
 }
-
-/* Breadcrumb Dropdown Menu */
-/* .crumbs-container {
-  position: relative;
-  overflow: hidden;
-  height: 3.2em;
-  -webkit-transition: height 0.5s ease-out;
-  -moz-transition: height 0.5s ease-out;
-  -o-transition: height 0.5s ease-out;
-  transition: height 0.5s ease-out;
-}
-
-.crumbs-container.active {
-  height: 17.1em;
-  width: 100%;
-}
-
-.crumbs {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  padding-left: 0;
-  margin-bottom: 0;
-  text-transform: uppercase;
-}
-
-.crumbs .second {
-  text-indent: 22px;
-}
-
-.crumbs .third {
-  text-indent: 44px;
-}
-
-.crumbs .fourth {
-  text-indent: 66px;
-}
-
-.crumbs-level {
-  margin-top: 1.3em;
-  margin-left: 1em;
-  position: absolute;
-}
-
-.crumbs li a {
-  display: block;
-  padding: 1em;
-  padding-left: 2.5em;
-  color: #ffffff;
-}
-
-.crumbs li:last-child a {
-  border-bottom: 0;
-}
-
-#crumbs-trigger {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  display: block;
-  font-size: 2em;
-  padding: 0 0.5em 0.2em;
-  color: #ffffff;
-}
-
-#crumbs-trigger .glyphicon {
-  font-size: 0.7em;
-  margin-bottom: 8px;
-} */
-
 
 .center {
   display: block;
   max-width: 100%;
   margin: auto;
-  // height: 70px;
 }
 
 .center-logo {
@@ -473,6 +402,7 @@ img {
   background-color: #ffffff;
   border-radius: 5px;
   height: 18vw;
+  width: 100%;
 }
 
 .product-tile-overlay:active {
@@ -480,7 +410,7 @@ img {
 }
 
 .product-tile-content {
-  color: #000000;
+  color: $black;
 }
 
 @media (max-width: 991px) {
@@ -540,7 +470,7 @@ img {
 }
 
 .product-name {
-  color: #9e0a22;
+  color: $assertive;
   font-size: 28px;
   font-weight: bold;
   line-height: 38px;
@@ -625,14 +555,14 @@ img {
 .side-nav-downloaded {
   height: 45px;
   width: 63px;
-  color: darkred;
+  color: $assertive;
   background: url(../img/icons/download-icon.png) no-repeat 0 0;
 }
 
 .side-nav-dropdown {
   top: -16px;
   left: 128%;
-  background-color: #000000;
+  background-color: $black;
   border-radius: 0;
   padding: 10px;
 }
@@ -690,7 +620,7 @@ img {
   position: relative;
   top: -5px;
   font-size: 24px;
-  color: darkred;
+  color: $assertive;
 }
 
 // badge
@@ -750,7 +680,7 @@ span.badge.badge-hide.badge-assertive {
 .side-nav-dropup {
   width: 290px;
   left: -338%;
-  background-color: #000000;
+  background-color: $black;
   border-radius: 0;
   padding: 10px;
   margin-bottom: 20px !important;
@@ -780,7 +710,7 @@ span.badge.badge-hide.badge-assertive {
 }
 
 .product-counter {
-  background-color: #000000;
+  background-color: $black;
   color: #ffffff;
   border-radius: 10px;
   text-align: center;
@@ -791,9 +721,13 @@ span.badge.badge-hide.badge-assertive {
 .product-counter p {
   margin-bottom: 0;
   letter-spacing: 1px;
+  font-weight: bold;
 }
 @media (max-width: 767px) {
   .product-counter {
+    // width: 100%;
+  }
+  #product-areas-body .product-counter {
     width: 100%;
   }
   .product-counter p {
@@ -801,7 +735,8 @@ span.badge.badge-hide.badge-assertive {
   }
 }
 @media (max-width: 567px) {
-  .product-counter {
+  .product-counter,
+  #product-areas-body .product-counter {
     width: 60%;
   }
 }
@@ -844,7 +779,7 @@ span.badge.badge-hide.badge-assertive {
   border-color: transparent;
 }
 .search-text {
-  background-color: #9e0a22;
+  background-color: $assertive; 
   color: #fff;
   margin-top: 94px;
 }
@@ -908,7 +843,7 @@ span.badge.badge-hide.badge-assertive {
 
 #input.focus {
   z-index: 20;
-  background-color: #000000;
+  background-color: $black;
 }
 
 #input.focus input {
@@ -1110,9 +1045,11 @@ h1.slogan {
   min-width: 46px;
   float: right;
 }
+.item span.settings-category,
 .item p.settings-category {
   font-size: 16px;
   font-weight: bold;
+  white-space: normal;
 }
 .item-divider {
   background-color: transparent;
@@ -1125,7 +1062,7 @@ h1.slogan {
   position: relative;
   top: -4px;
   border: none;
-  border-top: 1px solid #000000;
+  border-top: 1px solid $black;
   z-index: 3;
   margin-left: 24%;
 }
@@ -1173,7 +1110,7 @@ h1.slogan {
 }
 
 .toggle-small .toggle-assertive input:checked + .track {
-  background-color: #9e0a22;
+  background-color: $assertive;
   border-color: #000;
 }
 
@@ -1204,7 +1141,7 @@ h1.slogan {
 #offline .item,
 .item-checkbox.item-checkbox-right {
   padding-left: 6px;
-  padding-right: 80px;
+  padding-right: 50px;
 }
 .checkbox-settings input, .checkbox-icon {
   width: 22px;
@@ -1392,7 +1329,7 @@ ion-popover-view.fit ion-content {
     bottom: -9px;
     border-style: solid;
     border-width: 10px 10px 0 10px;
-    border-color: #000000 transparent transparent transparent;
+    border-color: $black transparent transparent transparent;
   }
   .popup-container.download-popup .popup {
     position: absolute;
@@ -1409,7 +1346,7 @@ ion-popover-view.fit ion-content {
     bottom: -9px;
     border-style: solid;
     border-width: 10px 10px 0 10px;
-    border-color: #000000 transparent transparent transparent;
+    border-color: $black transparent transparent transparent;
   }
 }
 
@@ -1549,7 +1486,7 @@ label.menu-item {
   background-color: #2c2a2b;
 }
 ion-floating-item[button-class="fab-assertive"] li {
-  background-color: #9e0a22;
+  background-color: $assertive;
 }
 
 // Modal
@@ -1569,7 +1506,7 @@ ion-floating-item[button-class="fab-assertive"] li {
 
 .hinweise {
   background-color: #f4f4f4;
-  border: 1px solid #9e0a22;
+  border: 1px solid $assertive;
   padding: 5px;
   margin: 15px 0;
 }

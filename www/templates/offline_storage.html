@@ -16,17 +16,11 @@
         <ion-checkbox class="checkbox-settings item-checkbox-right"
                       ng-repeat="category in preferences[2].downloaded_categories" ng-model="category.checked">
           <div class="row">
-            <div class="col col-75">
-              <div class="wrap">
-                <p class="settings-category" ng-bind-html="category.item.title_de | hide"></p>
-              </div>
+            <div class="col">
+              <span class="settings-category" ng-bind-html="category.item.title_de | hide"></span>
+              <span style="float: right;">{{fileSizes[category.item.uid] / (1048576) | number: 0}} MB</span>
               <div class="wrap">
                 {{counts[category.item.uid]}} Produkte
-              </div>
-            </div>
-            <div class="col">
-              <div style="text-align: right;">
-                {{fileSizes[category.item.uid] / (1048576) | number: 0}} MB
               </div>
             </div>
           </div>
@@ -35,17 +29,11 @@
         <hr class="settings-hr">
         <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="preferences[3].download_videos">
           <div class="row">
-            <div class="col col-75">
-              <div class="wrap">
-                <p class="settings-category">Videos</p>
-              </div>
+            <div class="col">
+              <span class="settings-category">Videos</span>
+              <span style="float: right;">{{total_video_size | number: 2}} GB</span>
               <div class="wrap">
                 {{videos.length}} Videos
-              </div>
-            </div>
-            <div class="col">
-              <div style="text-align: right;">
-                {{total_video_size | number: 2}} GB
               </div>
             </div>
           </div>
