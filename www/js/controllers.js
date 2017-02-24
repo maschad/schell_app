@@ -1777,7 +1777,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
       //History function
       $scope.$on('go-back', function () {
         var confirmPopup = $ionicPopup.confirm({
-          template: 'Möchten Sie Ihre Einstellungen speichern?',
+          title: 'Möchten Sie Ihre Einstellungen speichern?',
           cancelText: 'Nein',
           okText: 'Ja'
         });
