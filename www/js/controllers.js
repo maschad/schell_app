@@ -46,6 +46,7 @@ angular.module('app.controllers', [])
 
         //load bookmarked
         $scope.bookmarks = localStorageService.getBookmarkedProducts();
+
         //If there is internet, populate the DB with latest data, else, work with what is in database
         var lastUpdated = localStorageService.getLastUpdated();
         if (lastUpdated) {
@@ -773,6 +774,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         $scope.show();
         //Check for internet
         appDataService.checkInternet();
+        //Set to false originally
+        $scope.updatedProduct = false;
 
         //Whether to a product is bookmarked
         $scope.bookmarked = false;
@@ -799,6 +802,10 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
         //Whether this product has been downloaded
         $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
+
+        //If this product requires an updated
+        $scope.updatedProduct = localStorageService.checkProductUpdate($scope.details.uid);
+        console.log('value of ', $scope.updatedProduct);
 
 
         if (!$rootScope.internet) {
@@ -1245,6 +1252,39 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               $scope.productDownloaded = true;
               $scope.showDownload();
 
+
+              FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
+                localStorageService.setLandscapePath($scope.details.uid, path);
+
+                FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
+                  localStorageService.setTechnicalPath($scope.details.uid, path);
+                });
+                //See if products require an update
+                DatabaseService.selectProducts($scope.details.uid, function (results) {
+                  for (var x = 0; x < results.rows.length; x++) {
+                    FirebaseService.productsToWatch(results.rows.item(x));
+                  }
+                });
+                var awards = $scope.awards.slice();
+                downloadAwards(awards);
+              });
+            } else {
+              console.log('Still on product detail page');
+            }
+          });
+        } else if ($rootScope.internet && $scope.updatedProduct) {
+          var updatePopup = $ionicPopup.confirm({
+            title: 'Produkt aktualisieren?',
+            cssClass: 'download-popup',
+            okText: 'Aktualisieren',
+            cancelText: 'Abbrechen'
+          });
+          updatePopup.then(function (res) {
+            if (res) {
+              localStorageService.removeUpdatedProduct($scope.details.uid);
+              $scope.updatedProduct = localStorageService.checkProductUpdate($scope.details.uid);
+              $scope.showDownload();
+
               FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
                 localStorageService.setLandscapePath($scope.details.uid, path);
 
@@ -1254,37 +1294,35 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
                 var awards = $scope.awards.slice();
                 downloadAwards(awards);
               });
-            } else {
-              console.log('Still on product detail page');
             }
           });
         } else if ($scope.productDownloaded) {
-          var deletePopup = $ionicPopup.confirm({
-            title: 'Bereits heruntergeladen,Würdest du gerne löschen?',
-            cssClass: 'download-popup',
-            okText: 'Daten löschen',
-            cancelText: 'Abbrechen'
-          });
-          deletePopup.then(function (res) {
-            if (res) {
-              var landscape_path = localStorageService.getLandscapePath($scope.details.uid);
-              deleteFilePath(landscape_path);
-              var technical_path = localStorageService.getTechnicalPath($scope.details.uid);
-              deleteFilePath(technical_path);
-              for (var x = 0; x < $scope.awards.length; x++) {
-                var award_path = localStorageService.getAwardPath($scope.details.uid, x);
-                deleteFilePath(award_path);
+            var deletePopup = $ionicPopup.confirm({
+              title: 'Bereits heruntergeladen,Würdest du gerne löschen?',
+              cssClass: 'download-popup',
+              okText: 'Daten löschen',
+              cancelText: 'Abbrechen'
+            });
+            deletePopup.then(function (res) {
+              if (res) {
+                var landscape_path = localStorageService.getLandscapePath($scope.details.uid);
+                deleteFilePath(landscape_path);
+                var technical_path = localStorageService.getTechnicalPath($scope.details.uid);
+                deleteFilePath(technical_path);
+                for (var x = 0; x < $scope.awards.length; x++) {
+                  var award_path = localStorageService.getAwardPath($scope.details.uid, x);
+                  deleteFilePath(award_path);
+                }
+                for (var x = 0; x < $scope.files.length; x++) {
+                  var pdf_file_path = localStorageService.getPDFPath($scope.details.uid, 'de', x);
+                  deleteFilePath(pdf_file_path);
+                  var thumbnail_path = localStorageService.getThumbnailPath($scope.details.uid, x);
+                  deleteFilePath(thumbnail_path);
+                }
+                localStorageService.removeProduct($scope.details.uid);
+                $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
               }
-              for (var x = 0; x < $scope.files.length; x++) {
-                var pdf_file_path = localStorageService.getPDFPath($scope.details.uid, 'de', x);
-                deleteFilePath(pdf_file_path);
-                var thumbnail_path = localStorageService.getThumbnailPath($scope.details.uid, x);
-                deleteFilePath(thumbnail_path);
-              }
-              localStorageService.removeProduct($scope.details.uid);
-              $scope.productDownloaded = localStorageService.productDownloaded($scope.details.uid);
-            }
-          });
+            });
         } else {
           $ionicPopup.alert({
             title: 'Download nicht möglich! Es besteht keine Insternetverbindung'

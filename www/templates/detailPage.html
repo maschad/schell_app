@@ -12,7 +12,9 @@
     <ul class="side-nav hidden-xs">
       <li>
         <div ng-class="productDownloaded ? 'side-nav-downloaded' : 'side-nav-download' "
-             ng-click="downloadProduct()"></div>
+             ng-click="downloadProduct()">
+        </div>
+        <span ng-class="updatedProduct  ? 'badge badge-assertive' : 'badge badge-hide badge-assertive'">!</span>
       </li>
       <li class="dropdown">
         <div class="dropdown-toggle side-nav-clip" ng-click="bookmark()">
@@ -50,7 +52,9 @@
       <li>
         <div
           ng-class="productDownloaded ? 'side-nav-downloaded-sm schellicon-download':'side-nav-download-sm schellicon-download'"
-          ng-click="downloadProduct()"></div>
+          ng-click="downloadProduct()">
+        </div>
+        <span ng-class="updatedProduct ? 'badge badge-assertive' : 'badge badge-hide badge-assertive'">!</span>
       </li>
     </ul>
   </div>

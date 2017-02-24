@@ -679,7 +679,7 @@ img {
   height: 23px;
   width: 29px;
   position: relative;
-  top: -20px;
+  top: -5px;
   font-size: 24px;
   color: #fff;
 }
@@ -688,7 +688,7 @@ img {
   height: 23px;
   width: 29px;
   position: relative;
-  top: -20px;
+  top: -5px;
   font-size: 24px;
   color: darkred;
 }
@@ -844,14 +844,14 @@ span.badge.badge-hide.badge-assertive {
   border-color: transparent;
 }
 .search-text {
-  background-color:#9e0a22; 
-  color: #fff; 
+  background-color: #9e0a22;
+  color: #fff;
   margin-top: 94px;
 }
 .search-count {
-  color: #fff; 
-  font-size: larger; 
-  padding-left: 10px; 
+  color: #fff;
+  font-size: larger;
+  padding-left: 10px;
   margin-bottom: 0;
 }
 
@@ -1584,6 +1584,7 @@ ion-floating-item[button-class="fab-assertive"] li {
   width: 20px;
   padding-right: 5px;
 }
+
 
 .flex {
   display: flex;

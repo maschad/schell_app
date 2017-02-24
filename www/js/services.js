@@ -35,7 +35,8 @@ angular.module('app.services', [])
         last_updated: ''
       }
     ],
-    filters: []
+    filters: [],
+    updated_products: []
   });
 
   // Getters and Setters
@@ -138,6 +139,30 @@ angular.module('app.services', [])
     return false;
   };
 
+  var watchedProducts = function (uid) {
+    $localStorage.updated_products.push(uid);
+  };
+
+  var checkProductUpdate = function (uid) {
+    var count = 0;
+    for (var x = 0; x < $localStorage.updated_products.length; x++) {
+      if ($localStorage.updated_products[x] == uid) {
+        count++;
+      }
+    }
+    return count >= 4;
+
+  };
+
+  var removeUpdatedProduct = function (uid) {
+    console.log('removing product');
+    while ($localStorage.updated_products.indexOf(uid) != -1) {
+      $localStorage.updated_products.splice($localStorage.updated_products.indexOf(uid), 1);
+    }
+    $localStorage.updated_products.push(uid);
+    console.log('products', $localStorage.updated_products);
+  };
+
   var setPDFPath = function (product_id, path) {
     if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
       if ($localStorage.product_files[product_id].hasOwnProperty('datei_de')) {
@@ -150,7 +175,6 @@ angular.module('app.services', [])
       $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'datei_de': []});
       $localStorage.product_files[product_id].datei_de.push(path);
     }
-    console.log('length of pdf array', $localStorage.product_files[product_id].datei_de.length);
   };
 
   var getPDFPath = function (product_id, lang, index) {
@@ -164,7 +188,6 @@ angular.module('app.services', [])
   };
 
   var setThumbnailPath = function (product_id, path) {
-    console.log('attempting to download thumbnail');
     if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
       if ($localStorage.product_files[product_id].hasOwnProperty('thumbnail')) {
         $localStorage.product_files[product_id].thumbnail.push(path);
@@ -176,7 +199,6 @@ angular.module('app.services', [])
       $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': []});
       $localStorage.product_files[product_id].thumbnail.push(path);
     }
-    console.log('length of thumbnail array', $localStorage.product_files[product_id].thumbnail.length);
   };
 
   var setAwardPath = function (product_id, path) {
@@ -324,7 +346,10 @@ angular.module('app.services', [])
     setProductCount: setProductCount,
     getProductCounts: getProductCounts,
     getLastUpdated: getLastUpdated,
-    setLastUpdated: setLastUpdated
+    setLastUpdated: setLastUpdated,
+    watchedProducts: watchedProducts,
+    checkProductUpdate: checkProductUpdate,
+    removeUpdatedProduct: removeUpdatedProduct
   };
 
 
@@ -483,14 +508,23 @@ angular.module('app.services', [])
       }
     };
 
-    var checkUpdateProducts = function (currentProducts) {
-      for (var key in currentProducts) {
-        firebase.database().ref('/products/' + currentProducts[key].uid).once('value').then(function (snapshot) {
-          if (snapshot.val() != currentProducts[key]) {
-            $rootScope.updated_products.push(currentProducts[key]);
-          }
+    var productsToWatch = function (currentProduct) {
+
+      console.log('updating product', currentProduct.uid);
+      firebase.database().ref('/products/' + currentProduct.uid).on('value', function () {
+        console.log('pushing product', currentProduct.uid);
+        localStorageService.watchedProducts(currentProduct.uid);
         });
-      }
+      console.log('updating product with download ids', currentProduct.download_ids);
+      firebase.database().ref('/downloads/' + currentProduct.download_ids).on('value', function () {
+        console.log('pushing product', currentProduct.uid);
+        localStorageService.watchedProducts(currentProduct.uid);
+        });
+      firebase.database().ref('/videos/' + currentProduct.video_ids).on('value', function () {
+        console.log('pushing product', currentProduct.uid);
+        localStorageService.watchedProducts(currentProduct.uid);
+        });
+
     };
 
   return {
@@ -503,7 +537,8 @@ angular.module('app.services', [])
     downloadAllProducts: downloadAllProducts,
     downloadAwards: downloadAwards,
     downloadZubehoer: downloadZubehoer,
-    checkBookmark: checkBookmark
+    checkBookmark: checkBookmark,
+    productsToWatch: productsToWatch
   };
 
 }])
@@ -640,7 +675,6 @@ angular.module('app.services', [])
     var video_ids = [];
     var current_product = {};
     $rootScope.navigated_categories = [];
-    var previousProduct = [];
     var previous_title = '';
     var root_title = '';
     var filter_ids = '';
