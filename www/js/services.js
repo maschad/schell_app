@@ -150,7 +150,7 @@ angular.module('app.services', [])
         count++;
       }
     }
-    return count >= 2;
+    return count >= 4;
 
   };
 
@@ -517,9 +517,11 @@ angular.module('app.services', [])
         });
       console.log('updating product with download ids', currentProduct.download_ids);
       firebase.database().ref('/downloads/' + currentProduct.download_ids).on('value', function () {
+        console.log('pushing product', currentProduct.uid);
         localStorageService.watchedProducts(currentProduct.uid);
         });
       firebase.database().ref('/videos/' + currentProduct.video_ids).on('value', function () {
+        console.log('pushing product', currentProduct.uid);
         localStorageService.watchedProducts(currentProduct.uid);
         });
 
@@ -673,7 +675,6 @@ angular.module('app.services', [])
     var video_ids = [];
     var current_product = {};
     $rootScope.navigated_categories = [];
-    var previousProduct = [];
     var previous_title = '';
     var root_title = '';
     var filter_ids = '';
