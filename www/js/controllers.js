@@ -1282,6 +1282,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           updatePopup.then(function (res) {
             if (res) {
               localStorageService.removeUpdatedProduct($scope.details.uid);
+              $scope.updatedProduct = localStorageService.checkProductUpdate($scope.details.uid);
               $scope.showDownload();
 
               FileService.originalDownload($scope.details.image_landscape, $scope.details.nummer.concat('_landscape.png'), 'img', function (path) {
@@ -1289,12 +1290,6 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
                 FileService.originalDownload($scope.details.technical_drawing_link, $scope.details.nummer.concat('_technical_drawing.png'), 'img', function (path) {
                   localStorageService.setTechnicalPath($scope.details.uid, path);
-                });
-                //See if products require an update
-                DatabaseService.selectProducts($scope.details.uid, function (results) {
-                  for (var x = 0; x < results.rows.length; x++) {
-                    FirebaseService.productsToWatch(results.rows.item(x));
-                  }
                 });
                 var awards = $scope.awards.slice();
                 downloadAwards(awards);

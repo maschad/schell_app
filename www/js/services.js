@@ -150,15 +150,18 @@ angular.module('app.services', [])
         count++;
       }
     }
-    if (count >= 2) {
-      return true;
-    }
-    return false;
+    return count >= 2;
+
   };
 
   var removeUpdatedProduct = function (uid) {
-    $localStorage.updated_products.splice($localStorage.updated_products.indexOf(uid), 1);
-  }
+    console.log('removing product');
+    while ($localStorage.updated_products.indexOf(uid) != -1) {
+      $localStorage.updated_products.splice($localStorage.updated_products.indexOf(uid), 1);
+    }
+    $localStorage.updated_products.push(uid);
+    console.log('products', $localStorage.updated_products);
+  };
 
   var setPDFPath = function (product_id, path) {
     if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
