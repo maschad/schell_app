@@ -131,6 +131,10 @@ angular.module('app.services', [])
     delete $localStorage.product_files[uid];
   };
 
+  var removeVideo = function (uid) {
+    delete $localStorage.video_files[uid];
+  };
+
   var productImageDownloaded = function (uid) {
     if ($localStorage.product_files.hasOwnProperty(uid.toString())) {
       return $localStorage.product_files[uid].hasOwnProperty('image_portrait');
@@ -328,6 +332,7 @@ angular.module('app.services', [])
     productDownloaded: productDownloaded,
     productImageDownloaded: productImageDownloaded,
     removeProduct: removeProduct,
+    removeVideo: removeVideo,
     categoryDownloaded: categoryDownloaded,
     setFilters: setFilters,
     getFilters: getFilters,
