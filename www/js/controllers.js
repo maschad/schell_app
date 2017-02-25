@@ -2253,25 +2253,6 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       }
 
-
-      //Recursive functions to download videos and the corresponding thumbnail
-      //This avoids Large queues for downloading Files
-      function downloadVideoImage(videos) {
-        if (videos.length == 0) {
-          console.log('calling video images ');
-          var video_files = $scope.videos.slice();
-          downloadVideo(video_files);
-        } else {
-          console.log('calling video images  else');
-          FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
-            localStorageService.setVideoImagePath(videos[0].uid, result);
-            videos.shift();
-            downloadVideoImage(videos);
-          });
-        }
-
-      }
-
       function downloadVideo(videos) {
         if (videos.length > 0) {
           FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
@@ -2285,6 +2266,38 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           $rootScope.loaded += 1;
           $scope.products.shift();
           downloadProducts();
+        }
+      }
+
+
+      //Recursive functions to download videos and the corresponding thumbnail
+      //This avoids Large queues for downloading Files
+      function downloadVideoImage(videos) {
+        if (videos.length == 0) {
+          console.log('calling video images ');
+          var video_files = $scope.videos.slice();
+          downloadAllVideos(video_files);
+        } else {
+          console.log('calling video images  else');
+          FileService.originalDownload(videos[0].startimage_de, videos[0].title.concat('_startimage.jpg'), 'videos', function (result) {
+            localStorageService.setVideoImagePath(videos[0].uid, result);
+            videos.shift();
+            downloadVideoImage(videos);
+          });
+        }
+
+      }
+
+      function downloadAllVideos(videos) {
+        if (videos.length > 0) {
+          FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
+            localStorageService.setVideoPath(videos[0].uid, result);
+            videos.shift();
+            //Add amount loaded
+            console.log('file downloaded');
+            $rootScope.loaded += 1;
+            downloadAllVideos(videos);
+          });
         }
       }
 
