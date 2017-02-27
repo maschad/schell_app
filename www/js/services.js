@@ -127,6 +127,10 @@ angular.module('app.services', [])
     return false;
   };
 
+  var videoDownloaded = function (uid) {
+    return $localStorage.video_files.hasOwnProperty(uid.toString());
+  };
+
   var removeProduct = function (uid) {
     delete $localStorage.product_files[uid];
   };
@@ -330,6 +334,7 @@ angular.module('app.services', [])
     getVideoImagePath: getVideoImagePath,
     getDownloadFiles : getDownloadFiles,
     productDownloaded: productDownloaded,
+    videoDownloaded: videoDownloaded,
     productImageDownloaded: productImageDownloaded,
     removeProduct: removeProduct,
     removeVideo: removeVideo,
