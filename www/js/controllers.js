@@ -1214,7 +1214,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
             }
           },
           {
-            title : 'VIDEO',
+            title: 'VIDEOS',
             show: false,
             hasData: function() {
               return $scope.details.video_ids !== '';

@@ -182,6 +182,23 @@
                   </div>
                 </div>
               </div>
+              <div ng-if="list.title == 'NOTWENDIGE ZUGEHÖRIGE'">
+                <div ng-repeat="accessory in notwendige">
+                  <div class="row" style="padding: 0 0 10px;">
+                    <div class="col" style="padding: 0;">
+                      <p style="color: #000;"><strong>Best.-Nr: <a
+                        ng-click="selectProductVariations(accessory.product.uid)"
+                        style="color: darkred;">{{accessory.product.nummer | split}}</a></strong>
+                      </p>
+                      <div class="wrap">
+                        <span class="wrap">{{accessory.product.produktbezeichnung_de}},
+                        {{accessory.product.zusatz1_de}}</span>
+                      </div>
+                      <span class="wrap" ng-show="accessory.oder">oder</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div ng-if="list.title == 'VERBINDUNG'">
                 <div ng-repeat="accessory in verbindung">
                   <div class="row" style="padding: 0 0 10px;">
@@ -198,23 +215,7 @@
                   </div>
                 </div>
               </div>
-              <div ng-if="list.title == 'NOTWENDIGE ZUGEHÖRIGE'">
-                <div ng-repeat="accessory in notwendige">
-                  <div class="row" style="padding: 0 0 10px;">
-                    <div class="col" style="padding: 0;">
-                      <p style="color: #000;"><strong>Best.-Nr: <a ng-click="selectProductVariations(accessory.product.uid)"
-                                                                   style="color: darkred;">{{accessory.product.nummer | split}}</a></strong>
-                      </p>
-                      <div class="wrap">
-                        <span class="wrap">{{accessory.product.produktbezeichnung_de}},
-                        {{accessory.product.zusatz1_de}}</span>
-                      </div>
-                      <span class="wrap" ng-show="accessory.oder">oder</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div ng-if="list.title == 'VIDEO'">
+              <div ng-if="list.title == 'VIDEOS'">
                 <div ng-show="videos">
                   <div ng-repeat="video in videos">
                     <div class="col">
