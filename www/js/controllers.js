@@ -1298,7 +1298,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           });
         } else if ($scope.productDownloaded) {
             var deletePopup = $ionicPopup.confirm({
-              title: 'Bereits heruntergeladen,Würdest du gerne löschen?',
+              title: 'Artikel ist bereits offline verfügbar',
               cssClass: 'download-popup',
               okText: 'Daten löschen',
               cancelText: 'Abbrechen'
