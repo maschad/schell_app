@@ -30,10 +30,17 @@
     </div>
     <div class="row responsive-sm">
       <div class="col col-33">
+        <div ng-show="enableFeatures">
           <button ui-sref="products" id="start_screen-button2" class="button button-block button-block-start-screen button-stable">Produkte
-          <span class="start-screen-button schellicon-product"></span></button>
-        <button id="start_screen-button3" class="button button-block button-block-start-screen button-stable"
-                ui-sref="videoCategories">Videos<span class="start-screen-button schellicon-video"></span></button>
+            <span class="start-screen-button schellicon-product"></span></button>
+          <button id="start_screen-button3" class="button button-block button-block-start-screen button-stable"
+                  ui-sref="videoCategories">Videos<span class="start-screen-button schellicon-video"></span></button>
+        </div>
+        <div ng-show="!enableFeatures">
+          <p style="margin-bottom: 20px; font-size: larger;">Diese App benötigt Internet für den ersten Start, um
+            richtig zu funktionieren.
+            Produkte und Videos werden deaktiviert</p>
+        </div>
       </div>
 
       <div class="col start-text">

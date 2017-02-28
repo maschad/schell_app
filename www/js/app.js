@@ -24,6 +24,7 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
   //Set internet to true
   $rootScope.internet = true;
   $rootScope.showDownload = false;
+  $rootScope.enableFeatures = true;
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -45,10 +46,21 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
       if (navigator.connection.type == Connection.NONE) {
         //Set internet Variable to false
         $rootScope.internet = false;
-        $ionicPopup.alert({
-          title: "Es besteht keine Verbindung zum Internet. Produktinformationen sind nur Offline verfügbar und ggf. nicht aktuell."
-        });
-        //#TODO: Handle DB loading.
+        //Check for first launch
+        if (localStorageService.getLastUpdated() == null) {
+          $ionicPopup.alert({
+            title: "Diese App benötigt Internet für den ersten Start, um richtig zu funktionieren. " +
+            "Produkte und Videos werden deaktiviert."
+          }).then(function () {
+            $rootScope.enableFeatures = false;
+          });
+        } else {
+          $ionicPopup.alert({
+            title: "Es besteht keine Verbindung zum Internet. " +
+            "Produktinformationen sind nur Offline verfügbar und ggf. nicht aktuell."
+          });
+        }
+
       }else{
         //Update all of DB
         db = $cordovaSQLite.openDB({"name" : "schell.db", "location" : "default"});
