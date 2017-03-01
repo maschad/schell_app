@@ -11,23 +11,24 @@
   <div class="side-nav-wrapper">
     <ul class="side-nav hidden-xs">
       <li>
-        <div ng-class="productDownloaded ? 'side-nav-downloaded' : 'side-nav-download' "
+        <div ng-class="productDownloaded ? 'side-nav-downloaded schellicon-download' : 'side-nav-download schellicon-download' "
              ng-click="downloadProduct()">
+            <span ng-class="updatedProduct  ? 'badge badge-assertive' : 'badge badge-hide badge-assertive'">!</span>
         </div>
-        <span ng-class="updatedProduct  ? 'badge badge-assertive' : 'badge badge-hide badge-assertive'">!</span>
+        
       </li>
-      <li class="dropdown">
-        <div class="dropdown-toggle side-nav-clip" ng-click="bookmark()">
+      <li>
+        <div class="dropdown-toggle side-nav-clip schellicon-paper-clip" ng-click="bookmark()">
           <span class="badge badge-assertive" ng-show="bookmarks.length > 0">{{bookmarks.length}}</span>
         </div>
       </li>
       <li>
-        <div class="side-nav-mail" ng-click="sendEmail()">
+        <div class="side-nav-mail schellicon-mail" ng-click="sendEmail()">
         </div>
       </li>
       <li>
         <a ng-href="#/start-screen">
-          <div class="side-nav-home">
+          <div class="side-nav-home schellicon-home">
           </div>
         </a>
       </li>
@@ -53,8 +54,8 @@
         <div
           ng-class="productDownloaded ? 'side-nav-downloaded-sm schellicon-download':'side-nav-download-sm schellicon-download'"
           ng-click="downloadProduct()">
+          <span ng-class="updatedProduct ? 'badge badge-assertive' : 'badge badge-hide badge-assertive'">!</span>
         </div>
-        <span ng-class="updatedProduct ? 'badge badge-assertive' : 'badge badge-hide badge-assertive'">!</span>
       </li>
     </ul>
   </div>
@@ -139,7 +140,7 @@
                 <div ng-repeat="file in files">
                   <div class="row">
                     <div class="col col-20">
-                      <img ng-src="{{file.thumbnail}}" style="border: 1px solid #000; width: 70px; height: 100px;"
+                      <img ng-src="{{file.thumbnail}}" style="border: 1px solid #000; width: 70px; height: auto;"
                            ng-click="downloadPDF(file,$index)"><!-- #TODO: put in download button -->
                     </div>
                     <div class="col">
@@ -235,11 +236,9 @@
         </div>
 
         <div class="design-awards">
-          <div class="row">
-            <div class="col" ng-repeat="award in awards">
-              <img ng-src="{{award.logo}}" class="center">
-            </div>
-          </div>
+          <span ng-repeat="award in awards">
+            <img ng-src="{{award.logo}}">
+          </span>
         </div>
 
       </div>
