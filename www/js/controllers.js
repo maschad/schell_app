@@ -1134,7 +1134,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           });
         } else {
           $ionicPopup.alert({
-            title: 'Seite bookmarkiert',
+            title: 'Artikel in Merkliste aufgenommen',
             cssClass: 'bookmark-popup'
           });
           $scope.bookmarked = true;
@@ -1325,7 +1325,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
             });
         } else {
           $ionicPopup.alert({
-            title: 'Download nicht möglich! Es besteht keine Insternetverbindung'
+            title: 'Download nicht möglich! Es besteht keine Internetverbindung'
           });
         }
       };
