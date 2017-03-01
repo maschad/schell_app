@@ -283,11 +283,11 @@ angular.module('app.controllers', [])
 
       //Loading functions
       $scope.show = function () {
-        // $ionicLoading.show({
-        //   template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
-        //   animation: 'fade-in',
-        //   showBackdrop: true
-        // });
+        $ionicLoading.show({
+          template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
       };
       $scope.hide = function () {
         $ionicLoading.hide();
@@ -739,11 +739,11 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       //Loading functions
       $scope.show = function () {
-        // $ionicLoading.show({
-        //   template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
-        //   animation: 'fade-in',
-        //   showBackdrop: true
-        // });
+        $ionicLoading.show({
+          template: '<p>Loading Data...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
       };
 
       //Loading functions
