@@ -623,7 +623,7 @@ img {
   height: 23px;
   width: 29px;
   position: relative;
-  top: -5px;
+  top: 4px;
   font-size: 24px;
   color: $assertive;
 }
@@ -1159,7 +1159,7 @@ h1.slogan {
   padding-left: 6px;
   padding-right: 50px;
 }
-.checkbox-settings input, .checkbox-icon {
+#offline input, .checkbox-icon {
   width: 22px;
   height: 22px;
   top: -6px;
@@ -1267,7 +1267,9 @@ ion-popover-view.fit ion-content {
   font-size: 32px !important;
   line-height: 68px;
 }
-.menu-button.icon.menu-icon.ion-plus,
+.menu-button.icon.menu-icon.ion-plus {
+  line-height: 64px !important;
+}
 .menu-button.icon.menu-icon.ion-minus {
   line-height: 68px !important;
 }
@@ -1291,7 +1293,8 @@ ion-popover-view.fit ion-content {
   line-height: 50px;
 }
 .platform-ios .bar .title {
-  right: 3px !important;
+  // right: 3px !important;
+  min-width: 212px;
 }
 .bar .title + .buttons {
   position: absolute;
@@ -1415,6 +1418,11 @@ ion-popover-view.fit ion-content {
 }
 #menu-form .description-item .item-icon-left .icon:before, .item-icon-right .icon:before {
   font-size: 10px;
+}
+#menu-form input, .checkbox-icon {
+  width: 22px;
+  height: 22px;
+  top: -3px;
 }
 .checkbox-filter input:before, .checkbox-filter .checkbox-icon:before {
   width: 18px;
