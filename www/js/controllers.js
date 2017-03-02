@@ -508,7 +508,7 @@ angular.module('app.controllers', [])
   }])
 
 
-  .controller('videoCategoriesCtrl', ['$scope', '$state', '$ionicHistory', 'DatabaseService', 'appDataService', function ($scope, $state, $ionicHistory, DatabaseService, appDataService) {
+  .controller('videoCategoriesCtrl', ['$scope', '$state', '$ionicHistory', '$ionicPopover', 'DatabaseService', 'appDataService', function ($scope, $state, $ionicHistory, $ionicPopover, DatabaseService, appDataService) {
 
     //History function
     $scope.$on('go-back', function () {
@@ -516,6 +516,13 @@ angular.module('app.controllers', [])
     });
 
     function loadCategories() {
+
+      //Clear categories
+      appDataService.clearNavigatedCategories();
+
+      //Set the title
+      appDataService.addNavigatedCategory('VIDEOS');
+
       $scope.categories = [];
 
       DatabaseService.selectVideoCategories(function (results) {
@@ -525,9 +532,29 @@ angular.module('app.controllers', [])
       });
     }
 
+    //Popover function
+    $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
+      scope: $scope
+    }).then(function (popover) {
+      $scope.popover = popover;
+      //Ensure popover is android
+      document.body.classList.remove('platform-ios');
+      document.body.classList.add('platform-android');
+    });
+
+    $scope.arrowStyle = function (index, length) {
+      var indent = 18 * index;
+      if (index == length - 1) {
+        return {'text-indent': indent + 'px', 'background-color': '#000000'};
+      } else {
+        return {'text-indent': indent + 'px'};
+      }
+    };
+
     loadCategories();
 
-    $scope.choice = function (uid) {
+    $scope.choice = function (uid, title) {
+      appDataService.addNavigatedCategory(title);
       //Video ids to select
       var video_ids = [];
       DatabaseService.selectAllVideos(function (results) {
@@ -544,15 +571,16 @@ angular.module('app.controllers', [])
   }])
 
 
-  .controller('videoCtrl', ['$scope', '$rootScope', '$sce', '$ionicHistory', '$ionicSideMenuDelegate', 'appDataService', 'FirebaseService', 'FileService', '$ionicLoading', '$ionicPopup', 'localStorageService', 'DatabaseService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('videoCtrl', ['$scope', '$rootScope', '$sce', '$ionicHistory', '$ionicPopover', '$ionicSideMenuDelegate', 'appDataService', 'FirebaseService', 'FileService', '$ionicLoading', '$ionicPopup', 'localStorageService', 'DatabaseService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $rootScope, $sce, $ionicHistory, $ionicSideMenuDelegate, appDataService, FirebaseService, FileService, $ionicLoading, $ionicPopup, localStorageService, DatabaseService) {
+    function ($scope, $rootScope, $sce, $ionicHistory, $ionicPopover, $ionicSideMenuDelegate, appDataService, FirebaseService, FileService, $ionicLoading, $ionicPopup, localStorageService, DatabaseService) {
     //Initialize empty array
   $scope.videos = [];
 
       //History function
       $scope.$on('go-back', function () {
+        appDataService.removeNavigatedCategory();
         $ionicHistory.goBack();
       });
 
@@ -568,6 +596,32 @@ angular.module('app.controllers', [])
     $ionicLoading.hide();
   };
 
+  $scope.arrowStyle = function (index, length) {
+    var indent = 18 * index;
+    if (index == length - 1) {
+      return {'text-indent': indent + 'px', 'background-color': '#000000'};
+    } else {
+      return {'text-indent': indent + 'px'};
+    }
+  };
+
+  $scope.goState = function(index, length) {
+    // There are only two indexes, 0 for VIDEOS, 1 for {VideoCategory}
+    if (index == 0) { // If they click VIDEOS, we can just go back
+      appDataService.removeNavigatedCategory();
+      $ionicHistory.goBack();
+    }
+  };
+
+  //Popover function
+  $ionicPopover.fromTemplateUrl('templates/breadcrumb.html', {
+    scope: $scope
+  }).then(function (popover) {
+    $scope.popover = popover;
+    //Ensure popover is android
+    document.body.classList.remove('platform-ios');
+    document.body.classList.add('platform-android');
+  });
 
   //Function to load the videos
   function loadVideos() {
