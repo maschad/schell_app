@@ -1160,7 +1160,6 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           console.log('calling videos else');
           FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
             localStorageService.setVideoPath(videos[0].uid, result);
-            $rootScope.loaded++;
             videos.shift();
             downloadVideo(videos);
           });
