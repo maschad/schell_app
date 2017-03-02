@@ -1,4 +1,8 @@
 <ion-view title="VIDEOS" style="background-color:#9e0a22;">
+  <ion-nav-buttons side="right">
+    <!-- Breadcrumb ionic -->
+    <button class="button icon ion-chevron-down" ng-click="popover.show($event)" style="padding: 0 12px;"></button>
+  </ion-nav-buttons>
   <ion-content padding="true" class="has-header">
     <div ng-repeat="video in videos">
       <div class="row responsive-sm">
