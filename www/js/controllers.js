@@ -1521,6 +1521,13 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
     function ($scope, $state, $rootScope, $ionicLoading, $ionicHistory, $ionicFilterBar, localStorageService, FileService, DatabaseService, appDataService, $ionicPopover) {
 
     $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+      // If we're coming from the top level categories, we need to reset filters to prevent weird behaviour.
+      if (fromState.name === 'products') {
+        appDataService.clearSelectedFilters();
+        $rootScope.$broadcast('new-filter-uid');
+        $rootScope.$broadcast('updateFilters');
+      }
+
       //Kinda hacky way to make sure filters stay current
       if (toState.name === 'product_lines') {
         //Get the filter ids for current category
