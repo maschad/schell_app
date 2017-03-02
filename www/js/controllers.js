@@ -246,7 +246,7 @@ angular.module('app.controllers', [])
 
       $scope.arrowStyle = function (index, length) {
         var indent = 18 * index;
-        if (index == length - 1) {
+        if (index == length) {
           return {'text-indent': indent + 'px', 'background-color': '#000000'};
         } else {
           return {'text-indent': indent + 'px'};
@@ -401,7 +401,7 @@ angular.module('app.controllers', [])
 
       $scope.arrowStyle = function (index, length) {
         var indent = 18 * index;
-        if (index == length - 1) {
+        if (index == length) {
           return {'text-indent': indent + 'px', 'background-color': '#000000'};
         } else {
           return {'text-indent': indent + 'px'};
@@ -544,7 +544,7 @@ angular.module('app.controllers', [])
 
     $scope.arrowStyle = function (index, length) {
       var indent = 18 * index;
-      if (index == length - 1) {
+      if (index == length) {
         return {'text-indent': indent + 'px', 'background-color': '#000000'};
       } else {
         return {'text-indent': indent + 'px'};
@@ -598,7 +598,7 @@ angular.module('app.controllers', [])
 
   $scope.arrowStyle = function (index, length) {
     var indent = 18 * index;
-    if (index == length - 1) {
+    if (index == length) {
       return {'text-indent': indent + 'px', 'background-color': '#000000'};
     } else {
       return {'text-indent': indent + 'px'};
@@ -768,7 +768,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       $scope.arrowStyle = function (index, length) {
         var indent = 18 * index;
-        if (index == length - 1) {
+        if (index == length) {
           return {'text-indent': indent + 'px', 'background-color': '#000000'};
         } else {
           return {'text-indent': indent + 'px'};
@@ -1562,7 +1562,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       $scope.arrowStyle = function (index, length) {
         var indent = 18 * index;
-        if (index == length - 1) {
+        if (index == length) {
           return {'text-indent': indent + 'px', 'background-color': '#000000'};
         } else {
           return {'text-indent': indent + 'px'};

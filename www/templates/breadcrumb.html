@@ -1,9 +1,10 @@
 <ion-popover-view class="fit" style="background-color:#810a18; border-radius: 0px;">
   <ion-content scroll="false">
     <div class="breadcrumb" ng-click="popover.hide()">
+      <a class="item" ng-href="#/start-screen">Home</a>
       <div ng-repeat="category in navigated_categories">
         <div ng-click="goState($index, navigated_categories.length)">
-          <div class="item" ng-style="arrowStyle($index, navigated_categories.length)" ng-bind-html="category | split | normalize">
+          <div class="item" ng-style="arrowStyle($index + 1, navigated_categories.length)" ng-bind-html="category | split | normalize">
           </div>
         </div>
       </div>
