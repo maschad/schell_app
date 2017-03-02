@@ -1153,6 +1153,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
       function downloadVideo(videos) {
         if (videos.length == 0) {
           $scope.hide();
+          $rootScope.showDownload = false;
           $ionicPopup.alert({
             title: 'Downloads abgeschlossen'
           });
@@ -1160,6 +1161,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           console.log('calling videos else');
           FileService.originalDownload(videos[0].videofile_de, videos[0].title.concat('_video.mp4'), 'videos', function (result) {
             localStorageService.setVideoPath(videos[0].uid, result);
+            $rootScope.loaded++;
             videos.shift();
             downloadVideo(videos);
           });
@@ -1314,7 +1316,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               //Whether this product has been downloaded
               $scope.productDownloaded = true;
               $rootScope.showDownload = true;
-              $rootScope.total = 2 + $scope.awards.length + $scope.videos.length + $scope.files.length;
+              $rootScope.total = 2 + $scope.awards.length + ($scope.videos.length * 2) + ($scope.files.length * 2);
               $rootScope.loaded = 0;
               $scope.showDownload();
 
