@@ -1291,9 +1291,9 @@ ion-popover-view.fit ion-content {
 .platform-android .bar .title {
   font-size: 18px;
   line-height: 50px;
+  min-width: 212px;
 }
 .platform-ios .bar .title {
-  // right: 3px !important;
   min-width: 212px;
 }
 .bar .title + .buttons {
