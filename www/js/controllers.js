@@ -246,7 +246,7 @@ angular.module('app.controllers', [])
 
       $scope.arrowStyle = function (index, length) {
         var indent = 18 * index;
-        if (index == length - 1) {
+        if (index == length) {
           return {'text-indent': indent + 'px', 'background-color': '#000000'};
         } else {
           return {'text-indent': indent + 'px'};
@@ -401,7 +401,7 @@ angular.module('app.controllers', [])
 
       $scope.arrowStyle = function (index, length) {
         var indent = 18 * index;
-        if (index == length - 1) {
+        if (index == length) {
           return {'text-indent': indent + 'px', 'background-color': '#000000'};
         } else {
           return {'text-indent': indent + 'px'};
@@ -515,13 +515,15 @@ angular.module('app.controllers', [])
       $ionicHistory.goBack();
     });
 
-    function loadCategories() {
-
+    $scope.$on('$ionicView.enter', function() {
       //Clear categories
       appDataService.clearNavigatedCategories();
 
       //Set the title
       appDataService.addNavigatedCategory('VIDEOS');
+    });
+
+    function loadCategories() {
 
       $scope.categories = [];
 
@@ -544,7 +546,7 @@ angular.module('app.controllers', [])
 
     $scope.arrowStyle = function (index, length) {
       var indent = 18 * index;
-      if (index == length - 1) {
+      if (index == length) {
         return {'text-indent': indent + 'px', 'background-color': '#000000'};
       } else {
         return {'text-indent': indent + 'px'};
@@ -598,7 +600,7 @@ angular.module('app.controllers', [])
 
   $scope.arrowStyle = function (index, length) {
     var indent = 18 * index;
-    if (index == length - 1) {
+    if (index == length) {
       return {'text-indent': indent + 'px', 'background-color': '#000000'};
     } else {
       return {'text-indent': indent + 'px'};
@@ -768,7 +770,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       $scope.arrowStyle = function (index, length) {
         var indent = 18 * index;
-        if (index == length - 1) {
+        if (index == length) {
           return {'text-indent': indent + 'px', 'background-color': '#000000'};
         } else {
           return {'text-indent': indent + 'px'};
@@ -1562,7 +1564,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       $scope.arrowStyle = function (index, length) {
         var indent = 18 * index;
-        if (index == length - 1) {
+        if (index == length) {
           return {'text-indent': indent + 'px', 'background-color': '#000000'};
         } else {
           return {'text-indent': indent + 'px'};
