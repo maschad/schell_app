@@ -515,13 +515,15 @@ angular.module('app.controllers', [])
       $ionicHistory.goBack();
     });
 
-    function loadCategories() {
-
+    $scope.$on('$ionicView.enter', function() {
       //Clear categories
       appDataService.clearNavigatedCategories();
 
       //Set the title
       appDataService.addNavigatedCategory('VIDEOS');
+    });
+
+    function loadCategories() {
 
       $scope.categories = [];
 
