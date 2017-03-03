@@ -2404,13 +2404,11 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           if ($scope.preferences[2].downloaded_categories[x].checked == true) {
             //Set the video file size and Re-multiply to get accurate byte size
             $rootScope.showDownload = true;
-            console.log('category checked', $scope.preferences[2].downloaded_categories[x].item.title_de);
             //Update preferences
             $scope.preferences[4].last_updated = getDate();
             //The product ids to download
             downloadCategoryFiles($scope.preferences[2].downloaded_categories[x].item);
           } else {
-            console.log('deleting categories');
             deleteCategoryFiles($scope.preferences[2].downloaded_categories[x].item);
           }
           //Update preference at selected preference
@@ -2477,8 +2475,6 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
             for (var x = 0; x < results.rows.length; x++) {
               $scope.products_to_delete.push(results.rows.item(x));
             }
-            //Total video sizes
-            $rootScope.total += ($scope.products_to_delete.length - 1);
             deleteProducts();
           });
         });
@@ -2504,7 +2500,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         $scope.individual_videos_to_delete = [];
 
 
-        if ($scope.products.length > 0) {
+        if ($scope.products_to_delete.length > 0) {
           console.log('deleting products');
           populateAwards($scope.products_to_delete[0]);
         } else {
@@ -2542,7 +2538,6 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         if (product.video_ids != '') {
           DatabaseService.selectVideos(product.video_ids, function (results) {
             for (var x = 0; x < results.rows.length; x++) {
-              console.log(results.rows.item(x).uid);
               $scope.individual_videos_to_delete.push(results.rows.item(x));
             }
             deleteLandscapeFile(product);
@@ -2608,8 +2603,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       function deleteVideoImages(product) {
         for (var x = 0; x < $scope.individual_videos_to_delete.length; x++) {
-          if (localStorageService.videoDownloaded($scope.individual_videos[x].uid)) {
-            var path = localStorageService.getVideoImagePath($scope.individual_videos[x].uid);
+          if (localStorageService.videoDownloaded($scope.individual_videos_to_delete[x].uid)) {
+            var path = localStorageService.getVideoImagePath($scope.individual_videos_to_delete[x].uid);
             deleteFilePath(path);
           }
         }
@@ -2618,8 +2613,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       function deleteSingleVideos(product) {
         for (var x = 0; x < $scope.individual_videos_to_delete.length; x++) {
-          if (localStorageService.videoDownloaded($scope.individual_videos[x].uid)) {
-            var path = localStorageService.getVideoPath($scope.individual_videos[x].uid);
+          if (localStorageService.videoDownloaded($scope.individual_videos_to_delete[x].uid)) {
+            var path = localStorageService.getVideoPath($scope.individual_videos_to_delete[x].uid);
             deleteFilePath(path);
           }
         }
@@ -2629,7 +2624,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
       }
 
       function deleteFilePath(path) {
-        if (path != '') {
+        if (path) {
+          console.log('path to be parsed', path);
           var filename = path.substr(path.lastIndexOf('/'), path.length - 1);
           path = path.replace(filename, "");
           FileService.deleteFile(path, filename.substr(1));
