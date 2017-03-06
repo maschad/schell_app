@@ -1963,7 +1963,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         $scope.total_video_size = mbTotal / 1073741824;
       });
       //Assign preferences
-      $scope.preferences = localStorageService.getOfflinePreferences();
+      $scope.preferences = JSON.parse(JSON.stringify(localStorageService.getOfflinePreferences()));
       //Product Categories
       var items = [];
       DatabaseService.selectTopCategories(function (categories) {
@@ -1987,10 +1987,6 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         //#TODO:Handle error
         console.log('ERROR',error);
       });
-
-
-      //Update to show selected categories
-      localStorageService.updatePreferences($scope.preferences);
     }
 
     //Sum FileSizes
@@ -2419,39 +2415,44 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
     //Function to download videos
       function downloadVideos() {
-      //If checked
-      if ($scope.preferences[3].download_videos) {
-        //Set the video file size and Re-multiply to get accurate byte size
-        $rootScope.showDownload = true;
-        console.log('checked');
-        $rootScope.total += $scope.videos.length;
-        $scope.preferences[4].last_updated = getDate();
-        var images = $scope.videos.slice();
-        downloadVideoImage(images);
-        localStorageService.updatePreferences($scope.preferences);
-      } else {
-        deleteVideos();
-        localStorageService.updatePreferences($scope.preferences);
-      }
+        //If checked
+        previousSettings = localStorageService.getOfflinePreferences(); //If it was previously checked, no need to download
+        if ($scope.preferences[3].download_videos && ! previousSettings[3].download_videos) {
+          //Set the video file size and Re-multiply to get accurate byte size
+          $rootScope.showDownload = true;
+          console.log('checked');
+          $rootScope.total += $scope.videos.length;
+          $scope.preferences[4].last_updated = getDate();
+          var images = $scope.videos.slice();
+          downloadVideoImage(images);
+          //If it was previously checked and isn't now, then we delete.
+        } else if (! $scope.preferences[3].download_videos && previousSettings[3].download_videos){
+          deleteVideos();
+        }
       }
 
     //Check to download selected category
       function downloadCategory() {
         for (var x = 0; x < $scope.preferences[2].downloaded_categories.length; x++) {
           //Download details based on check
-          if ($scope.preferences[2].downloaded_categories[x].checked == true) {
-            //Set the video file size and Re-multiply to get accurate byte size
+          var previousSettings = localStorageService.getOfflinePreferences(); // If previously checked, no need to download
+          var previouslyDownloaded = false;
+          try {
+            previouslyDownloaded = previousSettings[2].downloaded_categories[x].checked; // Check if was previously downloaded
+          } catch(e) {
+            previouslyDownloaded = false; // If we get a typeerror, the category wasn't interacted with before.
+          }
+          if ($scope.preferences[2].downloaded_categories[x].checked && ! previouslyDownloaded) {
             $rootScope.showDownload = true;
+            console.log('category checked', $scope.preferences[2].downloaded_categories[x].item.title_de);
             //Update preferences
             $scope.preferences[4].last_updated = getDate();
             //The product ids to download
             downloadCategoryFiles($scope.preferences[2].downloaded_categories[x].item);
-          } else {
+          } else if (! $scope.preferences[2].downloaded_categories[x].checked && previouslyDownloaded) {
             deleteCategoryFiles($scope.preferences[2].downloaded_categories[x].item);
           }
-          //Update preference at selected preference
-          localStorageService.updatePreferences($scope.preferences);
-      }
+        }
       }
 
       function deleteCategoryFiles(category) {
@@ -2671,14 +2672,11 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
       }
 
       function saveSettings() {
-        //Preparing for Download
-        $ionicLoading.show({
-          template: '<p>Anwendung...</p><ion-spinner></ion-spinner>',
-          animation: 'fade-in',
-          showBackdrop: true
-        });
+        //Set the video file size and Re-multiply to get accurate byte size
+        $rootScope.showDownload = true;
         downloadVideos();
         downloadCategory();
+        localStorageService.updatePreferences($scope.preferences);
       }
 
 
@@ -2687,14 +2685,6 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
     $scope.doRefresh = function() {
       loadData();
     };
-
-
-    //Update preferences
-    $scope.update = function () {
-      localStorageService.updatePreferences($scope.preferences);
-    };
-
-
   }])
 
   .controller('regionCtrl', ['$scope', '$rootScope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'localStorageService', 'FirebaseService', 'DatabaseService', 'appDataService', 'FileService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
