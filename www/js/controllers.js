@@ -2066,7 +2066,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
                 //Display popup
                 var categories_to_update = '';
                 for (var x = 0; x < $scope.updated_categories.length; x++) {
-                  categories_to_update += ' ' + $scope.updated_categories[x];
+                  categories_to_update += ' \n' + $scope.updated_categories[x];
                 }
                 $ionicPopup.alert({
                   title: 'Update erforderlich für die folgenden Kategorien:',
