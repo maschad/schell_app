@@ -1877,6 +1877,9 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
     //Video File size
     $scope.total_video_size = 0;
 
+      //Updated categories
+      $scope.updated_categories = [];
+
     //Initialize as empty
     $scope.videos = [];
     $scope.counts = localStorageService.getProductCounts();
@@ -1963,6 +1966,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         items.forEach(function (category) {
           sumFileSizes(category);
         });
+
+
       }, function (error) {
         //#TODO:Handle error
         console.log('ERROR',error);
@@ -2027,6 +2032,10 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         var filesize = 0;
         DatabaseService.selectProducts(product_ids, function(results) {
           for (var x = 0; x < results.rows.length; x++) {
+            //If the one of the products requires an update
+            if (localStorageService.checkProductUpdate(results.rows.item(x).uid) && !$scope.updated_categories.includes(category.toString())) {
+              $scope.updated_categories.push(category.title_de);
+            }
             filesize += results.rows.item(x).technical_drawing_filesize;
             filesize += results.rows.item(x).image_landscape_filesize;
             filesize += results.rows.item(x).image_portrait_filesize;
@@ -2052,6 +2061,18 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               });
             } else {
               $scope.fileSizes[category.uid] = filesize;
+              //Display popup/notficiation for updated categories
+              if ($scope.updated_categories.length > 0) {
+                //Display popup
+                var categories_to_update = '';
+                for (var x = 0; x < $scope.updated_categories.length; x++) {
+                  categories_to_update += ' ' + $scope.updated_categories[x];
+                }
+                $ionicPopup.alert({
+                  title: 'Update erforderlich für die folgenden Kategorien:',
+                  template: categories_to_update
+                });
+              }
               $scope.hide();
             }
           });
@@ -2142,6 +2163,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
         if ($scope.products.length > 0) {
           console.log('downloading products');
+          //Remove updated products
+          localStorageService.removeUpdatedProduct($scope.products[0].uid);
           getAwards($scope.products[0]);
         }
       }
@@ -2644,19 +2667,10 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
       }
 
 
+
     //To refresh the page
     $scope.doRefresh = function() {
-      if($scope.preferences[0].checked == true) {
-        $ionicPopup.alert({
-            title: 'Bitte aktivieren Sie die Offline-Synchronisation'
-        });
-      }else {
-        $scope.show();
-        loadData();
-        $scope.hide();
-        // Stop the ion-refresher from spinning
-        $scope.$broadcast('scroll.refreshComplete');
-      }
+      loadData();
     };
 
 
