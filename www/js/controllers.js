@@ -408,6 +408,7 @@ angular.module('app.controllers', [])
 
     //Side Menu
     $ionicSideMenuDelegate.canDragContent(false);
+    $rootScope.showDownload = false;
 
       //History function
       $scope.$on('go-back', function () {
@@ -447,9 +448,15 @@ angular.module('app.controllers', [])
 
       //Function to download file
       function downloadImage(uid, url, filename) {
-        FileService.originalDownload(url, filename, 'imgs', function (path) {
-          localStorageService.setBildPath(uid, path);
-        });
+        var path;
+        try {
+          path = localStorageService.getBildPath(uid);
+        } catch(e) {}
+        if (!path) { // If path doesn't exist, we download.
+          FileService.originalDownload(url, filename, 'imgs', function (path) {
+            localStorageService.setBildPath(uid, path);
+          });
+        }
       }
 
 
@@ -1619,11 +1626,16 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       //Function to download Image file
       function downloadImage(uid, url, filename) {
-        FileService.originalDownload(url, filename, 'imgs', function (path) {
-          localStorageService.setBildPath(uid, path);
-        });
+        var path;
+        try {
+          path = localStorageService.getBildPath(uid);
+        } catch(e) {}
+        if (!path) {
+          FileService.originalDownload(url, filename, 'imgs', function (path) {
+            localStorageService.setBildPath(uid, path);
+          });
+        }
       }
-
 
     //Load SubCategories from database
     function loadSubCategories(child_ids) {
@@ -1635,6 +1647,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
       $scope.show();
       //Check for internet
       appDataService.checkInternet();
+      $rootScope.showDownload = false;
 
       //Whether to a product is bookmarked
       $scope.showBookmark = false;
