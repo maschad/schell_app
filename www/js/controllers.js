@@ -786,7 +786,6 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         }
       };
 
-
       //Side Menu
       $ionicSideMenuDelegate.canDragContent(false);
 
@@ -801,11 +800,12 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       var goback = $scope.$on('go-back', function () {
-
         appDataService.removeNavigatedCategory();
         var pop = appDataService.getCurrentCategoryIds();
-        if ($rootScope.navigated_categories.includes('MERKZETTEL') || $rootScope.navigated_categories.includes('SUCHE')) {
-          $ionicHistory.goBack();
+        if ($rootScope.navigated_categories.includes('MERKZETTEL')) {
+          $state.go('bookmark');
+        } else if ($rootScope.navigated_categories.includes('SUCHE')) {
+          $state.go('searchPage');
         } else {
           $state.go('product_overview');
         }
@@ -1835,12 +1835,11 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       $scope.$on('go-back', function () {
-        $ionicHistory.goBack();
+        $state.go('start-screen');
       });
 
-      //Add Home as default
+      appDataService.clearNavigatedCategories();
       appDataService.addNavigatedCategory('PRODUKTE');
-      //Add search to navigated categories.
       appDataService.addNavigatedCategory('MERKZETTEL');
 
       //Check to see if any bookmark products should be removed.
@@ -1848,7 +1847,6 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
       if ($rootScope.internet) {
         FirebaseService.checkBookmark(localStorageService.getBookmarkedProducts());
       }
-
 
       //Download bookmarks
       $scope.bookmarks = localStorageService.getBookmarkedProducts();
