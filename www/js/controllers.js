@@ -967,7 +967,9 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               $scope.awards.push(results.rows.item(x));
             }
             if (!$rootScope.internet && $scope.productDownloaded) {
-              $scope.awards[x].logo = localStorageService.getAwardPath($scope.details.uid, x);
+              for (var x = 0; x < $scope.awards.length; x++) {
+                $scope.awards[x].logo = localStorageService.getAwardPath($scope.details.uid, x);
+              }
             }
             getNotwendige($scope.details.b_artikel_id); //Downloads Notwendige then gets Emfolene
           });
