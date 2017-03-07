@@ -37,6 +37,21 @@ angular.module('app.controllers', [])
         //Check for internet
         appDataService.checkInternet();
 
+        if (!$rootScope.enableFeatures) {
+          $ionicPopup.confirm({
+            title: 'WARNING',
+            template: 'Diese App benötigt Internet für den ersten Start, um ' +
+            'richtig zu funktionieren.' +
+            'Produkte und Videos werden deaktiviert',
+            cancelText: 'Abbrechen',
+            okText: 'Erfrischen'
+          }).then(function (res) {
+            if (res) {
+              loadPage();
+            }
+          });
+        }
+
 
         //Clear categories
         appDataService.clearNavigatedCategories();
