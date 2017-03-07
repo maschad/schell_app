@@ -1835,7 +1835,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       //History function
       $scope.$on('go-back', function () {
-        $ionicHistory.goBack();
+        $state.go('start-screen');
       });
 
       //Add Home as default
