@@ -2688,6 +2688,12 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
 
       function saveSettings() {
         //Set the video file size and Re-multiply to get accurate byte size
+        //Preparing for Download
+        $ionicLoading.show({
+          template: '<p>Anwendung...</p><ion-spinner></ion-spinner>',
+          animation: 'fade-in',
+          showBackdrop: true
+        });
         $rootScope.showDownload = true;
         downloadVideos();
         downloadCategory();
