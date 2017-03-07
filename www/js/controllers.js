@@ -2429,8 +2429,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
     //Function to download videos
       function downloadVideos() {
         //If checked
-        previousSettings = localStorageService.getOfflinePreferences(); //If it was previously checked, no need to download
-        if ($scope.preferences[3].download_videos && ! previousSettings[3].download_videos) {
+        var previousSettings = localStorageService.getOfflinePreferences(); //If it was previously checked, no need to download
+        if ($scope.preferences[3].download_videos && !previousSettings[3].download_videos) {
           //Set the video file size and Re-multiply to get accurate byte size
           $rootScope.showDownload = true;
           console.log('checked');
@@ -2455,7 +2455,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           } catch(e) {
             previouslyDownloaded = false; // If we get a typeerror, the category wasn't interacted with before.
           }
-          if ($scope.preferences[2].downloaded_categories[x].checked && ! previouslyDownloaded) {
+          if ($scope.preferences[2].downloaded_categories[x].checked && !previouslyDownloaded) {
             $rootScope.showDownload = true;
             console.log('category checked', $scope.preferences[2].downloaded_categories[x].item.title_de);
             //Update preferences
@@ -2690,7 +2690,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         $ionicLoading.show({
           template: '<p>Anwendung...</p><ion-spinner></ion-spinner>',
           animation: 'fade-in',
-          showBackdrop: true
+          showBackdrop: true,
+          duration: 2000
         });
         $rootScope.showDownload = true;
         downloadVideos();
