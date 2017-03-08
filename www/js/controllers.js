@@ -919,6 +919,10 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               $scope.files.forEach(function (file, index) {
                 file.thumbnail = localStorageService.getThumbnailPath($scope.details.uid, index);
               });
+            } else {
+              $scope.files.forEach(function (file) {
+                file.thumbnail = 'img/placeholder.png';
+              });
             }
             getVideos($scope.details.video_ids);
           });
@@ -1239,7 +1243,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         if ($rootScope.internet) {
           $scope.pdfUrl = file.datei_de;
           console.log('pdf url', $scope.pdfUrl);
-        } else {
+        } else if ($scope.productDownloaded) {
           $scope.pdfUrl = localStorageService.getPDFPath($scope.details.uid, 'de', index);
           console.log('pdf url', $scope.pdfUrl);
         }
