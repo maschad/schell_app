@@ -605,6 +605,7 @@ angular.module('app.services', [])
                       downloadShow();
                       $rootScope.download_status = Math.round(($rootScope.loaded / $rootScope.total) * 100);
                       if ($rootScope.download_status >= 100) {
+                        $rootScope.showDownload = false;
                         hide();
                       }
                     } else {
