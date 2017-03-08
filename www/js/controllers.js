@@ -2057,7 +2057,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         DatabaseService.selectProducts(product_ids, function(results) {
           for (var x = 0; x < results.rows.length; x++) {
             //If the one of the products requires an update
-            if (localStorageService.checkProductUpdate(results.rows.item(x).uid) && !$scope.updated_categories.includes(category.toString())) {
+            if (localStorageService.checkProductUpdate(results.rows.item(x).uid) && !$scope.updated_categories.includes(category.title_de)) {
               $scope.updated_categories.push(category.title_de);
             }
             filesize += results.rows.item(x).technical_drawing_filesize;
