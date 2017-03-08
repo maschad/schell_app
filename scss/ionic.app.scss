@@ -351,6 +351,7 @@ img {
 
 #product-lines-body .product-type {
   margin-top: 10px;
+  white-space: normal;
 }
 
 .side-nav-filter {
@@ -475,6 +476,7 @@ img {
   text-transform: uppercase;
   font-size: 18px;
   font-weight: bold;
+  white-space: normal;
 }
 
 @media (max-width: 767px) and (min-width: 568px) {
@@ -769,7 +771,7 @@ span.badge.badge-hide.badge-assertive {
   border-color: transparent;
 }
 .search-text {
-  background-color: $assertive; 
+  background-color: $assertive;
   color: #fff;
   margin-top: 94px;
 }
@@ -898,7 +900,7 @@ span.badge.badge-hide.badge-assertive {
 #custom-overlay img {
   display: block;
   margin: 0 auto;
-  width: 46%;
+  width: 472px;
   height: auto;
 }
 h1.slogan {
@@ -909,14 +911,14 @@ h1.slogan {
   -webkit-animation-duration: 3s;
   -webkit-animation-delay: 1s;
 }
-@media (max-width: 767px) {
-  #custom-overlay img {
-    width: 78%;
-  }
-}
+// @media (max-width: 767px) {
+//   #custom-overlay img {
+//     width: 78%;
+//   }
+// }
 @media (max-width: 567px) {
   #custom-overlay img {
-    width: 78%;
+    width: 266px;
   }
   h1.slogan {
     font-size: 20px;
@@ -1308,7 +1310,7 @@ ion-popover-view.fit ion-content {
   margin-bottom: 60px;
 }
 .design-awards img {
-  max-height: 100px;
+  max-height: 90px;
 }
 
 
