@@ -1,28 +1,12 @@
-<ion-popover-view class="fit" style="background-color: #750017; border-radius: 0px;">
-  <ion-content>
+<ion-popover-view class="fit" style="background-color:#810a18; border-radius: 0px;">
+  <ion-content scroll="false">
     <div class="breadcrumb" ng-click="popover.hide()">
+      <a class="item" ng-href="#/start-screen">Home</a>
       <div ng-repeat="category in navigated_categories">
-        <div ng-click="goState($index)">
-          <div class="item" ng-style="arrowStyle($index, navigated_categories.length)">
-            <img src="img/icons/dropdown-arrow.png"> {{category}}
+        <div ng-click="goState($index, navigated_categories.length)">
+          <div class="item" ng-style="arrowStyle($index + 1, navigated_categories.length)" ng-bind-html="category | split | normalize">
           </div>
         </div>
-        <!--
-        <div ng-if="navigated_categories[$index + 1]" ui-sref="product_lines" ui-sref-active="breadcrumb-active">
-          <div class="item" style="text-indent: 18px;">
-            <img src="img/icons/dropdown-arrow.png"> {{navigated_categories[$index + 1]}}
-          </div>
-        </div>
-        <div ng-if="navigated_categories[$index + 2]" ui-sref="product_overview" ui-sref-active="breadcrumb-active">
-          <div class="item" style="text-indent: 36px;">
-            <img src="img/icons/dropdown-arrow.png"> {{navigated_categories[$index + 2]}}
-          </div>
-        </div>
-        <div ng-if="navigated_categories[$index + 3]">
-          <div class="item" style="background-color: #000000; text-indent: 54px;">
-            <img src="img/icons/dropdown-arrow.png"> {{navigated_categories[$index + 3]}}
-          </div>
-        </div>-->
       </div>
     </div>
   </ion-content>

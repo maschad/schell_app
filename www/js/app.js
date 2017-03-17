@@ -10,10 +10,11 @@
 var db = null;
 
 
-angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorage','ion-floating-menu', 'ksSwiper','ngCordova', 'app.controllers', 'app.routes', 'app.directives', 'app.services'])
+angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorage','ion-floating-menu', 'ksSwiper','ngCordova', 'app.controllers', 'app.filters', 'app.routes', 'app.directives', 'app.services'])
 
 .config(function($ionicConfigProvider, $sceDelegateProvider,$ionicFilterBarConfigProvider){
   $ionicConfigProvider.backButton.previousTitleText(false).text('');
+  $ionicConfigProvider.views.swipeBackEnabled(false);
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
   $ionicFilterBarConfigProvider.theme('light');
 
@@ -23,6 +24,7 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
   //Set internet to true
   $rootScope.internet = true;
   $rootScope.showDownload = false;
+  $rootScope.enableFeatures = true;
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -44,16 +46,34 @@ angular.module('app', ['ionic', 'jett.ionic.filter.bar', 'ngSanitize', 'ngStorag
       if (navigator.connection.type == Connection.NONE) {
         //Set internet Variable to false
         $rootScope.internet = false;
-        $ionicPopup.confirm({
-          title: "Internet Disconnected",
-          content: "The internet is disconnected on your device. Settings will be disabled"
-        });
-        //#TODO: Handle DB loading.
+        //Check for first launch
+        if (localStorageService.getLastUpdated() == null) {
+          $ionicPopup.alert({
+            title: "Diese App benötigt Internet für den ersten Start, um richtig zu funktionieren. " +
+            "Produkte und Videos werden deaktiviert."
+          }).then(function () {
+            $rootScope.enableFeatures = false;
+          });
+        } else {
+          $ionicPopup.alert({
+            title: "Es besteht keine Verbindung zum Internet. " +
+            "Produktinformationen sind nur Offline verfügbar und ggf. nicht aktuell."
+          });
+        }
+
       }else{
         //Update all of DB
         db = $cordovaSQLite.openDB({"name" : "schell.db", "location" : "default"});
-        clearDatabase(db, $cordovaSQLite);
-        createTables(db, $cordovaSQLite);
+        var lastUpdated = localStorageService.getLastUpdated();
+        if (lastUpdated) {
+          var shouldUpdate = (Date.now() - lastUpdated) > 86400000 //We should update if we haven't in more than 24 hours..
+        } else {
+          var shouldUpdate = true;
+        }
+        if (shouldUpdate) {
+          clearDatabase(db, $cordovaSQLite);
+          createTables(db, $cordovaSQLite);
+        }
       }
     }
 

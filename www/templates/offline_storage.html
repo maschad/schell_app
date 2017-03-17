@@ -2,10 +2,12 @@
   <ion-content padding="true" class="has-header">
     <div class="settings-container">
       <div class="row">
-        <div class="col-80">
-          <span style="font-weight: bold;">Wählen Sie die Kategorien die Sie offline auf</span>
-          <span style="font-weight: bold;"> diesem Gerät speichern möchten.</span><br>
+        <div class="col-75">
+          <span style="font-weight: bold;">Wählen Sie die Kategorien die Sie offline auf diesem Gerät speichern möchten.</span><br>
           <span>Letzte Aktualisierung: {{preferences[4].last_updated}}</span>
+        </div>
+        <div class="col" style="padding-top: 0;">
+          <a class="button icon schellicon-reload reload" ng-click="doRefresh()"></a>
         </div>
       </div>
       <form id="offline" class="list">
@@ -13,41 +15,42 @@
         <hr class="settings-hr">
         <ion-checkbox class="checkbox-settings item-checkbox-right"
                       ng-repeat="category in preferences[2].downloaded_categories" ng-model="category.checked">
-          <div class="wrap">
-            <strong>{{category.item.title_de}}</strong>
-          </div>
-          <div class="wrap">
-            {{counts[category.item.uid]}} Produkte Verfügbar
-          </div>
-          <div style="text-align: right;">
-            {{fileSizes[category.item.uid] / (1073741824) | number:2}} GBs
+          <div class="row">
+            <div class="col">
+              <span class="settings-category" ng-bind-html="category.item.title_de | hide"></span>
+              <span style="float: right;">{{fileSizes[category.item.uid] / (1048576) | number: 0}} MB</span>
+              <div class="wrap">
+                {{counts[category.item.uid]}} Produkte
+              </div>
+            </div>
           </div>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider2">VIDEOS</ion-item>
         <hr class="settings-hr">
         <ion-checkbox class="checkbox-settings item-checkbox-right" ng-model="preferences[3].download_videos">
-          <div class="wrap">
-            <strong>Videos</strong>
-          </div>
-          <div class="wrap">
-            {{videos.length}} Videos Verfügbar
-          </div>
-          <div style="text-align: right;">
-            {{total_video_size | number: 2}} GBs
+          <div class="row">
+            <div class="col">
+              <span class="settings-category">Videos</span>
+              <span style="float: right;">{{total_video_size | number: 2}} GB</span>
+              <div class="wrap">
+                {{videos.length}} Videos
+              </div>
+            </div>
           </div>
         </ion-checkbox>
         <ion-item class="item-divider" id="settings-list-item-divider3">SETTINGS</ion-item>
         <hr class="settings-hr">
-        <ion-toggle toggle-class="toggle-assertive" ng-model="preferences[0].checked" ng-change="update()"
+        <ion-toggle toggle-class="toggle-assertive" ng-model="preferences[0].checked"
                     style="font-size: 15px;">
-          <strong class="wrap">{{preferences[0].text}}</strong>
+          <p class="settings-category">{{preferences[0].text}}</p>
+          <p class="wrap">Aktivieren Sie diese Funktion wenn Sie nach jedem Start der App eine aktualisierte Version von unserem Server herunterladen möchten.</p>
         </ion-toggle>
-        <ion-toggle toggle-class="toggle-assertive" ng-model="preferences[1].checked" ng-change="update()"
+        <ion-toggle toggle-class="toggle-assertive" ng-model="preferences[1].checked"
                     style="font-size: 15px;">
-          <strong class="wrap">{{preferences[1].text}}</strong>
+          <p class="settings-category">{{preferences[1].text}}</p>
+          <p class="wrap">Aktvieren Sie diese Funktion, wenn Sie auch über mobile Daten eine Aktualisierung durchführen möchten.</p>
         </ion-toggle>
       </form>
-      <button class="button button-large button-stable" ng-click="saveSettings()">Einstellungen speichern</button>
     </div>
 
   </ion-content>

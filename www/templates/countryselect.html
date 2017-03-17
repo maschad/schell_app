@@ -4,20 +4,19 @@
     <img class="center-logo" src="img/logo.png">
     <div style="padding: 20px;"></div>
     <div class="row responsive-md">
-      <div class="col col-33 col-offset-33 text-center">
+      <div class="col col-33 col-offset-33">
         <form id="countryselect-form8" class="list">
-          <span style="color: #FFFFFF; padding: 3px;" class="SyntaxLTStd-Bold">Wählen Sie Ihr Land:</span>
+          <span style="color: #FFFFFF; padding: 3px;" class="SyntaxLTStd-Bold">Wählen Sie Ihr Land / Choose your country:</span>
           <div style="padding: 5px;"></div>
           <label class="item item-select" id="countryselect-select1" style="border-radius: 4px;">
             <span class="input-label"></span>
-            <select style="font-size: 16px;" ng-model="country" ng-change="selection(country)">
-              <option disabled selected value> -- select an option -- </option>
-              <option ng-value="de">Deutschland</option>
-              <option ng-value="en">Worldwide</option>
+            <select style="font-size: 16px;" ng-model="country" ng-change="selection(country)" required>
+              <option value="de">Deutschland</option>
+              <option value="en">Worldwide</option>
             </select>
           </label>
         </form>
-        <button id="countryselect-button1" class="button button-black button" ui-sref="start-screen" style="width: 100%; text-align: center;">Angaben
+        <button id="countryselect-button1" class="button button-black button" ng-click="selectCountry()" style="width: 100%; text-align: center;">Angaben
           speichern</button>
       </div>
     </div>

@@ -1,10 +1,9 @@
 <ion-view  id="page4" style="background-color:#9e0a22;" xmlns="http://www.w3.org/1999/html">
-  <ion-nav-title style="text-transform: uppercase;">{{title}}</ion-nav-title>
+  <ion-nav-title style="text-transform: uppercase;" ng-bind-html="title | normalize"></ion-nav-title>
   <!-- FAB Menu -->
   <ion-floating-menu menu-color="#2c2a2b" menu-open-color="#2c2a2b" backdrop="true">
-    <ion-floating-item icon="schellicon-home" ui-sref="start-screen" button-color="#2c2a2b" text="Home" icon-color="#fff" ></ion-floating-item>
-    <ion-floating-item icon="schellicon-filter" menu-toggle="left" button-color="#2c2a2b" text="Filter" icon-color="#fff"></ion-floating-item>
-    <ion-floating-item icon="ion-ios-search" ui-sref="searchPage" button-color="#2c2a2b" text="Suche"
+    <ion-floating-item ng-if="filter_ids !== ''" icon="schellicon-filter" menu-toggle="left" button-color="#2c2a2b" text="Filter" icon-color="#fff"></ion-floating-item>
+    <ion-floating-item icon="ion-ios-search-strong" ui-sref="searchPage" button-color="#2c2a2b" text="Suche"
                        icon-color="#fff"></ion-floating-item>
     <ion-floating-item ng-show="showBookmark" icon="schellicon-list" button-class="fab-normal" text="Merkliste"
                        icon-color="#fff" ui-sref="bookmark"></ion-floating-item>
@@ -24,17 +23,17 @@
         <div class="product-lines">
           <h3 class="heading">{{title}}</h3>
           <!-- Products -->
-          <div ng-repeat="category in categories" ng-if="$index%3 == 0" class="row responsive-sm">
-            <div class="col col-33"
+          <div ng-repeat="category in categories" ng-if="$index%2 == 0" class="row responsive-sm wrap-tiles">
+            <div class="col col-50"
                  ng-click="counts[categories[$index].uid] == 0 || choice_product(categories[$index].product_ids, categories[$index].title_de, categories[$index].uid)"
                  ng-if="categories[$index].product_ids">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{counts[categories[$index].uid]}} Artikel</strong></p>
+                      <p>{{counts[categories[$index].uid]}} Artikel</p>
                     </div>
-                    <h3 class="product-type">{{categories[$index].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index].bild}}" style="float: right;">
@@ -43,16 +42,16 @@
               </div>
             </div>
             <!-- Check for children -->
-            <div class="col col-33"
+            <div class="col col-50"
                  ng-click="counts[categories[$index].uid] == 0 || choice(categories[$index].child_ids,categories[$index].title_de)"
                  ng-if="categories[$index].child_ids">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{counts[categories[$index].uid]}} Artikel</strong></p>
+                      <p>{{counts[categories[$index].uid]}} Artikel</p>
                     </div>
-                    <h3 class="product-type">{{categories[$index].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index].bild}}" style="float: right;">
@@ -61,15 +60,15 @@
               </div>
             </div>
             <!-- Product ID-->
-            <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids"
+            <div class="col col-50" ng-if="categories[$index + 1] != undefined && categories[$index + 1].product_ids"
                  ng-click="counts[categories[$index + 1].uid] == 0 || choice_product(categories[$index + 1].product_ids,categories[$index + 1].title_de, categories[$index + 1].uid)">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 1].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{counts[categories[$index + 1].uid]}} Artikel</strong></p>
+                      <p>{{counts[categories[$index + 1].uid]}} Artikel</p>
                     </div>
-                    <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index + 1].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index + 1].bild}}" style="float: right;">
@@ -79,15 +78,15 @@
             </div>
 
             <!--Child Product-->
-            <div class="col col-33" ng-if="categories[$index + 1] != undefined && categories[$index + 1].child_ids"
+            <div class="col col-50" ng-if="categories[$index + 1] != undefined && categories[$index + 1].child_ids"
                  ng-click="counts[categories[$index + 1].uid] == 0 || choice(categories[$index + 1].child_ids,categories[$index + 1].title_de)">
               <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 1].uid] == 0 ? 0.2 : 1}">
                 <div class="row">
                   <div class="col col-67">
                     <div class="product-counter">
-                      <p><strong>{{counts[categories[$index + 1].uid]}} Artikel</strong></p>
+                      <p>{{counts[categories[$index + 1].uid]}} Artikel</p>
                     </div>
-                    <h3 class="product-type">{{categories[$index + 1].title_de}}</h3>
+                    <h3 class="product-type" ng-bind-html="categories[$index + 1].title_de | normalize"></h3>
                   </div>
                   <div class="col">
                     <img src="{{categories[$index + 1].bild}}" style="float: right;">
@@ -96,40 +95,6 @@
               </div>
             </div>
 
-            <!--Product Ids-->
-            <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].product_ids"
-                 ng-click="counts[categories[$index + 2].uid] == 0 || choice_product(categories[$index + 2].product_ids,categories[$index + 2].title_de, categories[$index + 2].uid)">
-              <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 2].uid] == 0 ? 0.2 : 1}">
-                <div class="row">
-                  <div class="col col-67">
-                    <div class="product-counter">
-                      <p><strong>{{counts[categories[$index + 2].uid]}} Artikel</strong></p>
-                    </div>
-                    <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
-                  </div>
-                  <div class="col">
-                    <img src="{{categories[$index + 2].bild}}" style="float: right;">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--Child IDs-->
-            <div class="col col-33" ng-if="categories[$index + 2] != undefined && categories[$index + 2].child_ids"
-                 ng-click="counts[categories[$index + 2].uid] == 0 || choice(categories[$index + 2].child_ids,categories[$index + 2].title_de)">
-              <div class="product-tile" ng-style="{'opacity' : counts[categories[$index + 2].uid] == 0 ? 0.2 : 1}">
-                <div class="row">
-                  <div class="col col-67">
-                    <div class="product-counter">
-                      <p><strong>{{counts[categories[$index + 2].uid]}} Artikel</strong></p>
-                    </div>
-                    <h3 class="product-type">{{categories[$index + 2].title_de}}</h3>
-                  </div>
-                  <div class="col">
-                    <img src="{{categories[$index + 2].bild}}" style="float: right;">
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

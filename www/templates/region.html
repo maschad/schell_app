@@ -1,14 +1,12 @@
 <ion-view title="LÄNDEREINSTELLUNGEN" style="background-color: #9e0a22">
   <ion-content padding="true" class="has-header">
     <div class="settings-container">
-      <div class="row">
-        <h3>Ländereinstellungen</h3>
-      </div>
+      <h3>Ländereinstellungen</h3>
       <label class="item item-select" id="countryselect-select2"
              style="border: 1px solid; border-radius: 4px; padding: 22px;">
         <select ng-model="country" ng-change="selectCountry(country)" style="font-size: 16px;">
-          <option>Deutschland</option>
-          <option>WorldWide</option>
+          <option value="de">Deutschland</option>
+          <option value="en">Worldwide</option>
         </select>
       </label>
     </div>

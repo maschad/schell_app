@@ -6,20 +6,23 @@ angular.module('app.services', [])
 
   //Local storage using ngStorage, for trivial persistence
   $localStorage = $localStorage.$default({
+    lastUpdate: null,
     country: '',
+    productCounts: {}, // Store product counts by category
     bookmarked_products: [],
     category_files: {},
     product_files: {},
     carousel_images: {},
+    awards: {},
     video_files: {},
     download_files: [],
     offlinePreferences:[
       {
-        text: 'Automatischer Sync deaktivieren',
+        text: 'Automatischer Sync aktivieren',
         checked: false
       },
       {
-        text: 'Mobiler Sync deaktivieren',
+        text: 'Mobiler Sync aktivieren',
         checked: false
       },
       {
@@ -32,10 +35,19 @@ angular.module('app.services', [])
         last_updated: ''
       }
     ],
-    filters: []
+    filters: [],
+    updated_products: []
   });
 
   // Getters and Setters
+
+  var getLastUpdated = function() {
+    return $localStorage.lastUpdate;
+  };
+
+  var setLastUpdated = function(newLastUpdated) {
+    $localStorage.lastUpdate = newLastUpdated;
+  };
 
   var getCountry = function () {
     return $localStorage.country;
@@ -73,6 +85,10 @@ angular.module('app.services', [])
     $localStorage.bookmarked_products.splice($localStorage.bookmarked_products.indexOf(bookmark),1);
   };
 
+  var resetBookmarks = function() {
+    $localStorage.bookmarked_products = [];
+  };
+
   var getOfflinePreferences = function () {
     return $localStorage.offlinePreferences;
   };
@@ -81,12 +97,46 @@ angular.module('app.services', [])
     $localStorage.offlinePreferences = data;
   };
 
+  var resetPreferences = function() {
+    $localStorage.offlinePreferences = [
+    {
+      text: 'Automatischer Sync aktivieren',
+      checked: false
+    },
+    {
+      text: 'Mobiler Sync aktivieren',
+      checked: false
+    },
+    {
+      downloaded_categories: []
+    },
+    {
+      download_videos : false
+    },
+    {
+      last_updated: ''
+    }
+    ];
+  };
+
   var productDownloaded = function (uid) {
     if ($localStorage.product_files.hasOwnProperty(uid.toString())) {
-      return $localStorage.product_files[uid].hasOwnProperty('technical_drawing_link');
+      return $localStorage.product_files[uid].hasOwnProperty('image_landscape');
     }
 
     return false;
+  };
+
+  var videoDownloaded = function (uid) {
+    return $localStorage.video_files.hasOwnProperty(uid.toString());
+  };
+
+  var removeProduct = function (uid) {
+    delete $localStorage.product_files[uid];
+  };
+
+  var removeVideo = function (uid) {
+    delete $localStorage.video_files[uid];
   };
 
   var productImageDownloaded = function (uid) {
@@ -95,6 +145,30 @@ angular.module('app.services', [])
     }
 
     return false;
+  };
+
+  var watchedProducts = function (uid) {
+    $localStorage.updated_products.push(uid);
+  };
+
+  var checkProductUpdate = function (uid) {
+    var count = 0;
+    for (var x = 0; x < $localStorage.updated_products.length; x++) {
+      if ($localStorage.updated_products[x] == uid) {
+        count++;
+      }
+    }
+    return count >= 4;
+
+  };
+
+  var removeUpdatedProduct = function (uid) {
+    console.log('removing product');
+    while ($localStorage.updated_products.indexOf(uid) != -1) {
+      $localStorage.updated_products.splice($localStorage.updated_products.indexOf(uid), 1);
+    }
+    $localStorage.updated_products.push(uid);
+    console.log('products', $localStorage.updated_products);
   };
 
   var setPDFPath = function (product_id, path) {
@@ -109,7 +183,6 @@ angular.module('app.services', [])
       $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'datei_de': []});
       $localStorage.product_files[product_id].datei_de.push(path);
     }
-    console.log('length of pdf array', $localStorage.product_files[product_id].datei_de.length);
   };
 
   var getPDFPath = function (product_id, lang, index) {
@@ -123,7 +196,6 @@ angular.module('app.services', [])
   };
 
   var setThumbnailPath = function (product_id, path) {
-    console.log('attempting to download thumbnail');
     if ($localStorage.product_files.hasOwnProperty(product_id.toString())) {
       if ($localStorage.product_files[product_id].hasOwnProperty('thumbnail')) {
         $localStorage.product_files[product_id].thumbnail.push(path);
@@ -135,7 +207,24 @@ angular.module('app.services', [])
       $localStorage.product_files[product_id] = Object.assign({}, $localStorage.product_files[product_id], {'thumbnail': []});
       $localStorage.product_files[product_id].thumbnail.push(path);
     }
-    console.log('length of thumbnail array', $localStorage.product_files[product_id].thumbnail.length);
+  };
+
+  var setAwardPath = function (product_id, path) {
+    if ($localStorage.awards.hasOwnProperty(product_id.toString())) {
+      if ($localStorage.awards[product_id].hasOwnProperty('logo')) {
+        $localStorage.awards[product_id].logo.push(path);
+      } else {
+        $localStorage.awards[product_id] = Object.assign({}, $localStorage.awards[product_id], {'logo': []});
+        $localStorage.awards[product_id].logo.push(path);
+      }
+    } else {
+      $localStorage.awards[product_id] = Object.assign({}, $localStorage.awards[product_id], {'logo': []});
+      $localStorage.awards[product_id].logo.push(path);
+    }
+  };
+
+  var getAwardPath = function (product_id, index) {
+    return $localStorage.awards[product_id].logo[index];
   };
 
   var getThumbnailPath = function (product_id, index) {
@@ -215,7 +304,13 @@ angular.module('app.services', [])
     return $localStorage.filters;
   };
 
+  var setProductCount = function(uid, count) {
+    $localStorage.productCounts[uid] = count;
+  };
 
+  var getProductCounts = function() {
+    return $localStorage.productCounts;
+  };
 
   return {
     getCountry : getCountry,
@@ -223,9 +318,13 @@ angular.module('app.services', [])
     getBookmarkedProducts : getBookmarkedProducts,
     bookmarkProduct : bookmarkProduct,
     removeBookmarkedProduct : removeBookmarkedProduct,
+    resetBookmarks: resetBookmarks,
     getOfflinePreferences : getOfflinePreferences,
     updatePreferences : updatePreferences,
+    resetPreferences: resetPreferences,
     getLandscapePath: getLandscapePath,
+    setAwardPath: setAwardPath,
+    getAwardPath: getAwardPath,
     setLandscapePath: setLandscapePath,
     getAllVideoPaths : getAllVideoPaths,
     checkBookmarked: checkBookmarked,
@@ -235,7 +334,10 @@ angular.module('app.services', [])
     getVideoImagePath: getVideoImagePath,
     getDownloadFiles : getDownloadFiles,
     productDownloaded: productDownloaded,
+    videoDownloaded: videoDownloaded,
     productImageDownloaded: productImageDownloaded,
+    removeProduct: removeProduct,
+    removeVideo: removeVideo,
     categoryDownloaded: categoryDownloaded,
     setFilters: setFilters,
     getFilters: getFilters,
@@ -250,14 +352,21 @@ angular.module('app.services', [])
     setCarouselPath: setCarouselPath,
     getCarouselPaths: getCarouselPaths,
     setPortraitPath: setPortraitPath,
-    getPortraitPath: getPortraitPath
+    getPortraitPath: getPortraitPath,
+    setProductCount: setProductCount,
+    getProductCounts: getProductCounts,
+    getLastUpdated: getLastUpdated,
+    setLastUpdated: setLastUpdated,
+    watchedProducts: watchedProducts,
+    checkProductUpdate: checkProductUpdate,
+    removeUpdatedProduct: removeUpdatedProduct
   };
 
 
 }])
 
   //Service for managing firebase queries
-.factory('FirebaseService', ['$ionicPopup', function(){
+  .factory('FirebaseService', ['localStorageService', '$ionicPopup', '$rootScope', function (localStorageService, $ionicPopup, $rootScope) {
 
   var goOffline = function () {
     firebase.database().goOffline();
@@ -398,6 +507,35 @@ angular.module('app.services', [])
     });
   };
 
+    var checkBookmark = function (bookmarkedProducts) {
+      for (var key in bookmarkedProducts) {
+        console.log('checking bookmark ', bookmarkedProducts[key].uid);
+        firebase.database().ref('/products/' + bookmarkedProducts[key].uid).once('value').then(function (snapshot) {
+          if (snapshot.val() == null) {
+            localStorageService.removeBookmarkedProduct(bookmarkedProducts[key]);
+          }
+        });
+      }
+    };
+
+    var productsToWatch = function (currentProduct) {
+
+      console.log('updating product', currentProduct.uid);
+      firebase.database().ref('/products/' + currentProduct.uid).on('value', function () {
+        console.log('pushing product', currentProduct.uid);
+        localStorageService.watchedProducts(currentProduct.uid);
+        });
+      console.log('updating product with download ids', currentProduct.download_ids);
+      firebase.database().ref('/downloads/' + currentProduct.download_ids).on('value', function () {
+        console.log('pushing product', currentProduct.uid);
+        localStorageService.watchedProducts(currentProduct.uid);
+        });
+      firebase.database().ref('/videos/' + currentProduct.video_ids).on('value', function () {
+        console.log('pushing product', currentProduct.uid);
+        localStorageService.watchedProducts(currentProduct.uid);
+        });
+
+    };
 
   return {
     goOffline : goOffline,
@@ -408,7 +546,9 @@ angular.module('app.services', [])
     downloadProductFilters : downloadProductFilters,
     downloadAllProducts: downloadAllProducts,
     downloadAwards: downloadAwards,
-    downloadZubehoer: downloadZubehoer
+    downloadZubehoer: downloadZubehoer,
+    checkBookmark: checkBookmark,
+    productsToWatch: productsToWatch
   };
 
 }])
@@ -463,10 +603,9 @@ angular.module('app.services', [])
                   ft.onprogress = function (progressEvent) {
                     if (progressEvent.lengthComputable && $rootScope.showDownload) {
                       downloadShow();
-                      $rootScope.loaded += progressEvent.loaded;
                       $rootScope.download_status = Math.round(($rootScope.loaded / $rootScope.total) * 100);
-                      console.log('download status', $rootScope.download_status);
                       if ($rootScope.download_status >= 100) {
+                        $rootScope.showDownload = false;
                         hide();
                       }
                     } else {
@@ -486,23 +625,67 @@ angular.module('app.services', [])
         });
     };
 
+    var deleteFile = function (path, filename) {
+      console.log('path to be deleted', path);
+      console.log('file to be deleted', filename);
+
+      window.resolveLocalFileSystemURL(path, function (dir) {
+          console.log('dir ', dir);
+          dir.getFile(filename, {create: false}, function (fileEntry) {
+            fileEntry.remove(function () {
+              console.log('file removed successfully', filename);
+              // The file has been removed succesfully
+            }, function (error) {
+              // Error deleting the file
+            }, function () {
+              // The file doesn't exist
+            });
+          });
+        },
+        function (error) {
+          console.log('File System error ', error);
+        });
+    };
+
+    var deleteDirectory = function(directory, success) {
+      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+        fs.root.getDirectory(
+            directory,
+            {
+              create: true
+            },
+            function (dirEntry) {
+              dirEntry.removeRecursively(function() {
+                console.log('Directory ' + directory + ' removed successfully.');
+                if (success) {
+                  success();
+                }
+              }, function(failureEvent) {
+                console.log('File system error ' + failureEvent.target.error.code);
+              });
+            },
+            function () {
+              console.log('File system error ' + failureEvent.target.error.code);
+            });
+      }, function() {
+        console.log('File system error ' + failureEvent.target.error.code);
+      });
+    };
 
   return{
-    originalDownload: originalDownload
+    originalDownload: originalDownload,
+    deleteFile: deleteFile,
+    deleteDirectory: deleteDirectory
   }
 
 }])
 
 //Service for storing in app Data to be shared between controllers
   .factory('appDataService', ['$rootScope', function ($rootScope) {
-    var current_category_child_ids = [];
+    var current_category_ids = [];
     var video_ids = [];
-    var previous_category_child_ids = [];
-    var current_filtered_products = {};
     var current_product = {};
-    var current_category = 0;
     $rootScope.navigated_categories = [];
-    var previousProduct = [];
     var previous_title = '';
     var root_title = '';
     var filter_ids = '';
@@ -518,31 +701,27 @@ angular.module('app.services', [])
     };
 
     var getCurrentCategoryIds = function () {
-      return current_category_child_ids;
-    };
-
-    var getPreviousChildIds = function () {
-      if (previous_category_child_ids.length > 0) {
-        return previous_category_child_ids.pop();
+      if (current_category_ids.length > 0) {
+        return current_category_ids.pop();
       } else {
         return false;
       }
     };
 
-    var setPreviousChildIds = function (ids) {
-      previous_category_child_ids.push(ids);
+    var checkCurrentCategoryIds = function () {
+      if (current_category_ids.length > 0) {
+        return current_category_ids[current_category_ids.length - 1];
+      } else {
+        return false;
+      }
     };
 
-    var setCurrentCategory = function (category) {
-      current_category = category;
-    };
-
-    var getCurrentCategory = function () {
-      return current_category;
+    var categoryids = function () {
+      return current_category_ids;
     };
 
     var setCurrentCategoryIds = function (category) {
-      current_category_child_ids = category;
+      current_category_ids.push(category);
     };
 
     var setCurrentProduct = function (data) {
@@ -571,23 +750,13 @@ angular.module('app.services', [])
 
     var clearNavigatedCategories = function () {
       $rootScope.navigated_categories = [];
+      current_category_ids = [];
     };
 
     var getPreviousTitle = function () {
       return previous_title;
     };
 
-    var setPreviousProduct = function (data) {
-      previousProduct.push(data);
-    };
-
-    var getPreviousProduct = function () {
-      if (previousProduct.length > 0) {
-        return previousProduct.pop();
-      } else {
-        return false;
-      }
-    };
 
     var setPreviousTitle = function (prev) {
       previous_title = prev;
@@ -617,18 +786,6 @@ angular.module('app.services', [])
     current_selected_filters.splice(current_selected_filters.indexOf(filter_uid), 1);
   };
 
-    var setCurrentFilteredProducts = function (category_id, data) {
-      current_filtered_products[category_id] = data;
-    };
-
-    var getCurrentFilteredProducts = function (category_id) {
-      if (current_filtered_products.hasOwnProperty(category_id.toString())) {
-        return current_filtered_products[category_id];
-      } else {
-        return false;
-      }
-    };
-
   var getCurrentSelectedFilterIds = function () {
     return current_selected_filters;
   };
@@ -654,15 +811,11 @@ angular.module('app.services', [])
       getVideoIds: getVideoIds,
       setVideoId: setVideoId,
       getCurrentCategoryIds : getCurrentCategoryIds,
+      categoryids: categoryids,
       setCurrentCategoryIds : setCurrentCategoryIds,
-      getPreviousChildIds: getPreviousChildIds,
-      setPreviousChildIds: setPreviousChildIds,
+      checkCurrentCategoryIds: checkCurrentCategoryIds,
       setCurrentProduct : setCurrentProduct,
-      setPreviousProduct: setPreviousProduct,
-      getPreviousProduct: getPreviousProduct,
       getCurrentProduct : getCurrentProduct,
-      setCurrentCategory: setCurrentCategory,
-      getCurrentCategory: getCurrentCategory,
       getNavigatedCategories: getNavigatedCategories,
       checkInternet: checkInternet,
       addNavigatedCategory: addNavigatedCategory,
@@ -678,12 +831,8 @@ angular.module('app.services', [])
       addCurrentSelectedFilterIds: addCurrentSelectedFiltersIds,
       removeCurrentSelectFilterId: removeCurrentSelectedFilterId,
       getCurrentSelectedFilterIds: getCurrentSelectedFilterIds,
-      clearSelectedFilters: clearSelectedFilters,
-      setCurrentFilteredProducts: setCurrentFilteredProducts,
-      getCurrentFilteredProducts: getCurrentFilteredProducts
+      clearSelectedFilters: clearSelectedFilters
     }
-
-
   }])
 
 //Database Service
@@ -693,11 +842,21 @@ angular.module('app.services', [])
       "location": "default"
     });
 
-    var populateProducts = function(firebaseProductsObject) {
+    var populateProducts = function(firebaseProductsObject, language, success) {
       var preparedStatements = [];
       var BLANK_PRODUCT_INSERT_QUERY = 'INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
       for (var uid in firebaseProductsObject) {
+        var languages = firebaseProductsObject[uid]['languages'];
+
+        if (language === 'de' && languages && languages.indexOf('18') == -1) {
+          continue; // We skip products that don't have the language code 18 for german
+        }
+
+        if (language === 'en' && languages && languages.indexOf('251') == -1) {
+          continue; // We skip products that don't have the language code 251 for worldwide
+        }
+
         var filter_ids = firebaseProductsObject[uid]['filter_ids'] ? firebaseProductsObject[uid]['filter_ids'].join() : '' ;
         var download_ids = firebaseProductsObject[uid]['media']['download_ids'] ? firebaseProductsObject[uid]['media']['download_ids'].join() : '' ;
         var video_ids = firebaseProductsObject[uid]['media']['video_ids'] ? firebaseProductsObject[uid]['media']['video_ids'].join() : '' ;
@@ -755,17 +914,24 @@ angular.module('app.services', [])
 
       db.sqlBatch(preparedStatements, function() {
         console.log('Products populated');
+        success();
       }, function(error) {
         console.log('SQL BATCH ERROR. COULDN\'T POPULATE PRODUCTS.' + error.message);
       });
 
     };
 
-    var populateProductCategories = function(firebaseProductCategoriesObject) {
+    var populateProductCategories = function(firebaseProductCategoriesObject, language, success) {
 
       var preparedStatements = [];
       var BLANK_CATEGORY_INSERT_QUERY = 'INSERT INTO product_categories VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
       for (var uid in firebaseProductCategoriesObject) {
+
+        if (language === 'en' && parseInt(uid) == 110) {
+          continue;
+          // We skip eSchell (uid = 110)
+          console.log('Skipping eSchell because worldwide...');
+        }
 
         var filter_ids = firebaseProductCategoriesObject[uid]['filter_ids'] ? firebaseProductCategoriesObject[uid]['filter_ids'].join() : '';
         var download_ids = firebaseProductCategoriesObject[uid]['download_ids'] ? firebaseProductCategoriesObject[uid]['download_ids'].join() : '';
@@ -793,6 +959,7 @@ angular.module('app.services', [])
 
       db.sqlBatch(preparedStatements, function() {
         console.log('Categories populated');
+        success();
       }, function(error) {
         console.log('SQL BATCH ERROR. COULDN\'T POPULATE CATEGORIES.' + error.message);
       });
@@ -1052,7 +1219,7 @@ angular.module('app.services', [])
     };
 
     var searchProducts = function(search_term, success, error) {
-      db.executeSql('SELECT * from products where nummer LIKE %' + search_term + '% OR beschreibung_de LIKE %' + search_term + '% OR produktbezeichnung_de LIKE %' + search_term + ';', [], function(rs) {
+      db.executeSql('SELECT * from products where nummer LIKE "%' + search_term + '%" OR beschreibung_de LIKE "%' + search_term + '%" OR produktbezeichnung_de LIKE "%' + search_term + '%";', [], function(rs) {
         success(rs);
       }, function(error) {
         error(error);
@@ -1077,6 +1244,37 @@ angular.module('app.services', [])
     });
   };
 
+  var clearDatabase = function() {
+    console.log("Deleting tables...");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS products");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS product_categories");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS awards");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS downloads");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS videos");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS video_categories");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS b_artikel_zubehoer");
+    $cordovaSQLite.execute(db, "DROP TABLE IF EXISTS c_language");
+  };
+
+  var createTables = function() {
+    console.log("Creating tables...");
+    $cordovaSQLite.execute(db, "CREATE TABLE products (uid INTEGER PRIMARY KEY, nummer TEXT, referenzartikel TEXT, produktbezeichnung_de TEXT, zusatz1_de TEXT, zusatz2_de TEXT, beschreibung_de TEXT, differenzierung_de TEXT,lieferumfang_de TEXT, einsatzbereich_de TEXT, werkstoff_de TEXT, geraeuschklasse_de TEXT, pruefzeichen_de TEXT, dimension_de TEXT,oberflaeche_de TEXT, verpackungseinheit TEXT, gewicht TEXT, image_landscape TEXT, image_landscape_filesize INTEGER, image_portrait TEXT, image_portrait_filesize INTEGER, technical_drawing_link TEXT, technical_drawing_filesize INTEGER, filter_ids TEXT, download_ids TEXT, video_ids TEXT, produktbezeichnung_en TEXT, zusatz1_en TEXT, zusatz2_en TEXT, beschreibung_en TEXT, differenzierung_en TEXT, lieferumfang_en TEXT, einsatzbereich_en TEXT, werkstoff_en TEXT, geraeuschklasse_en TEXT,pruefzeichen_en TEXT,dimension_en TEXT, oberflaeche_en TEXT , varianten TEXT, designpreis TEXT, b_artikel_id INTEGER, permalink TEXT, hinweise_notes TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE product_categories (uid INTEGER PRIMARY KEY,	title_de TEXT, elternelement INTEGER, produkte TEXT, bild TEXT, downloads TEXT, child_ids TEXT, sorting INTEGER, product_ids TEXT, filter_ids TEXT, download_ids TEXT, title_en TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE downloads (uid INTEGER PRIMARY KEY, thumbnail TEXT, 	artikelnummer_de TEXT, broschurentitel_de TEXT, zusatzinformation_de TEXT, datei_de TEXT,	produziert_bis TEXT, artikelnummer_en TEXT, broschurentitel_en TEXT, zusatzinformation_en TEXT, datei_en TEXT, filesize INTEGER, title TEXT, category TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE videos (uid INTEGER PRIMARY KEY, title TEXT, startimage_de TEXT, videofile_de TEXT, information_de TEXT, startimage_en TEXT,	videofile_en TEXT, information_en TEXT, filesize INTEGER, youtube_de TEXT, youtube_en TEXT, category INTEGER)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE video_categories (uid INTEGER PRIMARY KEY, title_de TEXT, title_en TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE awards (uid INTEGER PRIMARY KEY, titel TEXT,	logo TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE b_artikel_zubehoer (b_artikel_zubehoer_id INTEGER PRIMARY KEY,  b_artikel_id INTEGER, lfdnr INTEGER, status INTEGER, recordstatus INTEGER, pos_b_artikel_id INTEGER , verknuepfung INTEGER , data TEXT)");
+
+    $cordovaSQLite.execute(db, "CREATE TABLE c_language (c_language_id INTEGER PRIMARY KEY, recordstatus INTEGER, table_id INTEGER, tablename TEXT, fieldname TEXT, langcode TEXT, content TEXT)")
+  };
+
     return {
       populateProducts: populateProducts,
       populateProductCategories: populateProductCategories,
@@ -1098,7 +1296,9 @@ angular.module('app.services', [])
       selectDownloads: selectDownloads,
       selectAwards: selectAwards,
       selectAccessories: selectAccessories,
-      searchProducts: searchProducts
+      searchProducts: searchProducts,
+      clearDatabase: clearDatabase,
+      createTables: createTables
     };
 
   }]);

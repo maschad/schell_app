@@ -20,6 +20,7 @@ angular.module('app.routes', [])
       templateUrl: 'templates/product_areas.html',
       controller: 'product_areasCtrl'
     })
+
     .state('product_overview', {
       cache: false,
       url: '/product_overview',
@@ -28,7 +29,6 @@ angular.module('app.routes', [])
     })
 
   .state('video', {
-    cache: false,
     url: '/video',
     templateUrl: 'templates/video.html',
     controller: 'videoCtrl'
@@ -54,6 +54,7 @@ angular.module('app.routes', [])
   })
 
   .state('product_lines', {
+    cache: false,
     url: '/product_lines',
     templateUrl: 'templates/product_lines.html',
     controller: 'productLinesCtrl'
@@ -69,38 +70,29 @@ angular.module('app.routes', [])
   })
 
     .state('searchPage', {
-      cache: false,
       url: '/search_page',
       templateUrl: 'templates/search_page.html',
       controller: 'searchPageCtrl'
     })
 
   .state('bookmark', {
+    cache: false,
     url: 'bookmark',
     templateUrl: 'templates/bookmark.html',
-    controller: 'bookmarkCtrl',
-    ncyBreadcrumb: {
-      label: 'Bookmark'
-    }
+    controller: 'bookmarkCtrl'
   })
 
   .state('offline_storage', {
     cache: false,
     url: 'offlineStorage',
     templateUrl: 'templates/offline_storage.html',
-    controller: 'offlineStorageCtrl',
-    ncyBreadcrumb: {
-      label: 'Offline Settings'
-    }
+    controller: 'offlineStorageCtrl'
    })
 
   .state('region', {
     url: 'region',
     templateUrl: 'templates/region.html',
-    controller: 'regionCtrl',
-    ncyBreadcrumb: {
-      label: 'Regional Settings'
-    }
+    controller: 'regionCtrl'
   });
 
 $urlRouterProvider.otherwise('/country_select')
