@@ -727,7 +727,7 @@ span.badge.badge-hide.badge-assertive {
   text-align: center;
   font-size: 12px;
   padding: 0;
-  width: 70%;
+  width: 90px;
 }
 .product-counter p {
   margin-bottom: 0;
@@ -1127,7 +1127,7 @@ h1.slogan {
 }
 
 .toggle-small .toggle-assertive input:checked + .track {
-  background-color: $assertive;
+  background-color: rgb(27, 139, 39);
   border-color: #000;
 }
 

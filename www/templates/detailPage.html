@@ -58,7 +58,7 @@
           <div class="ion-android-close close-modal" ng-click="closeModal(1)"></div>
         </ion-header-bar>
         <ion-content>
-          <img ng-src="{{details.image_landscape}}">
+          <img ng-src="{{details.image_landscape}}" class="center-block">
         </ion-content>
       </ion-modal-view>
     </script>
@@ -69,7 +69,7 @@
           <div class="ion-android-close close-modal" ng-click="closeModal(2)"></div>
         </ion-header-bar>
         <ion-content>
-          <img ng-src="{{details.technical_drawing_link}}">
+          <img ng-src="{{details.technical_drawing_link}}" class="center-block">
         </ion-content>
       </ion-modal-view>
     </script>
@@ -132,7 +132,7 @@
                            ng-click="downloadPDF(file,$index)"><!-- #TODO: put in download button -->
                     </div>
                     <div class="col">
-                      <div class="wrap">
+                      <div class="wrap" ng-click="downloadPDF(file,$index)">
                         {{file.category}},
                         {{file.broschurentitel_de}}
                       </div>
