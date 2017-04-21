@@ -58,7 +58,9 @@
           <div class="ion-android-close close-modal" ng-click="closeModal(1)"></div>
         </ion-header-bar>
         <ion-content>
-          <img ng-src="{{details.image_landscape}}" class="center-block">
+          <ion-scroll zooming="true" direction="xy" delegate-handle="zoom-pane" class="zoom-pane" min-zoom="1" scrollbar-x="false" scrollbar-y="false" overflow-scroll="false">
+            <img ng-src="{{details.image_landscape}}" class="center">
+          </ion-scroll>
         </ion-content>
       </ion-modal-view>
     </script>
@@ -69,7 +71,9 @@
           <div class="ion-android-close close-modal" ng-click="closeModal(2)"></div>
         </ion-header-bar>
         <ion-content>
-          <img ng-src="{{details.technical_drawing_link}}" class="center-block">
+          <ion-scroll zooming="true" direction="xy" delegate-handle="zoom-pane" class="zoom-pane" min-zoom="1" scrollbar-x="false" scrollbar-y="false" overflow-scroll="false">
+            <img ng-src="{{details.technical_drawing_link}}" class="center">
+          </ion-scroll>
         </ion-content>
       </ion-modal-view>
     </script>
