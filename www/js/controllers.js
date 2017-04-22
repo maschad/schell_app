@@ -2723,10 +2723,10 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
     };
   }])
 
-  .controller('regionCtrl', ['$scope', '$rootScope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'localStorageService', 'FirebaseService', 'DatabaseService', 'appDataService', 'FileService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('regionCtrl', ['$scope', '$state','$rootScope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'localStorageService', 'FirebaseService', 'DatabaseService', 'appDataService', 'FileService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $rootScope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, $ionicLoading, localStorageService, FirebaseService, DatabaseService, appDataService, FileService) {
+    function ($scope,$state, $rootScope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, $ionicLoading, localStorageService, FirebaseService, DatabaseService, appDataService, FileService) {
       //Side Menu deactivated
       $ionicSideMenuDelegate.canDragContent(false);
 
@@ -2756,6 +2756,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               } else {
                 //NO internet!
               }
+            } else {
+
             }
           });
         }
