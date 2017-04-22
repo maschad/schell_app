@@ -67,6 +67,18 @@ angular.module('app.controllers', [])
         if (lastUpdated) {
           console.log('Database last updated at: ' + lastUpdated);
           var shouldUpdate = (Date.now() - lastUpdated) > 86400000; //We should update if we haven't in more than 24 hours..
+          if(shouldUpdate) {
+            $ionicPopup.confirm({
+              title: 'Update verfügbar',
+              template: 'Möchten Sie dieses Update herunterladen?',
+              cssClass: 'bookmark-popup',
+              cancelText: 'Abbrechen'
+            }).then(function (res) {
+              if(!res) {
+                shouldUpdate = false;
+              }
+            });
+          }
         } else {
           console.log('Fresh installation, should update database.');
           var shouldUpdate = true;

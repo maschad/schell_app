@@ -9,7 +9,6 @@ plugins/
 /www/css/ionic.app.min.css
 config.xml
 .idea/
-resources/ios/icon/icon-40@3x.png
-resources/ios/icon/icon-83.5@2x.png
 tests/unit-tests.conf.js
 www/img/carousel-bild-4.png
+/resources/
