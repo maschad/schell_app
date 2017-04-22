@@ -2757,7 +2757,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
                 //NO internet!
               }
             } else {
-
+              $state.reload();
             }
           });
         }
@@ -2921,6 +2921,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           $scope.products = [];
           $scope.showFilter = true;
           cordova.plugins.Keyboard.close();
+          $scope.searchText = event.target.value;
           $scope.show();
           appDataService.checkInternet();
           DatabaseService.searchProducts(event.target.value, function (results) {
