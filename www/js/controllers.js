@@ -1263,7 +1263,9 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         var options = {
           location: 'no',
           clearcache: 'yes',
-          toolbar: 'yes',
+          toolbar: 'no',
+          titlebar: 'no',
+          status: 'no',
           closebuttoncaption: 'Close',
           enableViewportScale: 'yes'
         };
