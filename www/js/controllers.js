@@ -680,7 +680,7 @@ angular.module('app.controllers', [])
           //Set undownloaded images to default path
           console.log('not downloaded');
           for (var i = 0; i < $scope.videos.length; i++) {
-            $scope.videos[i].startimage_de = 'img/placeholder.png';
+            $scope.videos[i].startimage_de = 'img/placeholder_video.png';
           }
         } else {
           for (var key in vids) {
@@ -696,7 +696,7 @@ angular.module('app.controllers', [])
             } else {
               //Set undownloaded images to default path
               console.log('not downloaded');
-              $scope.videos[index].startimage_de = 'img/placeholder.png';
+              $scope.videos[index].startimage_de = 'img/placeholder_video.png';
             }
           }
         }
@@ -954,7 +954,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
                   $scope.videos[x].startimage_de = localStorageService.getVideoImagePath($scope.videos[x].uid);
                   $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
                 } else {
-                  $scope.videos[x].startimage_de = 'img/placeholder.png';
+                  $scope.videos[x].startimage_de = 'img/placeholder_video.png';
                 }
               }
             }
