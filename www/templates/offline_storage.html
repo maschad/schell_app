@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-75">
           <span style="font-weight: bold;">Wählen Sie die Kategorien die Sie offline auf diesem Gerät speichern möchten.</span><br>
-          <span>Letzte Aktualisierung: {{preferences[4].last_updated}}</span>
+          <span ng-show="preferences[4].last_updated != ''">Letzte Aktualisierung: {{preferences[4].last_updated}}</span>
         </div>
         <div class="col" style="padding-top: 0;">
           <a class="button icon schellicon-reload reload" ng-click="doRefresh()"></a>

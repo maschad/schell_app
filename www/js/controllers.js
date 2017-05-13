@@ -67,6 +67,18 @@ angular.module('app.controllers', [])
         if (lastUpdated) {
           console.log('Database last updated at: ' + lastUpdated);
           var shouldUpdate = (Date.now() - lastUpdated) > 86400000; //We should update if we haven't in more than 24 hours..
+          if(shouldUpdate) {
+            $ionicPopup.confirm({
+              title: 'Update verfügbar',
+              template: 'Möchten Sie dieses Update herunterladen?',
+              cssClass: 'bookmark-popup',
+              cancelText: 'Abbrechen'
+            }).then(function (res) {
+              if(!res) {
+                shouldUpdate = false;
+              }
+            });
+          }
         } else {
           console.log('Fresh installation, should update database.');
           var shouldUpdate = true;
@@ -1251,7 +1263,9 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         var options = {
           location: 'no',
           clearcache: 'yes',
-          toolbar: 'yes',
+          toolbar: 'no',
+          titlebar: 'no',
+          status: 'no',
           closebuttoncaption: 'Close',
           enableViewportScale: 'yes'
         };
@@ -2711,10 +2725,10 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
     };
   }])
 
-  .controller('regionCtrl', ['$scope', '$rootScope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'localStorageService', 'FirebaseService', 'DatabaseService', 'appDataService', 'FileService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('regionCtrl', ['$scope', '$state','$rootScope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'localStorageService', 'FirebaseService', 'DatabaseService', 'appDataService', 'FileService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $rootScope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, $ionicLoading, localStorageService, FirebaseService, DatabaseService, appDataService, FileService) {
+    function ($scope,$state, $rootScope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, $ionicLoading, localStorageService, FirebaseService, DatabaseService, appDataService, FileService) {
       //Side Menu deactivated
       $ionicSideMenuDelegate.canDragContent(false);
 
@@ -2744,6 +2758,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               } else {
                 //NO internet!
               }
+            } else {
+              $state.reload();
             }
           });
         }
@@ -2907,6 +2923,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           $scope.products = [];
           $scope.showFilter = true;
           cordova.plugins.Keyboard.close();
+          $scope.searchText = event.target.value;
           $scope.show();
           appDataService.checkInternet();
           DatabaseService.searchProducts(event.target.value, function (results) {
