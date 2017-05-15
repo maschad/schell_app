@@ -1318,7 +1318,7 @@ ion-popover-view.fit ion-content {
   height: auto;
 }
 .swiper-slide img {
-  width: 1200px;
+  width: 2740px;
 }
 .swiper-pagination-bullet-active {
   background-color: #ffffff !important;
@@ -1527,6 +1527,7 @@ ion-floating-item[button-class="fab-assertive"] li {
   right: 0;
   position: absolute;
   padding: 10px 18px;
+  z-index: 1;
 }
 
 .hinweise {
@@ -1565,7 +1566,7 @@ ion-floating-item[button-class="fab-assertive"] li {
 
 // Pinch to zoom on ionic modals on detail page
 .zoom-pane {
-  width: 100%;
+  // width: 100%;
   height: 100%;
 }
 
