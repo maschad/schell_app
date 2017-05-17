@@ -369,9 +369,8 @@ img {
 
 #product-overview-body .heading {
   color: #ffffff;
-  padding-top: 24px;
   padding-left: 10px;
-  padding-right: 10px;
+  margin-top: 0;
 }
 
 .product-tile {
@@ -1328,6 +1327,11 @@ ion-popover-view.fit ion-content {
 }
 .swiper-container-horizontal>.swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction {
   bottom: -4px !important;
+}
+@media (min-width: 768px) {
+  .swiper-container-horizontal>.swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction {
+    bottom: 0 !important;
+  }
 }
 
 // Popup
