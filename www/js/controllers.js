@@ -680,7 +680,7 @@ angular.module('app.controllers', [])
           //Set undownloaded images to default path
           console.log('not downloaded');
           for (var i = 0; i < $scope.videos.length; i++) {
-            $scope.videos[i].startimage_de = 'img/placeholder.png';
+            $scope.videos[i].startimage_de = 'img/placeholder_video.png';
           }
         } else {
           for (var key in vids) {
@@ -696,7 +696,7 @@ angular.module('app.controllers', [])
             } else {
               //Set undownloaded images to default path
               console.log('not downloaded');
-              $scope.videos[index].startimage_de = 'img/placeholder.png';
+              $scope.videos[index].startimage_de = 'img/placeholder_video.png';
             }
           }
         }
@@ -954,7 +954,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
                   $scope.videos[x].startimage_de = localStorageService.getVideoImagePath($scope.videos[x].uid);
                   $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
                 } else {
-                  $scope.videos[x].startimage_de = 'img/placeholder.png';
+                  $scope.videos[x].startimage_de = 'img/placeholder_video.png';
                 }
               }
             }
@@ -2728,7 +2728,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
   .controller('regionCtrl', ['$scope', '$state','$rootScope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'localStorageService', 'FirebaseService', 'DatabaseService', 'appDataService', 'FileService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope,$state, $rootScope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, $ionicLoading, localStorageService, FirebaseService, DatabaseService, appDataService, FileService) {
+    function ($scope, $state,$rootScope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, $ionicLoading, localStorageService, FirebaseService, DatabaseService, appDataService, FileService) {
       //Side Menu deactivated
       $ionicSideMenuDelegate.canDragContent(false);
 
@@ -2759,7 +2759,8 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
                 //NO internet!
               }
             } else {
-              $state.reload();
+              $ionicHistory.goBack();
+              console.log('reloaded');
             }
           });
         }
