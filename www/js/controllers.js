@@ -71,7 +71,6 @@ angular.module('app.controllers', [])
             $ionicPopup.confirm({
               title: 'Update verfügbar',
               template: 'Möchten Sie dieses Update herunterladen?',
-              cssClass: 'bookmark-popup',
               cancelText: 'Abbrechen'
             }).then(function (res) {
               if(!res) {
