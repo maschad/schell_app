@@ -3,7 +3,7 @@
     <!-- Search Bar -->
     <div class="item item-input-inset search-bar-wrapper">
       <label class="item-input-wrapper">
-        <input autocomplete="off" type="search" autocorrect="off" autocapitalize="off" spellcheck="false"
+        <input ng-model="searchText" autocomplete="off" type="search" autocorrect="off" autocapitalize="off" spellcheck="false"
                ng-keypress="search($event)">
       </label>
       <button class="button ion-ios-search-strong"></button>

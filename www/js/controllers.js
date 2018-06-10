@@ -67,6 +67,17 @@ angular.module('app.controllers', [])
         if (lastUpdated) {
           console.log('Database last updated at: ' + lastUpdated);
           var shouldUpdate = (Date.now() - lastUpdated) > 86400000; //We should update if we haven't in more than 24 hours..
+          if(shouldUpdate) {
+            $ionicPopup.confirm({
+              title: 'Update verfügbar',
+              template: 'Möchten Sie dieses Update herunterladen?',
+              cancelText: 'Abbrechen'
+            }).then(function (res) {
+              if(!res) {
+                shouldUpdate = false;
+              }
+            });
+          }
         } else {
           console.log('Fresh installation, should update database.');
           var shouldUpdate = true;
@@ -668,7 +679,7 @@ angular.module('app.controllers', [])
           //Set undownloaded images to default path
           console.log('not downloaded');
           for (var i = 0; i < $scope.videos.length; i++) {
-            $scope.videos[i].startimage_de = 'img/placeholder.png';
+            $scope.videos[i].startimage_de = 'img/placeholder_video.png';
           }
         } else {
           for (var key in vids) {
@@ -684,7 +695,7 @@ angular.module('app.controllers', [])
             } else {
               //Set undownloaded images to default path
               console.log('not downloaded');
-              $scope.videos[index].startimage_de = 'img/placeholder.png';
+              $scope.videos[index].startimage_de = 'img/placeholder_video.png';
             }
           }
         }
@@ -942,7 +953,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
                   $scope.videos[x].startimage_de = localStorageService.getVideoImagePath($scope.videos[x].uid);
                   $scope.videos[x].videofile_de = localStorageService.getVideoPath($scope.videos[x].uid);
                 } else {
-                  $scope.videos[x].startimage_de = 'img/placeholder.png';
+                  $scope.videos[x].startimage_de = 'img/placeholder_video.png';
                 }
               }
             }
@@ -1251,7 +1262,9 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
         var options = {
           location: 'no',
           clearcache: 'yes',
-          toolbar: 'yes',
+          toolbar: 'no',
+          titlebar: 'no',
+          status: 'no',
           closebuttoncaption: 'Close',
           enableViewportScale: 'yes'
         };
@@ -2711,10 +2724,10 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
     };
   }])
 
-  .controller('regionCtrl', ['$scope', '$rootScope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'localStorageService', 'FirebaseService', 'DatabaseService', 'appDataService', 'FileService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+  .controller('regionCtrl', ['$scope', '$state','$rootScope', '$ionicSideMenuDelegate', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'localStorageService', 'FirebaseService', 'DatabaseService', 'appDataService', 'FileService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $rootScope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, $ionicLoading, localStorageService, FirebaseService, DatabaseService, appDataService, FileService) {
+    function ($scope, $state,$rootScope, $ionicSideMenuDelegate, $ionicHistory, $ionicPopup, $ionicLoading, localStorageService, FirebaseService, DatabaseService, appDataService, FileService) {
       //Side Menu deactivated
       $ionicSideMenuDelegate.canDragContent(false);
 
@@ -2744,6 +2757,9 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
               } else {
                 //NO internet!
               }
+            } else {
+              $ionicHistory.goBack();
+              console.log('reloaded');
             }
           });
         }
@@ -2907,6 +2923,7 @@ function ($scope, $state, $ionicSideMenuDelegate,localStorageService) {
           $scope.products = [];
           $scope.showFilter = true;
           cordova.plugins.Keyboard.close();
+          $scope.searchText = event.target.value;
           $scope.show();
           appDataService.checkInternet();
           DatabaseService.searchProducts(event.target.value, function (results) {

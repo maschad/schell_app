@@ -54,22 +54,22 @@
 
     <script id="product-image.html" type="text/ng-template">
       <ion-modal-view>
-        <ion-header-bar>
-          <div class="ion-android-close close-modal" ng-click="closeModal(1)"></div>
-        </ion-header-bar>
+        <div class="ion-android-close close-modal" ng-click="closeModal(1)"></div>
         <ion-content>
-          <img ng-src="{{details.image_landscape}}">
+          <ion-scroll zooming="true" direction="xy" delegate-handle="zoom-pane" class="zoom-pane" min-zoom="1" scrollbar-x="false" scrollbar-y="false" overflow-scroll="false">
+            <img ng-src="{{details.image_landscape}}" class="center">
+          </ion-scroll>
         </ion-content>
       </ion-modal-view>
     </script>
 
     <script id="technical-drawing.html" type="text/ng-template">
       <ion-modal-view>
-        <ion-header-bar>
-          <div class="ion-android-close close-modal" ng-click="closeModal(2)"></div>
-        </ion-header-bar>
+        <div class="ion-android-close close-modal" ng-click="closeModal(2)"></div>
         <ion-content>
-          <img ng-src="{{details.technical_drawing_link}}">
+          <ion-scroll zooming="true" direction="xy" delegate-handle="zoom-pane" class="zoom-pane" min-zoom="1" scrollbar-x="false" scrollbar-y="false" overflow-scroll="false">
+            <img ng-src="{{details.technical_drawing_link}}" class="center">
+          </ion-scroll>
         </ion-content>
       </ion-modal-view>
     </script>
@@ -132,7 +132,7 @@
                            ng-click="downloadPDF(file,$index)"><!-- #TODO: put in download button -->
                     </div>
                     <div class="col">
-                      <div class="wrap">
+                      <div class="wrap" ng-click="downloadPDF(file,$index)">
                         {{file.category}},
                         {{file.broschurentitel_de}}
                       </div>
